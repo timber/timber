@@ -4,8 +4,10 @@
  * @group terms-api
  * @group posts-api
  */
-class TestTimberPages extends Timber_UnitTestCase {
-    function testTimberPostOnCategoryPage() {
+class TestTimberPages extends Timber_UnitTestCase
+{
+    public function testTimberPostOnCategoryPage()
+    {
         $post_id = $this->factory->post->create();
         $category_id = $this->factory->term->create(array('taxonomy' => 'category', 'name' => 'News'));
         $cat = Timber::get_term($category_id);

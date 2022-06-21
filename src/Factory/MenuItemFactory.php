@@ -2,17 +2,17 @@
 
 namespace Timber\Factory;
 
-use WP_Post;
-
 use Timber\CoreInterface;
+
 use Timber\Menu;
 use Timber\MenuItem;
+use WP_Post;
 
 /**
  * Internal API class for instantiating Menus
  */
-class MenuItemFactory {
-
+class MenuItemFactory
+{
     /**
      * Create a new MenuItem from a WP_Post or post id
      *
@@ -20,7 +20,8 @@ class MenuItemFactory {
      * @param Menu $menu
      * @return MenuItem|null
      */
-    public function from($item, Menu $menu): ?MenuItem {
+    public function from($item, Menu $menu): ?MenuItem
+    {
         if (is_numeric($item)) {
             $item = get_post($item);
         }
@@ -32,13 +33,15 @@ class MenuItemFactory {
         return null;
     }
 
-    protected function build(WP_Post $item, Menu $menu) : CoreInterface {
+    protected function build(WP_Post $item, Menu $menu): CoreInterface
+    {
         $class = $this->get_menuitem_class($item, $menu);
 
         return $class::build($item, $menu);
     }
 
-    protected function get_menuitem_class(WP_Post $item, Menu $menu) : string {
+    protected function get_menuitem_class(WP_Post $item, Menu $menu): string
+    {
         /**
          * Filters the class(es) used for different menu items.
          *
@@ -63,7 +66,7 @@ class MenuItemFactory {
          *                        the location and the value the name of the class to use for this
          *                        menu item or a callback that determines the class to use.
          */
-        $classmap = apply_filters( 'timber/menuitem/classmap', [] );
+        $classmap = apply_filters('timber/menuitem/classmap', []);
 
         $class = $classmap[$menu->theme_location] ?? null;
 
@@ -94,7 +97,7 @@ class MenuItemFactory {
          * @param WP_Post $item The menu item.
          * @param Menu $menu The menu object.
          */
-        $class = apply_filters( 'timber/menuitem/class', $class, $item, $menu );
+        $class = apply_filters('timber/menuitem/class', $class, $item, $menu);
         return $class;
     }
 }

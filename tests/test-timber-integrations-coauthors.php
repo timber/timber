@@ -7,21 +7,23 @@ use Timber\Integration\CoAuthorsPlusIntegration;
      * @group posts-api
      * @group integrations
      */
-    class TestTimberIntegrationsCoAuthors extends Timber_UnitTestCase {
-
+    class TestTimberIntegrationsCoAuthors extends Timber_UnitTestCase
+    {
         /**
          * Overload WP_UnitTestcase to ignore deprecated notices
          * thrown by use of wp_title() in Timber
          */
-        public function expectedDeprecated() {
-            if ( false !== ( $key = array_search( 'WP_User->id', $this->caught_deprecated ) ) ) {
-                unset( $this->caught_deprecated[ $key ] );
+        public function expectedDeprecated()
+        {
+            if (false !== ($key = array_search('WP_User->id', $this->caught_deprecated))) {
+                unset($this->caught_deprecated[ $key ]);
             }
             parent::expectedDeprecated();
         }
 
-        function set_up() {
-            if ( !class_exists('CoAuthors_Plus') ) {
+        public function set_up()
+        {
+            if (!class_exists('CoAuthors_Plus')) {
                 return $this->markTestSkipped('CoAuthors_Plus plugin not loaded');
             }
             parent::set_up();
@@ -31,42 +33,46 @@ use Timber\Integration\CoAuthorsPlusIntegration;
          * Helper functions
          ---------------- */
 
-        static function create_guest_author( $args ){
+        public static function create_guest_author($args)
+        {
             $cap = new CoAuthors_Guest_Authors();
             $guest_id = $cap->create($args);
 
             return $guest_id;
         }
 
-        static function attach_featured_image( $guest_id, $thumb ){
-            $filename = self::copyTestImage( $thumb );
-            $wp_filetype = wp_check_filetype( basename( $filename ), null );
+        public static function attach_featured_image($guest_id, $thumb)
+        {
+            $filename = self::copyTestImage($thumb);
+            $wp_filetype = wp_check_filetype(basename($filename), null);
             $attachment = array(
                 'post_mime_type' => $wp_filetype['type'],
-                'post_title' => preg_replace( '/\.[^.]+$/', '', basename( $filename ) ),
+                'post_title' => preg_replace('/\.[^.]+$/', '', basename($filename)),
                 'post_excerpt' => '',
                 'post_status' => 'inherit'
             );
-            $attach_id = wp_insert_attachment( $attachment, $filename, $guest_id );
-            add_post_meta( $guest_id, '_thumbnail_id', $attach_id, true );
+            $attach_id = wp_insert_attachment($attachment, $filename, $guest_id);
+            add_post_meta($guest_id, '_thumbnail_id', $attach_id, true);
             return $attach_id;
         }
 
 
-        static function copyTestImage( $img = 'avt-1.jpg', $dest_name = null ) {
+        public static function copyTestImage($img = 'avt-1.jpg', $dest_name = null)
+        {
             $upload_dir = wp_upload_dir();
-            if ( is_null($dest_name) ) {
+            if (is_null($dest_name)) {
                 $dest_name = $img;
             }
-            $destination = $upload_dir['path'].'/'.$dest_name;
-            copy( __DIR__.'/assets/'.$img, $destination );
+            $destination = $upload_dir['path'] . '/' . $dest_name;
+            copy(__DIR__ . '/assets/' . $img, $destination);
             return $destination;
         }
         /* ----------------
          * Tests
          ---------------- */
 
-        function testAuthors() {
+        public function testAuthors()
+        {
             $uid = $this->factory->user->create(array('display_name' => 'Jen Weinman', 'user_login' => 'aquajenus'));
             $pid = $this->factory->post->create(array('post_author' => $uid));
             $post = Timber::get_post($pid);
@@ -75,7 +81,8 @@ use Timber\Integration\CoAuthorsPlusIntegration;
             $this->assertEquals('Jen Weinman', $str);
         }
 
-        function testGuestAuthor(){
+        public function testGuestAuthor()
+        {
             $pid = $this->factory->post->create();
             $post = Timber::get_post($pid);
 
@@ -94,7 +101,8 @@ use Timber\Integration\CoAuthorsPlusIntegration;
             $this->assertInstanceOf(CoAuthorsPlusUser::class, $author);
         }
 
-        function testGuestAuthorWithRegularAuthor(){
+        public function testGuestAuthorWithRegularAuthor()
+        {
             $uid = $this->factory->user->create(array('display_name' => 'Alexander Hamilton', 'user_login' => 'ahamilton'));
             $pid = $this->factory->post->create(array('post_author' => $uid));
             $post = Timber::get_post($pid);
@@ -120,7 +128,8 @@ use Timber\Integration\CoAuthorsPlusIntegration;
         /**
          * Co-Authors originally created as guests can be linked to a real WordPress user account. In these instances, we want to use the linked account's information
          */
-        function testLinkedGuestAuthor(){
+        public function testLinkedGuestAuthor()
+        {
             global $coauthors_plus;
 
             $pid = $this->factory->post->create();
@@ -168,7 +177,8 @@ use Timber\Integration\CoAuthorsPlusIntegration;
         /**
          * @group attachments
          */
-        function testGuestAuthorAvatar(){
+        public function testGuestAuthorAvatar()
+        {
             $pid = $this->factory->post->create();
             $post = Timber::get_post($pid);
             $user_login = 'withfeaturedimage';

@@ -1,30 +1,39 @@
 <?php
 
+use Timber\Factory\PostFactory;
 use Timber\Post;
 use Timber\PostArrayObject;
 use Timber\PostQuery;
-use Timber\Factory\PostFactory;
 
-class MyPost extends Post {}
-class MyPage extends Post {}
-class MyCustom extends Post {}
-class MySpecialCustom extends MyCustom {}
+class MyPost extends Post
+{
+}
+class MyPage extends Post
+{
+}
+class MyCustom extends Post
+{
+}
+class MySpecialCustom extends MyCustom
+{
+}
 
 /**
  * @group factory
  * @group post-collections
  */
-class TestPostFactory extends Timber_UnitTestCase {
-
-    public function testFrom() {
-        $post_id   = $this->factory->post->create(['post_type' => 'post']);
-        $page_id   = $this->factory->post->create(['post_type' => 'page']);
+class TestPostFactory extends Timber_UnitTestCase
+{
+    public function testFrom()
+    {
+        $post_id = $this->factory->post->create(['post_type' => 'post']);
+        $page_id = $this->factory->post->create(['post_type' => 'page']);
         $custom_id = $this->factory->post->create(['post_type' => 'custom']);
 
         $postFactory = new PostFactory();
-        $post                 = $postFactory->from($post_id);
-        $page                 = $postFactory->from($page_id);
-        $custom           = $postFactory->from($custom_id);
+        $post = $postFactory->from($post_id);
+        $page = $postFactory->from($page_id);
+        $custom = $postFactory->from($custom_id);
 
         // Assert that all instances are of Timber\Post
         $this->assertInstanceOf(Post::class, $post);
@@ -32,88 +41,95 @@ class TestPostFactory extends Timber_UnitTestCase {
         $this->assertInstanceOf(Post::class, $custom);
     }
 
-    public function testFromInvalidId() {
+    public function testFromInvalidId()
+    {
         $postFactory = new PostFactory();
-        $post        = $postFactory->from( 99999 );
+        $post = $postFactory->from(99999);
 
-        $this->assertNull( $post );
+        $this->assertNull($post);
     }
 
-    public function testFromIdString() {
+    public function testFromIdString()
+    {
         $post_id = $this->factory->post->create();
 
         $postFactory = new PostFactory();
-        $post                 = $postFactory->from(''.$post_id);
+        $post = $postFactory->from('' . $post_id);
 
         $this->assertInstanceOf(Post::class, $post);
         $this->assertEquals($post_id, $post->id);
     }
 
-    public function testFromWithClassmapFilter() {
-        $my_class_map = function() {
+    public function testFromWithClassmapFilter()
+    {
+        $my_class_map = function () {
             return [
-                'post'   => MyPost::class,
-                'page'   => MyPage::class,
+                'post' => MyPost::class,
+                'page' => MyPage::class,
                 'custom' => MyCustom::class,
             ];
         };
 
-        $this->add_filter_temporarily( 'timber/post/classmap', $my_class_map );
+        $this->add_filter_temporarily('timber/post/classmap', $my_class_map);
 
-        $post_id   = $this->factory->post->create(['post_type' => 'post']);
-        $page_id   = $this->factory->post->create(['post_type' => 'page']);
+        $post_id = $this->factory->post->create(['post_type' => 'post']);
+        $page_id = $this->factory->post->create(['post_type' => 'page']);
         $custom_id = $this->factory->post->create(['post_type' => 'custom']);
 
         $postFactory = new PostFactory();
-        $post        = $postFactory->from($post_id);
-        $page        = $postFactory->from($page_id);
-        $custom      = $postFactory->from($custom_id);
+        $post = $postFactory->from($post_id);
+        $page = $postFactory->from($page_id);
+        $custom = $postFactory->from($custom_id);
 
         $this->assertInstanceOf(MyPost::class, $post);
         $this->assertInstanceOf(MyPage::class, $page);
         $this->assertInstanceOf(MyCustom::class, $custom);
     }
 
-    public function testFromWithClassFilter() {
-        $my_class_filter = function($class, WP_Post $post) {
+    public function testFromWithClassFilter()
+    {
+        $my_class_filter = function ($class, WP_Post $post) {
             return MyCustom::class;
         };
 
-        $this->add_filter_temporarily( 'timber/post/class', $my_class_filter, 10, 2 );
+        $this->add_filter_temporarily('timber/post/class', $my_class_filter, 10, 2);
 
         $custom_id = $this->factory->post->create(['post_type' => 'custom']);
 
         $postFactory = new PostFactory();
-        $custom      = $postFactory->from($custom_id);
+        $custom = $postFactory->from($custom_id);
 
         $this->assertInstanceOf(MyCustom::class, $custom);
     }
 
-    public function testFromWithCallable() {
-        $my_class_map = function(array $map) {
+    public function testFromWithCallable()
+    {
+        $my_class_map = function (array $map) {
             return array_merge($map, [
-                'page'   => function() {
+                'page' => function () {
                     return MyPage::class;
                 },
-                'custom' => function(WP_Post $post) {
-                    if ($post->post_name === 'my-special-post') return MySpecialCustom::class;
+                'custom' => function (WP_Post $post) {
+                    if ($post->post_name === 'my-special-post') {
+                        return MySpecialCustom::class;
+                    }
                     return MyCustom::class;
                 },
             ]);
         };
 
-        $this->add_filter_temporarily( 'timber/post/classmap', $my_class_map );
+        $this->add_filter_temporarily('timber/post/classmap', $my_class_map);
 
-        $post_id   = $this->factory->post->create(['post_type' => 'post']);
-        $page_id   = $this->factory->post->create(['post_type' => 'page']);
+        $post_id = $this->factory->post->create(['post_type' => 'post']);
+        $page_id = $this->factory->post->create(['post_type' => 'page']);
         $custom_id = $this->factory->post->create(['post_type' => 'custom']);
         $special_id = $this->factory->post->create(['post_type' => 'custom', 'post_name' => 'my-special-post']);
 
         $postFactory = new PostFactory();
-        $post        = $postFactory->from($post_id);
-        $page        = $postFactory->from($page_id);
-        $custom      = $postFactory->from($custom_id);
-        $special     = $postFactory->from($special_id);
+        $post = $postFactory->from($post_id);
+        $page = $postFactory->from($page_id);
+        $custom = $postFactory->from($custom_id);
+        $special = $postFactory->from($special_id);
 
         $this->assertInstanceOf(Post::class, $post);
         $this->assertInstanceOf(MyPage::class, $page);
@@ -121,38 +137,41 @@ class TestPostFactory extends Timber_UnitTestCase {
         $this->assertInstanceOf(MySpecialCustom::class, $special);
     }
 
-    public function testFromWpPost() {
+    public function testFromWpPost()
+    {
         $post_id = $this->factory->post->create(['post_type' => 'page', 'post_title' => 'Title One']);
 
         $postFactory = new PostFactory();
         $this->assertInstanceOf(Post::class, $postFactory->from(get_post($post_id)));
     }
 
-    public function testFromWpQuery() {
-        $my_class_map = function() {
+    public function testFromWpQuery()
+    {
+        $my_class_map = function () {
             return [
-                'post'   => MyPost::class,
-                'page'   => MyPage::class,
+                'post' => MyPost::class,
+                'page' => MyPage::class,
                 'custom' => MyCustom::class,
             ];
         };
 
-        $this->add_filter_temporarily( 'timber/post/classmap', $my_class_map );
+        $this->add_filter_temporarily('timber/post/classmap', $my_class_map);
 
-        $post_id   = $this->factory->post->create(['post_type' => 'post', 'post_date' => '2020-01-10 19:46:41']);
-        $page_id   = $this->factory->post->create(['post_type' => 'page', 'post_date' => '2020-01-09 19:46:41']);
+        $post_id = $this->factory->post->create(['post_type' => 'post', 'post_date' => '2020-01-10 19:46:41']);
+        $page_id = $this->factory->post->create(['post_type' => 'page', 'post_date' => '2020-01-09 19:46:41']);
         $custom_id = $this->factory->post->create(['post_type' => 'custom', 'post_date' => '2020-01-08 19:46:41']);
 
         $postFactory = new PostFactory();
-        $query       = new WP_Query(['post_type' => ['post', 'page', 'custom']]);
-        $posts       = $postFactory->from($query);
+        $query = new WP_Query(['post_type' => ['post', 'page', 'custom']]);
+        $posts = $postFactory->from($query);
 
-        $this->assertInstanceOf(MyPost::class,   $posts[0]);
-        $this->assertInstanceOf(MyPage::class,   $posts[1]);
+        $this->assertInstanceOf(MyPost::class, $posts[0]);
+        $this->assertInstanceOf(MyPage::class, $posts[1]);
         $this->assertInstanceOf(MyCustom::class, $posts[2]);
     }
 
-    public function testFromAcfArray() {
+    public function testFromAcfArray()
+    {
         $id = $this->factory->post->create(['post_type' => 'page', 'post_title' => 'Title One']);
 
         $postFactory = new PostFactory();
@@ -161,7 +180,8 @@ class TestPostFactory extends Timber_UnitTestCase {
         $this->assertEquals($id, $post->id);
     }
 
-    public function testFromArray() {
+    public function testFromArray()
+    {
         $this->factory->post->create(['post_type' => 'page', 'post_title' => 'Title One']);
         $this->factory->post->create(['post_type' => 'page', 'post_title' => 'Title Two']);
 
@@ -174,15 +194,16 @@ class TestPostFactory extends Timber_UnitTestCase {
         $this->assertInstanceOf(Post::class, $res[1]);
     }
 
-    public function testFromArrayCustom() {
-        $my_class_map = function(array $map) {
+    public function testFromArrayCustom()
+    {
+        $my_class_map = function (array $map) {
             return array_merge($map, [
-                'page'   => MyPage::class,
+                'page' => MyPage::class,
                 'custom' => MyCustom::class,
             ]);
         };
 
-        $this->add_filter_temporarily( 'timber/post/classmap', $my_class_map );
+        $this->add_filter_temporarily('timber/post/classmap', $my_class_map);
 
         $postFactory = new PostFactory();
 
@@ -192,18 +213,19 @@ class TestPostFactory extends Timber_UnitTestCase {
 
         $res = $postFactory->from(get_posts([
             'post_type' => ['custom', 'page', 'post'],
-            'orderby'   => 'title',
-            'order'     => 'ASC',
+            'orderby' => 'title',
+            'order' => 'ASC',
         ]));
 
         $this->assertTrue(true, is_array($res));
         $this->assertCount(3, $res);
-        $this->assertInstanceOf(Post::class,     $res[0]);
-        $this->assertInstanceOf(MyPage::class,   $res[1]);
+        $this->assertInstanceOf(Post::class, $res[0]);
+        $this->assertInstanceOf(MyPage::class, $res[1]);
         $this->assertInstanceOf(MyCustom::class, $res[2]);
     }
 
-    public function testFromAssortedArray() {
+    public function testFromAssortedArray()
+    {
         $a_id = $this->factory->post->create(['post_type' => 'post',   'post_title' => 'AAA']);
         $b_id = $this->factory->post->create(['post_type' => 'post',   'post_title' => 'BBB']);
         $c_id = $this->factory->post->create(['post_type' => 'post',   'post_title' => 'CCC']);
@@ -225,15 +247,16 @@ class TestPostFactory extends Timber_UnitTestCase {
         $this->assertInstanceOf(Post::class, $res[2]);
     }
 
-    public function testFromQueryArray() {
-        $my_class_map = function(array $map) {
+    public function testFromQueryArray()
+    {
+        $my_class_map = function (array $map) {
             return array_merge($map, [
-                'page'   => MyPage::class,
+                'page' => MyPage::class,
                 'custom' => MyCustom::class,
             ]);
         };
 
-        $this->add_filter_temporarily( 'timber/post/classmap', $my_class_map );
+        $this->add_filter_temporarily('timber/post/classmap', $my_class_map);
 
         $this->factory->post->create(['post_type' => 'post',        'post_title' => 'AAA']);
         $this->factory->post->create(['post_type' => 'page',        'post_title' => 'BBB']);
@@ -244,35 +267,36 @@ class TestPostFactory extends Timber_UnitTestCase {
 
         $res = $postFactory->from([
             'post_type' => ['post', 'page', 'custom'],
-            'orderby'   => 'title',
-            'order'     => 'ASC',
+            'orderby' => 'title',
+            'order' => 'ASC',
         ]);
 
         // Here we're operating on a PostQuery, which implements ArrayAccess.
         $this->assertInstanceOf(PostQuery::class, $res);
 
-        $this->assertInstanceOf(Post::class,     $res[0]);
-        $this->assertInstanceOf(MyPage::class,   $res[1]);
+        $this->assertInstanceOf(Post::class, $res[0]);
+        $this->assertInstanceOf(MyPage::class, $res[1]);
         $this->assertInstanceOf(MyCustom::class, $res[2]);
     }
 
     /**
      * @expectedIncorrectUsage The `Timber\PostClassMap` filter
      */
-    public function testDeprecatedPostClassMapFilter() {
-        $my_class_map = function() {
+    public function testDeprecatedPostClassMapFilter()
+    {
+        $my_class_map = function () {
             return [ 'custom' => MyCustom::class ];
         };
 
-        $this->add_filter_temporarily( 'Timber\PostClassMap', $my_class_map );
+        $this->add_filter_temporarily('Timber\PostClassMap', $my_class_map);
 
         $this->factory->post->create(['post_type' => 'custom', 'post_title' => 'CCC']);
 
         $post_factory = new PostFactory();
         $res = $post_factory->from([
             'post_type' => ['custom'],
-            'orderby'   => 'title',
-            'order'     => 'ASC',
+            'orderby' => 'title',
+            'order' => 'ASC',
         ]);
 
         $this->assertInstanceOf(Post::class, $res[0]);

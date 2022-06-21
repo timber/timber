@@ -7,12 +7,14 @@ use Twig\Extension\CoreExtension;
  *
  * @group Timber\Date
  */
-class TestTimberTwigDateFilterInterval extends Timber_UnitTestCase {
-    function set_up() {
+class TestTimberTwigDateFilterInterval extends Timber_UnitTestCase
+{
+    public function set_up()
+    {
         parent::set_up();
 
-        update_option( 'date_format', 'F j, Y H:i' );
-        update_option( 'timezone_string', 'Europe/Paris' );
+        update_option('date_format', 'F j, Y H:i');
+        update_option('timezone_string', 'Europe/Paris');
 
         /**
          * We deliberately do not set a different default timezone with date_default_timezone_set()
@@ -21,70 +23,77 @@ class TestTimberTwigDateFilterInterval extends Timber_UnitTestCase {
          */
     }
 
-    function tear_down() {
-        update_option( 'timezone_string', 'UTC' );
+    public function tear_down()
+    {
+        update_option('timezone_string', 'UTC');
 
         parent::tear_down();
     }
 
-    function get_context() {
+    public function get_context()
+    {
         return [
-            'date1'     => new \DateInterval( 'P2D' ),
-            'date2'     => new \DateInterval( 'P2D' ),
+            'date1' => new \DateInterval('P2D'),
+            'date2' => new \DateInterval('P2D'),
             // This should have no effect on \DateInterval formatting
-            'timezone1' => new \DateTimeZone( 'America/New_York' ),
+            'timezone1' => new \DateTimeZone('America/New_York'),
         ];
     }
 
-    function testDateFormat1() {
+    public function testDateFormat1()
+    {
         $result = Timber\Timber::compile_string(
             "{{ date1|date }}",
             $this->get_context()
         );
 
-        $this->assertEquals( '2 days', $result );
+        $this->assertEquals('2 days', $result);
     }
 
-    function testDateFormat2() {
+    public function testDateFormat2()
+    {
         $result = Timber\Timber::compile_string(
             "{{ date1|date('%d days %h hours') }}",
             $this->get_context()
         );
 
-        $this->assertEquals( '2 days 0 hours', $result );
+        $this->assertEquals('2 days 0 hours', $result);
     }
 
-    function testDateFormat3() {
+    public function testDateFormat3()
+    {
         $result = Timber\Timber::compile_string(
             "{{ date1|date('%d days %h hours', timezone1) }}",
             $this->get_context()
         );
 
-        $this->assertEquals( '2 days 0 hours', $result );
+        $this->assertEquals('2 days 0 hours', $result);
     }
 
-    function testDateFormat4() {
-        add_filter( 'timber/loader/twig', function( Twig\Environment $twig ) {
-            $twig->getExtension( CoreExtension::class )
-                ->setDateFormat( 'Y-m-d', '%d days %h hours' );
+    public function testDateFormat4()
+    {
+        add_filter('timber/loader/twig', function (Twig\Environment $twig) {
+            $twig->getExtension(CoreExtension::class)
+                ->setDateFormat('Y-m-d', '%d days %h hours');
 
             return $twig;
-        } );
+        });
 
         $result = Timber\Timber::compile_string(
             "{{ date2|date }}",
             $this->get_context()
         );
 
-        $this->assertEquals( '2 days 0 hours', $result );
+        $this->assertEquals('2 days 0 hours', $result);
     }
 
-    function testDateFormat5() {
+    public function testDateFormat5()
+    {
         $result = Timber\Timber::compile_string(
             "{{ date2|date('%d days') }}",
             $this->get_context()
         );
 
-        $this->assertEquals( '2 days', $result );
+        $this->assertEquals('2 days', $result);
     }
 }

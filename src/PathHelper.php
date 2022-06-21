@@ -10,7 +10,8 @@ namespace Timber;
  * @api
  * @since 1.11.1
  */
-class PathHelper {
+class PathHelper
+{
     /**
      * Returns information about a file path.
      *
@@ -28,24 +29,26 @@ class PathHelper {
      *
      * @return mixed
      */
-    public static function pathinfo( $path, $options = PATHINFO_DIRNAME |
+    public static function pathinfo(
+        $path,
+        $options = PATHINFO_DIRNAME |
         PATHINFO_BASENAME | PATHINFO_EXTENSION | PATHINFO_FILENAME
     ) {
         $info = pathinfo(
             str_replace(
                 array( '%2F', '%5C' ),
                 array( '/', '\\' ),
-                rawurlencode( $path )
+                rawurlencode($path)
             ),
             $options
         );
 
-        if ( is_array( $info ) ) {
+        if (is_array($info)) {
             // Decode all keys in the array.
-            return array_map( 'rawurldecode', $info );
+            return array_map('rawurldecode', $info);
         } else {
             // Decode the string when requesting a single path component.
-            return rawurldecode( $info );
+            return rawurldecode($info);
         }
     }
 
@@ -65,10 +68,11 @@ class PathHelper {
      *
      * @return string
      */
-    public static function basename( $path, $suffix = '' ) {
+    public static function basename($path, $suffix = '')
+    {
         return rawurldecode(
             basename(
-                str_replace( array( '%2F', '%5C' ), '/', rawurlencode( $path ) ),
+                str_replace(array( '%2F', '%5C' ), '/', rawurlencode($path)),
                 $suffix
             )
         );

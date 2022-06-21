@@ -25,8 +25,8 @@ namespace Timber;
  * <script src="http://example.org/wp-content/themes/my-theme/static/js/all.js"></script>
  * ```
  */
-class Theme extends Core {
-
+class Theme extends Core
+{
     /**
      * The human-friendly name of the theme (ex: `My Timber Starter Theme`)
      *
@@ -102,7 +102,8 @@ class Theme extends Core {
      *
      * @param string $slug
      */
-    public function __construct( $slug = null ) {
+    public function __construct($slug = null)
+    {
         $this->init($slug);
     }
 
@@ -112,7 +113,8 @@ class Theme extends Core {
      * @internal
      * @param string $slug of theme (eg 'twentysixteen').
      */
-    protected function init( $slug = null ) {
+    protected function init($slug = null)
+    {
         $this->theme = wp_get_theme($slug);
         $this->name = $this->theme->get('Name');
         $this->version = $this->theme->get('Version');
@@ -122,7 +124,7 @@ class Theme extends Core {
 
         $this->parent = $this;
         $this->parent_slug = $this->theme->get_stylesheet();
-        if ( $this->theme->parent() ) {
+        if ($this->theme->parent()) {
             $this->parent_slug = $this->theme->parent()->get_stylesheet();
             $this->parent = new Theme($this->parent_slug);
         }
@@ -132,7 +134,8 @@ class Theme extends Core {
      * @api
      * @return string the absolute path to the theme (ex: `http://example.org/wp-content/themes/my-timber-theme`)
      */
-    public function link() {
+    public function link()
+    {
         return $this->theme->get_stylesheet_directory_uri();
     }
 
@@ -140,7 +143,8 @@ class Theme extends Core {
      * @api
      * @return  string the relative path to the theme (ex: `/wp-content/themes/my-timber-theme`)
      */
-    public function path() {
+    public function path()
+    {
         // force = true to work with specifying the port
         // @see https://github.com/timber/timber/issues/1739
         return URLHelper::get_rel_url($this->link(), true);
@@ -152,7 +156,8 @@ class Theme extends Core {
      * @param bool $default
      * @return string
      */
-    public function theme_mod( $name, $default = false ) {
+    public function theme_mod($name, $default = false)
+    {
         return get_theme_mod($name, $default);
     }
 
@@ -160,7 +165,8 @@ class Theme extends Core {
      * @api
      * @return array
      */
-    public function theme_mods() {
+    public function theme_mods()
+    {
         return get_theme_mods();
     }
 
@@ -179,8 +185,9 @@ class Theme extends Core {
      *
      * @return false|string String on success, false on failure.
      */
-    public function get( $header ) {
-        return $this->theme->get( $header );
+    public function get($header)
+    {
+        return $this->theme->get($header);
     }
 
     /**
@@ -198,7 +205,8 @@ class Theme extends Core {
      *
      * @return false|string
      */
-    public function display( $header ) {
-        return $this->theme->display( $header );
+    public function display($header)
+    {
+        return $this->theme->display($header);
     }
 }

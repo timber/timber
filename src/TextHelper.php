@@ -9,7 +9,8 @@ namespace Timber;
  *
  * @api
  */
-class TextHelper {
+class TextHelper
+{
     /**
      * Trims text to a certain number of characters.
      * This function can be useful for excerpt of the post
@@ -25,7 +26,8 @@ class TextHelper {
      * @param   string $more      What to append if $text needs to be trimmed. Defaults to '&hellip;'.
      * @return  string trimmed text.
      */
-    public static function trim_characters( $text, $num_chars = 60, $more = '&hellip;' ) {
+    public static function trim_characters($text, $num_chars = 60, $more = '&hellip;')
+    {
         $text = wp_strip_all_tags($text);
         $text = mb_strimwidth($text, 0, $num_chars, $more);
         return $text;
@@ -39,8 +41,9 @@ class TextHelper {
      * @param string  $allowed_tags
      * @return string
      */
-    public static function trim_words( $text, $num_words = 55, $more = null, $allowed_tags = 'p a span b i br blockquote' ) {
-        if ( null === $more ) {
+    public static function trim_words($text, $num_words = 55, $more = null, $allowed_tags = 'p a span b i br blockquote')
+    {
+        if (null === $more) {
             $more = __('&hellip;');
         }
         $original_text = $text;
@@ -59,12 +62,14 @@ class TextHelper {
          *                             Default `p a span b i br blockquote`.
          */
         $allowed_tags_array = explode(' ', apply_filters('timber/trim_words/allowed_tags', $allowed_tags));
-        $allowed_tags_array = array_filter($allowed_tags_array, function($value) { return $value !== ''; });
-        $allowed_tag_string = '<'.implode('><', $allowed_tags_array).'>';
+        $allowed_tags_array = array_filter($allowed_tags_array, function ($value) {
+            return $value !== '';
+        });
+        $allowed_tag_string = '<' . implode('><', $allowed_tags_array) . '>';
 
         $text = strip_tags($text, $allowed_tag_string);
         /* translators: If your word count is based on single characters (East Asian characters), enter 'characters'. Otherwise, enter 'words'. Do not translate into your own language. */
-        if ( 'characters' == _x('words', 'word count: words or characters?') && preg_match('/^utf\-?8$/i', get_option('blog_charset')) ) {
+        if ('characters' == _x('words', 'word count: words or characters?') && preg_match('/^utf\-?8$/i', get_option('blog_charset'))) {
             $text = trim(preg_replace("/[\n\r\t ]+/", ' ', $text), ' ');
             preg_match_all('/./u', $text, $words_array);
             $words_array = array_slice($words_array[0], 0, $num_words + 1);
@@ -73,10 +78,10 @@ class TextHelper {
             $words_array = preg_split("/[\n\r\t ]+/", $text, $num_words + 1, PREG_SPLIT_NO_EMPTY);
             $sep = ' ';
         }
-        if ( count($words_array) > $num_words ) {
+        if (count($words_array) > $num_words) {
             array_pop($words_array);
             $text = implode($sep, $words_array);
-            $text = $text.$more;
+            $text = $text . $more;
         } else {
             $text = implode($sep, $words_array);
         }
@@ -92,8 +97,9 @@ class TextHelper {
      *
      * @return null|string|string[]
      */
-    public static function remove_tags( $string, $tags = array() ) {
-        return preg_replace('#<(' . implode( '|', $tags) . ')(?:[^>]+)?>.*?</\1>#s', '', $string);
+    public static function remove_tags($string, $tags = array())
+    {
+        return preg_replace('#<(' . implode('|', $tags) . ')(?:[^>]+)?>.*?</\1>#s', '', $string);
     }
 
     /**
@@ -102,8 +108,9 @@ class TextHelper {
      * @param string $needle
      * @return boolean
      */
-    public static function starts_with( $haystack, $needle ) {
-        if ( 0 === strpos($haystack, $needle) ) {
+    public static function starts_with($haystack, $needle)
+    {
+        if (0 === strpos($haystack, $needle)) {
             return true;
         }
         return false;
@@ -117,8 +124,9 @@ class TextHelper {
      * @param string $needle
      * @return boolean
      */
-    public static function ends_with( $haystack, $needle ) {
-        return ( substr( $haystack, strlen( $haystack ) - strlen( $needle ) ) == $needle );
+    public static function ends_with($haystack, $needle)
+    {
+        return (substr($haystack, strlen($haystack) - strlen($needle)) == $needle);
     }
 
     /**
@@ -127,7 +135,8 @@ class TextHelper {
      * @param string  $html
      * @return string
      */
-    public static function close_tags( $html ) {
+    public static function close_tags($html)
+    {
         //put all opened tags into an array
         preg_match_all('#<([a-z]+)(?: .*)?(?<![/|/ ])>#iU', $html, $result);
         $openedtags = $result[1];
@@ -136,14 +145,14 @@ class TextHelper {
         $closedtags = $result[1];
         $len_opened = count($openedtags);
         // all tags are closed
-        if ( count($closedtags) == $len_opened ) {
+        if (count($closedtags) == $len_opened) {
             return $html;
         }
         $openedtags = array_reverse($openedtags);
         // close tags
-        for ( $i = 0; $i < $len_opened; $i++ ) {
-            if ( !in_array($openedtags[$i], $closedtags) ) {
-                $html .= '</'.$openedtags[$i].'>';
+        for ($i = 0; $i < $len_opened; $i++) {
+            if (!in_array($openedtags[$i], $closedtags)) {
+                $html .= '</' . $openedtags[$i] . '>';
             } else {
                 unset($closedtags[array_search($openedtags[$i], $closedtags)]);
             }
@@ -152,5 +161,4 @@ class TextHelper {
         $html = str_replace(array('<br>', '<hr>', '<wbr>'), array('<br />', '<hr />', '<wbr />'), $html);
         return $html;
     }
-
 }

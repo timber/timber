@@ -7,7 +7,8 @@ namespace Timber;
  *
  * Timber\Request exposes $_GET and $_POST to the context
  */
-class Request extends Core implements CoreInterface {
+class Request extends Core implements CoreInterface
+{
     public $post = array();
     public $get = array();
 
@@ -15,25 +16,35 @@ class Request extends Core implements CoreInterface {
      * Constructs a Timber\Request object
      * @example
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->init();
     }
     /**
      * @internal
      */
-    protected function init() {
+    protected function init()
+    {
         $this->post = $_POST;
         $this->get = $_GET;
     }
 
-    public function __call( $field, $args ) {}
+    public function __call($field, $args)
+    {
+    }
 
-    public function __get( $field ) {}
+    public function __get($field)
+    {
+    }
 
     /**
      * @return boolean|null
      */
-    public function __isset( $field ) {}
+    public function __isset($field)
+    {
+    }
 
-    public function meta( $key ) {}
+    public function meta($key)
+    {
+    }
 }

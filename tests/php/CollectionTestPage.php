@@ -2,4 +2,6 @@
 
 use Timber\Post;
 
-class CollectionTestPage extends Post {}
+class CollectionTestPage extends Post
+{
+}

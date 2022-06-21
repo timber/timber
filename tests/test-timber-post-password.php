@@ -3,9 +3,10 @@
     /**
      * @group called-post-constructor
      */
-    class TestTimberPostPassword extends Timber_UnitTestCase {
-
-        function testPasswordedContentDefault(){
+    class TestTimberPostPassword extends Timber_UnitTestCase
+    {
+        public function testPasswordedContentDefault()
+        {
             $quote = 'The way to do well is to do well.';
             $post_id = $this->factory->post->create();
             $post = Timber::get_post($post_id);
@@ -16,8 +17,9 @@
             $this->assertEquals(wpautop($quote), $post->content());
         }
 
-        function testPasswordedContentWhenEnabled(){
-            add_filter('timber/post/content/show_password_form_for_protected', function($maybe_show) {
+        public function testPasswordedContentWhenEnabled()
+        {
+            add_filter('timber/post/content/show_password_form_for_protected', function ($maybe_show) {
                 return true;
             });
             $quote = 'The way to do well is to do well.';
@@ -30,11 +32,12 @@
             $this->assertEquals($password_form, $post->content());
         }
 
-        function testPasswordedContentWhenEnabledWithCustomForm(){
-            add_filter('timber/post/content/show_password_form_for_protected', function($maybe_show) {
+        public function testPasswordedContentWhenEnabledWithCustomForm()
+        {
+            add_filter('timber/post/content/show_password_form_for_protected', function ($maybe_show) {
                 return true;
             });
-            add_filter('timber/post/content/password_form', function($form, $post){
+            add_filter('timber/post/content/password_form', function ($form, $post) {
                 return Timber::compile('assets/password-form.twig', array('post' => $post));
             }, 10, 2);
             $quote = 'The way to do well is to do well.';
@@ -46,5 +49,4 @@
             $password_form = '<form>Enter password to see Secrets!</form>';
             $this->assertEquals($password_form, $post->content());
         }
-
     }

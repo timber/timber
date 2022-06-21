@@ -12,8 +12,8 @@ use WP_Post;
  *
  * @api
  */
-class MenuItem extends CoreEntity {
-
+class MenuItem extends CoreEntity
+{
     protected WP_Post $wp_object;
 
     /**
@@ -100,7 +100,8 @@ class MenuItem extends CoreEntity {
      * @param \Timber\Menu $menu The `Timber\Menu` object the menu item is associated with.
      * @return \Timber\MenuItem a new MenuItem instance
      */
-    public static function build( $data, ?Menu $menu = null ) : self {
+    public static function build($data, ?Menu $menu = null): self
+    {
         return new static($data, $menu);
     }
 
@@ -109,11 +110,12 @@ class MenuItem extends CoreEntity {
      * @param WP_Post $data
      * @param \Timber\Menu $menu The `Timber\Menu` object the menu item is associated with.
      */
-    protected function __construct( WP_Post $data, $menu = null ) {
+    protected function __construct(WP_Post $data, $menu = null)
+    {
         $this->wp_object = $data;
         $this->menu = $menu;
 
-        $data       = (object) $data;
+        $data = (object) $data;
         $this->title = $data->title;
 
         $this->import($data);
@@ -121,16 +123,16 @@ class MenuItem extends CoreEntity {
         $this->id = $data->ID;
         $this->ID = $data->ID;
 
-        $this->_name       = $data->name ?? '';
-        $this->add_class('menu-item-'.$this->ID);
+        $this->_name = $data->name ?? '';
+        $this->add_class('menu-item-' . $this->ID);
 
         /**
          * Because init_as_page_menu already set it to simulate the master object
          *
          * @see Menu::init_as_page_menu
          */
-        if ( !isset($this->object_id) ) {
-            $this->object_id = (int) get_post_meta( $this->ID, '_menu_item_object_id', true );
+        if (!isset($this->object_id)) {
+            $this->object_id = (int) get_post_meta($this->ID, '_menu_item_object_id', true);
         }
     }
 
@@ -139,9 +141,10 @@ class MenuItem extends CoreEntity {
      *
      * @param string $class_name CSS class name to be added.
      */
-    public function add_class( string $class_name ) {
+    public function add_class(string $class_name)
+    {
         // Class name is already there
-        if(!in_array($class_name, $this->classes, true)) {
+        if (!in_array($class_name, $this->classes, true)) {
             return;
         }
         $this->classes[] = $class_name;
@@ -153,9 +156,10 @@ class MenuItem extends CoreEntity {
      *
      * @param string $class_name CSS class name to be added.
      */
-    public function remove_class( string $class_name ) {
+    public function remove_class(string $class_name)
+    {
         // Class name is already there
-        if(!in_array($class_name, $this->classes, true)) {
+        if (!in_array($class_name, $this->classes, true)) {
             return;
         }
         $class_key = array_search($class_name, $this->classes, true);
@@ -166,7 +170,8 @@ class MenuItem extends CoreEntity {
     /**
      * Update class string
      */
-    protected function update_class() {
+    protected function update_class()
+    {
         $this->class = trim(implode(' ', $this->classes));
     }
 
@@ -176,7 +181,8 @@ class MenuItem extends CoreEntity {
      * @api
      * @return string The label for the menu item.
      */
-    public function name() {
+    public function name()
+    {
         return $this->title();
     }
 
@@ -191,7 +197,8 @@ class MenuItem extends CoreEntity {
      * @see \Timber\MenuItem::name()
      * @return string The label for the menu item.
      */
-    public function __toString() {
+    public function __toString()
+    {
         return $this->name();
     }
 
@@ -211,9 +218,10 @@ class MenuItem extends CoreEntity {
      * ```
      * @return string The URL-safe slug of the menu item.
      */
-    public function slug() {
+    public function slug()
+    {
         $mo = $this->master_object();
-        if ( $mo && $mo->post_name ) {
+        if ($mo && $mo->post_name) {
             return $mo->post_name;
         }
         return $this->post_name;
@@ -233,7 +241,8 @@ class MenuItem extends CoreEntity {
      * ```
      * @return mixed|null Whatever object (Timber\Post, Timber\Term, etc.) the menu item represents.
      */
-    public function master_object() {
+    public function master_object()
+    {
         switch ($this->type) {
             case 'post_type':
                 $factory = new PostFactory();
@@ -248,7 +257,7 @@ class MenuItem extends CoreEntity {
                 break;
         }
 
-        return $factory && $this->object_id ? $factory->from( $this->object_id ) : null;
+        return $factory && $this->object_id ? $factory->from($this->object_id) : null;
     }
 
     /**
@@ -258,10 +267,11 @@ class MenuItem extends CoreEntity {
      *
      * @param \Timber\MenuItem $item The menu item to add.
      */
-    public function add_child( MenuItem $item ) {
+    public function add_child(MenuItem $item)
+    {
         $this->children[] = $item;
-        $item->level      = $this->level + 1;
-        if ( count($this->children) ) {
+        $item->level = $this->level + 1;
+        if (count($this->children)) {
             $this->update_child_levels();
         }
     }
@@ -272,9 +282,10 @@ class MenuItem extends CoreEntity {
      * @internal
      * @return bool|null
      */
-    public function update_child_levels() {
-        if ( is_array($this->children) ) {
-            foreach ( $this->children as $child ) {
+    public function update_child_levels()
+    {
+        if (is_array($this->children)) {
+            foreach ($this->children as $child) {
                 $child->level = $this->level + 1;
                 $child->update_child_levels();
             }
@@ -289,15 +300,16 @@ class MenuItem extends CoreEntity {
      *
      * @param array|object $data to import.
      */
-    public function import_classes( $data ) {
-        if ( is_array($data) ) {
+    public function import_classes($data)
+    {
+        if (is_array($data)) {
             $data = (object) $data;
         }
         $this->classes = array_unique(array_merge($this->classes, $data->classes ?? []));
         $this->classes = array_values(array_filter($this->classes));
 
         $args = new \stdClass();
-        if ( isset($this->menu->args) ) {
+        if (isset($this->menu->args)) {
             // The args need to be an object.
             $args = $this->menu->args;
         }
@@ -334,7 +346,8 @@ class MenuItem extends CoreEntity {
      * ```
      * @return array|bool Array of children of a menu item. Empty if there are no child menu items.
      */
-    public function get_children() {
+    public function get_children()
+    {
         Helper::deprecated(
             "{{ item.get_children }}",
             "{{ item.children }}",
@@ -370,11 +383,12 @@ class MenuItem extends CoreEntity {
      *
      * @return bool Whether the link is external or not.
      */
-    public function is_external() {
-        if ( $this->type !== 'custom' ) {
+    public function is_external()
+    {
+        if ($this->type !== 'custom') {
             return false;
         }
-        return URLHelper::is_external( $this->link() );
+        return URLHelper::is_external($this->link());
     }
 
     /**
@@ -394,8 +408,9 @@ class MenuItem extends CoreEntity {
      * @return bool Whether the menu item has the «Open in new tab» option checked in the menu item
      *              options.
      */
-    public function is_target_blank() {
-        return '_blank' === $this->meta( '_menu_item_target' );
+    public function is_target_blank()
+    {
+        return '_blank' === $this->meta('_menu_item_target');
     }
 
     /**
@@ -414,9 +429,10 @@ class MenuItem extends CoreEntity {
      *
      * @return string
      */
-    public function target() {
-        $target = $this->meta( '_menu_item_target' );
-        if ( !$target ) {
+    public function target()
+    {
+        $target = $this->meta('_menu_item_target');
+        if (!$target) {
             return '_self';
         }
         return $target;
@@ -429,7 +445,8 @@ class MenuItem extends CoreEntity {
      * @since 1.12.0
      * @return \Timber\Menu The `Timber\Menu` object the menu item is associated with.
      */
-    public function menu() {
+    public function menu()
+    {
         return $this->menu;
     }
 
@@ -443,13 +460,14 @@ class MenuItem extends CoreEntity {
      * @param string $field_name The field name for which you want to get the value.
      * @return mixed The meta field value.
      */
-    public function get_field( $field_name = null ) {
+    public function get_field($field_name = null)
+    {
         Helper::deprecated(
             "{{ item.get_field('field_name') }}",
             "{{ item.meta('field_name') }}",
             '2.0.0'
         );
-        return $this->meta( $field_name );
+        return $this->meta($field_name);
     }
 
     /**
@@ -466,7 +484,8 @@ class MenuItem extends CoreEntity {
      * ```
      * @return array|bool Array of children of a menu item. Empty if there are no child menu items.
      */
-    public function children() {
+    public function children()
+    {
         return $this->children;
     }
 
@@ -479,8 +498,9 @@ class MenuItem extends CoreEntity {
      *
      * @return bool Whether the link is external or not.
      */
-    public function external() {
-        Helper::warn( '{{ item.external }} is deprecated. Use {{ item.is_external }} instead.' );
+    public function external()
+    {
+        Helper::warn('{{ item.external }} is deprecated. Use {{ item.is_external }} instead.');
         return $this->is_external();
     }
 
@@ -496,7 +516,8 @@ class MenuItem extends CoreEntity {
      * ```
      * @return string A full URL, like `http://mysite.com/thing/`.
      */
-    public function link() {
+    public function link()
+    {
         return $this->url;
     }
 
@@ -512,7 +533,8 @@ class MenuItem extends CoreEntity {
      * ```
      * @return string The path of a URL, like `/foo`.
      */
-    public function path() {
+    public function path()
+    {
         return URLHelper::get_rel_url($this->link());
     }
 
@@ -528,12 +550,12 @@ class MenuItem extends CoreEntity {
      * ```
      * @return string The public label, like "Foo".
      */
-    public function title() {
+    public function title()
+    {
         /**
          * @see Walker_Nav_Menu::start_el()
          */
-        $title = apply_filters( 'nav_menu_item_title', $this->title, $this->wp_object, $this->menu->args ? $this->menu->args : new \stdClass, $this->level );
+        $title = apply_filters('nav_menu_item_title', $this->title, $this->wp_object, $this->menu->args ? $this->menu->args : new \stdClass(), $this->level);
         return $title;
     }
-
 }

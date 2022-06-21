@@ -2,9 +2,10 @@
 
 namespace Timber\Cache;
 
-class Cleaner {
-
-    protected static function delete_transients_single_site() {
+class Cleaner
+{
+    protected static function delete_transients_single_site()
+    {
         global $wpdb;
         $sql = "
                 DELETE
@@ -26,7 +27,8 @@ class Cleaner {
         return $wpdb->query($sql);
     }
 
-    protected static function delete_transients_multisite() {
+    protected static function delete_transients_multisite()
+    {
         global $wpdb;
         $sql = "
                     DELETE
@@ -46,14 +48,15 @@ class Cleaner {
                     AND b.meta_value < UNIX_TIMESTAMP()
                 ";
 
-                $clean = $wpdb->query($sql);
+        $clean = $wpdb->query($sql);
         return $clean;
     }
 
-    public static function delete_transients( ) {
+    public static function delete_transients()
+    {
         global $_wp_using_ext_object_cache;
 
-        if ( $_wp_using_ext_object_cache ) {
+        if ($_wp_using_ext_object_cache) {
             return 0;
         }
 
@@ -65,13 +68,9 @@ class Cleaner {
 
         // Delete transients from multisite, if configured as such
 
-        if ( is_multisite() && is_main_network() ) {
-
+        if (is_multisite() && is_main_network()) {
             $records .= self::delete_transients_multisite();
         }
         return $records;
-
     }
-
-
 }

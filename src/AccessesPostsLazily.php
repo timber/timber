@@ -2,10 +2,10 @@
 
 namespace Timber;
 
-use WP_Post;
-
 use Timber\Factory\PostFactory;
+
 use Timber\Helper;
+use WP_Post;
 
 /**
  * Trait implementing ArrayAccess::getOffset() using lazy instantiation.
@@ -13,7 +13,8 @@ use Timber\Helper;
  * @see https://timber.github.io/docs/v2/guides/posts.md#laziness-and-caching
  * @internal
  */
-trait AccessesPostsLazily {
+trait AccessesPostsLazily
+{
     /**
      * Whether Timber\Post instances have been lazily instantiated.
      *
@@ -66,7 +67,8 @@ trait AccessesPostsLazily {
      * ```
      * @return \Timber\PostCollectionInterface the realized PostQuery
      */
-    public function realize() : self {
+    public function realize(): self
+    {
         if (!$this->realized) {
             // offsetGet() is where lazy instantiation actually happens.
             // Since arbitrary array index access may have happened previously,
@@ -84,7 +86,8 @@ trait AccessesPostsLazily {
     /**
      * @internal
      */
-    public function getArrayCopy() : array {
+    public function getArrayCopy(): array
+    {
         // Force eager instantiation of Timber\Posts before returning them all in an array.
         $this->realize();
         return parent::getArrayCopy();
@@ -94,7 +97,8 @@ trait AccessesPostsLazily {
      * @api
      * @return array
      */
-    public function to_array() : array {
+    public function to_array(): array
+    {
         return $this->getArrayCopy();
     }
 
@@ -103,7 +107,8 @@ trait AccessesPostsLazily {
      * @api
      * @return array
      */
-    public function get_posts() : array {
+    public function get_posts(): array
+    {
         Helper::deprecated(sprintf('%s::get_posts()', static::class), sprintf('%s::to_array()', static::class), '2.0.0');
         return $this->getArrayCopy();
     }
@@ -114,7 +119,8 @@ trait AccessesPostsLazily {
      * @internal
      */
     #[\ReturnTypeWillChange]
-    public function offsetGet($offset) {
+    public function offsetGet($offset)
+    {
         $post = parent::offsetGet($offset);
         if ($post instanceof WP_Post) {
             $post = $this->factory()->from($post);
@@ -127,12 +133,12 @@ trait AccessesPostsLazily {
     /**
      * @internal
      */
-    private function factory() : PostFactory {
+    private function factory(): PostFactory
+    {
         if (!$this->factory) {
             $this->factory = new PostFactory();
         }
 
         return $this->factory;
-  }
-
+    }
 }

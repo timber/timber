@@ -14,13 +14,15 @@ use Timber\Timber;
 /**
  * Class used to handle integration with Advanced Custom Fields
  */
-class AcfIntegration implements IntegrationInterface {
-
-    public function should_init() : bool {
-        return class_exists( ACF::class );
+class AcfIntegration implements IntegrationInterface
+{
+    public function should_init(): bool
+    {
+        return class_exists(ACF::class);
     }
 
-    public function init() : void {
+    public function init(): void
+    {
         add_filter('timber/post/pre_meta', array( __CLASS__, 'post_get_meta_field' ), 10, 5);
         add_filter('timber/post/meta_object_field', array( __CLASS__, 'post_meta_object' ), 10, 3);
         add_filter('timber/term/pre_meta', array( __CLASS__, 'term_get_meta_field' ), 10, 5);
@@ -44,12 +46,14 @@ class AcfIntegration implements IntegrationInterface {
      * @param array        $args       An array of arguments.
      * @return mixed|false
      */
-    public static function post_get_meta_field( $value, $post_id, $field_name, $post, $args ) {
-        return self::get_meta( $value, $post_id, $field_name, $args );
+    public static function post_get_meta_field($value, $post_id, $field_name, $post, $args)
+    {
+        return self::get_meta($value, $post_id, $field_name, $args);
     }
 
-    public static function post_meta_object( $value, $post_id, $field_name ) {
-        return get_field_object( $field_name, $post_id );
+    public static function post_meta_object($value, $post_id, $field_name)
+    {
+        return get_field_object($field_name, $post_id);
     }
 
     /**
@@ -62,8 +66,9 @@ class AcfIntegration implements IntegrationInterface {
      * @param array        $args       An array of arguments.
      * @return mixed|false
      */
-    public static function term_get_meta_field( $value, $term_id, $field_name, $term, $args ) {
-        return self::get_meta( $value, $term->taxonomy . '_' . $term_id, $field_name, $args );
+    public static function term_get_meta_field($value, $term_id, $field_name, $term, $args)
+    {
+        return self::get_meta($value, $term->taxonomy . '_' . $term_id, $field_name, $args);
     }
 
     /**
@@ -71,7 +76,8 @@ class AcfIntegration implements IntegrationInterface {
      *
      * @return mixed
      */
-    public static function term_set_meta( $value, $field, $term_id, $term ) {
+    public static function term_set_meta($value, $field, $term_id, $term)
+    {
         $searcher = $term->taxonomy . '_' . $term->ID;
         update_field($field, $value, $searcher);
         return $value;
@@ -87,8 +93,9 @@ class AcfIntegration implements IntegrationInterface {
      * @param array        $args       An array of arguments.
      * @return mixed|false
      */
-    public static function user_get_meta_field( $value, $user_id, $field_name, $user, $args ) {
-        return self::get_meta( $value, 'user_' . $user_id, $field_name, $args );
+    public static function user_get_meta_field($value, $user_id, $field_name, $user, $args)
+    {
+        return self::get_meta($value, 'user_' . $user_id, $field_name, $args);
     }
 
     /**
@@ -98,11 +105,12 @@ class AcfIntegration implements IntegrationInterface {
      * @param int    $id
      * @param array  $field
      */
-    public static function transform_file( $value, $id, $field ) {
-        if ( empty( $value ) ) {
+    public static function transform_file($value, $id, $field)
+    {
+        if (empty($value)) {
             return false;
         }
-        return Timber::get_attachment( $value );
+        return Timber::get_attachment($value);
     }
 
     /**
@@ -112,11 +120,12 @@ class AcfIntegration implements IntegrationInterface {
      * @param int    $id
      * @param array  $field
      */
-    public static function transform_image( $value, $id, $field ) {
-        if ( empty( $value ) ) {
+    public static function transform_image($value, $id, $field)
+    {
+        if (empty($value)) {
             return false;
         }
-        return Timber::get_image( $value );
+        return Timber::get_image($value);
     }
 
     /**
@@ -126,11 +135,12 @@ class AcfIntegration implements IntegrationInterface {
      * @param int   $id
      * @param array $field
      */
-    public static function transform_gallery( $value, $id, $field ) {
-        if ( empty( $value ) ) {
+    public static function transform_gallery($value, $id, $field)
+    {
+        if (empty($value)) {
             return false;
         }
-        return Timber::get_posts( $value );
+        return Timber::get_posts($value);
     }
 
     /**
@@ -140,11 +150,12 @@ class AcfIntegration implements IntegrationInterface {
      * @param int    $id
      * @param array  $field
      */
-    public static function transform_date_picker( $value, $id, $field ) {
-        if ( ! $value ) {
+    public static function transform_date_picker($value, $id, $field)
+    {
+        if (!$value) {
             return $value;
         }
-        return new \DateTimeImmutable( acf_format_date( $value, 'Y-m-d H:i:s' ) );
+        return new \DateTimeImmutable(acf_format_date($value, 'Y-m-d H:i:s'));
     }
 
     /**
@@ -154,14 +165,15 @@ class AcfIntegration implements IntegrationInterface {
      * @param int    $id
      * @param array  $field
      */
-    public static function transform_post_object( $value, $id, $field ) {
-        if ( empty( $value ) ) {
+    public static function transform_post_object($value, $id, $field)
+    {
+        if (empty($value)) {
             return false;
         }
-        if ( ! $field['multiple'] ) {
-            return Timber::get_post( $value );
+        if (!$field['multiple']) {
+            return Timber::get_post($value);
         }
-        return Timber::get_posts( $value );
+        return Timber::get_posts($value);
     }
 
     /**
@@ -171,11 +183,12 @@ class AcfIntegration implements IntegrationInterface {
      * @param int    $id
      * @param array  $field
      */
-    public static function transform_relationship( $value, $id, $field ) {
-        if ( empty( $value ) ) {
+    public static function transform_relationship($value, $id, $field)
+    {
+        if (empty($value)) {
             return false;
         }
-        return Timber::get_posts( $value );
+        return Timber::get_posts($value);
     }
 
     /**
@@ -185,11 +198,12 @@ class AcfIntegration implements IntegrationInterface {
      * @param int    $id
      * @param array  $field
      */
-    public static function transform_taxonomy( $value, $id, $field ) {
-        if ( $field['field_type'] === 'select' || $field['field_type'] === 'radio' ) {
-            return Timber::get_term( (int) $value );
+    public static function transform_taxonomy($value, $id, $field)
+    {
+        if ($field['field_type'] === 'select' || $field['field_type'] === 'radio') {
+            return Timber::get_term((int) $value);
         }
-        return Timber::get_terms( (array) $value );
+        return Timber::get_terms((array) $value);
     }
 
     /**
@@ -199,11 +213,12 @@ class AcfIntegration implements IntegrationInterface {
      * @param int    $id
      * @param array  $field
      */
-    public static function transform_user( $value, $id, $field ) {
-        if ( ! $field['multiple'] ) {
-            return Timber::get_user( (int) $value );
+    public static function transform_user($value, $id, $field)
+    {
+        if (!$field['multiple']) {
+            return Timber::get_user((int) $value);
         }
-        return Timber::get_users( (array) $value );
+        return Timber::get_users((array) $value);
     }
 
     /**
@@ -215,14 +230,15 @@ class AcfIntegration implements IntegrationInterface {
      * @param array $args
      * @return mixed|false
      */
-    private static function get_meta( $value, $id, $field_name, $args ) {
-        $args = wp_parse_args( $args, [
+    private static function get_meta($value, $id, $field_name, $args)
+    {
+        $args = wp_parse_args($args, [
             'format_value' => true,
             'transform_value' => false,
-        ] );
+        ]);
 
-        if ( ! $args['transform_value'] ) {
-            return get_field( $field_name, $id, $args['format_value'] );
+        if (!$args['transform_value']) {
+            return get_field($field_name, $id, $args['format_value']);
         }
 
         $file_field_type = acf_get_field_type('file');
@@ -235,15 +251,15 @@ class AcfIntegration implements IntegrationInterface {
         $taxonomy_field_type = acf_get_field_type('taxonomy');
         $user_field_type = acf_get_field_type('user');
 
-        remove_filter( 'acf/format_value/type=file', array( $file_field_type, 'format_value' ) );
-        remove_filter( 'acf/format_value/type=image', array( $image_field_type, 'format_value' ) );
-        remove_filter( 'acf/format_value/type=gallery', array( $gallery_field_type, 'format_value' ) );
-        remove_filter( 'acf/format_value/type=date_picker', array( $date_picker_field_type, 'format_value' ) );
-        remove_filter( 'acf/format_value/type=date_time_picker', array( $date_time_picker_field_type, 'format_value' ) );
-        remove_filter( 'acf/format_value/type=post_object', array( $post_object_field_type, 'format_value' ) );
-        remove_filter( 'acf/format_value/type=relationship', array( $relationship_field_type, 'format_value' ) );
-        remove_filter( 'acf/format_value/type=taxonomy', array( $taxonomy_field_type, 'format_value' ) );
-        remove_filter( 'acf/format_value/type=user', array( $user_field_type, 'format_value' ) );
+        remove_filter('acf/format_value/type=file', array( $file_field_type, 'format_value' ));
+        remove_filter('acf/format_value/type=image', array( $image_field_type, 'format_value' ));
+        remove_filter('acf/format_value/type=gallery', array( $gallery_field_type, 'format_value' ));
+        remove_filter('acf/format_value/type=date_picker', array( $date_picker_field_type, 'format_value' ));
+        remove_filter('acf/format_value/type=date_time_picker', array( $date_time_picker_field_type, 'format_value' ));
+        remove_filter('acf/format_value/type=post_object', array( $post_object_field_type, 'format_value' ));
+        remove_filter('acf/format_value/type=relationship', array( $relationship_field_type, 'format_value' ));
+        remove_filter('acf/format_value/type=taxonomy', array( $taxonomy_field_type, 'format_value' ));
+        remove_filter('acf/format_value/type=user', array( $user_field_type, 'format_value' ));
 
         add_filter('acf/format_value/type=file', array( __CLASS__, 'transform_file' ), 10, 3);
         add_filter('acf/format_value/type=image', array( __CLASS__, 'transform_image' ), 10, 3);
@@ -255,17 +271,17 @@ class AcfIntegration implements IntegrationInterface {
         add_filter('acf/format_value/type=taxonomy', array( __CLASS__, 'transform_taxonomy' ), 10, 3);
         add_filter('acf/format_value/type=user', array( __CLASS__, 'transform_user' ), 10, 3);
 
-        $value = get_field( $field_name, $id, true );
+        $value = get_field($field_name, $id, true);
 
-        add_filter( 'acf/format_value/type=file', array( $file_field_type, 'format_value' ) );
-        add_filter( 'acf/format_value/type=image', array( $image_field_type, 'format_value' ) );
-        add_filter( 'acf/format_value/type=gallery', array( $gallery_field_type, 'format_value' ) );
-        add_filter( 'acf/format_value/type=date_picker', array( $date_picker_field_type, 'format_value' ) );
-        add_filter( 'acf/format_value/type=date_time_picker', array( $date_time_picker_field_type, 'format_value' ) );
-        add_filter( 'acf/format_value/type=post_object', array( $post_object_field_type, 'format_value' ) );
-        add_filter( 'acf/format_value/type=relationship', array( $relationship_field_type, 'format_value' ) );
-        add_filter( 'acf/format_value/type=taxonomy', array( $taxonomy_field_type, 'format_value' ) );
-        add_filter( 'acf/format_value/type=user', array( $taxonomy_field_type, 'format_value' ) );
+        add_filter('acf/format_value/type=file', array( $file_field_type, 'format_value' ));
+        add_filter('acf/format_value/type=image', array( $image_field_type, 'format_value' ));
+        add_filter('acf/format_value/type=gallery', array( $gallery_field_type, 'format_value' ));
+        add_filter('acf/format_value/type=date_picker', array( $date_picker_field_type, 'format_value' ));
+        add_filter('acf/format_value/type=date_time_picker', array( $date_time_picker_field_type, 'format_value' ));
+        add_filter('acf/format_value/type=post_object', array( $post_object_field_type, 'format_value' ));
+        add_filter('acf/format_value/type=relationship', array( $relationship_field_type, 'format_value' ));
+        add_filter('acf/format_value/type=taxonomy', array( $taxonomy_field_type, 'format_value' ));
+        add_filter('acf/format_value/type=user', array( $taxonomy_field_type, 'format_value' ));
 
         remove_filter('acf/format_value/type=file', array( __CLASS__, 'transform_file' ), 10, 3);
         remove_filter('acf/format_value/type=image', array( __CLASS__, 'transform_image' ), 10, 3);
@@ -279,5 +295,4 @@ class AcfIntegration implements IntegrationInterface {
 
         return $value;
     }
-
 }

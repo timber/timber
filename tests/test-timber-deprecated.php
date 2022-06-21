@@ -1,17 +1,19 @@
 <?php
 
-    class TestTimberDeprecated extends Timber_UnitTestCase {
-
-        function testGetPostByMeta() {
+    class TestTimberDeprecated extends Timber_UnitTestCase
+    {
+        public function testGetPostByMeta()
+        {
             $this->markTestSkipped('It belongs to the ages now');
         }
 
-        function testGetPostsByMeta() {
+        public function testGetPostsByMeta()
+        {
             $this->markTestSkipped('It belongs to the ages now');
         }
 
-        function testTwitterify() {
+        public function testTwitterify()
+        {
             $this->markTestSkipped('It belongs to the ages now');
         }
-
     }

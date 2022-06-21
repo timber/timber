@@ -9,8 +9,8 @@ use WP_Term;
 /**
  * Internal API class for instantiating Menus
  */
-class MenuFactory {
-
+class MenuFactory
+{
     /**
      * Try to get a menu by all means available in an order that matches the
      * most common use cases. It will fallback on the first menu found if no parameters are provided
@@ -22,10 +22,11 @@ class MenuFactory {
      * @param array $args
      * @return Menu|null
      */
-    public function from($params, array $args = []) : ?Menu {
+    public function from($params, array $args = []): ?Menu
+    {
         $menu = null;
 
-        if(empty($params)) {
+        if (empty($params)) {
             return $this->from_nav_menu_terms($args);
         }
 
@@ -41,10 +42,10 @@ class MenuFactory {
         if (!$menu && is_string($params)) {
             // If $location is the same than some menu slug, we might get the wrong menu
             $menu = $this->from_location($params, $args);
-            if(!$menu) {
+            if (!$menu) {
                 $menu = $this->from_slug($params, $args);
             }
-            if(!$menu) {
+            if (!$menu) {
                 $menu = $this->from_name($params, $args);
             }
         }
@@ -58,11 +59,12 @@ class MenuFactory {
      * @param array $args
      * @return Menu|null
      */
-    protected function from_nav_menu_terms(array $args = []) : ?Menu {
+    protected function from_nav_menu_terms(array $args = []): ?Menu
+    {
         $menus = wp_get_nav_menus();
-        foreach ( $menus as $menu_maybe ) {
-            $menu_items = wp_get_nav_menu_items( $menu_maybe->term_id, array( 'update_post_term_cache' => false ) );
-            if ( $menu_items ) {
+        foreach ($menus as $menu_maybe) {
+            $menu_items = wp_get_nav_menu_items($menu_maybe->term_id, array( 'update_post_term_cache' => false ));
+            if ($menu_items) {
                 $menu = $menu_maybe;
                 break;
             }
@@ -77,14 +79,15 @@ class MenuFactory {
      * @param array $args
      * @return Menu|null
      */
-    public function from_location(string $location, array $args = []) : ?Menu {
+    public function from_location(string $location, array $args = []): ?Menu
+    {
         $locations = get_nav_menu_locations();
-        if (!isset( $locations[ $location ] )) {
+        if (!isset($locations[ $location ])) {
             return null;
         }
 
         $term = get_term_by('id', $locations[$location], 'nav_menu');
-        if(!$term) {
+        if (!$term) {
             return null;
         }
 
@@ -98,7 +101,8 @@ class MenuFactory {
      *
      * @internal
      */
-    public function from_id(int $id, array $args = []) : ?Menu {
+    public function from_id(int $id, array $args = []): ?Menu
+    {
         $term = get_term_by('id', $id, 'nav_menu');
 
         if (!$term) {
@@ -115,7 +119,8 @@ class MenuFactory {
      *
      * @internal
      */
-    public function from_slug(string $slug, array $args = []) : ?Menu  {
+    public function from_slug(string $slug, array $args = []): ?Menu
+    {
         $term = get_term_by('slug', $slug, 'nav_menu');
 
         if (!$term) {
@@ -132,7 +137,8 @@ class MenuFactory {
      *
      * @internal
      */
-    public function from_name(string $name, array $args = []) : ?Menu  {
+    public function from_name(string $name, array $args = []): ?Menu
+    {
         $term = get_term_by('name', $name, 'nav_menu');
 
         if (!$term) {
@@ -149,7 +155,8 @@ class MenuFactory {
      *
      * @internal
      */
-    protected function from_object(object $obj, array $args = []) : ?Menu {
+    protected function from_object(object $obj, array $args = []): ?Menu
+    {
         if ($obj instanceof Menu) {
             // We already have a Timber Core object of some kind
             return $obj;
@@ -171,7 +178,8 @@ class MenuFactory {
      *
      * @internal
      */
-    protected function get_menu_class($term, $args) : string {
+    protected function get_menu_class($term, $args): string
+    {
         /**
          * Filters the class(es) used for different menus.
          *
@@ -196,7 +204,7 @@ class MenuFactory {
          *                        the location and the value the name of the class to use for this
          *                        menu or a callback that determines the class to use.
          */
-        $classmap = apply_filters( 'timber/menu/classmap', [] );
+        $classmap = apply_filters('timber/menu/classmap', []);
 
         $location = $this->get_menu_location($term);
 
@@ -232,7 +240,7 @@ class MenuFactory {
          * @param WP_Term $term The menu term.
          * @param array $args The arguments passed to the menu.
          */
-        $class = apply_filters( 'timber/menu/class', $class, $term, $args );
+        $class = apply_filters('timber/menu/class', $class, $term, $args);
 
         return $class;
     }
@@ -243,8 +251,9 @@ class MenuFactory {
      * @param WP_Term $term
      * @return string|null
      */
-    protected function get_menu_location(WP_Term $term) : ?string {
-        $locations = array_flip(array_filter(get_nav_menu_locations(), fn($location) => is_string($location) || is_int($location)));
+    protected function get_menu_location(WP_Term $term): ?string
+    {
+        $locations = array_flip(array_filter(get_nav_menu_locations(), fn ($location) => is_string($location) || is_int($location)));
         return $locations[$term->term_id] ?? null;
     }
 
@@ -255,10 +264,10 @@ class MenuFactory {
      * @param array $args
      * @return CoreInterface
      */
-    protected function build(WP_Term $term, $args) : CoreInterface {
+    protected function build(WP_Term $term, $args): CoreInterface
+    {
         $class = $this->get_menu_class($term, $args);
 
         return $class::build($term, $args);
     }
 }
-

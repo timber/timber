@@ -5,8 +5,8 @@ namespace Timber;
 /**
  * Class Core
  */
-abstract class Core {
-
+abstract class Core
+{
     public $id;
     public $ID;
     public $object_type;
@@ -20,8 +20,9 @@ abstract class Core {
      * @link https://twig.symfony.com/doc/2.x/recipes.html#using-dynamic-object-properties
      * @return boolean
      */
-    public function __isset( $field ) {
-        if ( isset($this->$field) ) {
+    public function __isset($field)
+    {
+        if (isset($this->$field)) {
             return $this->$field;
         }
         return false;
@@ -57,8 +58,9 @@ abstract class Core {
      *
      * @return mixed The value of the meta field named `$field` if truthy, `false` otherwise.
      */
-    public function __call( $field, $arguments ) {
-        if ( method_exists( $this, 'meta' ) && $meta_value = $this->meta( $field ) ) {
+    public function __call($field, $arguments)
+    {
+        if (method_exists($this, 'meta') && $meta_value = $this->meta($field)) {
             return $meta_value;
         }
 
@@ -92,15 +94,16 @@ abstract class Core {
      * @return mixed The value of the meta field, or the result of invoking `$field()` as a method
      * with no arguments, or `false` if neither returns a truthy value.
      */
-    public function __get( $field ) {
-        if ( method_exists($this, 'meta') && $meta_value = $this->meta($field) ) {
+    public function __get($field)
+    {
+        if (method_exists($this, 'meta') && $meta_value = $this->meta($field)) {
             return $this->$field = $meta_value;
         }
-        if ( method_exists($this, $field) ) {
+        if (method_exists($this, $field)) {
             return $this->$field = $this->$field();
         }
 
-        if ( 'custom' === $field ) {
+        if ('custom' === $field) {
             Helper::deprecated(
                 "Accessing a meta value through {{ {$this->object_type}.custom }}",
                 "{{ {$this->object_type}.meta() }} or {{ {$this->object_type}.raw_meta() }}",
@@ -124,26 +127,26 @@ abstract class Core {
      * ```
      * @param array|object $info an object or array you want to grab data from to attach to the Timber object
      */
-    public function import( $info, $force = false, $only_declared_properties = false ) {
-        if ( is_object($info) ) {
+    public function import($info, $force = false, $only_declared_properties = false)
+    {
+        if (is_object($info)) {
             $info = get_object_vars($info);
         }
-        if ( is_array($info) ) {
-            foreach ( $info as $key => $value ) {
-                if ( $key === '' || ord($key[0]) === 0 ) {
+        if (is_array($info)) {
+            foreach ($info as $key => $value) {
+                if ($key === '' || ord($key[0]) === 0) {
                     continue;
                 }
-                if ( !empty($key) && $force ) {
+                if (!empty($key) && $force) {
                     $this->$key = $value;
-                } else if ( !empty($key) && !method_exists($this, $key) ) {
-                    if ( $only_declared_properties ) {
-                        if ( property_exists($this, $key) ) {
+                } elseif (!empty($key) && !method_exists($this, $key)) {
+                    if ($only_declared_properties) {
+                        if (property_exists($this, $key)) {
                             $this->$key = $value;
                         }
                     } else {
                         $this->$key = $value;
                     }
-
                 }
             }
         }
@@ -157,8 +160,9 @@ abstract class Core {
      * @param string $key   The key of the meta field to update.
      * @param mixed  $value The new value.
      */
-    public function update( $key, $value ) {
-        Helper::deprecated( 'Timber\Core::update()', 'update_metadata()', '2.0.0' );
+    public function update($key, $value)
+    {
+        Helper::deprecated('Timber\Core::update()', 'update_metadata()', '2.0.0');
         update_metadata($this->object_type, $this->ID, $key, $value);
     }
 
@@ -175,11 +179,12 @@ abstract class Core {
      * ```
      * @return bool
      */
-    public function can_edit() {
-        if ( !function_exists('current_user_can') ) {
+    public function can_edit()
+    {
+        if (!function_exists('current_user_can')) {
             return false;
         }
-        if ( current_user_can('edit_post', $this->ID) ) {
+        if (current_user_can('edit_post', $this->ID)) {
             return true;
         }
         return false;
@@ -190,7 +195,8 @@ abstract class Core {
      *
      * @return array
      */
-    public function get_method_values() {
+    public function get_method_values()
+    {
         $ret = array();
         $ret['can_edit'] = $this->can_edit();
         return $ret;

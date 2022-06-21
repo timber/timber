@@ -5,7 +5,8 @@ namespace Timber;
 /**
  * Interface Setupable
  */
-interface Setupable {
+interface Setupable
+{
     /**
      * Sets up an object.
      *

@@ -26,8 +26,8 @@ namespace Timber;
  * My site is called Jared's blog, another site on my network is Upstatement.com
  * ```
  */
-class Site extends Core implements CoreInterface {
-
+class Site extends Core implements CoreInterface
+{
     /**
      * @api
      * @var string The admin email address set in the WP admin panel
@@ -147,8 +147,9 @@ class Site extends Core implements CoreInterface {
      * ```
      * @param string|int $site_name_or_id
      */
-    public function __construct( $site_name_or_id = null ) {
-        if ( is_multisite() ) {
+    public function __construct($site_name_or_id = null)
+    {
+        if (is_multisite()) {
             $blog_id = self::switch_to_blog($site_name_or_id);
             $this->init();
             $this->init_as_multisite($blog_id);
@@ -165,8 +166,9 @@ class Site extends Core implements CoreInterface {
      * @param string|integer|null $site_name_or_id
      * @return integer with the ID of the new blog
      */
-    protected static function switch_to_blog( $site_name_or_id ) {
-        if ( $site_name_or_id === null ) {
+    protected static function switch_to_blog($site_name_or_id)
+    {
+        if ($site_name_or_id === null) {
             $site_name_or_id = get_current_blog_id();
         }
         $info = get_blog_details($site_name_or_id);
@@ -178,7 +180,8 @@ class Site extends Core implements CoreInterface {
      * @internal
      * @param integer $site_id
      */
-    protected function init_as_multisite( $site_id ) {
+    protected function init_as_multisite($site_id)
+    {
         $info = get_blog_details($site_id);
         $this->import($info);
         $this->ID = $info->blog_id;
@@ -196,7 +199,8 @@ class Site extends Core implements CoreInterface {
      * Executed for single-blog sites
      * @internal
      */
-    protected function init_as_singlesite() {
+    protected function init_as_singlesite()
+    {
         $this->admin_email = get_bloginfo('admin_email');
         $this->name = get_bloginfo('name');
         $this->title = $this->name;
@@ -209,7 +213,8 @@ class Site extends Core implements CoreInterface {
      * Executed for all types of sites: both multisite and "regular"
      * @internal
      */
-    protected function init() {
+    protected function init()
+    {
         $this->url = home_url();
         $this->home_url = $this->url;
         $this->site_url = site_url();
@@ -226,7 +231,8 @@ class Site extends Core implements CoreInterface {
      * Returns the language attributes that you're looking for
      * @return string
      */
-    public function language_attributes() {
+    public function language_attributes()
+    {
         return get_language_attributes();
     }
 
@@ -243,12 +249,13 @@ class Site extends Core implements CoreInterface {
      *
      * @return mixed The option value.
      */
-    public function __get( $option ) {
-        if ( ! isset( $this->$option ) ) {
-            if ( is_multisite() ) {
-                $this->$option = get_blog_option( $this->ID, $option );
+    public function __get($option)
+    {
+        if (!isset($this->$option)) {
+            if (is_multisite()) {
+                $this->$option = get_blog_option($this->ID, $option);
             } else {
-                $this->$option = get_option( $option );
+                $this->$option = get_option($option);
             }
         }
 
@@ -268,8 +275,9 @@ class Site extends Core implements CoreInterface {
      *
      * @return mixed The option value.
      */
-    public function option( $option ) {
-        return $this->__get( $option );
+    public function option($option)
+    {
+        return $this->__get($option);
     }
 
     /**
@@ -278,31 +286,34 @@ class Site extends Core implements CoreInterface {
      * @api
      * @deprecated 2.0.0, use `{{ site.option }}` instead
      */
-    public function meta( $option ) {
-        Helper::deprecated( '{{ site.meta() }}', '{{ site.option() }}', '2.0.0' );
+    public function meta($option)
+    {
+        Helper::deprecated('{{ site.meta() }}', '{{ site.option() }}', '2.0.0');
 
-        return $this->__get( $option );
+        return $this->__get($option);
     }
 
     /**
      * @api
      * @return null|\Timber\Image
      */
-    public function icon() {
-        if ( is_multisite() ) {
+    public function icon()
+    {
+        if (is_multisite()) {
             return $this->icon_multisite($this->ID);
         }
         $iid = get_option('site_icon');
-        if ( $iid ) {
+        if ($iid) {
             return Timber::get_post($iid);
         }
     }
 
-    protected function icon_multisite( $site_id ) {
+    protected function icon_multisite($site_id)
+    {
         $image = null;
         $blog_id = self::switch_to_blog($site_id);
         $iid = get_blog_option($blog_id, 'site_icon');
-        if ( $iid ) {
+        if ($iid) {
             $image = Timber::get_post($iid);
         }
         restore_current_blog();
@@ -327,7 +338,8 @@ class Site extends Core implements CoreInterface {
      *
      * @return string
      */
-    public function link() {
+    public function link()
+    {
         return $this->url;
     }
 
@@ -339,8 +351,9 @@ class Site extends Core implements CoreInterface {
      * @param string $key   The key of the site option to update.
      * @param mixed  $value The new value.
      */
-    public function update( $key, $value ) {
-        Helper::deprecated( 'Timber\Site::update()', 'update_option()', '2.0.0' );
+    public function update($key, $value)
+    {
+        Helper::deprecated('Timber\Site::update()', 'update_option()', '2.0.0');
 
         /**
          * Filters a value before it is updated in the site options.
@@ -352,7 +365,7 @@ class Site extends Core implements CoreInterface {
          * @param int          $site_id The site ID.
          * @param \Timber\Site $site    The site object.
          */
-        $value = apply_filters( 'timber/site/update_option', $value, $key, $this->ID, $this );
+        $value = apply_filters('timber/site/update_option', $value, $key, $this->ID, $this);
 
         /**
          * Filters a value before it is updated in the site options.
@@ -367,7 +380,7 @@ class Site extends Core implements CoreInterface {
             'timber/site/update_option'
         );
 
-        if ( is_multisite() ) {
+        if (is_multisite()) {
             update_blog_option($this->ID, $key, $value);
         } else {
             update_option($key, $value);

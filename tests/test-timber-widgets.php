@@ -1,10 +1,12 @@
 <?php
 
-class TestTimberWidgets extends Timber_UnitTestCase {
+class TestTimberWidgets extends Timber_UnitTestCase
+{
     /**
      * @requires PHP < 8.1
      */
-    function testHTML() {
+    public function testHTML()
+    {
         // replace this with some actual testing code
         $widgets = wp_get_sidebars_widgets();
         $data = array();
@@ -16,7 +18,8 @@ class TestTimberWidgets extends Timber_UnitTestCase {
     /**
      * @requires PHP < 8.1
      */
-    function testManySidebars() {
+    public function testManySidebars()
+    {
         $widgets = wp_get_sidebars_widgets();
         $sidebar1 = Timber::get_widgets('sidebar-1');
         $sidebar2 = Timber::get_widgets('sidebar-2');

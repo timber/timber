@@ -5,9 +5,10 @@
      * @group terms-api
      * @group post-terms
      */
-    class TestTimberPostTerms extends Timber_UnitTestCase {
-
-        function testPostTerms() {
+    class TestTimberPostTerms extends Timber_UnitTestCase
+    {
+        public function testPostTerms()
+        {
             $pid = $this->factory->post->create();
             $post = Timber::get_post($pid);
 
@@ -15,33 +16,34 @@
             $dummy_tag = wp_insert_term('whatever', 'post_tag');
             wp_set_object_terms($pid, $dummy_tag['term_id'], 'post_tag', true);
 
-            $this->add_filter_temporarily('timber/term/classmap', function() {
+            $this->add_filter_temporarily('timber/term/classmap', function () {
                 return [
                     'post_tag' => MyTimberTerm::class
                 ];
             });
 
-            $terms = $post->terms( array(
+            $terms = $post->terms(array(
                 'query' => array(
                     'taxonomy' => 'post_tag'
                 ),
-            ) );
-            $this->assertInstanceOf( MyTimberTerm::class, $terms[0] );
+            ));
+            $this->assertInstanceOf(MyTimberTerm::class, $terms[0]);
 
             $post = Timber::get_post($pid);
-            $terms = $post->terms( array(
+            $terms = $post->terms(array(
                 'query' => array(
                     'taxonomy' => 'post_tag',
                 ),
                 'merge' => true,
-            ) );
-            $this->assertInstanceOf( MyTimberTerm::class, $terms[0] );
+            ));
+            $this->assertInstanceOf(MyTimberTerm::class, $terms[0]);
         }
 
         /**
          * @ticket #2203
          */
-        function testPostTermsUsingUsingFactories() {
+        public function testPostTermsUsingUsingFactories()
+        {
             $pid = $this->factory->post->create();
             $post = Timber::get_post($pid);
 
@@ -52,23 +54,23 @@
 
             wp_set_object_terms($pid, $dummy_cat['term_id'], 'category', true);
 
-            $this->add_filter_temporarily('timber/term/classmap', function() {
+            $this->add_filter_temporarily('timber/term/classmap', function () {
                 return [
                     'post_tag' => MyTimberTerm::class
                 ];
             });
 
-            $terms = $post->terms( array(
+            $terms = $post->terms(array(
                 'taxonomy' => 'post_tag'
-            ) );
-            $this->assertInstanceOf( MyTimberTerm::class, $terms[0] );
+            ));
+            $this->assertInstanceOf(MyTimberTerm::class, $terms[0]);
 
             $post = Timber::get_post($pid);
-            $terms = $post->terms( [], [ 'merge' => false ] );
-            $this->assertEquals( 'whatever', $terms['post_tag'][0]->name );
+            $terms = $post->terms([], [ 'merge' => false ]);
+            $this->assertEquals('whatever', $terms['post_tag'][0]->name);
 
-            $terms = $post->terms( [], [ 'merge' => true ] );
-            $this->assertEquals( 3, count($terms) );
+            $terms = $post->terms([], [ 'merge' => true ]);
+            $this->assertEquals(3, count($terms));
         }
 
         /**
@@ -76,14 +78,15 @@
          * This test confirms that term ordering works when sent through the query parameter of
          * arguments.
          */
-        function testPostTermOrder() {
+        public function testPostTermOrder()
+        {
             $pid = $this->factory->post->create();
             register_taxonomy('cars', 'post');
-            $cars[] = $this->factory->term->create( array('name' => 'Honda Civic', 'taxonomy' => 'cars') );
-            $cars[] = $this->factory->term->create( array('name' => 'Toyota Corolla', 'taxonomy' => 'cars') );
-            $cars[] = $this->factory->term->create( array('name' => 'Toyota Camry', 'taxonomy' => 'cars') );
-            $cars[] = $this->factory->term->create( array('name' => 'Dodge Intrepid', 'taxonomy' => 'cars') );
-            foreach($cars as $tid) {
+            $cars[] = $this->factory->term->create(array('name' => 'Honda Civic', 'taxonomy' => 'cars'));
+            $cars[] = $this->factory->term->create(array('name' => 'Toyota Corolla', 'taxonomy' => 'cars'));
+            $cars[] = $this->factory->term->create(array('name' => 'Toyota Camry', 'taxonomy' => 'cars'));
+            $cars[] = $this->factory->term->create(array('name' => 'Dodge Intrepid', 'taxonomy' => 'cars'));
+            foreach ($cars as $tid) {
                 $car = Timber::get_term($tid);
             }
             wp_set_object_terms($pid, $cars, 'cars', false);
@@ -97,7 +100,8 @@
          * This should return an error because the "dfasdf" taxonomy doesn't exist
          * NOTE: In Timber 1.x this returned a WP_Error.
          */
-        function testTermExceptions() {
+        public function testTermExceptions()
+        {
             self::enable_error_log(false);
             $pid = $this->factory->post->create();
             $post = Timber::get_post($pid);
@@ -109,7 +113,8 @@
         /**
          * This shouldn't return an error because the "foobar" taxonomy DOES exist
          */
-        function testTermFromNonExistentTaxonomy() {
+        public function testTermFromNonExistentTaxonomy()
+        {
             self::enable_error_log(false);
             register_taxonomy('foobar', 'post');
             $pid = $this->factory->post->create();
@@ -119,7 +124,8 @@
             self::enable_error_log(true);
         }
 
-        function testTermNotMerged() {
+        public function testTermNotMerged()
+        {
             $pid = $this->factory->post->create();
 
             // create a new tag and category and associate each with the post
@@ -129,19 +135,18 @@
             wp_set_object_terms($pid, $cat_id, 'category', true);
 
             $post = Timber::get_post($pid);
-            $terms = $post->terms( array(
+            $terms = $post->terms(array(
                 'query' => array(
                     'taxonomy' => 'all'
                 ),
                 'merge' => false,
-            ) );
+            ));
 
             $this->assertEquals($terms['post_tag'][0]->name, 'whatever');
             $this->assertEquals($terms['category'][0]->name, 'thingy');
         }
-
     }
 
-    class MyTimberTerm extends Timber\Term {
-
+    class MyTimberTerm extends Timber\Term
+    {
     }

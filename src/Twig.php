@@ -2,33 +2,34 @@
 
 namespace Timber;
 
-use Twig\Environment;
-use Twig\Extension\CoreExtension;
-use Twig\TwigFunction;
-use Twig\TwigFilter;
-use Twig\Error\Error;
-
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
+use Twig\Environment;
+use Twig\Error\Error;
+use Twig\Extension\CoreExtension;
+
+use Twig\TwigFilter;
+use Twig\TwigFunction;
 
 /**
  * Class Twig
  */
-class Twig {
-
+class Twig
+{
     public static $dir_name;
 
     /**
      * @codeCoverageIgnore
      */
-    public static function init() {
+    public static function init()
+    {
         $self = new self();
 
-        add_filter( 'timber/twig', [ $self, 'add_timber_functions' ] );
-        add_filter( 'timber/twig', [ $self, 'add_timber_filters' ] );
-        add_filter( 'timber/twig', [ $self, 'add_timber_escapers' ] );
+        add_filter('timber/twig', [ $self, 'add_timber_functions' ]);
+        add_filter('timber/twig', [ $self, 'add_timber_filters' ]);
+        add_filter('timber/twig', [ $self, 'add_timber_escapers' ]);
 
-        add_filter( 'timber/loader/twig', [ $self, 'set_defaults' ] );
+        add_filter('timber/loader/twig', [ $self, 'set_defaults' ]);
     }
 
     /**
@@ -36,14 +37,15 @@ class Twig {
      *
      * @return array Default Timber functions
      */
-    public function get_timber_functions() {
+    public function get_timber_functions()
+    {
         $post_factory = new PostFactory();
-        $termFactory  = new TermFactory();
+        $termFactory = new TermFactory();
 
         $functions = [
             'action' => [
-                'callable' => function( $action_name, ...$args ) {
-                    do_action_ref_array( $action_name, $args );
+                'callable' => function ($action_name, ...$args) {
+                    do_action_ref_array($action_name, $args);
                 }
             ],
             'function' => [
@@ -124,7 +126,7 @@ class Twig {
             'Term' => [
                 'callable' => function ($term_id) use ($termFactory) {
                     Helper::deprecated('{{ Term() }}', '{{ get_term() }} or {{ get_terms() }}', '2.0.0');
-                    return $termFactory->from( $term_id );
+                    return $termFactory->from($term_id);
                 },
                 'options' => [
                     'deprecated' => true,
@@ -133,7 +135,7 @@ class Twig {
             'TimberTerm' => [
                 'callable' => function ($term_id) use ($termFactory) {
                     Helper::deprecated('{{ TimberTerm() }}', '{{ get_term() }} or {{ get_terms() }}', '2.0.0');
-                    return $termFactory->from( $term_id );
+                    return $termFactory->from($term_id);
                 },
                 'options' => [
                     'deprecated' => true,
@@ -142,7 +144,7 @@ class Twig {
             'User' => [
                 'callable' => function ($user_id) {
                     Helper::deprecated('{{ User() }}', '{{ get_user() }} or {{ get_users() }}', '2.0.0');
-                    return Timber::get_user( $user_id );
+                    return Timber::get_user($user_id);
                 },
                 'options' => [
                     'deprecated' => true,
@@ -151,7 +153,7 @@ class Twig {
             'TimberUser' => [
                 'callable' => function ($user_id) {
                     Helper::deprecated('{{ TimberUser() }}', '{{ get_user() }} or {{ get_users() }}', '2.0.0');
-                    return Timber::get_user( $user_id );
+                    return Timber::get_user($user_id);
                 },
                 'options' => [
                     'deprecated' => true,
@@ -231,7 +233,7 @@ class Twig {
          *
          * @param array $functions
          */
-        $functions = apply_filters( 'timber/twig/functions', $functions );
+        $functions = apply_filters('timber/twig/functions', $functions);
 
         return $functions;
     }
@@ -243,8 +245,9 @@ class Twig {
      *
      * @return \Twig\Environment
      */
-    public function add_timber_functions( $twig ) {
-        foreach ( $this->get_timber_functions() as $name => $function ) {
+    public function add_timber_functions($twig)
+    {
+        foreach ($this->get_timber_functions() as $name => $function) {
             $twig->addFunction(
                 new TwigFunction(
                     $name,
@@ -262,7 +265,8 @@ class Twig {
      *
      * @return array Default Timber filters
      */
-    public function get_timber_filters() {
+    public function get_timber_filters()
+    {
         $filters = [
             /* image filters */
             'resize' => [
@@ -283,17 +287,17 @@ class Twig {
 
             // Debugging filters.
             'get_class' => [
-                'callable' => function( $obj ) {
-                    Helper::deprecated( '{{ my_object | get_class }}', "{{ function('get_class', my_object) }}", '2.0.0' );
-                    return get_class( $obj );
+                'callable' => function ($obj) {
+                    Helper::deprecated('{{ my_object | get_class }}', "{{ function('get_class', my_object) }}", '2.0.0');
+                    return get_class($obj);
                 },
                 'options' => [
                     'deprecated' => true,
                 ],
             ],
             'print_r' => [
-                'callable' => function( $arr ) {
-                    Helper::deprecated( '{{ my_object | print_r }}', '{{ dump(my_object) }}', '2.0.0' );
+                'callable' => function ($arr) {
+                    Helper::deprecated('{{ my_object | print_r }}', '{{ dump(my_object) }}', '2.0.0');
                     return print_r($arr, true);
                 },
                 'options' => [
@@ -340,7 +344,7 @@ class Twig {
             ],
 
             'relative' => [
-                'callable' => function( $link ) {
+                'callable' => function ($link) {
                     return URLHelper::get_rel_url($link, true);
                 },
             ],
@@ -358,14 +362,14 @@ class Twig {
                 'callable' => ['Timber\DateTimeHelper', 'time_ago'],
             ],
             'truncate' => [
-                'callable' => function( $text, $len ) {
+                'callable' => function ($text, $len) {
                     return TextHelper::trim_words($text, $len);
                 },
             ],
 
             // Actions and filters.
             'apply_filters' => [
-                'callable' => function() {
+                'callable' => function () {
                     $args = func_get_args();
                     $tag = current(array_splice($args, 1, 1));
 
@@ -408,7 +412,7 @@ class Twig {
          *
          * @param array $filters
          */
-        $filters = apply_filters( 'timber/twig/filters', $filters );
+        $filters = apply_filters('timber/twig/filters', $filters);
 
         return $filters;
     }
@@ -420,8 +424,9 @@ class Twig {
      *
      * @return \Twig\Environment
      */
-    public function add_timber_filters( $twig ) {
-        foreach ( $this->get_timber_filters() as $name => $function ) {
+    public function add_timber_filters($twig)
+    {
+        foreach ($this->get_timber_filters() as $name => $function) {
             $twig->addFilter(
                 new TwigFilter(
                     $name,
@@ -440,24 +445,25 @@ class Twig {
      * @param \Twig\Environment $twig The Twig Environment.
      * @return \Twig\Environment
      */
-    public function add_timber_escapers( $twig ) {
-        $esc_url = function( \Twig\Environment $env, $string ) {
-            return esc_url( $string );
+    public function add_timber_escapers($twig)
+    {
+        $esc_url = function (\Twig\Environment $env, $string) {
+            return esc_url($string);
         };
 
-        $wp_kses_post = function( \Twig\Environment $env, $string ) {
-            return wp_kses_post( $string );
+        $wp_kses_post = function (\Twig\Environment $env, $string) {
+            return wp_kses_post($string);
         };
 
-        $esc_html = function( \Twig\Environment $env, $string ) {
-            return esc_html( $string );
+        $esc_html = function (\Twig\Environment $env, $string) {
+            return esc_html($string);
         };
 
-        $esc_js = function( \Twig\Environment $env, $string ) {
-            return esc_js( $string );
+        $esc_js = function (\Twig\Environment $env, $string) {
+            return esc_js($string);
         };
 
-        if ( class_exists( 'Twig\Extension\EscaperExtension' ) ) {
+        if (class_exists('Twig\Extension\EscaperExtension')) {
             $escaper_extension = $twig->getExtension('Twig\Extension\EscaperExtension');
             $escaper_extension->setEscaper('esc_url', $esc_url);
             $escaper_extension->setEscaper('wp_kses_post', $wp_kses_post);
@@ -480,14 +486,15 @@ class Twig {
      *
      * @return \Twig\Environment
      */
-    public function set_defaults( Environment $twig ) {
-        $twig->getExtension( CoreExtension::class )->setDateFormat( get_option( 'date_format' ), '%d days' );
-        $twig->getExtension( CoreExtension::class )->setTimezone( wp_timezone_string() );
+    public function set_defaults(Environment $twig)
+    {
+        $twig->getExtension(CoreExtension::class)->setDateFormat(get_option('date_format'), '%d days');
+        $twig->getExtension(CoreExtension::class)->setTimezone(wp_timezone_string());
 
         /** @see https://developer.wordpress.org/reference/functions/number_format_i18n/ */
         global $wp_locale;
-        if ( isset( $wp_locale ) ) {
-            $twig->getExtension( CoreExtension::class )->setNumberFormat( 0, $wp_locale->number_format['decimal_point'], $wp_locale->number_format['thousands_sep'] );
+        if (isset($wp_locale)) {
+            $twig->getExtension(CoreExtension::class)->setNumberFormat(0, $wp_locale->number_format['decimal_point'], $wp_locale->number_format['thousands_sep']);
         }
 
         return $twig;
@@ -514,28 +521,29 @@ class Twig {
      *
      * @return false|string A formatted date.
      */
-    public function twig_date_format_filter( Environment $env, $date = null, $format = null, $timezone = null ) {
+    public function twig_date_format_filter(Environment $env, $date = null, $format = null, $timezone = null)
+    {
         // Support for DateInterval.
-        if ( $date instanceof \DateInterval ) {
-            if ( null === $format ) {
-                $format = $env->getExtension( CoreExtension::class )->getDateFormat()[1];
+        if ($date instanceof \DateInterval) {
+            if (null === $format) {
+                $format = $env->getExtension(CoreExtension::class)->getDateFormat()[1];
             }
 
-            return $date->format( $format );
+            return $date->format($format);
         }
 
-        if ( null === $date || 'now' === $date ) {
-            return DateTimeHelper::wp_date( $format, null );
+        if (null === $date || 'now' === $date) {
+            return DateTimeHelper::wp_date($format, null);
         }
 
         /**
          * If a string is given and it’s not a timestamp (e.g. "2010-01-28T15:00:00+04:00", try creating a DateTime
          * object and read the timezone from that string.
          */
-        if ( is_string( $date ) && ! ctype_digit( $date ) ) {
-            $date_obj = date_create( $date );
+        if (is_string($date) && !ctype_digit($date)) {
+            $date_obj = date_create($date);
 
-            if ( $date_obj ) {
+            if ($date_obj) {
                 $date = $date_obj;
             }
         }
@@ -545,11 +553,11 @@ class Twig {
          *
          * @link https://twig.symfony.com/doc/2.x/filters/date.html#timezone
          */
-        if ( false === $timezone && $date instanceof \DateTimeInterface ) {
+        if (false === $timezone && $date instanceof \DateTimeInterface) {
             $timezone = $date->getTimezone();
         }
 
-        return DateTimeHelper::wp_date( $format, $date, $timezone );
+        return DateTimeHelper::wp_date($format, $date, $timezone);
     }
 
     /**
@@ -558,8 +566,9 @@ class Twig {
      * @param mixed   $arr
      * @return array
      */
-    public function to_array( $arr ) {
-        if ( is_array($arr) ) {
+    public function to_array($arr)
+    {
+        if (is_array($arr)) {
             return $arr;
         }
         $arr = array($arr);
@@ -572,10 +581,11 @@ class Twig {
      * @param string  $function_name
      * @return mixed
      */
-    public function exec_function( $function_name ) {
+    public function exec_function($function_name)
+    {
         $args = func_get_args();
         array_shift($args);
-        if ( is_string($function_name) ) {
+        if (is_string($function_name)) {
             $function_name = trim($function_name);
         }
         return call_user_func_array($function_name, ($args));
@@ -587,7 +597,8 @@ class Twig {
      * @param string  $content
      * @return string
      */
-    public function twig_pretags( $content ) {
+    public function twig_pretags($content)
+    {
         return preg_replace_callback('|<pre.*>(.*)</pre|isU', array(&$this, 'convert_pre_entities'), $content);
     }
 
@@ -597,7 +608,8 @@ class Twig {
      * @param array   $matches
      * @return string
      */
-    public function convert_pre_entities( $matches ) {
+    public function convert_pre_entities($matches)
+    {
         return str_replace($matches[1], htmlentities($matches[1]), $matches[0]);
     }
 
@@ -612,10 +624,11 @@ class Twig {
      *
      * @return string
      */
-    public function intl_date( $date, $format = null ) {
-        Helper::deprecated( 'intl_date', 'DateTimeHelper::wp_date', '2.0.0' );
+    public function intl_date($date, $format = null)
+    {
+        Helper::deprecated('intl_date', 'DateTimeHelper::wp_date', '2.0.0');
 
-        return DateTimeHelper::wp_date( $format, $date );
+        return DateTimeHelper::wp_date($format, $date);
     }
 
     /**
@@ -638,10 +651,11 @@ class Twig {
      *
      * @return string
      */
-    public static function time_ago( $from, $to = null, $format_past = null, $format_future = null ) {
-        Helper::deprecated( 'time_ago', 'DateTimeHelper::time_ago', '2.0.0' );
+    public static function time_ago($from, $to = null, $format_past = null, $format_future = null)
+    {
+        Helper::deprecated('time_ago', 'DateTimeHelper::time_ago', '2.0.0');
 
-        return DateTimeHelper::time_ago( $from, $to, $format_past, $format_future );
+        return DateTimeHelper::time_ago($from, $to, $format_past, $format_future);
     }
 
     /**
@@ -650,20 +664,20 @@ class Twig {
      * @param string $second_delimiter
      * @return string
      */
-    public function add_list_separators( $arr, $first_delimiter = ',', $second_delimiter = ' and' ) {
+    public function add_list_separators($arr, $first_delimiter = ',', $second_delimiter = ' and')
+    {
         $length = count($arr);
         $list = '';
-        foreach ( $arr as $index => $item ) {
-            if ( $index < $length - 2 ) {
-                $delimiter = $first_delimiter.' ';
-            } elseif ( $index == $length - 2 ) {
-                $delimiter = $second_delimiter.' ';
+        foreach ($arr as $index => $item) {
+            if ($index < $length - 2) {
+                $delimiter = $first_delimiter . ' ';
+            } elseif ($index == $length - 2) {
+                $delimiter = $second_delimiter . ' ';
             } else {
                 $delimiter = '';
             }
-            $list = $list.$item.$delimiter;
+            $list = $list . $item . $delimiter;
         }
         return $list;
     }
-
 }

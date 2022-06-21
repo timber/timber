@@ -3,7 +3,8 @@
 /**
  * Class MetaComment
  */
-class MetaComment extends Timber\Comment {
+class MetaComment extends Timber\Comment
+{
     /**
      * Public property.
      *
@@ -23,7 +24,8 @@ class MetaComment extends Timber\Comment {
      *
      * @return string
      */
-    public function public_method() {
+    public function public_method()
+    {
         return 'I am a public method';
     }
 
@@ -34,7 +36,8 @@ class MetaComment extends Timber\Comment {
      *
      * @return string
      */
-    public function public_method_with_args( $arg1 ) {
+    public function public_method_with_args($arg1)
+    {
         return 'I am a public method';
     }
 
@@ -43,7 +46,8 @@ class MetaComment extends Timber\Comment {
      *
      * @return string
      */
-    protected function protected_method() {
+    protected function protected_method()
+    {
         return 'I am a protected method';
     }
 }

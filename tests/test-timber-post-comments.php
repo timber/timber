@@ -7,50 +7,55 @@ require_once __DIR__ . '/php/timber-custom-comment.php';
      * @group comments-api
      * @group called-post-constructor
      */
-    class TestTimberPostComments extends Timber_UnitTestCase {
-
-        function testComments() {
+    class TestTimberPostComments extends Timber_UnitTestCase
+    {
+        public function testComments()
+        {
             $post_id = $this->factory->post->create(array('post_title' => 'Gobbles'));
-            $comment_id_array = $this->factory->comment->create_many( 5, array('comment_post_ID' => $post_id) );
+            $comment_id_array = $this->factory->comment->create_many(5, array('comment_post_ID' => $post_id));
             $post = Timber::get_post($post_id);
-            $this->assertEquals( 5, count($post->comments()) );
-            $this->assertEquals( 5, $post->comment_count() );
+            $this->assertEquals(5, count($post->comments()));
+            $this->assertEquals(5, $post->comment_count());
         }
 
-        function testCommentCount() {
+        public function testCommentCount()
+        {
             $post_id = $this->factory->post->create(array('post_title' => 'Gobbles'));
-            $comment_id_array = $this->factory->comment->create_many( 5, array('comment_post_ID' => $post_id) );
+            $comment_id_array = $this->factory->comment->create_many(5, array('comment_post_ID' => $post_id));
             $post = Timber::get_post($post_id);
-            $this->assertEquals( 2, count($post->comments(2)) );
-            $this->assertEquals( 5, count($post->comments()) );
+            $this->assertEquals(2, count($post->comments(2)));
+            $this->assertEquals(5, count($post->comments()));
         }
 
-        function testCommentCountZero() {
+        public function testCommentCountZero()
+        {
             $quote = 'Named must your fear be before banish it you can.';
             $post_id = $this->factory->post->create(array('post_content' => $quote));
             $post = Timber::get_post($post_id);
             $this->assertEquals(0, $post->get_comment_count());
         }
 
-        function testShowUnmoderatedCommentIfByLoggedInUser() {
+        public function testShowUnmoderatedCommentIfByLoggedInUser()
+        {
             $post_id = $this->factory->post->create();
             $uid = $this->factory->user->create();
-            wp_set_current_user( $uid );
+            wp_set_current_user($uid);
             $quote = "You know, I always wanted to pretend I was an architect";
             $comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => $quote, 'user_id' => $uid, 'comment_approved' => 0));
             $post = Timber::get_post($post_id);
             $this->assertEquals(1, count($post->comments()));
-            wp_set_current_user( 0 );
+            wp_set_current_user(0);
             $post = Timber::get_post($post_id);
             $this->assertEquals(0, count($post->comments()));
         }
 
-        function testPostWithCustomCommentClass() {
+        public function testPostWithCustomCommentClass()
+        {
             $post_id = $this->factory->post->create(array('post_title' => 'Gobbles'));
-            $comment_id_array = $this->factory->comment->create_many( 5, array('comment_post_ID' => $post_id) );
+            $comment_id_array = $this->factory->comment->create_many(5, array('comment_post_ID' => $post_id));
             $post = Timber::get_post($post_id);
 
-            $filter = function() {
+            $filter = function () {
                 return [
                     'post' => CustomComment::class,
                 ];
@@ -63,22 +68,24 @@ require_once __DIR__ . '/php/timber-custom-comment.php';
             remove_filter('timber/comment/classmap', $filter);
         }
 
-        function testShowUnmoderatedCommentIfByCurrentUser() {
+        public function testShowUnmoderatedCommentIfByCurrentUser()
+        {
             $post_id = $this->factory->post->create();
-            add_filter('wp_get_current_commenter', function($author_data) {
+            add_filter('wp_get_current_commenter', function ($author_data) {
                 $author_data['comment_author_email'] = 'jarednova@upstatement.com';
                 return $author_data;
             });
             $commenter = wp_get_current_commenter();
             $quote = "And in that moment, I was a marine biologist";
-            $comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => $quote,'comment_approved' => 0, 'comment_author_email' => 'jarednova@upstatement.com'));
+            $comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => $quote, 'comment_approved' => 0, 'comment_author_email' => 'jarednova@upstatement.com'));
             $post = Timber::get_post($post_id);
             $this->assertEquals(1, count($post->comments()));
         }
 
 
 
-        function testMultilevelThreadedComments() {
+        public function testMultilevelThreadedComments()
+        {
             update_option('comment_order', 'ASC');
             $post_id = $this->factory->post->create(array('post_title' => 'Gobbles'));
             $comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id));
@@ -94,7 +101,8 @@ require_once __DIR__ . '/php/timber-custom-comment.php';
             $this->assertEquals(2, count($grand_children));
         }
 
-        function testMultilevelThreadedCommentsCorrectParents(){
+        public function testMultilevelThreadedCommentsCorrectParents()
+        {
             update_option('comment_order', 'ASC');
             $post_id = $this->factory->post->create(array('post_title' => 'Gobbles', 'post_date' => '2016-11-28 12:00:00'));
             $uncle_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_date' => '2016-11-28 13:00:00', 'comment_content' => 'i am the UNCLE'));
@@ -110,7 +118,8 @@ require_once __DIR__ . '/php/timber-custom-comment.php';
             $this->assertEquals($child_id, $grandchild->comment_parent);
         }
 
-        function testThreadedCommentsWithTemplate() {
+        public function testThreadedCommentsWithTemplate()
+        {
             $post_id = $this->factory->post->create(array('post_title' => 'Gobbles'));
             $comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'oldest!', 'comment_date' => '2016-11-28 12:58:18'));
             $comment2_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'newest!', 'comment_date' => '2016-11-28 13:58:18'));
@@ -121,5 +130,4 @@ require_once __DIR__ . '/php/timber-custom-comment.php';
             $str = preg_replace('/\s+/', ' ', $str);
             $this->assertEquals('<article data-depth="0"> <p><p>newest!</p></p> <article data-depth="1"> <p><p>response</p></p> <article data-depth="2"> <p><p>Respond2Respond</p></p> </article> </article> </article> <article data-depth="0"> <p><p>oldest!</p></p> </article>', trim($str));
         }
-
     }

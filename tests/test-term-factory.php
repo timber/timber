@@ -1,53 +1,65 @@
 <?php
 
-use Timber\Term;
 use Timber\Factory\TermFactory;
+use Timber\Term;
 
-class MyTerm extends Term {}
-class WhacknessLevel extends Term {}
-class HellaWhackTerm extends Term {}
+class MyTerm extends Term
+{
+}
+class WhacknessLevel extends Term
+{
+}
+class HellaWhackTerm extends Term
+{
+}
 
 /**
  * @group factory
  * @group terms-api
  */
-class TestTermFactory extends Timber_UnitTestCase {
-    public function tear_down() {
+class TestTermFactory extends Timber_UnitTestCase
+{
+    public function tear_down()
+    {
         unregister_taxonomy_for_object_type('make', 'post');
         parent::tear_down();
     }
 
-    public function testGetTerm() {
+    public function testGetTerm()
+    {
         $tag_id = $this->factory->term->create(['name' => 'Toyota',    'taxonomy' => 'post_tag']);
         $cat_id = $this->factory->term->create(['name' => 'Chevrolet', 'taxonomy' => 'category']);
 
         $termFactory = new TermFactory();
-        $tag                 = $termFactory->from($tag_id);
-        $cat                 = $termFactory->from($cat_id);
+        $tag = $termFactory->from($tag_id);
+        $cat = $termFactory->from($cat_id);
 
         // Assert that all instances are of Timber\Term
         $this->assertInstanceOf(Term::class, $tag);
         $this->assertInstanceOf(Term::class, $cat);
     }
 
-    public function testGetTermFromInvalidId() {
+    public function testGetTermFromInvalidId()
+    {
         $termFactory = new TermFactory();
-        $term        = $termFactory->from( 99999 );
+        $term = $termFactory->from(99999);
 
-        $this->assertNull( $term );
+        $this->assertNull($term);
     }
 
-    public function testGetTermFromIdString() {
+    public function testGetTermFromIdString()
+    {
         $term_id = $this->factory->term->create();
 
         $termFactory = new TermFactory();
-        $term                 = $termFactory->from(''.$term_id);
+        $term = $termFactory->from('' . $term_id);
 
         $this->assertInstanceOf(Term::class, $term);
         $this->assertEquals($term_id, $term->id);
     }
 
-    public function testGetTermFromTaxonomyName() {
+    public function testGetTermFromTaxonomyName()
+    {
         $term_ids = $this->factory->term->create_many(3, ['taxonomy' => 'post_tag']);
 
         // by default hide_empty is true, so assign each term to a post
@@ -58,7 +70,7 @@ class TestTermFactory extends Timber_UnitTestCase {
         );
 
         $termFactory = new TermFactory();
-        $terms       = $termFactory->from('post_tag');
+        $terms = $termFactory->from('post_tag');
 
         $this->assertCount(3, $terms);
         foreach ($terms as $term) {
@@ -66,53 +78,56 @@ class TestTermFactory extends Timber_UnitTestCase {
         }
     }
 
-    public function testGetTermWithClassmapFilter() {
+    public function testGetTermWithClassmapFilter()
+    {
         register_taxonomy('whackness', 'post');
-        $my_class_map = function() {
+        $my_class_map = function () {
             return [
-                'post_tag'  => MyTerm::class,
-                'category'  => MyTerm::class,
+                'post_tag' => MyTerm::class,
+                'category' => MyTerm::class,
                 'whackness' => WhacknessLevel::class,
             ];
         };
-        $this->add_filter_temporarily( 'timber/term/classmap', $my_class_map );
+        $this->add_filter_temporarily('timber/term/classmap', $my_class_map);
 
-        $tag_id       = $this->factory->term->create(['name' => 'Toyota',        'taxonomy' => 'post_tag']);
-        $cat_id       = $this->factory->term->create(['name' => 'Chevrolet',     'taxonomy' => 'category']);
+        $tag_id = $this->factory->term->create(['name' => 'Toyota',        'taxonomy' => 'post_tag']);
+        $cat_id = $this->factory->term->create(['name' => 'Chevrolet',     'taxonomy' => 'category']);
         $whackness_id = $this->factory->term->create(['name' => 'Wiggity-Whack', 'taxonomy' => 'whackness']);
 
         $termFactory = new TermFactory();
-        $tag                 = $termFactory->from($tag_id);
-        $cat                 = $termFactory->from($cat_id);
-        $whackness   = $termFactory->from($whackness_id);
+        $tag = $termFactory->from($tag_id);
+        $cat = $termFactory->from($cat_id);
+        $whackness = $termFactory->from($whackness_id);
 
-        $this->assertInstanceOf(MyTerm::class,         $tag);
-        $this->assertInstanceOf(MyTerm::class,         $cat);
+        $this->assertInstanceOf(MyTerm::class, $tag);
+        $this->assertInstanceOf(MyTerm::class, $cat);
         $this->assertInstanceOf(WhacknessLevel::class, $whackness);
     }
 
-    public function testGetTermWithClassFilter() {
-        $my_class_filter = function() {
+    public function testGetTermWithClassFilter()
+    {
+        $my_class_filter = function () {
             return WhacknessLevel::class;
         };
-        $this->add_filter_temporarily( 'timber/term/class', $my_class_filter, 10, 2 );
+        $this->add_filter_temporarily('timber/term/class', $my_class_filter, 10, 2);
 
-        $cat_id       = $this->factory->term->create(['name' => 'Chevrolet',     'taxonomy' => 'category']);
+        $cat_id = $this->factory->term->create(['name' => 'Chevrolet',     'taxonomy' => 'category']);
 
         $termFactory = new TermFactory();
-        $cat                 = $termFactory->from($cat_id);
+        $cat = $termFactory->from($cat_id);
 
         $this->assertInstanceOf(WhacknessLevel::class, $cat);
     }
 
-    public function testGetTermWithCallable() {
+    public function testGetTermWithCallable()
+    {
         register_taxonomy('whackness', 'post');
-        $my_class_map = function() {
+        $my_class_map = function () {
             return [
-                'category'  => function() {
+                'category' => function () {
                     return MyTerm::class;
                 },
-                'whackness' => function(WP_Term $term) {
+                'whackness' => function (WP_Term $term) {
                     // return a special class depending on the WP_Term name
                     return ($term->name === 'Hella Whack')
                         ? HellaWhackTerm::class
@@ -120,35 +135,36 @@ class TestTermFactory extends Timber_UnitTestCase {
                 }
             ];
         };
-        $this->add_filter_temporarily( 'timber/term/classmap', $my_class_map );
+        $this->add_filter_temporarily('timber/term/classmap', $my_class_map);
 
-        $tag_id       = $this->factory->term->create(['name' => 'Toyota',        'taxonomy' => 'post_tag']);
-        $cat_id       = $this->factory->term->create(['name' => 'Chevrolet',     'taxonomy' => 'category']);
+        $tag_id = $this->factory->term->create(['name' => 'Toyota',        'taxonomy' => 'post_tag']);
+        $cat_id = $this->factory->term->create(['name' => 'Chevrolet',     'taxonomy' => 'category']);
         $whackness_id = $this->factory->term->create(['name' => 'Wiggity-Whack', 'taxonomy' => 'whackness']);
-        $hella_id     = $this->factory->term->create(['name' => 'Hella Whack',   'taxonomy' => 'whackness']);
+        $hella_id = $this->factory->term->create(['name' => 'Hella Whack',   'taxonomy' => 'whackness']);
 
         $termFactory = new TermFactory();
-        $tag         = $termFactory->from($tag_id);
-        $cat         = $termFactory->from($cat_id);
-        $whackness   = $termFactory->from($whackness_id);
-        $hellawhack  = $termFactory->from($hella_id);
+        $tag = $termFactory->from($tag_id);
+        $cat = $termFactory->from($cat_id);
+        $whackness = $termFactory->from($whackness_id);
+        $hellawhack = $termFactory->from($hella_id);
 
-        $this->assertInstanceOf(Term::class,           $tag);
-        $this->assertInstanceOf(MyTerm::class,         $cat);
+        $this->assertInstanceOf(Term::class, $tag);
+        $this->assertInstanceOf(MyTerm::class, $cat);
         $this->assertInstanceOf(WhacknessLevel::class, $whackness);
         $this->assertInstanceOf(HellaWhackTerm::class, $hellawhack);
     }
 
-    public function testFromArray() {
+    public function testFromArray()
+    {
         $a = $this->factory->term->create(['name' => 'A', 'taxonomy' => 'post_tag']);
         $b = $this->factory->term->create(['name' => 'B', 'taxonomy' => 'post_tag']);
 
         $termFactory = new TermFactory();
         $res = $termFactory->from(get_terms([
-            'taxonomy'   => 'post_tag',
+            'taxonomy' => 'post_tag',
             'hide_empty' => false,
-            'orderby'    => 'name',
-            'order'      => 'ASC',
+            'orderby' => 'name',
+            'order' => 'ASC',
         ]));
 
         $this->assertTrue(true, is_array($res));
@@ -159,24 +175,25 @@ class TestTermFactory extends Timber_UnitTestCase {
         $this->assertEquals('B', $res[1]->name);
     }
 
-    public function testFromArrayCustom() {
+    public function testFromArrayCustom()
+    {
         register_taxonomy('make', 'post');
-        $my_class_map = function(array $map) {
+        $my_class_map = function (array $map) {
             return array_merge($map, [
-                'make'  => MyTerm::class,
+                'make' => MyTerm::class,
             ]);
         };
-        $this->add_filter_temporarily( 'timber/term/classmap', $my_class_map );
+        $this->add_filter_temporarily('timber/term/classmap', $my_class_map);
 
         $toyota = $this->factory->term->create(['name' => 'Toyota',    'taxonomy' => 'make']);
-        $chevy  = $this->factory->term->create(['name' => 'Chevrolet', 'taxonomy' => 'make']);
+        $chevy = $this->factory->term->create(['name' => 'Chevrolet', 'taxonomy' => 'make']);
 
         $termFactory = new TermFactory();
         $res = $termFactory->from(get_terms([
-            'taxonomy'   => 'make',
+            'taxonomy' => 'make',
             'hide_empty' => false,
-            'orderby'    => 'name',
-            'order'      => 'ASC',
+            'orderby' => 'name',
+            'order' => 'ASC',
         ]));
 
         $this->assertTrue(true, is_array($res));
@@ -185,44 +202,46 @@ class TestTermFactory extends Timber_UnitTestCase {
         $this->assertInstanceOf(MyTerm::class, $res[1]);
     }
 
-    public function testFromWpTermObject() {
-        $my_class_map = function(array $map) {
+    public function testFromWpTermObject()
+    {
+        $my_class_map = function (array $map) {
             return array_merge($map, [
-                'make'  => MyTerm::class,
+                'make' => MyTerm::class,
             ]);
         };
-        $this->add_filter_temporarily( 'timber/term/classmap', $my_class_map );
+        $this->add_filter_temporarily('timber/term/classmap', $my_class_map);
 
-        $cat_id    = $this->factory->term->create(['name' => 'Red Herring', 'taxonomy' => 'category']);
+        $cat_id = $this->factory->term->create(['name' => 'Red Herring', 'taxonomy' => 'category']);
         $toyota_id = $this->factory->term->create(['name' => 'Toyota',    'taxonomy' => 'make']);
 
-        $cat    = get_term($cat_id);
+        $cat = get_term($cat_id);
         $toyota = get_term($toyota_id);
 
         $termFactory = new TermFactory();
         $this->assertInstanceOf(MyTerm::class, $termFactory->from($toyota));
-        $this->assertInstanceOf(Term::class,   $termFactory->from($cat));
+        $this->assertInstanceOf(Term::class, $termFactory->from($cat));
     }
 
-    public function testFromTermQuery() {
+    public function testFromTermQuery()
+    {
         register_taxonomy('make', 'post');
-        $my_class_map = function(array $map) {
+        $my_class_map = function (array $map) {
             return array_merge($map, [
-                'make'  => MyTerm::class,
+                'make' => MyTerm::class,
             ]);
         };
-        $this->add_filter_temporarily( 'timber/term/classmap', $my_class_map );
+        $this->add_filter_temporarily('timber/term/classmap', $my_class_map);
 
         $this->factory->term->create(['name' => 'Red Herring', 'taxonomy' => 'category']);
         $toyota = $this->factory->term->create(['name' => 'Toyota',    'taxonomy' => 'make']);
-        $chevy  = $this->factory->term->create(['name' => 'Chevrolet', 'taxonomy' => 'make']);
+        $chevy = $this->factory->term->create(['name' => 'Chevrolet', 'taxonomy' => 'make']);
 
         $termFactory = new TermFactory();
-        $termQuery   = new WP_Term_Query([
-            'taxonomy'   => 'make',
+        $termQuery = new WP_Term_Query([
+            'taxonomy' => 'make',
             'hide_empty' => false,
-            'orderby'    => 'name',
-            'order'      => 'ASC',
+            'orderby' => 'name',
+            'order' => 'ASC',
         ]);
 
         $res = $termFactory->from($termQuery);
@@ -232,17 +251,18 @@ class TestTermFactory extends Timber_UnitTestCase {
         $this->assertInstanceOf(MyTerm::class, $res[1]);
     }
 
-    public function testFromAssortedArray() {
+    public function testFromAssortedArray()
+    {
         register_taxonomy('make', 'post');
-        $my_class_map = function(array $map) {
+        $my_class_map = function (array $map) {
             return array_merge($map, [
-                'make'  => MyTerm::class,
+                'make' => MyTerm::class,
             ]);
         };
-        $this->add_filter_temporarily( 'timber/term/classmap', $my_class_map );
+        $this->add_filter_temporarily('timber/term/classmap', $my_class_map);
 
-        $geo_id        = $this->factory->term->create(['name' => 'Geo',        'taxonomy' => 'make']);
-        $datsun_id     = $this->factory->term->create(['name' => 'Datsun',     'taxonomy' => 'make']);
+        $geo_id = $this->factory->term->create(['name' => 'Geo',        'taxonomy' => 'make']);
+        $datsun_id = $this->factory->term->create(['name' => 'Datsun',     'taxonomy' => 'make']);
         $studebaker_id = $this->factory->term->create(['name' => 'Studebaker', 'taxonomy' => 'make']);
 
         $termFactory = new TermFactory();
@@ -260,26 +280,27 @@ class TestTermFactory extends Timber_UnitTestCase {
         $this->assertInstanceOf(MyTerm::class, $res[2]);
     }
 
-    public function testFromTermQueryArray() {
+    public function testFromTermQueryArray()
+    {
         register_taxonomy('make', 'post');
-        $my_class_map = function(array $map) {
+        $my_class_map = function (array $map) {
             return array_merge($map, [
-                'make'  => MyTerm::class,
+                'make' => MyTerm::class,
             ]);
         };
-        $this->add_filter_temporarily( 'timber/term/classmap', $my_class_map );
+        $this->add_filter_temporarily('timber/term/classmap', $my_class_map);
 
         $this->factory->term->create(['name' => 'Red Herring', 'taxonomy' => 'category']);
         $toyota = $this->factory->term->create(['name' => 'Toyota',    'taxonomy' => 'make']);
-        $chevy  = $this->factory->term->create(['name' => 'Chevrolet', 'taxonomy' => 'make']);
+        $chevy = $this->factory->term->create(['name' => 'Chevrolet', 'taxonomy' => 'make']);
 
         $termFactory = new TermFactory();
 
         $res = $termFactory->from([
-            'taxonomy'   => 'make',
+            'taxonomy' => 'make',
             'hide_empty' => false,
-            'orderby'    => 'name',
-            'order'      => 'ASC',
+            'orderby' => 'name',
+            'order' => 'ASC',
         ]);
 
         $this->assertCount(2, $res);
@@ -287,11 +308,12 @@ class TestTermFactory extends Timber_UnitTestCase {
         $this->assertInstanceOf(MyTerm::class, $res[1]);
     }
 
-    public function testTermBy() {
+    public function testTermBy()
+    {
         $post_tag_id = $this->factory->term->create(array('name' => 'Security', 'taxonomy' => 'post_tag'));
         $category_id = $this->factory->term->create(array('name' => 'Security', 'taxonomy' => 'category'));
 
-        $term_post_tag  = Timber::get_term_by('slug', 'security', 'post_tag');
+        $term_post_tag = Timber::get_term_by('slug', 'security', 'post_tag');
         $this->assertEquals('post_tag', $term_post_tag->taxonomy);
         $this->assertEquals('Security', $term_post_tag->title());
 
@@ -300,7 +322,8 @@ class TestTermFactory extends Timber_UnitTestCase {
         $this->assertEquals('Security', $term_category->title());
     }
 
-    public function testTermByNoTaxonomy() {
+    public function testTermByNoTaxonomy()
+    {
         $category_id = $this->factory->term->create(array('name' => 'Breaking News', 'taxonomy' => 'category'));
         $terms = Timber::get_terms(['name' => 'Breaking News', 'hide_empty' => false]);
 

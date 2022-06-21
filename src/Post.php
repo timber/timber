@@ -2,11 +2,11 @@
 
 namespace Timber;
 
-use WP_Post;
-
 use Timber\Factory\PostFactory;
+
 use Timber\Factory\UserFactory;
 use Timber\Timber;
+use WP_Post;
 
 /**
  * Class Post
@@ -50,8 +50,8 @@ use Timber\Timber;
  * ```
  * @todo implement JsonSerializable?
  */
-class Post extends CoreEntity implements DatedInterface, Setupable {
-
+class Post extends CoreEntity implements DatedInterface, Setupable
+{
     /**
      * @var string What does this class represent in WordPress terms?
      */
@@ -168,15 +168,16 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * @internal
      * @return Timber\Post
      */
-    public static function build( WP_Post $wp_post ) : self {
+    public static function build(WP_Post $wp_post): self
+    {
         $post = new static();
 
         $post->id = $wp_post->ID;
         $post->ID = $wp_post->ID;
 
-        $data = $post->get_info( $wp_post );
+        $data = $post->get_info($wp_post);
 
-        $post->import( apply_filters('timber/post/import_data', $data ) );
+        $post->import(apply_filters('timber/post/import_data', $data));
 
         return $post;
     }
@@ -187,7 +188,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      *
      * @internal
      */
-    protected function __construct() {
+    protected function __construct()
+    {
     }
 
     /**
@@ -200,12 +202,13 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      *
      * @return mixed
      */
-    public function __get( $field ) {
-        if ( 'class' === $field ) {
+    public function __get($field)
+    {
+        if ('class' === $field) {
             return $this->css_class();
         }
 
-        if ( '_thumbnail_id' === $field ) {
+        if ('_thumbnail_id' === $field) {
             Helper::doing_it_wrong(
                 "Accessing the thumbnail ID through {{ {$this->object_type}._thumbnail_id }}",
                 "You can retrieve the thumbnail ID via the thumbnail object {{ {$this->object_type}.thumbnail.id }}. If you need the id as stored on this post's postmeta you can use {{ {$this->object_type}.meta('_thumbnail_id') }}",
@@ -226,8 +229,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      *
      * @return mixed
      */
-    public function __call( $field, $args ) {
-        if ( 'class' === $field ) {
+    public function __call($field, $args)
+    {
+        if ('class' === $field) {
             $class = isset($args[0]) ? $args[0] : '';
             return $this->css_class($class);
         }
@@ -249,17 +253,18 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      *
      * @return \Timber\Post The post instance.
      */
-    public function setup() {
+    public function setup()
+    {
         global $post;
         global $wp_query;
 
         // @todo: Load $wp_post in Post::build() and save it in a property.
-        $wp_post = get_post( $this->ID );
+        $wp_post = get_post($this->ID);
 
         // Mimick WordPress behavior to improve compatibility with third party plugins.
         $wp_query->in_the_loop = true;
 
-        if ( ! $wp_post ) {
+        if (!$wp_post) {
             return $this;
         }
 
@@ -270,12 +275,12 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
          * that work with the post global in certain conditions.
          */
         // phpcs:ignore WordPress.WP.GlobalVariablesOverride.OverrideProhibited
-        if ( ! $post || isset( $post->ID ) && $post->ID !== $this->ID ) {
+        if (!$post || isset($post->ID) && $post->ID !== $this->ID) {
             $post = $wp_post;
         }
 
         // The setup_postdata() function will call the 'the_post' action.
-        $wp_query->setup_postdata( $wp_post );
+        $wp_query->setup_postdata($wp_post);
 
         return $this;
     }
@@ -290,7 +295,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      *
      * @return \Timber\Post The post instance.
      */
-    public function teardown() {
+    public function teardown()
+    {
         global $wp_query;
 
         $wp_query->in_the_loop = false;
@@ -304,9 +310,10 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * @internal
      * @return bool
      */
-    protected static function is_previewing() {
+    protected static function is_previewing()
+    {
         global $wp_query;
-        if ( isset($_GET['preview']) && isset($_GET['preview_nonce']) && wp_verify_nonce($_GET['preview_nonce'], 'post_preview_'.$wp_query->queried_object_id) ) {
+        if (isset($_GET['preview']) && isset($_GET['preview_nonce']) && wp_verify_nonce($_GET['preview_nonce'], 'post_preview_' . $wp_query->queried_object_id)) {
             return true;
         }
     }
@@ -317,42 +324,45 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * @api
      * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         return $this->title();
     }
 
-    protected function get_post_preview_object() {
+    protected function get_post_preview_object()
+    {
         global $wp_query;
-        if ( $this->is_previewing() ) {
-            $revision_id = $this->get_post_preview_id( $wp_query );
-            return Timber::get_post( $revision_id );
+        if ($this->is_previewing()) {
+            $revision_id = $this->get_post_preview_id($wp_query);
+            return Timber::get_post($revision_id);
         }
     }
 
-    protected function get_post_preview_id( $query ) {
+    protected function get_post_preview_id($query)
+    {
         $can = array(
             get_post_type_object($query->queried_object->post_type)->cap->edit_post,
         );
 
-        if ( $query->queried_object->author_id !== get_current_user_id() ) {
+        if ($query->queried_object->author_id !== get_current_user_id()) {
             $can[] = get_post_type_object($query->queried_object->post_type)->cap->edit_others_posts;
         }
 
         $can_preview = array();
 
-        foreach ( $can as $type ) {
-            if ( current_user_can($type, $query->queried_object_id) ) {
+        foreach ($can as $type) {
+            if (current_user_can($type, $query->queried_object_id)) {
                 $can_preview[] = true;
             }
         }
 
-        if ( count($can_preview) !== count($can) ) {
+        if (count($can_preview) !== count($can)) {
             return;
         }
 
         $revisions = wp_get_post_revisions($query->queried_object_id);
 
-        if ( !empty($revisions) ) {
+        if (!empty($revisions)) {
             $revision = reset($revisions);
             return $revision->ID;
         }
@@ -368,10 +378,11 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * @param string $field The key of the meta field to update.
      * @param mixed  $value The new value.
      */
-    public function update( $field, $value ) {
-        Helper::deprecated( 'Timber\Post::update()', 'update_post_meta()', '2.0.0' );
+    public function update($field, $value)
+    {
+        Helper::deprecated('Timber\Post::update()', 'update_post_meta()', '2.0.0');
 
-        if ( isset($this->ID) ) {
+        if (isset($this->ID)) {
             update_post_meta($this->ID, $field, $value);
             $this->$field = $value;
         }
@@ -410,8 +421,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * ```
      * @return \Timber\PostExcerpt
      */
-    public function excerpt( array $options = array() ) {
-        return new PostExcerpt( $this, $options );
+    public function excerpt(array $options = array())
+    {
+        return new PostExcerpt($this, $options);
     }
 
     /**
@@ -442,7 +454,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * ```
      * @return \Timber\PostExcerpt
      */
-    public function preview() {
+    public function preview()
+    {
         Helper::deprecated('{{ post.preview }}', '{{ post.excerpt }}', '2.0.0');
         return new PostExcerpt($this);
     }
@@ -452,10 +465,11 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * @param int $i
      * @return string
      */
-    protected static function get_wp_link_page( $i ) {
+    protected static function get_wp_link_page($i)
+    {
         $link = _wp_link_page($i);
-        $link = new \SimpleXMLElement($link.'</a>');
-        if ( isset($link['href']) ) {
+        $link = new \SimpleXMLElement($link . '</a>');
+        if (isset($link['href'])) {
             return $link['href'];
         }
     }
@@ -467,10 +481,11 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * @param  int|null|boolean $pid The ID to generate info from.
      * @return WP_Post
      */
-    protected function get_info( WP_Post $post ) {
+    protected function get_info(WP_Post $post)
+    {
         $post->status = $post->post_status;
-        $post->id     = $post->ID;
-        $post->slug   = $post->post_name;
+        $post->id = $post->ID;
+        $post->slug = $post->post_name;
 
         return $post;
     }
@@ -483,8 +498,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      *                    for reference on acceptable parameters
      * @return string of HTML for the form
      */
-    public function comment_form( $args = array() ) {
-        return trim(Helper::ob_function( 'comment_form', array( $args, $this->ID ) ));
+    public function comment_form($args = array())
+    {
+        return trim(Helper::ob_function('comment_form', array( $args, $this->ID )));
     }
 
     /**
@@ -552,9 +568,10 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * }
      * @return array An array of taxonomies.
      */
-    public function terms( $query_args = [], $options = [] ) {
+    public function terms($query_args = [], $options = [])
+    {
         // Make it possible to use a taxonomy or an array of taxonomies as a shorthand.
-        if ( ! is_array( $query_args ) || isset( $query_args[0] ) ) {
+        if (!is_array($query_args) || isset($query_args[0])) {
             $query_args = [ 'taxonomy' => $query_args ];
         }
 
@@ -563,41 +580,41 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
          *
          * @deprecated 2.0.0 use Post::terms( $query_args, $options )
          */
-        if ( is_array($query_args) && isset($query_args['query']) ) {
-            if ( isset($query_args['merge']) && !isset($options['merge']) ) {
+        if (is_array($query_args) && isset($query_args['query'])) {
+            if (isset($query_args['merge']) && !isset($options['merge'])) {
                 $options['merge'] = $query_args['merge'];
             }
             $query_args = $query_args['query'];
         }
 
         // Defaults.
-        $query_args = wp_parse_args( $query_args, [
+        $query_args = wp_parse_args($query_args, [
             'taxonomy' => 'all'
-        ] );
+        ]);
 
-        $options = wp_parse_args( $options, [
+        $options = wp_parse_args($options, [
             'merge' => true
-        ] );
+        ]);
 
         $taxonomies = $query_args['taxonomy'];
-        $merge      = $options['merge'];
+        $merge = $options['merge'];
 
-        if ( in_array($taxonomies, ['all', 'any', '']) ) {
+        if (in_array($taxonomies, ['all', 'any', ''])) {
             $taxonomies = get_object_taxonomies($this->post_type);
         }
 
-        if ( ! is_array($taxonomies) ) {
+        if (!is_array($taxonomies)) {
             $taxonomies = [$taxonomies];
         }
 
         $query = array_merge($query_args, [
             'object_ids' => [$this->ID],
-            'taxonomy'   => $taxonomies,
+            'taxonomy' => $taxonomies,
         ]);
 
         if (!$merge) {
             // get results segmented out per taxonomy
-            $queries    = $this->partition_tax_queries($query, $taxonomies);
+            $queries = $this->partition_tax_queries($query, $taxonomies);
             $termGroups = Timber::get_terms($queries);
 
             // zip 'em up with the right keys
@@ -613,12 +630,13 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * @param string $taxonomy
      * @return bool
      */
-    public function has_term( $term_name_or_id, $taxonomy = 'all' ) {
-        if ( $taxonomy == 'all' || $taxonomy == 'any' ) {
+    public function has_term($term_name_or_id, $taxonomy = 'all')
+    {
+        if ($taxonomy == 'all' || $taxonomy == 'any') {
             $taxes = get_object_taxonomies($this->post_type, 'names');
             $ret = false;
-            foreach ( $taxes as $tax ) {
-                if ( has_term($term_name_or_id, $tax, $this->ID) ) {
+            foreach ($taxes as $tax) {
+                if (has_term($term_name_or_id, $tax, $this->ID)) {
                     $ret = true;
                     break;
                 }
@@ -632,7 +650,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * @api
      * @return int the number of comments on a post
      */
-    public function comment_count() {
+    public function comment_count()
+    {
         return get_comments_number($this->ID);
     }
 
@@ -642,7 +661,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * @param string $field_name
      * @return boolean
      */
-    public function has_field( $field_name ) {
+    public function has_field($field_name)
+    {
         return (!$this->meta($field_name)) ? false : true;
     }
 
@@ -655,7 +675,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * @param string $field_name of the field you want to lookup.
      * @return mixed
      */
-    public function field_object( $field_name ) {
+    public function field_object($field_name)
+    {
         /**
          * Filters field object data from Advanced Custom Fields.
          *
@@ -679,14 +700,15 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
     /**
      * @inheritDoc
      */
-    protected function fetch_meta( $field_name = '', $args = [], $apply_filters = true ) {
-        $revised_data = $this->get_revised_data_from_method( 'meta', $field_name );
+    protected function fetch_meta($field_name = '', $args = [], $apply_filters = true)
+    {
+        $revised_data = $this->get_revised_data_from_method('meta', $field_name);
 
-        if ( $revised_data ) {
+        if ($revised_data) {
             return $revised_data;
         }
 
-        return parent::fetch_meta( $field_name, $args, $apply_filters );
+        return parent::fetch_meta($field_name, $args, $apply_filters);
     }
 
     /**
@@ -699,19 +721,20 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * @param string $field_name The field name for which you want to get the value.
      * @return mixed The meta field value.
      */
-    public function get_field( $field_name = null ) {
+    public function get_field($field_name = null)
+    {
         Helper::deprecated(
             "{{ post.get_field('field_name') }}",
             "{{ post.meta('field_name') }}",
             '2.0.0'
         );
 
-        if ( $field_name === null ) {
+        if ($field_name === null) {
             // On the off-chance the field is actually named meta.
             $field_name = 'meta';
         }
 
-        return $this->meta( $field_name );
+        return $this->meta($field_name);
     }
 
     /**
@@ -721,7 +744,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * @deprecated since 2.0.0
      * @param string $field_name
      */
-    public function import_field( $field_name ) {
+    public function import_field($field_name)
+    {
         Helper::deprecated(
             "Importing field data onto an object",
             "{{ post.meta('field_name') }}",
@@ -751,13 +775,14 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * ```
      * @return string a space-seperated list of classes
      */
-    public function post_class( $class = '' ) {
+    public function post_class($class = '')
+    {
         global $post;
         $old_global_post = $post;
         $post = $this;
 
         $class_array = get_post_class($class, $this->ID);
-        if ( $this->is_previewing() ) {
+        if ($this->is_previewing()) {
             $class_array = get_post_class($class, $this->post_parent);
         }
         $class_array = implode(' ', $class_array);
@@ -781,8 +806,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      *
      * @return string a space-seperated list of classes
      */
-    public function css_class( $class = '' ) {
-        if ( ! $this->_css_class ) {
+    public function css_class($class = '')
+    {
+        if (!$this->_css_class) {
             $this->_css_class = $this->post_class();
         }
 
@@ -793,7 +819,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * @return array
      * @codeCoverageIgnore
      */
-    public function get_method_values() {
+    public function get_method_values()
+    {
         $ret = parent::get_method_values();
         $ret['author'] = $this->author();
         $ret['categories'] = $this->categories();
@@ -829,8 +856,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * ```
      * @return User|null A User object if found, false if not
      */
-    public function author() {
-        if ( isset($this->post_author) ) {
+    public function author()
+    {
+        if (isset($this->post_author)) {
             $factory = new UserFactory();
             return $factory->from((int) $this->post_author);
         }
@@ -842,7 +870,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * @api
      * @return array
      */
-    public function authors() {
+    public function authors()
+    {
         /**
          * Filters authors for a post.
          *
@@ -872,7 +901,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * ```
      * @return User|null A User object if found, false if not
      */
-    public function modified_author() {
+    public function modified_author()
+    {
         $user_id = get_post_meta($this->ID, '_edit_last', true);
         return ($user_id ? Timber::get_user($user_id) : $this->author());
     }
@@ -883,7 +913,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * @api
      * @return array of Timber\Term objects
      */
-    public function categories() {
+    public function categories()
+    {
         return $this->terms('category');
     }
 
@@ -895,9 +926,10 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * @api
      * @return \Timber\Term|null
      */
-    public function category() {
+    public function category()
+    {
         $cats = $this->categories();
-        if ( count($cats) && isset($cats[0]) ) {
+        if (count($cats) && isset($cats[0])) {
             return $cats[0];
         }
     }
@@ -919,15 +951,16 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * @param string|array $post_type _optional_ use to find children of a particular post type (attachment vs. page for example). You might want to restrict to certain types of children in case other stuff gets all mucked in there. You can use 'parent' to use the parent's post type or you can pass an array of post types.
      * @return \Timber\PostCollectionInterface
      */
-    public function children( $post_type = 'any' ) {
-        if ( $post_type === 'parent' ) {
+    public function children($post_type = 'any')
+    {
+        if ($post_type === 'parent') {
             $post_type = $this->post_type;
         }
-        if ( is_array($post_type) ) {
+        if (is_array($post_type)) {
             $post_type = implode('&post_type[]=', $post_type);
         }
         $query = 'post_parent=' . $this->ID . '&post_type[]=' . $post_type . '&numberposts=-1&orderby=menu_order title&order=ASC&post_status[]=publish';
-        if ( $this->post_status === 'publish' ) {
+        if ($this->post_status === 'publish') {
             $query .= '&post_status[]=inherit';
         }
 
@@ -981,7 +1014,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * </li>
      * ```
      */
-    public function comments( $count = null, $order = 'wp', $type = 'comment', $status = 'approve' ) {
+    public function comments($count = null, $order = 'wp', $type = 'comment', $status = 'approve')
+    {
         global $overridden_cpage, $user_ID;
         $overridden_cpage = false;
 
@@ -989,19 +1023,19 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
         $comment_author_email = $commenter['comment_author_email'];
 
         $args = array('status' => $status, 'order' => $order, 'type' => $type);
-        if ( $count > 0 ) {
+        if ($count > 0) {
             $args['number'] = $count;
         }
-        if ( strtolower($order) == 'wp' || strtolower($order) == 'wordpress' ) {
+        if (strtolower($order) == 'wp' || strtolower($order) == 'wordpress') {
             $args['order'] = get_option('comment_order');
         }
-        if ( $user_ID ) {
+        if ($user_ID) {
             $args['include_unapproved'] = array($user_ID);
-        } elseif ( !empty($comment_author_email) ) {
+        } elseif (!empty($comment_author_email)) {
             $args['include_unapproved'] = array($comment_author_email);
-        } elseif ( function_exists('wp_get_unapproved_comment_author_email') ) {
+        } elseif (function_exists('wp_get_unapproved_comment_author_email')) {
             $unapproved_email = wp_get_unapproved_comment_author_email();
-            if ( $unapproved_email ) {
+            if ($unapproved_email) {
                 $args['include_unapproved'] = array($unapproved_email);
             }
         }
@@ -1014,8 +1048,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * If the Password form is to be shown, show it!
      * @return string|void
      */
-    protected function maybe_show_password_form() {
-        if ( $this->password_required() ) {
+    protected function maybe_show_password_form()
+    {
+        if ($this->password_required()) {
             $show_pw = false;
 
             /**
@@ -1037,7 +1072,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
              */
             $show_pw = apply_filters('timber/post/content/show_password_form_for_protected', $show_pw);
 
-            if ( $show_pw ) {
+            if ($show_pw) {
                 /**
                  * Filters the password form output.
                  *
@@ -1066,13 +1101,14 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
     /**
      *
      */
-    protected function get_revised_data_from_method( $method, $args = false ) {
-        if ( ! is_array($args) ) {
+    protected function get_revised_data_from_method($method, $args = false)
+    {
+        if (!is_array($args)) {
             $args = array($args);
         }
         $rev = $this->get_post_preview_object();
-        if ( $rev && $this->ID == $rev->post_parent && $this->ID != $rev->ID ) {
-            return call_user_func_array( [ $rev, $method ], $args );
+        if ($rev && $this->ID == $rev->post_parent && $this->ID != $rev->ID) {
+            return call_user_func_array([ $rev, $method ], $args);
         }
     }
 
@@ -1101,30 +1137,31 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      *
      * @return string
      */
-    public function content( $page = 0, $len = -1 ) {
-        if ( $rd = $this->get_revised_data_from_method('content', array($page, $len) ) ) {
+    public function content($page = 0, $len = -1)
+    {
+        if ($rd = $this->get_revised_data_from_method('content', array($page, $len))) {
             return $rd;
         }
-        if ( $form = $this->maybe_show_password_form() ) {
+        if ($form = $this->maybe_show_password_form()) {
             return $form;
         }
-        if ( $len == -1 && $page == 0 && $this->___content ) {
+        if ($len == -1 && $page == 0 && $this->___content) {
             return $this->___content;
         }
         $content = $this->post_content;
-        if ( $len > 0 ) {
+        if ($len > 0) {
             $content = wp_trim_words($content, $len);
         }
-        if ( $page ) {
+        if ($page) {
             $contents = explode('<!--nextpage-->', $content);
             $page--;
-            if ( count($contents) > $page ) {
+            if (count($contents) > $page) {
                 $content = $contents[$page];
             }
         }
-        $content = $this->content_handle_no_teaser_block( $content );
+        $content = $this->content_handle_no_teaser_block($content);
         $content = apply_filters('the_content', ($content));
-        if ( $len == -1 && $page == 0 ) {
+        if ($len == -1 && $page == 0) {
             $this->___content = $content;
         }
         return $content;
@@ -1138,8 +1175,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * @param string $content
      * @return string
      */
-    protected function content_handle_no_teaser_block( $content ) {
-        if ( (strpos($content, 'noTeaser:true') !== false || strpos($content, '"noTeaser":true') !== false) && strpos($content, '<!-- /wp:more -->') !== false) {
+    protected function content_handle_no_teaser_block($content)
+    {
+        if ((strpos($content, 'noTeaser:true') !== false || strpos($content, '"noTeaser":true') !== false) && strpos($content, '<!-- /wp:more -->') !== false) {
             $arr = explode('<!-- /wp:more -->', $content);
             return trim($arr[1]);
         }
@@ -1161,7 +1199,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * @return string The content for the current page. If there’s no page break found in the
      *                content, the whole content is returned.
      */
-    public function paged_content() {
+    public function paged_content()
+    {
         global $page;
         return $this->content($page, -1);
     }
@@ -1174,8 +1213,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      *
      * @return false|int Unix timestamp on success, false on failure.
      */
-    public function timestamp() {
-        return get_post_timestamp( $this->ID );
+    public function timestamp()
+    {
+        return get_post_timestamp($this->ID);
     }
 
     /**
@@ -1186,8 +1226,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      *
      * @return false|int Unix timestamp on success, false on failure.
      */
-    public function modified_timestamp() {
-        return get_post_timestamp( $this->ID, 'modified' );
+    public function modified_timestamp()
+    {
+        return get_post_timestamp($this->ID, 'modified');
     }
 
     /**
@@ -1217,9 +1258,10 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      *
      * @return string
      */
-    public function date( $date_format = null ) {
-        $format = $date_format ?: get_option( 'date_format' );
-        $date   = wp_date( $format, $this->timestamp() );
+    public function date($date_format = null)
+    {
+        $format = $date_format ?: get_option('date_format');
+        $date = wp_date($format, $this->timestamp());
 
         /**
          * Filters the date a post was published.
@@ -1231,7 +1273,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
          *                                 specified.
          * @param int|WP_Post $id          The post object or ID.
          */
-        $date = apply_filters( 'get_the_date', $date, $date_format, $this->ID );
+        $date = apply_filters('get_the_date', $date, $date_format, $this->ID);
 
         return $date;
     }
@@ -1263,9 +1305,10 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      *
      * @return string
      */
-    public function modified_date( $date_format = null ) {
-        $format = $date_format ?: get_option( 'date_format' );
-        $date   = wp_date( $format, $this->modified_timestamp() );
+    public function modified_date($date_format = null)
+    {
+        $format = $date_format ?: get_option('date_format');
+        $date = wp_date($format, $this->modified_timestamp());
 
         /**
          * Filters the date a post was last modified.
@@ -1282,7 +1325,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
          *                                  'date_format' option.
          * @param WP_Post|null $post        WP_Post object or null if no post is found.
          */
-        $date = apply_filters( 'get_the_modified_date', $date, $date_format, get_post( $this->ID ) );
+        $date = apply_filters('get_the_modified_date', $date, $date_format, get_post($this->ID));
 
         return $date;
     }
@@ -1314,9 +1357,10 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      *
      * @return string
      */
-    public function time( $time_format = null ) {
-        $format = $time_format ?: get_option( 'time_format' );
-        $time   = wp_date( $format, $this->timestamp() );
+    public function time($time_format = null)
+    {
+        $format = $time_format ?: get_option('time_format');
+        $time = wp_date($format, $this->timestamp());
 
         /**
          * Filters the time a post was written.
@@ -1329,7 +1373,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
          *                                 specified in `time_format` option. Default empty.
          * @param int|WP_Post $id          WP_Post object or ID.
          */
-        $time = apply_filters( 'get_the_time', $time, $time_format, $this->ID );
+        $time = apply_filters('get_the_time', $time, $time_format, $this->ID);
 
         return $time;
     }
@@ -1361,9 +1405,10 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      *
      * @return string
      */
-    public function modified_time( $time_format = null ) {
-        $format = $time_format ?: get_option( 'time_format' );
-        $time   = wp_date( $format, $this->modified_timestamp() );
+    public function modified_time($time_format = null)
+    {
+        $format = $time_format ?: get_option('time_format');
+        $time = wp_date($format, $this->modified_timestamp());
 
         /**
          * Filters the localized time a post was last modified.
@@ -1381,7 +1426,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
          *                                  to value specified in 'time_format' option.
          * @param WP_Post|null $post        WP_Post object or null if no post is found.
          */
-        $time = apply_filters( 'get_the_modified_time', $time, $time_format, get_post( $this->ID ) );
+        $time = apply_filters('get_the_modified_time', $time, $time_format, get_post($this->ID));
 
         return $time;
     }
@@ -1401,8 +1446,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * ```
      * @return \Timber\PostType
      */
-    public function type() {
-        if ( ! $this->__type instanceof PostType ) {
+    public function type()
+    {
+        if (!$this->__type instanceof PostType) {
             $this->__type = new PostType($this->post_type);
         }
         return $this->__type;
@@ -1414,8 +1460,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * @api
      * @return bool|string the edit URL of a post in the WordPress admin
      */
-    public function edit_link() {
-        if ( $this->can_edit() ) {
+    public function edit_link()
+    {
+        if ($this->can_edit()) {
             return get_edit_post_link($this->ID);
         }
     }
@@ -1424,7 +1471,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * @api
      * @return mixed
      */
-    public function format() {
+    public function format()
+    {
         return get_post_format($this->ID);
     }
 
@@ -1433,7 +1481,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * @api
      * @return boolean
      */
-    public function password_required() {
+    public function password_required()
+    {
         return post_password_required($this->ID);
     }
 
@@ -1446,8 +1495,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * ```
      * @return string ex: http://example.org/2015/07/my-awesome-post
      */
-    public function link() {
-        if ( isset($this->_permalink) ) {
+    public function link()
+    {
+        if (isset($this->_permalink)) {
             return $this->_permalink;
         }
         $this->_permalink = get_permalink($this->ID);
@@ -1458,7 +1508,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * @api
      * @return string
      */
-    public function name() {
+    public function name()
+    {
         return $this->title();
     }
 
@@ -1480,19 +1531,20 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      *
      * @return mixed
      */
-    public function next( $in_same_term = false ) {
-        if ( !isset($this->_next) || !isset($this->_next[$in_same_term]) ) {
+    public function next($in_same_term = false)
+    {
+        if (!isset($this->_next) || !isset($this->_next[$in_same_term])) {
             global $post;
             $this->_next = array();
             $old_global = $post;
             $post = $this;
-            if ( is_string($in_same_term) && strlen($in_same_term) ) {
+            if (is_string($in_same_term) && strlen($in_same_term)) {
                 $adjacent = get_adjacent_post(true, '', false, $in_same_term);
             } else {
                 $adjacent = get_adjacent_post(false, '', false);
             }
 
-            if ( $adjacent ) {
+            if ($adjacent) {
                 $this->_next[$in_same_term] = $this->factory()->from($adjacent);
             } else {
                 $this->_next[$in_same_term] = false;
@@ -1540,26 +1592,27 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      *
      * @return array An array with data to build your paginated content.
      */
-    public function pagination() {
+    public function pagination()
+    {
         global $post, $page, $numpages, $multipage;
         $post = $this;
         $ret = array();
-        if ( $multipage ) {
-            for ( $i = 1; $i <= $numpages; $i++ ) {
+        if ($multipage) {
+            for ($i = 1; $i <= $numpages; $i++) {
                 $link = self::get_wp_link_page($i);
                 $data = array('name' => $i, 'title' => $i, 'text' => $i, 'link' => $link);
-                if ( $i == $page ) {
+                if ($i == $page) {
                     $data['current'] = true;
                 }
                 $ret['pages'][] = $data;
             }
             $i = $page - 1;
-            if ( $i ) {
+            if ($i) {
                 $link = self::get_wp_link_page($i);
                 $ret['prev'] = array('link' => $link);
             }
             $i = $page + 1;
-            if ( $i <= $numpages ) {
+            if ($i <= $numpages) {
                 $link = self::get_wp_link_page($i);
                 $ret['next'] = array('link' => $link);
             }
@@ -1575,10 +1628,11 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * @param array|WP_Post $data
      * @param string $class
      */
-    public function convert( $data ) {
-        if ( is_object($data) ) {
+    public function convert($data)
+    {
+        if (is_object($data)) {
             $data = Helper::convert_wp_object($data);
-        } else if ( is_array($data) ) {
+        } elseif (is_array($data)) {
             $data = array_map([$this, 'convert'], $data);
         }
         return $data;
@@ -1596,8 +1650,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * ```
      * @return bool|\Timber\Post
      */
-    public function parent() {
-        if ( !$this->post_parent ) {
+    public function parent()
+    {
+        if (!$this->post_parent) {
             return false;
         }
 
@@ -1615,7 +1670,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      * ```
      * @return string
      */
-    public function path() {
+    public function path()
+    {
         return URLHelper::get_rel_url($this->link());
     }
 
@@ -1636,8 +1692,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
      *                                  `false`.
      * @return mixed
      */
-    public function prev( $in_same_term = false ) {
-        if ( isset($this->_prev) && isset($this->_prev[$in_same_term]) ) {
+    public function prev($in_same_term = false)
+    {
+        if (isset($this->_prev) && isset($this->_prev[$in_same_term])) {
             return $this->_prev[$in_same_term];
         }
         global $post;
@@ -1646,168 +1703,178 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
         $within_taxonomy = ($in_same_term) ? $in_same_term : 'category';
         $adjacent = get_adjacent_post(($in_same_term), '', true, $within_taxonomy);
         $prev_in_taxonomy = false;
-        if ( $adjacent ) {
+        if ($adjacent) {
             $prev_in_taxonomy = $this->factory()->from($adjacent);
         }
         $this->_prev[$in_same_term] = $prev_in_taxonomy;
-    	$post = $old_global;
-		return $this->_prev[$in_same_term];
-	}
+        $post = $old_global;
+        return $this->_prev[$in_same_term];
+    }
 
-	/**
-	 * Gets the tags on a post, uses WP's post_tag taxonomy
-	 *
-	 * @api
-	 * @return array
-	 */
-	public function tags() {
-		return $this->terms('post_tag');
-	}
+    /**
+     * Gets the tags on a post, uses WP's post_tag taxonomy
+     *
+     * @api
+     * @return array
+     */
+    public function tags()
+    {
+        return $this->terms('post_tag');
+    }
 
-	/**
-	 * Gets the post’s thumbnail ID.
-	 *
-	 * @api
-	 * @since 2.0.0
-	 *
-	 * @return false|int The default post’s ID. False if no thumbnail was defined.
-	 */
-	public function thumbnail_id() {
-		return (int) get_post_meta( $this->ID, '_thumbnail_id', true );
-	}
+    /**
+     * Gets the post’s thumbnail ID.
+     *
+     * @api
+     * @since 2.0.0
+     *
+     * @return false|int The default post’s ID. False if no thumbnail was defined.
+     */
+    public function thumbnail_id()
+    {
+        return (int) get_post_meta($this->ID, '_thumbnail_id', true);
+    }
 
-	/**
-	 * get the featured image as a Timber/Image
-	 *
-	 * @api
-	 * @example
-	 * ```twig
-	 * <img src="{{ post.thumbnail.src }}" />
-	 * ```
-	 * @return \Timber\Image|null of your thumbnail
-	 */
-	public function thumbnail() {
-		$tid = $this->thumbnail_id();
+    /**
+     * get the featured image as a Timber/Image
+     *
+     * @api
+     * @example
+     * ```twig
+     * <img src="{{ post.thumbnail.src }}" />
+     * ```
+     * @return \Timber\Image|null of your thumbnail
+     */
+    public function thumbnail()
+    {
+        $tid = $this->thumbnail_id();
 
-		if ( $tid ) {
-			return $this->factory()->from($tid);
-		}
-	}
+        if ($tid) {
+            return $this->factory()->from($tid);
+        }
+    }
 
 
-	/**
-	 * Returns the processed title to be used in templates. This returns the title of the post after WP's filters have run. This is analogous to `the_title()` in standard WP template tags.
-	 *
-	 * @api
-	 * @example
-	 * ```twig
-	 * <h1>{{ post.title }}</h1>
-	 * ```
-	 * @return string
-	 */
-	public function title() {
-		if ( $rd = $this->get_revised_data_from_method('title') ) {
-			return $rd;
-		}
-		return apply_filters('the_title', $this->post_title, $this->ID);
-	}
+    /**
+     * Returns the processed title to be used in templates. This returns the title of the post after WP's filters have run. This is analogous to `the_title()` in standard WP template tags.
+     *
+     * @api
+     * @example
+     * ```twig
+     * <h1>{{ post.title }}</h1>
+     * ```
+     * @return string
+     */
+    public function title()
+    {
+        if ($rd = $this->get_revised_data_from_method('title')) {
+            return $rd;
+        }
+        return apply_filters('the_title', $this->post_title, $this->ID);
+    }
 
-	/**
-	 * Returns galleries from the post’s content.
-	 *
-	 * @api
-	 * @example
-	 * ```twig
-	 * {{ post.gallery }}
-	 * ```
-	 * @return array A list of arrays, each containing gallery data and srcs parsed from the
-	 * expanded shortcode.
-	 */
-	public function gallery( $html = true ) {
-		$galleries = get_post_galleries($this->ID, $html);
-		$gallery = reset($galleries);
+    /**
+     * Returns galleries from the post’s content.
+     *
+     * @api
+     * @example
+     * ```twig
+     * {{ post.gallery }}
+     * ```
+     * @return array A list of arrays, each containing gallery data and srcs parsed from the
+     * expanded shortcode.
+     */
+    public function gallery($html = true)
+    {
+        $galleries = get_post_galleries($this->ID, $html);
+        $gallery = reset($galleries);
 
-		return apply_filters('get_post_gallery', $gallery, $this->ID, $galleries);
-	}
+        return apply_filters('get_post_gallery', $gallery, $this->ID, $galleries);
+    }
 
-	/**
-	 * Returns audio tags embedded in the post’s content.
-	 *
-	 * @api
-	 * @example
-	 * ```twig
-	 * {{ post.audio }}
-	 * ```
-	 * @return bool|array A list of found HTML embeds.
-	 */
-	public function audio() {
-		$audio = false;
+    /**
+     * Returns audio tags embedded in the post’s content.
+     *
+     * @api
+     * @example
+     * ```twig
+     * {{ post.audio }}
+     * ```
+     * @return bool|array A list of found HTML embeds.
+     */
+    public function audio()
+    {
+        $audio = false;
 
-		// Only get audio from the content if a playlist isn’t present.
-		if ( false === strpos($this->content(), 'wp-playlist-script') ) {
-			$audio = get_media_embedded_in_content($this->content(), array('audio'));
-		}
+        // Only get audio from the content if a playlist isn’t present.
+        if (false === strpos($this->content(), 'wp-playlist-script')) {
+            $audio = get_media_embedded_in_content($this->content(), array('audio'));
+        }
 
-		return $audio;
-	}
+        return $audio;
+    }
 
-	/**
-	 * Returns video tags embedded in the post’s content.
-	 *
-	 * @api
-	 * @example
-	 * ```twig
-	 * {{ post.video }}
-	 * ```
-	 * @return bool|array A list of found HTML embeds.
-	 */
-	public function video() {
-		$video = false;
+    /**
+     * Returns video tags embedded in the post’s content.
+     *
+     * @api
+     * @example
+     * ```twig
+     * {{ post.video }}
+     * ```
+     * @return bool|array A list of found HTML embeds.
+     */
+    public function video()
+    {
+        $video = false;
 
-		// Only get video from the content if a playlist isn't present.
-		if ( false === strpos($this->content(), 'wp-playlist-script') ) {
-			$video = get_media_embedded_in_content($this->content(), array( 'video', 'object', 'embed', 'iframe' ));
-		}
+        // Only get video from the content if a playlist isn't present.
+        if (false === strpos($this->content(), 'wp-playlist-script')) {
+            $video = get_media_embedded_in_content($this->content(), array( 'video', 'object', 'embed', 'iframe' ));
+        }
 
-		return $video;
-	}
+        return $video;
+    }
 
-	protected function get_entity_name() {
-		return 'post';
-	}
+    protected function get_entity_name()
+    {
+        return 'post';
+    }
 
-	/**
-	 * Given a base query and a list of taxonomies, return a list of queries
-	 * each of which queries for one of the taxonomies.
-	 * @example
-	 * ```
-	 * $this->partition_tax_queries(["object_ids" => [123]], ["a", "b"]);
-	 *
-	 * // result:
-	 * // [
-	 * //   ["object_ids" => [123], "taxonomy" => ["a"]],
-	 * //   ["object_ids" => [123], "taxonomy" => ["b"]],
-	 * // ]
-	 * ```
-	 * @internal
-	 */
-	private function partition_tax_queries(array $query, array $taxonomies) : array {
-		return array_map(function(string $tax) use ($query) : array {
-			return array_merge($query, [
-				'taxonomy' => [$tax],
-			]);
-		}, $taxonomies);
-	}
+    /**
+     * Given a base query and a list of taxonomies, return a list of queries
+     * each of which queries for one of the taxonomies.
+     * @example
+     * ```
+     * $this->partition_tax_queries(["object_ids" => [123]], ["a", "b"]);
+     *
+     * // result:
+     * // [
+     * //   ["object_ids" => [123], "taxonomy" => ["a"]],
+     * //   ["object_ids" => [123], "taxonomy" => ["b"]],
+     * // ]
+     * ```
+     * @internal
+     */
+    private function partition_tax_queries(array $query, array $taxonomies): array
+    {
+        return array_map(function (string $tax) use ($query): array {
+            return array_merge($query, [
+                'taxonomy' => [$tax],
+            ]);
+        }, $taxonomies);
+    }
 
-	/**
-	 * Get a PostFactory instance for internal usage
-	 *
-	 * @internal
-	 * @return \Timber\Factory\PostFactory
-	 */
-	private function factory() {
-		static $factory;
-		$factory = $factory ?: new PostFactory();
-		return $factory;
-	}
+    /**
+     * Get a PostFactory instance for internal usage
+     *
+     * @internal
+     * @return \Timber\Factory\PostFactory
+     */
+    private function factory()
+    {
+        static $factory;
+        $factory = $factory ?: new PostFactory();
+        return $factory;
+    }
 }

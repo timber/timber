@@ -3,7 +3,8 @@
 /**
  * Class MetaUser
  */
-class MetaUser extends Timber\User {
+class MetaUser extends Timber\User
+{
     /**
      * Public property.
      *
@@ -23,7 +24,8 @@ class MetaUser extends Timber\User {
      *
      * @return string
      */
-    public function public_method() {
+    public function public_method()
+    {
         return 'I am a public method';
     }
 
@@ -34,7 +36,8 @@ class MetaUser extends Timber\User {
      *
      * @return string
      */
-    public function public_method_with_args( $arg1 ) {
+    public function public_method_with_args($arg1)
+    {
         return 'I am a public method';
     }
 
@@ -43,7 +46,8 @@ class MetaUser extends Timber\User {
      *
      * @return string
      */
-    protected function protected_method() {
+    protected function protected_method()
+    {
         return 'I am a protected method';
     }
 }

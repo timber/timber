@@ -5,8 +5,8 @@ namespace Timber\Factory;
 use Timber\CoreInterface;
 use Timber\User;
 
-use WP_User_Query;
 use WP_User;
+use WP_User_Query;
 
 /**
  * Class UserFactory
@@ -16,7 +16,8 @@ use WP_User;
  *
  * @internal
  */
-class UserFactory {
+class UserFactory
+{
     /**
      * Internal method that does the heavy lifting for converting some kind of user
      * object or ID to a Timber\User object.
@@ -33,7 +34,8 @@ class UserFactory {
      * * an associative array (interpreted as arguments for a WP_User_Query)
      * @return \Timber\User|array|null
      */
-    public function from($params) {
+    public function from($params)
+    {
         if (is_int($params) || is_string($params) && is_numeric($params)) {
             return $this->from_id($params);
         }
@@ -60,13 +62,15 @@ class UserFactory {
         return null;
     }
 
-    protected function from_id(int $id) {
+    protected function from_id(int $id)
+    {
         $wp_user = get_user_by('id', $id);
 
         return $wp_user ? $this->build($wp_user) : null;
     }
 
-    protected function from_user_object($obj) : CoreInterface {
+    protected function from_user_object($obj): CoreInterface
+    {
         if ($obj instanceof CoreInterface) {
             // we already have some kind of Timber Core object
             return $obj;
@@ -83,11 +87,13 @@ class UserFactory {
     }
 
     // @todo return a UserCollection instance?
-    protected function from_wp_user_query(WP_User_Query $query) : Iterable {
+    protected function from_wp_user_query(WP_User_Query $query): Iterable
+    {
         return array_map([$this, 'build'], $query->get_results());
     }
 
-    protected function build(WP_User $user) : CoreInterface {
+    protected function build(WP_User $user): CoreInterface
+    {
         /**
          * Filters the name of the PHP class used to instantiate `Timber\User` objects.
          *
@@ -116,17 +122,20 @@ class UserFactory {
          * @param \WP_User $user  The `WP_User` object that is used as the base for the
          *                        `Timber\User` object.
          */
-        $class = apply_filters( 'timber/user/class', User::class, $user );
+        $class = apply_filters('timber/user/class', User::class, $user);
 
         return $class::build($user);
     }
 
-    protected function is_numeric_array($arr) {
-        if ( ! is_array($arr) ) {
+    protected function is_numeric_array($arr)
+    {
+        if (!is_array($arr)) {
             return false;
         }
         foreach (array_keys($arr) as $k) {
-            if ( ! is_int($k) ) return false;
+            if (!is_int($k)) {
+                return false;
+            }
         }
         return true;
     }

@@ -2,8 +2,8 @@
 
 namespace Timber;
 
-abstract class CoreEntity extends Core implements CoreInterface, MetaInterface {
-
+abstract class CoreEntity extends Core implements CoreInterface, MetaInterface
+{
     /**
      * Gets an object meta value.
      *
@@ -24,8 +24,9 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface {
      * @return mixed The custom field value or an array of custom field values. Null if no value
      *               could be found.
      */
-    public function meta( $field_name = '', $args = [] ) {
-        return $this->fetch_meta( $field_name, $args );
+    public function meta($field_name = '', $args = [])
+    {
+        return $this->fetch_meta($field_name, $args);
     }
 
     /**
@@ -48,8 +49,9 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface {
      * @return null|mixed The meta field value(s). Null if no value could be found, an empty array
      *                    if all fields were requested but no values could be found.
      */
-    public function raw_meta( $field_name = '' ) {
-        return $this->fetch_meta( $field_name, [], false );
+    public function raw_meta($field_name = '')
+    {
+        return $this->fetch_meta($field_name, [], false);
     }
 
     /**
@@ -77,7 +79,8 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface {
      * @return mixed The custom field value or an array of custom field values. Null if no value
      *               could be found.
      */
-    protected function fetch_meta( $field_name = '', $args = [], $apply_filters = true ) {
+    protected function fetch_meta($field_name = '', $args = [], $apply_filters = true)
+    {
 
         /**
          * Filters whether to transform a meta value.
@@ -94,17 +97,17 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface {
          *
          * @param bool $transform_value
          */
-        $transform_value = apply_filters('timber/meta/transform_value', false );
+        $transform_value = apply_filters('timber/meta/transform_value', false);
 
-        $args = wp_parse_args( $args, [
+        $args = wp_parse_args($args, [
             'transform_value' => $transform_value,
-        ] );
+        ]);
 
         $object_meta = null;
 
         $object_type = $this->get_object_type();
 
-        if ( $apply_filters ) {
+        if ($apply_filters) {
             /**
              * Filters object meta data before it is fetched from the database.
              *
@@ -144,7 +147,7 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface {
             );
 
             // @todo Remove when deprecated filters will be gone
-            if( $object_type !== 'term' ) {
+            if ($object_type !== 'term') {
                 /**
                  * Filters the value for a post meta field before it is fetched from the database.
                  *
@@ -171,28 +174,28 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface {
             }
         }
 
-        if ( null === $object_meta ) {
+        if (null === $object_meta) {
             // Fetch values. Auto-fetches all values if $field_name is empty.
-            $object_meta = call_user_func_array( "get_{$object_type}_meta", [ $this->ID, $field_name, true ] );
+            $object_meta = call_user_func_array("get_{$object_type}_meta", [ $this->ID, $field_name, true ]);
 
             // Mimick $single argument when fetching all meta values.
-            if ( empty( $field_name ) && is_array( $object_meta ) && ! empty( $object_meta ) ) {
-                $object_meta = array_map( function( $meta ) {
-                    if ( 1 === count( $meta ) && isset( $meta[0] ) ) {
+            if (empty($field_name) && is_array($object_meta) && !empty($object_meta)) {
+                $object_meta = array_map(function ($meta) {
+                    if (1 === count($meta) && isset($meta[0])) {
                         return $meta[0];
                     }
 
                     return $meta;
-                }, $object_meta );
+                }, $object_meta);
             }
 
             // Empty result.
-            if ( empty( $object_meta ) ) {
-                $object_meta = empty( $field_name ) ? [] : null;
+            if (empty($object_meta)) {
+                $object_meta = empty($field_name) ? [] : null;
             }
         }
 
-        if ( $apply_filters ) {
+        if ($apply_filters) {
             /**
              * Filters the value for a post meta field.
              *
@@ -229,7 +232,7 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface {
             );
 
             // @todo Remove when deprecated filters will be gone
-            if( $object_type === 'term' ) {
+            if ($object_type === 'term') {
                 /**
                  * Filters the value for a term meta field.
                  *
@@ -268,10 +271,9 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface {
             );
 
             // Maybe convert values to Timber objects.
-            if ( $args['transform_value'] ) {
+            if ($args['transform_value']) {
                 $object_meta = $this->convert($object_meta);
             }
-
         }
 
         return $object_meta;
@@ -284,10 +286,11 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface {
      * @param array|WP_Post $data
      * @param string $class
      */
-    public function convert( $data ) {
-        if ( is_object($data) ) {
+    public function convert($data)
+    {
+        if (is_object($data)) {
             $data = Helper::convert_wp_object($data);
-        } else if ( is_array($data) ) {
+        } elseif (is_array($data)) {
             $data = array_map([$this, 'convert'], $data);
         }
         return $data;
@@ -298,8 +301,8 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface {
      *
      * @return string
      */
-    protected function get_object_type() {
+    protected function get_object_type()
+    {
         return $this->object_type;
     }
-
 }

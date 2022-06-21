@@ -5,258 +5,279 @@
   /**
    * @group called-post-constructor
    */
-	class TestTimberCache extends Timber_UnitTestCase {
-
-        private function _generate_transient_name() {
+    class TestTimberCache extends Timber_UnitTestCase
+    {
+        private function _generate_transient_name()
+        {
             static $i = 0;
             $i++;
             return 'timber_test_transient_' . $i;
         }
 
-        function testTransientLock() {
-
+        public function testTransientLock()
+        {
             $transient = $this->_generate_transient_name();
-            Timber\Helper::_lock_transient( $transient, 5 );
-            $this->assertTrue( Timber\Helper::_is_transient_locked( $transient ) );
+            Timber\Helper::_lock_transient($transient, 5);
+            $this->assertTrue(Timber\Helper::_is_transient_locked($transient));
         }
 
-        function testTransientUnlock() {
+        public function testTransientUnlock()
+        {
             $transient = $this->_generate_transient_name();
-            Timber\Helper::_lock_transient( $transient, 5 );
-            Timber\Helper::_unlock_transient( $transient, 5 );
-            $this->assertFalse( Timber\Helper::_is_transient_locked( $transient ) );
+            Timber\Helper::_lock_transient($transient, 5);
+            Timber\Helper::_unlock_transient($transient, 5);
+            $this->assertFalse(Timber\Helper::_is_transient_locked($transient));
         }
 
-        function testTransientExpire() {
+        public function testTransientExpire()
+        {
             $transient = $this->_generate_transient_name();
 
-            Timber\Helper::_lock_transient( $transient, 1 );
+            Timber\Helper::_lock_transient($transient, 1);
             sleep(2);
-            $this->assertFalse( Timber\Helper::_is_transient_locked( $transient ) );
+            $this->assertFalse(Timber\Helper::_is_transient_locked($transient));
         }
 
-        function testTransientLocksInternal() {
+        public function testTransientLocksInternal()
+        {
             $transient = $this->_generate_transient_name();
 
-            $is_locked = Timber\Helper::transient( $transient, function() use ( $transient ) {
-                return Timber\Helper::_is_transient_locked( $transient );
-            }, 30 );
+            $is_locked = Timber\Helper::transient($transient, function () use ($transient) {
+                return Timber\Helper::_is_transient_locked($transient);
+            }, 30);
 
-            $this->assertTrue( $is_locked );
+            $this->assertTrue($is_locked);
         }
 
-        function testTransientLocksExternal() {
+        public function testTransientLocksExternal()
+        {
             $transient = $this->_generate_transient_name();
 
             Timber\Helper::_lock_transient($transient, 30);
-            $get_transient = Timber\Helper::transient( $transient, '__return_true', 30 );
+            $get_transient = Timber\Helper::transient($transient, '__return_true', 30);
 
-            $this->assertFalse( $get_transient );
+            $this->assertFalse($get_transient);
         }
 
-		function testTransientAsAnonymousFunction(){
+        public function testTransientAsAnonymousFunction()
+        {
             $transient = $this->_generate_transient_name();
 
-			$result = Timber\Helper::transient( $transient, function(){
-				return 'pooptime';
-			}, 200);
-			$this->assertEquals( $result, 'pooptime');
-		}
+            $result = Timber\Helper::transient($transient, function () {
+                return 'pooptime';
+            }, 200);
+            $this->assertEquals($result, 'pooptime');
+        }
 
-        function testSetTransient() {
+        public function testSetTransient()
+        {
             $transient = $this->_generate_transient_name();
 
-            $first_value = Timber\Helper::transient( $transient, function(){
+            $first_value = Timber\Helper::transient($transient, function () {
                 return 'first_value';
-            }, 30 );
+            }, 30);
 
-            $second_value = Timber\Helper::transient( $transient, function(){
+            $second_value = Timber\Helper::transient($transient, function () {
                 return 'second_value';
-            }, 30 );
+            }, 30);
 
-            $this->assertEquals( 'first_value', $second_value );
+            $this->assertEquals('first_value', $second_value);
         }
 
-        function testDisableTransients() {
+        public function testDisableTransients()
+        {
             $transient = $this->_generate_transient_name();
 
-            $first_value = Timber\Helper::transient( $transient, function(){
+            $first_value = Timber\Helper::transient($transient, function () {
                 return 'first_value';
-            }, 30 );
+            }, 30);
 
-            $second_value = Timber\Helper::transient( $transient, function(){
+            $second_value = Timber\Helper::transient($transient, function () {
                 return 'second_value';
-            }, false );
+            }, false);
 
-            $this->assertEquals( 'second_value', $second_value );
+            $this->assertEquals('second_value', $second_value);
         }
 
-		function testTransientAsString(){
+        public function testTransientAsString()
+        {
             $transient = $this->_generate_transient_name();
 
-			$result = Timber\Helper::transient( $transient, 'my_test_callback', 200);
-			$this->assertEquals($result, 'lbj');
-		}
+            $result = Timber\Helper::transient($transient, 'my_test_callback', 200);
+            $this->assertEquals($result, 'lbj');
+        }
 
-        function testTransientLocked() {
+        public function testTransientLocked()
+        {
             $transient = $this->_generate_transient_name();
 
             Timber\Helper::_lock_transient($transient, 30);
 
             // Transient is locked and won't be forced, so it should return false
-            $get_transient = Timber\Helper::transient( $transient, '__return_true' );
+            $get_transient = Timber\Helper::transient($transient, '__return_true');
 
-            $this->assertFalse( $get_transient );
+            $this->assertFalse($get_transient);
         }
 
-        function testTransientForce() {
+        public function testTransientForce()
+        {
             $transient = $this->_generate_transient_name();
 
             Timber\Helper::_lock_transient($transient, 30);
-            $get_transient = Timber\Helper::transient( $transient, '__return_true', 0, 5, true );
+            $get_transient = Timber\Helper::transient($transient, '__return_true', 0, 5, true);
 
-            $this->assertTrue( $get_transient );
+            $this->assertTrue($get_transient);
         }
 
-        function testTransientForceAllFilter() {
+        public function testTransientForceAllFilter()
+        {
             $transient = $this->_generate_transient_name();
 
             Timber\Helper::_lock_transient($transient, 30);
 
-            add_filter( 'timber/transient/force_transients', '__return_true' );
-            $get_transient = Timber\Helper::transient( $transient, '__return_true' );
-            remove_filter( 'timber/transient/force_transients', '__return_true' );
+            add_filter('timber/transient/force_transients', '__return_true');
+            $get_transient = Timber\Helper::transient($transient, '__return_true');
+            remove_filter('timber/transient/force_transients', '__return_true');
 
-            $this->assertTrue( $get_transient );
+            $this->assertTrue($get_transient);
         }
 
-        function testKeyGenerator(){
-        	$post_id = $this->factory->post->create(array('post_title' => 'My Test Post'));
-			$post = Timber::get_post($post_id);
+        public function testKeyGenerator()
+        {
+            $post_id = $this->factory->post->create(array('post_title' => 'My Test Post'));
+            $post = Timber::get_post($post_id);
 
-        	$kg = new Timber\Cache\KeyGenerator();
-        	$key = $kg->generateKey($post);
+            $kg = new Timber\Cache\KeyGenerator();
+            $key = $kg->generateKey($post);
 
-        	$this->assertStringStartsWith('Timber;Post;', $key);
+            $this->assertStringStartsWith('Timber;Post;', $key);
         }
 
-        function testKeyGeneratorWithTimberKeyGeneratorInterface() {
+        public function testKeyGeneratorWithTimberKeyGeneratorInterface()
+        {
             $kg = new Timber\Cache\KeyGenerator();
             $thing = new MyFakeThing();
             $key = $kg->generateKey($thing);
             $this->assertEquals('iamakey', $key);
         }
 
-        function testKeyGeneratorWithArray() {
+        public function testKeyGeneratorWithArray()
+        {
             $kg = new Timber\Cache\KeyGenerator();
             $thing = array('_cache_key' => 'iAmAKeyButInAnArray');
             $key = $kg->generateKey($thing);
             $this->assertEquals('iAmAKeyButInAnArray', $key);
         }
 
-        function testTransientForceFilter() {
+        public function testTransientForceFilter()
+        {
             $transient = $this->_generate_transient_name();
 
             Timber\Helper::_lock_transient($transient, 30);
 
-            add_filter( 'timber_force_transient_' . $transient, '__return_true' );
-            $get_transient = Timber\Helper::transient( $transient, '__return_true' );
-            remove_filter( 'timber_force_transient_' . $transient, '__return_true' );
+            add_filter('timber_force_transient_' . $transient, '__return_true');
+            $get_transient = Timber\Helper::transient($transient, '__return_true');
+            remove_filter('timber_force_transient_' . $transient, '__return_true');
 
-            $this->assertTrue( $get_transient );
+            $this->assertTrue($get_transient);
         }
 
-        function testExpireTransient() {
+        public function testExpireTransient()
+        {
             $transient = $this->_generate_transient_name();
 
-            $first_value = Timber\Helper::transient( $transient, function(){
+            $first_value = Timber\Helper::transient($transient, function () {
                 return 'first_value';
-            }, 1 );
+            }, 1);
 
             sleep(2);
 
-            $second_value = Timber\Helper::transient( $transient, function(){
+            $second_value = Timber\Helper::transient($transient, function () {
                 return 'second_value';
-            }, 1 );
+            }, 1);
 
-            $this->assertEquals( 'second_value', $second_value );
-        }
-
-		/**
-		 * @expectedDeprecated Timber::$cache and Timber::$twig_cache
-		 */
-        function testTwigCacheDeprecated(){
-        	$cache_dir = __DIR__.'/../cache/twig';
-        	if (is_dir($cache_dir)){
-        		Timber\Loader::rrmdir($cache_dir);
-        	}
-        	$this->assertFileDoesNotExist($cache_dir);
-        	Timber::$twig_cache = true;
-        	$pid = $this->factory->post->create();
-					$post = Timber::get_post($pid);
-        	Timber::compile('assets/single-post.twig', array('post' => $post));
-        	sleep(1);
-        	$this->assertFileExists($cache_dir);
-        	$loader = new Timber\Loader();
-        	$loader->clear_cache_twig();
-        	Timber::$twig_cache = false;
-        	$this->assertFileDoesNotExist($cache_dir);
+            $this->assertEquals('second_value', $second_value);
         }
 
         /**
-		 * @expectedDeprecated Timber::$cache and Timber::$twig_cache
-		 */
-        function testTwigCacheAliasDeprecated(){
-        	$cache_dir = __DIR__.'/../cache/twig';
-        	if (is_dir($cache_dir)){
-        		Timber\Loader::rrmdir($cache_dir);
-        	}
-        	$this->assertFileDoesNotExist($cache_dir);
-        	Timber::$cache = true;
-        	$pid = $this->factory->post->create();
-					$post = Timber::get_post($pid);
-        	Timber::compile('assets/single-post.twig', array('post' => $post));
-        	//sleep(1);
-        	$this->assertFileExists($cache_dir);
-        	$loader = new Timber\Loader();
-        	$loader->clear_cache_twig();
-        	Timber::$cache = false;
-        	Timber::$twig_cache = false;
-        	$this->assertFileDoesNotExist($cache_dir);
+         * @expectedDeprecated Timber::$cache and Timber::$twig_cache
+         */
+        public function testTwigCacheDeprecated()
+        {
+            $cache_dir = __DIR__ . '/../cache/twig';
+            if (is_dir($cache_dir)) {
+                Timber\Loader::rrmdir($cache_dir);
+            }
+            $this->assertFileDoesNotExist($cache_dir);
+            Timber::$twig_cache = true;
+            $pid = $this->factory->post->create();
+            $post = Timber::get_post($pid);
+            Timber::compile('assets/single-post.twig', array('post' => $post));
+            sleep(1);
+            $this->assertFileExists($cache_dir);
+            $loader = new Timber\Loader();
+            $loader->clear_cache_twig();
+            Timber::$twig_cache = false;
+            $this->assertFileDoesNotExist($cache_dir);
         }
 
-        function testTwigCache(){
-	        $cache_dir = __DIR__ . '/../cache/twig';
-
-	        if ( is_dir( $cache_dir ) ) {
-		        Timber\Loader::rrmdir( $cache_dir );
-	        }
-
-	        $this->assertFileDoesNotExist( $cache_dir );
-
-	        $cache_enabler = function( $options ) {
-				$options['cache'] = true;
-
-				return $options;
-			};
-
-			add_filter( 'timber/twig/environment/options', $cache_enabler );
-
-	        $pid  = $this->factory->post->create();
-	        $post = Timber::get_post( $pid );
-	        Timber::compile( 'assets/single-post.twig', array( 'post' => $post ) );
-	        sleep( 1 );
-
-	        $this->assertFileExists( $cache_dir );
-
-	        $loader = new Timber\Loader();
-	        $loader->clear_cache_twig();
-	        $this->assertFileDoesNotExist( $cache_dir );
-
-	        remove_filter( 'timber/twig/environment/options', $cache_enabler );
+        /**
+         * @expectedDeprecated Timber::$cache and Timber::$twig_cache
+         */
+        public function testTwigCacheAliasDeprecated()
+        {
+            $cache_dir = __DIR__ . '/../cache/twig';
+            if (is_dir($cache_dir)) {
+                Timber\Loader::rrmdir($cache_dir);
+            }
+            $this->assertFileDoesNotExist($cache_dir);
+            Timber::$cache = true;
+            $pid = $this->factory->post->create();
+            $post = Timber::get_post($pid);
+            Timber::compile('assets/single-post.twig', array('post' => $post));
+            //sleep(1);
+            $this->assertFileExists($cache_dir);
+            $loader = new Timber\Loader();
+            $loader->clear_cache_twig();
+            Timber::$cache = false;
+            Timber::$twig_cache = false;
+            $this->assertFileDoesNotExist($cache_dir);
         }
 
-        function testTimberLoaderCache(){
+        public function testTwigCache()
+        {
+            $cache_dir = __DIR__ . '/../cache/twig';
+
+            if (is_dir($cache_dir)) {
+                Timber\Loader::rrmdir($cache_dir);
+            }
+
+            $this->assertFileDoesNotExist($cache_dir);
+
+            $cache_enabler = function ($options) {
+                $options['cache'] = true;
+
+                return $options;
+            };
+
+            add_filter('timber/twig/environment/options', $cache_enabler);
+
+            $pid = $this->factory->post->create();
+            $post = Timber::get_post($pid);
+            Timber::compile('assets/single-post.twig', array( 'post' => $post ));
+            sleep(1);
+
+            $this->assertFileExists($cache_dir);
+
+            $loader = new Timber\Loader();
+            $loader->clear_cache_twig();
+            $this->assertFileDoesNotExist($cache_dir);
+
+            remove_filter('timber/twig/environment/options', $cache_enabler);
+        }
+
+        public function testTimberLoaderCache()
+        {
             $pid = $this->factory->post->create();
             $post = Timber::get_post($pid);
             $str_old = Timber::compile('assets/single-post.twig', array('post' => $post), 600);
@@ -269,12 +290,13 @@
             $this->assertGreaterThan(0, $clear);
             global $wpdb;
             $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
-            $wpdb->query( $query );
+            $wpdb->query($query);
             $this->assertEquals(0, $wpdb->num_rows);
         }
 
 
-        function testTimberLoaderCacheObject(){
+        public function testTimberLoaderCacheObject()
+        {
             global $_wp_using_ext_object_cache;
             global $wp_object_cache;
             $_wp_using_ext_object_cache = true;
@@ -288,14 +310,15 @@
             $clear = $loader->clear_cache_timber(\Timber\Loader::CACHE_OBJECT);
             $this->assertTrue($clear);
             $works = true;
-            if ( isset($wp_object_cache->cache[\Timber\Loader::CACHEGROUP])
-                && !empty($wp_object_cache->cache[\Timber\Loader::CACHEGROUP]) ) {
+            if (isset($wp_object_cache->cache[\Timber\Loader::CACHEGROUP])
+                && !empty($wp_object_cache->cache[\Timber\Loader::CACHEGROUP])) {
                 $works = false;
             }
             $this->assertTrue($works);
         }
 
-        function tear_down() {
+        public function tear_down()
+        {
             global $_wp_using_ext_object_cache;
             $_wp_using_ext_object_cache = false;
             global $wpdb;
@@ -304,7 +327,8 @@
             parent::tear_down();
         }
 
-        function testTimberLoaderCacheTransients() {
+        public function testTimberLoaderCacheTransients()
+        {
             $time = 1;
             $pid = $this->factory->post->create();
             $post = Timber::get_post($pid);
@@ -314,11 +338,12 @@
             $this->assertEquals($str_old, $str_new);
             global $wpdb;
             $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
-            $data = $wpdb->get_results( $query );
+            $data = $wpdb->get_results($query);
             $this->assertEquals(1, $wpdb->num_rows);
         }
 
-        function testTimberLoaderCacheTransientsAdminLoggedIn() {
+        public function testTimberLoaderCacheTransientsAdminLoggedIn()
+        {
             wp_set_current_user(1);
             $time = 1;
             $pid = $this->factory->post->create();
@@ -330,20 +355,22 @@
             $str_new = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r2), array(600, false));
             $this->assertNotEquals($str_old, $str_new);
             self::_unswapFiles();
-
         }
 
-        function _swapFiles() {
-            rename(__DIR__.'/assets/single-post-rand.twig', __DIR__.'/assets/single-post-rand.twig.tmp');
-            rename(__DIR__.'/assets/relative.twig', __DIR__.'/assets/single-post-rand.twig');
+        public function _swapFiles()
+        {
+            rename(__DIR__ . '/assets/single-post-rand.twig', __DIR__ . '/assets/single-post-rand.twig.tmp');
+            rename(__DIR__ . '/assets/relative.twig', __DIR__ . '/assets/single-post-rand.twig');
         }
 
-        function _unswapFiles() {
-            rename(__DIR__.'/assets/single-post-rand.twig', __DIR__.'/assets/relative.twig');
-            rename(__DIR__.'/assets/single-post-rand.twig.tmp', __DIR__.'/assets/single-post-rand.twig');
+        public function _unswapFiles()
+        {
+            rename(__DIR__ . '/assets/single-post-rand.twig', __DIR__ . '/assets/relative.twig');
+            rename(__DIR__ . '/assets/single-post-rand.twig.tmp', __DIR__ . '/assets/single-post-rand.twig');
         }
 
-        function testTimberLoaderCacheTransientsAdminLoggedOut() {
+        public function testTimberLoaderCacheTransientsAdminLoggedOut()
+        {
             $time = 1;
             $pid = $this->factory->post->create();
             $post = Timber::get_post($pid);
@@ -355,7 +382,8 @@
             self::_unswapFiles();
         }
 
-        function testTimberLoaderCacheTransientsAdminLoggedOutWithSiteCache() {
+        public function testTimberLoaderCacheTransientsAdminLoggedOutWithSiteCache()
+        {
             $time = 1;
             $pid = $this->factory->post->create();
             $post = Timber::get_post($pid);
@@ -367,7 +395,8 @@
             self::_unswapFiles();
         }
 
-        function testTimberLoaderCacheTransientsAdminLoggedOutWithObjectCache() {
+        public function testTimberLoaderCacheTransientsAdminLoggedOutWithObjectCache()
+        {
             global $_wp_using_ext_object_cache;
             $_wp_using_ext_object_cache = true;
             $time = 1;
@@ -382,7 +411,8 @@
             $_wp_using_ext_object_cache = false;
         }
 
-        function testTimberLoaderCacheTransientsWithExtObjectCache() {
+        public function testTimberLoaderCacheTransientsWithExtObjectCache()
+        {
             global $_wp_using_ext_object_cache;
             $_wp_using_ext_object_cache = true;
             $time = 1;
@@ -395,16 +425,17 @@
             $this->assertEquals($str_old, $str_new);
             global $wpdb;
             $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
-            $data = $wpdb->get_results( $query );
+            $data = $wpdb->get_results($query);
             $this->assertEquals(0, $wpdb->num_rows);
             $_wp_using_ext_object_cache = false;
         }
 
-        function testTimberLoaderCacheTransientsButKeepOtherTransients() {
+        public function testTimberLoaderCacheTransientsButKeepOtherTransients()
+        {
             $time = 1;
             $pid = $this->factory->post->create();
             $post = Timber::get_post($pid);
-            set_transient( 'random_600', 'foo', 600 );
+            set_transient('random_600', 'foo', 600);
             $random_post = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => rand(0, 99999)), 600);
             $str_old = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => rand(0, 99999)), $time);
             sleep(2);
@@ -412,19 +443,21 @@
             $this->assertEquals($str_old, $str_new);
             global $wpdb;
             $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
-            $data = $wpdb->get_results( $query );
+            $data = $wpdb->get_results($query);
             $this->assertEquals(2, $wpdb->num_rows);
             $this->assertEquals('foo', get_transient('random_600'));
         }
+    }
 
-	}
-
-    class MyFakeThing implements TimberKeyGeneratorInterface {
-        public function _get_cache_key() {
+    class MyFakeThing implements TimberKeyGeneratorInterface
+    {
+        public function _get_cache_key()
+        {
             return 'iamakey';
         }
     }
 
-	function my_test_callback(){
-		return "lbj";
-	}
+    function my_test_callback()
+    {
+        return "lbj";
+    }

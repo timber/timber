@@ -2,9 +2,9 @@
 
 namespace Timber;
 
-use WP_Post;
-
 use Timber\Factory\PostFactory;
+
+use WP_Post;
 
 /**
  * Class Attachment
@@ -15,7 +15,8 @@ use Timber\Factory\PostFactory;
  * @api
  * @since 2.0.0
  */
-class Attachment extends Post {
+class Attachment extends Post
+{
     /**
      * Representation.
      *
@@ -121,7 +122,8 @@ class Attachment extends Post {
      *
      * @return string The src of the attachment.
      */
-    public function __toString() {
+    public function __toString()
+    {
         return $this->src();
     }
 
@@ -132,12 +134,13 @@ class Attachment extends Post {
      *
      * @param string $file_path An absolute path to a file.
      */
-    protected function init_with_file_path( $file_path ) {
-        $url = URLHelper::file_system_to_url( $file_path );
+    protected function init_with_file_path($file_path)
+    {
+        $url = URLHelper::file_system_to_url($file_path);
 
-        $this->abs_url  = $url;
+        $this->abs_url = $url;
         $this->file_loc = $file_path;
-        $this->file     = $file_path;
+        $this->file = $file_path;
     }
 
     /**
@@ -147,12 +150,13 @@ class Attachment extends Post {
      *
      * @param string $relative_path A relative path to a file.
      */
-    protected function init_with_relative_path( $relative_path ) {
-        $file_path = URLHelper::get_full_path( $relative_path );
+    protected function init_with_relative_path($relative_path)
+    {
+        $file_path = URLHelper::get_full_path($relative_path);
 
-        $this->abs_url  = home_url( $relative_path );
+        $this->abs_url = home_url($relative_path);
         $this->file_loc = $file_path;
-        $this->file     = $file_path;
+        $this->file = $file_path;
     }
 
     /**
@@ -162,15 +166,16 @@ class Attachment extends Post {
      *
      * @param string $url An URL on the same host.
      */
-    protected function init_with_url( $url ) {
+    protected function init_with_url($url)
+    {
         $this->abs_url = $url;
 
-        if ( URLHelper::is_local( $url ) ) {
-            $this->file     = URLHelper::remove_double_slashes(
-                ABSPATH . URLHelper::get_rel_url( $url )
+        if (URLHelper::is_local($url)) {
+            $this->file = URLHelper::remove_double_slashes(
+                ABSPATH . URLHelper::get_rel_url($url)
             );
             $this->file_loc = URLHelper::remove_double_slashes(
-                ABSPATH . URLHelper::get_rel_url( $url )
+                ABSPATH . URLHelper::get_rel_url($url)
             );
         }
     }
@@ -183,19 +188,20 @@ class Attachment extends Post {
      * @param int $attachment_id The ID number of the image in the WP database.
      * @return array Attachment info as an array or ID
      */
-    protected function get_info( WP_Post $wp_post ) {
-        $post_data   = get_object_vars( parent::get_info( $wp_post ) );
-        $image_info  = wp_get_attachment_metadata( $wp_post->ID ) ?: [];
+    protected function get_info(WP_Post $wp_post)
+    {
+        $post_data = get_object_vars(parent::get_info($wp_post));
+        $image_info = wp_get_attachment_metadata($wp_post->ID) ?: [];
         $meta_values = $this->raw_meta();
 
-        $data = array_merge( $post_data, $image_info, $meta_values );
+        $data = array_merge($post_data, $image_info, $meta_values);
 
         $basedir = wp_get_upload_dir()['basedir'];
 
-        if ( isset( $data['file'] ) ) {
+        if (isset($data['file'])) {
             $data['file_loc'] = $basedir . DIRECTORY_SEPARATOR . $data['file'];
-        } elseif ( isset( $data['_wp_attached_file'] ) ) {
-            $data['file']     = $data['_wp_attached_file'];
+        } elseif (isset($data['_wp_attached_file'])) {
+            $data['file'] = $data['_wp_attached_file'];
             $data['file_loc'] = $basedir . DIRECTORY_SEPARATOR . $data['file'];
         }
 
@@ -209,9 +215,10 @@ class Attachment extends Post {
      *
      * @return string An URL with or without http/https, depending on what’s appropriate for server.
      */
-    protected function maybe_secure_url( $url ) {
-        if ( is_ssl() && strpos( $url, 'https' ) !== 0 && strpos( $url, 'http' ) === 0 ) {
-            $url = 'https' . substr( $url, strlen( 'http' ) );
+    protected function maybe_secure_url($url)
+    {
+        if (is_ssl() && strpos($url, 'https') !== 0 && strpos($url, 'http') === 0) {
+            $url = 'https' . substr($url, strlen('http'));
         }
 
         return $url;
@@ -235,12 +242,13 @@ class Attachment extends Post {
      *
      * @return string The URL of the attachment.
      */
-    public function link() {
-        if ( $this->abs_url ) {
+    public function link()
+    {
+        if ($this->abs_url) {
             return $this->abs_url;
         }
 
-        return get_permalink( $this->ID );
+        return get_permalink($this->ID);
     }
 
     /**
@@ -257,8 +265,9 @@ class Attachment extends Post {
      *
      * @return string The relative path to an attachment.
      */
-    public function path() {
-        return URLHelper::get_rel_path( $this->src() );
+    public function path()
+    {
+        return URLHelper::get_rel_path($this->src());
     }
 
     /**
@@ -275,12 +284,13 @@ class Attachment extends Post {
      *
      * @return bool|string
      */
-    public function src() {
-        if ( isset( $this->abs_url ) ) {
-            return $this->maybe_secure_url( $this->abs_url );
+    public function src()
+    {
+        if (isset($this->abs_url)) {
+            return $this->maybe_secure_url($this->abs_url);
         }
 
-        return wp_get_attachment_url( $this->ID );
+        return wp_get_attachment_url($this->ID);
     }
 
     /**
@@ -304,10 +314,11 @@ class Attachment extends Post {
      *
      * @return mixed|null The filesize string in a human readable format.
      */
-    public function size() {
-        if ( ! $this->file_size ) {
-            $formatted_size  = size_format( $this->size_raw() );
-            $this->file_size = str_replace( ' ', '&nbsp;', $formatted_size );
+    public function size()
+    {
+        if (!$this->file_size) {
+            $formatted_size = size_format($this->size_raw());
+            $this->file_size = str_replace(' ', '&nbsp;', $formatted_size);
         }
 
         return $this->file_size;
@@ -334,9 +345,10 @@ class Attachment extends Post {
      *
      * @return mixed|null The filesize string in bytes, or false if the filesize can’t be read.
      */
-    public function size_raw() {
-        if ( ! $this->file_size_raw ) {
-            $this->file_size_raw = filesize( $this->file_loc );
+    public function size_raw()
+    {
+        if (!$this->file_size_raw) {
+            $this->file_size_raw = filesize($this->file_loc);
         }
 
         return $this->file_size_raw;
@@ -362,12 +374,13 @@ class Attachment extends Post {
      *
      * @return null|string An uppercase extension string.
      */
-    public function extension() {
-        if ( ! $this->file_extension ) {
-            $file_info = wp_check_filetype( $this->file );
+    public function extension()
+    {
+        if (!$this->file_extension) {
+            $file_info = wp_check_filetype($this->file);
 
-            if ( ! empty( $file_info['ext'] ) ) {
-                $this->file_extension = strtoupper( $file_info['ext'] );
+            if (!empty($file_info['ext'])) {
+                $this->file_extension = strtoupper($file_info['ext']);
             }
         }
 
@@ -388,14 +401,15 @@ class Attachment extends Post {
      * @return false|\Timber\Post Parent object as a `Timber\Post`. Returns `false` if no parent
      *                            object is defined.
      */
-    public function parent() {
-        if ( ! $this->post_parent ) {
+    public function parent()
+    {
+        if (!$this->post_parent) {
             return false;
         }
 
         $factory = new PostFactory();
 
-        return $factory->from( $this->post_parent );
+        return $factory->from($this->post_parent);
     }
 
     /**
@@ -404,7 +418,8 @@ class Attachment extends Post {
      * @deprecated 2.0.0, use Attachment::pathinfo() instead
      * @return array
      */
-    public function get_pathinfo() {
+    public function get_pathinfo()
+    {
         Helper::deprecated(
             "{{ image.get_pathinfo }}",
             "{{ image.pathinfo }}",
@@ -418,7 +433,8 @@ class Attachment extends Post {
      *
      * @return array
      */
-    public function pathinfo() {
+    public function pathinfo()
+    {
         return PathHelper::pathinfo($this->file);
     }
 }

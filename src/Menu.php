@@ -2,17 +2,17 @@
 
 namespace Timber;
 
-use WP_Term;
-
 use Timber\Factory\MenuItemFactory;
+
+use WP_Term;
 
 /**
  * Class Menu
  *
  * @api
  */
-class Menu extends CoreEntity {
-
+class Menu extends CoreEntity
+{
     public $object_type = 'term';
 
     /**
@@ -94,36 +94,37 @@ class Menu extends CoreEntity {
      *                            included in the menu. Default `0`, which is all levels.
      * @return \Timber\Menu
      */
-    public static function build(?WP_Term $menu, $args = []) : ?self {
+    public static function build(?WP_Term $menu, $args = []): ?self
+    {
         /**
          * Default arguments from wp_nav_menu() function.
          *
          * @see wp_nav_menu()
          */
         $defaults = [
-            'menu'                 => '',
-            'container'            => 'div',
-            'container_class'      => '',
-            'container_id'         => '',
+            'menu' => '',
+            'container' => 'div',
+            'container_class' => '',
+            'container_id' => '',
             'container_aria_label' => '',
-            'menu_class'           => 'menu',
-            'menu_id'              => '',
-            'echo'                 => true,
-            'fallback_cb'          => 'wp_page_menu',
-            'before'               => '',
-            'after'                => '',
-            'link_before'          => '',
-            'link_after'           => '',
-            'items_wrap'           => '<ul id="%1$s" class="%2$s">%3$s</ul>',
-            'item_spacing'         => 'preserve',
-            'depth'                => 0,
-            'walker'               => '',
-            'theme_location'       => '',
+            'menu_class' => 'menu',
+            'menu_id' => '',
+            'echo' => true,
+            'fallback_cb' => 'wp_page_menu',
+            'before' => '',
+            'after' => '',
+            'link_before' => '',
+            'link_after' => '',
+            'items_wrap' => '<ul id="%1$s" class="%2$s">%3$s</ul>',
+            'item_spacing' => 'preserve',
+            'depth' => 0,
+            'walker' => '',
+            'theme_location' => '',
         ];
 
-        $args = wp_parse_args( $args, $defaults );
+        $args = wp_parse_args($args, $defaults);
 
-        if ( ! in_array( $args['item_spacing'], ['preserve', 'discard'], true ) ) {
+        if (!in_array($args['item_spacing'], ['preserve', 'discard'], true)) {
             // Invalid value, fall back to default.
             $args['item_spacing'] = $defaults['item_spacing'];
         }
@@ -131,7 +132,7 @@ class Menu extends CoreEntity {
         /**
          * @see wp_nav_menu()
          */
-        $args = apply_filters( 'wp_nav_menu_args', $args );
+        $args = apply_filters('wp_nav_menu_args', $args);
         $args = (object) $args;
 
         /**
@@ -139,40 +140,39 @@ class Menu extends CoreEntity {
          *
          * @see wp_nav_menu()
          */
-        $nav_menu = apply_filters( 'pre_wp_nav_menu', null, $args );
-        if( null !== $nav_menu ) {
+        $nav_menu = apply_filters('pre_wp_nav_menu', null, $args);
+        if (null !== $nav_menu) {
             try {
                 $nav_menu = unserialize($nav_menu);
-                if( $nav_menu instanceof Menu ) {
+                if ($nav_menu instanceof Menu) {
                     return $nav_menu;
                 }
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
             }
         }
 
         // No menu term provided, get the pages menu
-        if(!$menu) {
-
+        if (!$menu) {
             $defaults = [
-                'sort_column'  => 'menu_order, post_title',
-                'menu_id'      => '',
-                'menu_class'   => 'menu',
-                'container'    => 'div',
-                'echo'         => true,
-                'link_before'  => '',
-                'link_after'   => '',
-                'before'       => '<ul>',
-                'after'        => '</ul>',
+                'sort_column' => 'menu_order, post_title',
+                'menu_id' => '',
+                'menu_class' => 'menu',
+                'container' => 'div',
+                'echo' => true,
+                'link_before' => '',
+                'link_after' => '',
+                'before' => '<ul>',
+                'after' => '</ul>',
                 'item_spacing' => 'discard',
-                'walker'       => '',
+                'walker' => '',
             ];
 
-            $args = wp_parse_args( (array) $args, $defaults );
+            $args = wp_parse_args((array) $args, $defaults);
 
             /**
              * @see wp_page_menu()
              */
-            $args = apply_filters( 'wp_page_menu_args', $args );
+            $args = apply_filters('wp_page_menu_args', $args);
 
             $nav_menu = new static(null, $args);
             $nav_menu->init_pages_menu();
@@ -188,41 +188,41 @@ class Menu extends CoreEntity {
              *
              * @see wp_nav_menu()
              */
-            apply_filters( 'wp_nav_menu', serialize( $nav_menu ), $args );
+            apply_filters('wp_nav_menu', serialize($nav_menu), $args);
 
             return $nav_menu;
         }
 
         // Skip the menu term guessing part, we already have our menu term
 
-        $menu_items = wp_get_nav_menu_items( $menu->term_id, ['update_post_term_cache' => false]);
+        $menu_items = wp_get_nav_menu_items($menu->term_id, ['update_post_term_cache' => false]);
 
         _wp_menu_item_classes_by_context($menu_items);
 
-        $sorted_menu_items        = [];
+        $sorted_menu_items = [];
         $menu_items_with_children = [];
-        foreach ( (array) $menu_items as $menu_item ) {
+        foreach ((array) $menu_items as $menu_item) {
             $sorted_menu_items[ $menu_item->menu_order ] = $menu_item;
-            if ( $menu_item->menu_item_parent ) {
+            if ($menu_item->menu_item_parent) {
                 $menu_items_with_children[ $menu_item->menu_item_parent ] = true;
             }
         }
 
         // Add the menu-item-has-children class where applicable.
-        if ( $menu_items_with_children ) {
-            foreach ( $sorted_menu_items as &$menu_item ) {
-                if ( isset( $menu_items_with_children[ $menu_item->ID ] ) ) {
+        if ($menu_items_with_children) {
+            foreach ($sorted_menu_items as &$menu_item) {
+                if (isset($menu_items_with_children[ $menu_item->ID ])) {
                     $menu_item->classes[] = 'menu-item-has-children';
                 }
             }
         }
 
-        unset( $menu_items, $menu_item );
+        unset($menu_items, $menu_item);
 
         /**
          * @see wp_nav_menu()
          */
-        $sorted_menu_items = apply_filters( 'wp_nav_menu_objects', $sorted_menu_items, $args );
+        $sorted_menu_items = apply_filters('wp_nav_menu_objects', $sorted_menu_items, $args);
 
         // Create Menu object
         $nav_menu = new static($menu, (array) $args);
@@ -234,14 +234,14 @@ class Menu extends CoreEntity {
         $sorted_menu_items = $nav_menu->strip_to_depth_limit($sorted_menu_items);
 
         $nav_menu->items = $sorted_menu_items;
-        unset( $sorted_menu_items );
+        unset($sorted_menu_items);
 
         /**
          * Since Timber doesn't use HTML, serialize the menu object to provide a cacheable string
          *
          * @see wp_nav_menu()
          */
-        $_nav_menu = apply_filters( 'wp_nav_menu', serialize($nav_menu), $args );
+        $_nav_menu = apply_filters('wp_nav_menu', serialize($nav_menu), $args);
 
         return $nav_menu;
     }
@@ -259,19 +259,20 @@ class Menu extends CoreEntity {
      *                            supported which says how many levels of hierarchy should be
      *                            included in the menu. Default `0`, which is all levels.
      */
-    protected function __construct( ?WP_term $term, array $args) {
+    protected function __construct(?WP_term $term, array $args)
+    {
         // For future enhancements?
         $this->raw_args = $args;
         $this->args = (object) $args;
         $this->depth = (int) $this->args->depth;
 
-        if(!$term) {
+        if (!$term) {
             return;
         }
 
         // Set theme location if available
         $this->theme_location = array_flip(get_nav_menu_locations())[$term->term_id] ?? null;
-        if($this->theme_location) {
+        if ($this->theme_location) {
             $this->args->theme_location = $this->theme_location;
         }
 
@@ -284,13 +285,14 @@ class Menu extends CoreEntity {
     /**
      * Init pages menu
      */
-    protected function init_pages_menu() {
+    protected function init_pages_menu()
+    {
         $menu_items = get_pages($this->args);
 
-        if ( $menu_items ) {
+        if ($menu_items) {
             $menu_items = array_map('wp_setup_nav_menu_item', $menu_items);
             _wp_menu_item_classes_by_context($menu_items);
-            if ( is_array($menu_items) ) {
+            if (is_array($menu_items)) {
                 $menu_items = $this->convert_menu_items($menu_items);
                 $menu_items = $this->order_children($menu_items);
             }
@@ -304,9 +306,10 @@ class Menu extends CoreEntity {
      * @param array $items
      * @return MenuItem[]
      */
-    protected function convert_menu_items(array $menu_items) : array {
+    protected function convert_menu_items(array $menu_items): array
+    {
         $menu_item_factory = new MenuItemFactory();
-        return array_map(function($item) use($menu_item_factory) : MenuItem {
+        return array_map(function ($item) use ($menu_item_factory): MenuItem {
             return $menu_item_factory->from($item, $this);
         }, $menu_items);
     }
@@ -319,9 +322,10 @@ class Menu extends CoreEntity {
      * @param int   $parent_id  The parent ID to look for.
      * @return \Timber\MenuItem|null A menu item. False if no parent was found.
      */
-    public function find_parent_item_in_menu( array $menu_items, int $parent_id ) : ?MenuItem {
-        foreach ( $menu_items as $item ) {
-            if ( $item->ID === $parent_id ) {
+    public function find_parent_item_in_menu(array $menu_items, int $parent_id): ?MenuItem
+    {
+        foreach ($menu_items as $item) {
+            if ($item->ID === $parent_id) {
                 return $item;
             }
         }
@@ -333,18 +337,19 @@ class Menu extends CoreEntity {
      * @param array $items
      * @return MenuItem[]
      */
-    protected function order_children( array $items ) : array {
+    protected function order_children(array $items): array
+    {
         $items_by_id = [];
-        $menu_items  = [];
+        $menu_items = [];
 
-        foreach ( $items as $item ) {
+        foreach ($items as $item) {
             // Index each item by its ID
             $items_by_id[$item->ID] = $item;
         }
 
         // Walk through our indexed items and assign them to their parents as applicable
-        foreach ( $items_by_id as $item ) {
-            if ( !empty($item->menu_item_parent) && isset($items_by_id[$item->menu_item_parent]) ) {
+        foreach ($items_by_id as $item) {
+            if (!empty($item->menu_item_parent) && isset($items_by_id[$item->menu_item_parent])) {
                 // This one is a child item, add it to its parent
                 $items_by_id[$item->menu_item_parent]->add_child($item);
             } else {
@@ -359,7 +364,8 @@ class Menu extends CoreEntity {
      * @internal
      * @param array $menu_items
      */
-    protected function strip_to_depth_limit(array $menu_items, int $current = 1) : array {
+    protected function strip_to_depth_limit(array $menu_items, int $current = 1): array
+    {
         $depth = (int) $this->depth; // Confirms still int.
         if ($depth <= 0) {
             return $menu_items;
@@ -388,14 +394,15 @@ class Menu extends CoreEntity {
      * @param string $field_name The field name for which you want to get the value.
      * @return mixed The meta field value.
      */
-    public function get_field( $field_name = null ) {
+    public function get_field($field_name = null)
+    {
         Helper::deprecated(
             "{{ menu.get_field('field_name') }}",
             "{{ menu.meta('field_name') }}",
             '2.0.0'
         );
 
-        return $this->meta( $field_name );
+        return $this->meta($field_name);
     }
 
     /**
@@ -413,8 +420,9 @@ class Menu extends CoreEntity {
      * ```
      * @return array Array of `Timber\MenuItem` objects. Empty array if no items could be found.
      */
-    public function get_items() {
-        if ( is_array( $this->items ) ) {
+    public function get_items()
+    {
+        if (is_array($this->items)) {
             return $this->items;
         }
 
@@ -448,24 +456,25 @@ class Menu extends CoreEntity {
      * @return MenuItem the current `Timber\MenuItem` object, i.e. the menu item
      * corresponding to the current post.
      */
-    public function current_item( $depth = null ) {
-        if ( false === $this->_current_item ) {
+    public function current_item($depth = null)
+    {
+        if (false === $this->_current_item) {
             // I TOLD YOU BEFORE.
             return false;
         }
 
-        if ( empty($this->items) ) {
+        if (empty($this->items)) {
             $this->_current_item = false;
             return $this->_current_item;
         }
 
-        if ( ! isset($this->_current_item) ) {
+        if (!isset($this->_current_item)) {
             $current = $this->traverse_items_for_current(
                 $this->items,
                 $depth
             );
 
-            if ( is_null($depth) ) {
+            if (is_null($depth)) {
                 $this->_current_item = $current;
             } else {
                 return $current;
@@ -480,8 +489,9 @@ class Menu extends CoreEntity {
      *
      * @return MenuItem the current top-level `Timber\MenuItem` object.
      */
-    public function current_top_level_item() {
-        return $this->current_item( 1 );
+    public function current_top_level_item()
+    {
+        return $this->current_item(1);
     }
 
     /**
@@ -490,34 +500,35 @@ class Menu extends CoreEntity {
      * @internal
      * @param array $items the items to traverse.
      */
-    private function traverse_items_for_current( $items, $depth ) {
-        $current             = false;
+    private function traverse_items_for_current($items, $depth)
+    {
+        $current = false;
         $currentDepth = 1;
-        $i                   = 0;
+        $i = 0;
 
-        while ( isset($items[ $i ]) ) {
+        while (isset($items[ $i ])) {
             $item = $items[ $i ];
 
-            if ( $item->current ) {
+            if ($item->current) {
                 // cache this item for subsequent calls.
                 $current = $item;
                 // stop looking.
                 break;
-            } elseif ( $item->current_item_ancestor ) {
+            } elseif ($item->current_item_ancestor) {
                 // we found an ancestor,
                 // but keep looking for a more precise match.
                 $current = $item;
 
-                if ( $currentDepth === $depth ) {
+                if ($currentDepth === $depth) {
                     // we're at max traversal depth.
                     return $current;
                 }
 
                 // we're in the right subtree, so go deeper.
-                if ( $item->children() ) {
+                if ($item->children()) {
                     // reset the counter, since we're at a new level.
                     $items = $item->children();
-                    $i     = 0;
+                    $i = 0;
                     $currentDepth++;
                     continue;
                 }
@@ -529,7 +540,8 @@ class Menu extends CoreEntity {
         return $current;
     }
 
-    public function __toString() {
+    public function __toString()
+    {
         static $menu_id_slugs = array();
 
         $args = $this->args;
@@ -538,7 +550,7 @@ class Menu extends CoreEntity {
         $nav_menu = '';
         $show_container = false;
 
-        if ( $args->container ) {
+        if ($args->container) {
             /**
             * Filters the list of HTML tags that are valid for use as menu containers.
             *
@@ -547,28 +559,28 @@ class Menu extends CoreEntity {
             * @param string[] $tags The acceptable HTML tags for use as menu containers.
             *                       Default is array containing 'div' and 'nav'.
             */
-            $allowed_tags = apply_filters( 'wp_nav_menu_container_allowedtags', array( 'div', 'nav' ) );
+            $allowed_tags = apply_filters('wp_nav_menu_container_allowedtags', array( 'div', 'nav' ));
 
-            if ( is_string( $args->container ) && in_array( $args->container, $allowed_tags, true ) ) {
+            if (is_string($args->container) && in_array($args->container, $allowed_tags, true)) {
                 $show_container = true;
-                $class          = $args->container_class ? ' class="' . esc_attr( $args->container_class ) . '"' : ' class="menu-' . $this->slug . '-container"';
-                $id             = $args->container_id ? ' id="' . esc_attr( $args->container_id ) . '"' : '';
-                $aria_label     = ( 'nav' === $args->container && $args->container_aria_label ) ? ' aria-label="' . esc_attr( $args->container_aria_label ) . '"' : '';
-                $nav_menu      .= '<' . $args->container . $id . $class . $aria_label . '>';
+                $class = $args->container_class ? ' class="' . esc_attr($args->container_class) . '"' : ' class="menu-' . $this->slug . '-container"';
+                $id = $args->container_id ? ' id="' . esc_attr($args->container_id) . '"' : '';
+                $aria_label = ('nav' === $args->container && $args->container_aria_label) ? ' aria-label="' . esc_attr($args->container_aria_label) . '"' : '';
+                $nav_menu .= '<' . $args->container . $id . $class . $aria_label . '>';
             }
         }
 
-        $items .= walk_nav_menu_tree( $this->sorted_menu_items, $args->depth, $args );
+        $items .= walk_nav_menu_tree($this->sorted_menu_items, $args->depth, $args);
 
         // Attributes.
-        if ( ! empty( $args->menu_id ) ) {
+        if (!empty($args->menu_id)) {
             $wrap_id = $args->menu_id;
         } else {
             $wrap_id = 'menu-' . $this->slug;
 
-            while ( in_array( $wrap_id, $menu_id_slugs, true ) ) {
-                if ( preg_match( '#-(\d+)$#', $wrap_id, $matches ) ) {
-                    $wrap_id = preg_replace( '#-(\d+)$#', '-' . ++$matches[1], $wrap_id );
+            while (in_array($wrap_id, $menu_id_slugs, true)) {
+                if (preg_match('#-(\d+)$#', $wrap_id, $matches)) {
+                    $wrap_id = preg_replace('#-(\d+)$#', '-' . ++$matches[1], $wrap_id);
                 } else {
                     $wrap_id = $wrap_id . '-1';
                 }
@@ -578,8 +590,8 @@ class Menu extends CoreEntity {
 
         $wrap_class = $args->menu_class ? $args->menu_class : '';
 
-        $nav_menu .= sprintf( $args->items_wrap, esc_attr( $wrap_id ), esc_attr( $wrap_class ), $items );
-        if ( $show_container ) {
+        $nav_menu .= sprintf($args->items_wrap, esc_attr($wrap_id), esc_attr($wrap_class), $items);
+        if ($show_container) {
             $nav_menu .= '</' . $args->container . '>';
         }
 

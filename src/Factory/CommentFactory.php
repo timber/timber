@@ -2,17 +2,19 @@
 
 namespace Timber\Factory;
 
-use Timber\CoreInterface;
 use Timber\Comment;
+use Timber\CoreInterface;
 
-use WP_Comment_Query;
 use WP_Comment;
+use WP_Comment_Query;
 
 /**
  * Internal API class for instantiating Comments
  */
-class CommentFactory {
-    public function from($params) {
+class CommentFactory
+{
+    public function from($params)
+    {
         if (is_int($params) || is_string($params) && is_numeric($params)) {
             return $this->from_id((int) $params);
         }
@@ -34,7 +36,8 @@ class CommentFactory {
         }
     }
 
-    protected function from_id(int $id) {
+    protected function from_id(int $id)
+    {
         $wp_comment = get_comment($id);
 
         if (!$wp_comment) {
@@ -44,7 +47,8 @@ class CommentFactory {
         return $this->build($wp_comment);
     }
 
-    protected function from_comment_object(object $comment) : CoreInterface {
+    protected function from_comment_object(object $comment): CoreInterface
+    {
         if ($comment instanceof CoreInterface) {
             // We already have some kind of Timber Core object
             return $comment;
@@ -60,15 +64,17 @@ class CommentFactory {
         ));
     }
 
-    protected function from_wp_comment_query(WP_Comment_Query $query) : Iterable {
+    protected function from_wp_comment_query(WP_Comment_Query $query): Iterable
+    {
         return array_map([$this, 'build'], $query->get_comments());
     }
 
-    protected function get_comment_class(WP_Comment $comment) : string {
+    protected function get_comment_class(WP_Comment $comment): string
+    {
         // Get the user-configured Class Map
-        $map = apply_filters( 'timber/comment/classmap', []);
+        $map = apply_filters('timber/comment/classmap', []);
 
-        $type  = get_post_type($comment->comment_post_ID);
+        $type = get_post_type($comment->comment_post_ID);
         $class = $map[$type] ?? null;
 
         if (is_callable($class)) {
@@ -97,23 +103,27 @@ class CommentFactory {
          * @param string $class The class to use.
          * @param WP_Comment $comment The comment object.
          */
-        $class = apply_filters( 'timber/comment/class', $class, $comment );
+        $class = apply_filters('timber/comment/class', $class, $comment);
 
         return $class;
     }
 
-    protected function build(WP_Comment $comment) : CoreInterface {
+    protected function build(WP_Comment $comment): CoreInterface
+    {
         $class = $this->get_comment_class($comment);
 
         return $class::build($comment);
     }
 
-    protected function is_numeric_array($arr) {
-        if ( ! is_array($arr) ) {
+    protected function is_numeric_array($arr)
+    {
+        if (!is_array($arr)) {
             return false;
         }
         foreach (array_keys($arr) as $k) {
-            if ( ! is_int($k) ) return false;
+            if (!is_int($k)) {
+                return false;
+            }
         }
         return true;
     }
