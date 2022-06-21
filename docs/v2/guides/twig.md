@@ -221,16 +221,16 @@ Timber already comes with a [set of useful filters](https://timber.github.io/doc
 {{ "my custom string"|apply_filters('default_message', param1, param2, ...) }}
 ```
 
-Or you can use a filter with the [Twig filter tag](https://twig.symfony.com/doc/2.x/tags/filter.html).
+Or you can use a filter with the [Twig apply tag](https://twig.symfony.com/doc/3.x/tags/apply.html).
 
 ```twig
-{% filter apply_filters('default_message') %}
+{% apply apply_filters('default_message') %}
     {{ post.content }}
-{% endfilter %}
+{% endapply %}
 
-{% filter apply_filters('default_message', 'foo', 'bar, 'baz' ) %}
+{% apply apply_filters('default_message', 'foo', 'bar, 'baz' ) %}
     I love pizza
-{% endfilter %}
+{% endapply %}
 ```
 
 In **PHP**, you can get the content of the block with the first parameter and the rest of parameters like that.
@@ -274,16 +274,15 @@ And with the `filter` tag, it would look like this:
 
 ```twig
 <li class="woocommerce-notice woocommerce-notice--info woocommerce-info">
-    {% filter apply_filters('woocommerce_no_available_payment_methods_message') %}
+    {% apply apply_filters('woocommerce_no_available_payment_methods_message') %}
         {% if customer.get_billing_country() %}
             {{ __('Sorry, it seems that there are no available payment methods for your state. Please contact us if you require assistance or wish to make alternate arrangements.', 'woocommerce') }}
         {% else %}
             {{ __('Please fill in your details above to see available payment methods.', 'woocommerce')  }}
         {% endif %}
-    {% endfilter %}
+    {% endapply %}
 </li>
 ```
-
 
 ## Using Twig vars in live type
 
