@@ -7,6 +7,7 @@ use WP_Post;
 
 use Timber\Factory\CommentFactory;
 use Timber\Factory\MenuFactory;
+use Timber\Factory\PagesMenuFactory;
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
 use Timber\Factory\UserFactory;
@@ -972,10 +973,27 @@ class Timber {
 	}
 
 	/**
-	 * @todo implement PagesMenuFactory
+	 * Gets a menu from the existing pages.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 *
+	 * @example
+	 * ```php
+	 * $menu = Timber::get_pages_menu();
+	 * ```
+	 *
+	 * @param array $args Optional. Arguments for `wp_list_pages()`. Timber doesn’t use that
+	 *                    function under the hood, but supports all arguments for that function.
+	 *                    It will use `get_pages()` to get the pages that will be used for the Pages
+	 *                    Menu.
 	 */
 	public static function get_pages_menu( array $args = [] ) {
-		return Menu::build( null, $args );
+		$factory = new PagesMenuFactory();
+
+		$menu = $factory->from_pages( $args );
+
+		return $menu;
 	}
 
 
