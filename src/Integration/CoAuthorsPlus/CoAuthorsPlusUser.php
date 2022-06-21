@@ -2,7 +2,6 @@
 
 namespace Timber\Integration\CoAuthorsPlus;
 
-use Timber\Timber;
 use Timber\User;
 
 class CoAuthorsPlusUser extends User

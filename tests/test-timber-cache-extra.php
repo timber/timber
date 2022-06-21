@@ -2,7 +2,6 @@
 
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Adapter\TagAwareAdapter;
-use Timber\Cache\TimberKeyGeneratorInterface;
 use Twig\Extra\Cache\CacheExtension;
 use Twig\Extra\Cache\CacheRuntime;
 use Twig\RuntimeLoader\RuntimeLoaderInterface;

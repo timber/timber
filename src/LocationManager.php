@@ -2,8 +2,6 @@
 
 namespace Timber;
 
-use Timber\PathHelper;
-
 class LocationManager
 {
     /**

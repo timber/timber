@@ -5,7 +5,6 @@ namespace Timber;
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
 use Twig\Environment;
-use Twig\Error\Error;
 use Twig\Extension\CoreExtension;
 
 use Twig\TwigFilter;

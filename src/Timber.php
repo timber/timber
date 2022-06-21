@@ -8,10 +8,6 @@ use Timber\Factory\MenuFactory;
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
 use Timber\Factory\UserFactory;
-use Timber\Helper;
-use Timber\Integration;
-use Timber\PostCollectionInterface;
-use Timber\URLHelper;
 use WP_Post;
 use WP_Query;
 

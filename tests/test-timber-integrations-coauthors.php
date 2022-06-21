@@ -1,7 +1,6 @@
 <?php
 
 use Timber\Integration\CoAuthorsPlus\CoAuthorsPlusUser;
-use Timber\Integration\CoAuthorsPlusIntegration;
 
     /**
      * @group posts-api

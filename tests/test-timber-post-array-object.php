@@ -2,7 +2,6 @@
 
 use Timber\Post;
 use Timber\PostArrayObject;
-use Timber\PostQuery;
 
 require_once 'php/CollectionTestPage.php';
 require_once 'php/CollectionTestPost.php';

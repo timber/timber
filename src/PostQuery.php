@@ -4,7 +4,6 @@ namespace Timber;
 
 use ArrayObject;
 use JsonSerializable;
-use WP_Post;
 use WP_Query;
 
 /**

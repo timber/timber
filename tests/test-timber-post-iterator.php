@@ -1,7 +1,5 @@
 <?php
 
-use Timber\PostArrayObject;
-use Timber\PostQuery;
 
 /**
  * @group posts-api

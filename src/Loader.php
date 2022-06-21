@@ -5,7 +5,6 @@ namespace Timber;
 use Timber\Cache\Cleaner;
 use Twig\CacheExtension;
 use Twig\Environment;
-use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
 use Twig\TwigFunction;
 

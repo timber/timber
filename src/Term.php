@@ -3,7 +3,6 @@
 namespace Timber;
 
 use Timber\Factory\TermFactory;
-use WP_Query;
 
 use WP_Term;
 

@@ -5,7 +5,6 @@ namespace Timber;
 use Timber\Factory\PostFactory;
 
 use Timber\Factory\UserFactory;
-use Timber\Timber;
 use WP_Post;
 
 /**

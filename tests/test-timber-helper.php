@@ -2,7 +2,6 @@
 
 require_once(__DIR__ . '/php/timber-post-subclass.php');
 
-use Timber\PostArrayObject;
 
     /**
      * @group posts-api
