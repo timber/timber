@@ -1,7 +1,9 @@
 name: Timber Tests
 
 on:
-  push: null
+  push:
+    branches:
+      - '*'
   pull_request:
     types:
       - opened
@@ -127,7 +129,7 @@ jobs:
       - name: Install composer dependencies
         run: composer update --${{ matrix.dependency-version }} --prefer-dist --no-progress --no-interaction
 
-      - name: Lint
+      - name: Check Composer configuration
         run: composer normalize --dry-run
 
       - name: Lint
