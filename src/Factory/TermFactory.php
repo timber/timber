@@ -12,187 +12,187 @@ use WP_Term_Query;
  * Internal API class for instantiating Terms
  */
 class TermFactory {
-	public function from($params) {
-		if (is_int($params) || is_string($params) && is_numeric($params)) {
-			return $this->from_id((int) $params);
-		}
+    public function from($params) {
+        if (is_int($params) || is_string($params) && is_numeric($params)) {
+            return $this->from_id((int) $params);
+        }
 
-		if (is_string($params)) {
-			return $this->from_taxonomy_names([$params]);
-		}
+        if (is_string($params)) {
+            return $this->from_taxonomy_names([$params]);
+        }
 
-		if ($params instanceof WP_Term_Query) {
-			return $this->from_wp_term_query($params);
-		}
+        if ($params instanceof WP_Term_Query) {
+            return $this->from_wp_term_query($params);
+        }
 
-		if (is_object($params)) {
-			return $this->from_term_object($params);
-		}
+        if (is_object($params)) {
+            return $this->from_term_object($params);
+        }
 
-		if ($this->is_numeric_array($params)) {
-			if ($this->is_array_of_strings($params)) {
-				return $this->from_taxonomy_names($params);
-			}
+        if ($this->is_numeric_array($params)) {
+            if ($this->is_array_of_strings($params)) {
+                return $this->from_taxonomy_names($params);
+            }
 
-			return array_map([$this, 'from'], $params);
-		}
+            return array_map([$this, 'from'], $params);
+        }
 
-		if (is_array($params)) {
-			return $this->from_wp_term_query(new WP_Term_Query(
-				$this->filter_query_params($params)
-			));
-		}
+        if (is_array($params)) {
+            return $this->from_wp_term_query(new WP_Term_Query(
+                $this->filter_query_params($params)
+            ));
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	protected function from_id(int $id) {
-		$wp_term = get_term($id);
+    protected function from_id(int $id) {
+        $wp_term = get_term($id);
 
-		if (!$wp_term) {
-			return null;
-		}
+        if (!$wp_term) {
+            return null;
+        }
 
-		return $this->build($wp_term);
-	}
+        return $this->build($wp_term);
+    }
 
-	protected function from_wp_term_query(WP_Term_Query $query) : Iterable {
-		return array_map([$this, 'build'], $query->get_terms());
-	}
+    protected function from_wp_term_query(WP_Term_Query $query) : Iterable {
+        return array_map([$this, 'build'], $query->get_terms());
+    }
 
-	protected function from_term_object(object $obj) : CoreInterface {
-		if ($obj instanceof CoreInterface) {
-			// We already have a Timber Core object of some kind
-			return $obj;
-		}
+    protected function from_term_object(object $obj) : CoreInterface {
+        if ($obj instanceof CoreInterface) {
+            // We already have a Timber Core object of some kind
+            return $obj;
+        }
 
-		if ($obj instanceof WP_Term) {
-			return $this->build($obj);
-		}
+        if ($obj instanceof WP_Term) {
+            return $this->build($obj);
+        }
 
-		throw new \InvalidArgumentException(sprintf(
-			'Expected an instance of Timber\CoreInterface or WP_Term, got %s',
-			get_class($obj)
-		));
-	}
+        throw new \InvalidArgumentException(sprintf(
+            'Expected an instance of Timber\CoreInterface or WP_Term, got %s',
+            get_class($obj)
+        ));
+    }
 
-	protected function from_taxonomy_names(array $names) {
-		return $this->from_wp_term_query(new WP_Term_Query(
-			$this->filter_query_params([
-				'taxonomy' => $names,
-			])
-		));
-	}
+    protected function from_taxonomy_names(array $names) {
+        return $this->from_wp_term_query(new WP_Term_Query(
+            $this->filter_query_params([
+                'taxonomy' => $names,
+            ])
+        ));
+    }
 
-	protected function get_term_class(WP_Term $term) : string {
-		// Get the user-configured Class Map
-		$map = apply_filters( 'timber/term/classmap', [
-			'post_tag' => Term::class,
-			'category' => Term::class,
-		]);
+    protected function get_term_class(WP_Term $term) : string {
+        // Get the user-configured Class Map
+        $map = apply_filters( 'timber/term/classmap', [
+            'post_tag' => Term::class,
+            'category' => Term::class,
+        ]);
 
-		$class = $map[$term->taxonomy] ?? null;
+        $class = $map[$term->taxonomy] ?? null;
 
-		if (is_callable($class)) {
-			$class = $class($term);
-		}
+        if (is_callable($class)) {
+            $class = $class($term);
+        }
 
-		$class = $class ?? Term::class;
+        $class = $class ?? Term::class;
 
-		/**
-		 * Filters the term class based on your custom criteria.
-		 *
-		 * Maybe you want to set a custom class based upon a certain category?
-		 * This allows you to filter the PHP class, utilizing data from the WP_Term object.
-		 *
-		 * @since 2.0.0
-		 * @example
-		 * ```
-		 * add_filter( 'timber/term/class', function( $class, $term ) {
-		 *     if ( get_term_meta($term->term_id, 'is_special_category', true) ) {
-		 *         return MyCustomTermClass::class;
-		 *     }
-		 *
-		 *     return $class;
-		 * }, 10, 2 );
-		 * ```
-		 *
-		 * @param string $class The class to use.
-		 * @param WP_Term $term The term object.
-		 */
-		$class = apply_filters( 'timber/term/class', $class, $term );
+        /**
+         * Filters the term class based on your custom criteria.
+         *
+         * Maybe you want to set a custom class based upon a certain category?
+         * This allows you to filter the PHP class, utilizing data from the WP_Term object.
+         *
+         * @since 2.0.0
+         * @example
+         * ```
+         * add_filter( 'timber/term/class', function( $class, $term ) {
+         *     if ( get_term_meta($term->term_id, 'is_special_category', true) ) {
+         *         return MyCustomTermClass::class;
+         *     }
+         *
+         *     return $class;
+         * }, 10, 2 );
+         * ```
+         *
+         * @param string $class The class to use.
+         * @param WP_Term $term The term object.
+         */
+        $class = apply_filters( 'timber/term/class', $class, $term );
 
-		return $class;
-	}
+        return $class;
+    }
 
-	protected function build(WP_Term $term) : CoreInterface {
-		$class = $this->get_term_class($term);
+    protected function build(WP_Term $term) : CoreInterface {
+        $class = $this->get_term_class($term);
 
-		return $class::build($term);
-	}
+        return $class::build($term);
+    }
 
-	protected function correct_tax_key(array $params) {
-		$corrections = [
-			'taxonomies' => 'taxonomy',
-			'taxs'       => 'taxonomy',
-			'tax'        => 'taxonomy',
-		];
+    protected function correct_tax_key(array $params) {
+        $corrections = [
+            'taxonomies' => 'taxonomy',
+            'taxs'       => 'taxonomy',
+            'tax'        => 'taxonomy',
+        ];
 
-		foreach ($corrections as $mistake => $correction) {
-			if (isset($params[$mistake])) {
-				$params[$correction] = $params[$mistake];
-			}
-		}
+        foreach ($corrections as $mistake => $correction) {
+            if (isset($params[$mistake])) {
+                $params[$correction] = $params[$mistake];
+            }
+        }
 
-		return $params;
-	}
+        return $params;
+    }
 
-	protected function correct_taxonomies($tax) : array {
-		$taxonomies = is_array($tax) ? $tax : [$tax];
+    protected function correct_taxonomies($tax) : array {
+        $taxonomies = is_array($tax) ? $tax : [$tax];
 
-		$corrections = [
-			'categories' => 'category',
-			'tags'       => 'post_tag',
-			'tag'        => 'post_tag',
-		];
+        $corrections = [
+            'categories' => 'category',
+            'tags'       => 'post_tag',
+            'tag'        => 'post_tag',
+        ];
 
-		return array_map(function($taxonomy) use($corrections) {
-			return $corrections[$taxonomy] ?? $taxonomy;
-		}, $taxonomies);
-	}
+        return array_map(function($taxonomy) use($corrections) {
+            return $corrections[$taxonomy] ?? $taxonomy;
+        }, $taxonomies);
+    }
 
-	protected function filter_query_params(array $params) {
-		$params = $this->correct_tax_key($params);
+    protected function filter_query_params(array $params) {
+        $params = $this->correct_tax_key($params);
 
-		if (isset($params['taxonomy'])) {
-			$params['taxonomy'] = $this->correct_taxonomies($params['taxonomy']);
-		}
+        if (isset($params['taxonomy'])) {
+            $params['taxonomy'] = $this->correct_taxonomies($params['taxonomy']);
+        }
 
-		$include = $params['term_id'] ?? null;
-		if ($include) {
-			$params['include'] = is_array($include) ? $include : [$include];
-		}
+        $include = $params['term_id'] ?? null;
+        if ($include) {
+            $params['include'] = is_array($include) ? $include : [$include];
+        }
 
-		return $params;
-	}
+        return $params;
+    }
 
-	protected function is_numeric_array($arr) {
-		if ( ! is_array($arr) ) {
-			return false;
-		}
-		foreach (array_keys($arr) as $k) {
-			if ( ! is_int($k) ) return false;
-		}
-		return true;
-	}
+    protected function is_numeric_array($arr) {
+        if ( ! is_array($arr) ) {
+            return false;
+        }
+        foreach (array_keys($arr) as $k) {
+            if ( ! is_int($k) ) return false;
+        }
+        return true;
+    }
 
-	protected function is_array_of_strings($arr) {
-		if ( ! is_array($arr) ) {
-			return false;
-		}
-		foreach ($arr as $v) {
-			if ( ! is_string($v) ) return false;
-		}
-		return true;
-	}
+    protected function is_array_of_strings($arr) {
+        if ( ! is_array($arr) ) {
+            return false;
+        }
+        foreach ($arr as $v) {
+            if ( ! is_string($v) ) return false;
+        }
+        return true;
+    }
 }

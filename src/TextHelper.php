@@ -44,7 +44,7 @@ class TextHelper {
             $more = __('&hellip;');
         }
         $original_text = $text;
-      
+
         /**
          * Filters allowed tags for `trim_words()` helper.
          *
@@ -61,7 +61,7 @@ class TextHelper {
         $allowed_tags_array = explode(' ', apply_filters('timber/trim_words/allowed_tags', $allowed_tags));
         $allowed_tags_array = array_filter($allowed_tags_array, function($value) { return $value !== ''; });
         $allowed_tag_string = '<'.implode('><', $allowed_tags_array).'>';
-      
+
         $text = strip_tags($text, $allowed_tag_string);
         /* translators: If your word count is based on single characters (East Asian characters), enter 'characters'. Otherwise, enter 'words'. Do not translate into your own language. */
         if ( 'characters' == _x('words', 'word count: words or characters?') && preg_match('/^utf\-?8$/i', get_option('blog_charset')) ) {
@@ -84,14 +84,14 @@ class TextHelper {
         return apply_filters('wp_trim_words', $text, $num_words, $more, $original_text);
     }
 
-	/**
-	 * @api
-	 *
-	 * @param       $string
-	 * @param array $tags
-	 *
-	 * @return null|string|string[]
-	 */
+    /**
+     * @api
+     *
+     * @param       $string
+     * @param array $tags
+     *
+     * @return null|string|string[]
+     */
     public static function remove_tags( $string, $tags = array() ) {
         return preg_replace('#<(' . implode( '|', $tags) . ')(?:[^>]+)?>.*?</\1>#s', '', $string);
     }
@@ -111,7 +111,7 @@ class TextHelper {
 
     /**
      * @api
-     * Does the string in question (haystack) 
+     * Does the string in question (haystack)
      * end with the substring in question (needle)?
      * @param string $haystack
      * @param string $needle

@@ -1,5 +1,5 @@
 {% for post in posts %}
-	<h1>POST</h1>
+    <h1>POST</h1>
 {% endfor %}
 <div class="l--pagination">
     <div class="pagination-inner">
@@ -16,7 +16,7 @@
 
         <div class="pagination-pages">
             <ul class="pagination-pages-list">
-  
+
         {% if posts.pagination.pages|length %}
             {% for page in posts.pagination.pages %}
                 {% if page.current %}
@@ -26,11 +26,11 @@
                 {% if loop.last %}
                     <li class="pagination-list-item pagination-page">{{ page.title }}</li>
                 {% endif %}
-        
+
             {% endfor %}
         {% endif %}
             </ul>
-        </div> 
+        </div>
 
 
         <div class="pagination-next">
@@ -41,7 +41,7 @@
                 <span class="pagination-next-link {{ posts.pagination.next.link ?  '' : 'pagination-disabled'}}">Next</span>
             {% endif %}
 
-        </div> 
+        </div>
 
     </div>
 </div>

@@ -1,8 +1,8 @@
 <?php
  class Sport extends \Timber\Post {
 
-	function channel() {
-		return 'ESPN';
-	}
+    function channel() {
+        return 'ESPN';
+    }
 
- } 
+ }
