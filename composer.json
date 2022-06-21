@@ -84,28 +84,20 @@
     }
   },
   "scripts": {
-    "post-install-cmd": [
-      "@auto-scripts"
-    ],
-    "post-update-cmd": [
-      "@auto-scripts"
-    ],
-    "analyze": "@php ./vendor/bin/phpstan",
-    "auto-scripts": [
-      "[ $COMPOSER_DEV_MODE -eq 0 ] || composer normalize"
-    ],
-    "cs": "@php ./vendor/bin/ecs check",
-    "cs:fix": "@php ./vendor/bin/ecs check --fix",
-    "grump": "php ./vendor/bin/grumphp run",
-    "grump:install": "php ./vendor/bin/grumphp git:init",
-    "lint": "@php ./vendor/bin/parallel-lint --exclude .git --exclude vendor .",
+    "analyze": "phpstan",
+    "cs": "ecs check",
+    "cs:fix": "ecs check --fix",
+    "grump": "grumphp run",
+    "grump:install": "grumphp git:init",
+    "lint": "parallel-lint --exclude .git --exclude vendor .",
     "qa": [
+      "@composer normalize --dry-run",
       "@lint",
-      "@cs",
-      "@test"
+      "@test",
+      "@cs"
     ],
-    "test": "@php ./vendor/phpunit/phpunit/phpunit",
-    "test:codecov": "@php ./vendor/phpunit/phpunit/phpunit --coverage-clover ./build/logs/clover.xml",
-    "test:no-cov": "@php ./vendor/phpunit/phpunit/phpunit --no-coverage"
+    "test": "phpunit",
+    "test:codecov": "phpunit --coverage-clover ./build/logs/clover.xml",
+    "test:no-cov": "phpunit --no-coverage"
   }
 }
