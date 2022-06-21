@@ -155,7 +155,7 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface
                  */
                 $object_meta = apply_filters_deprecated(
                     "timber_{$object_type}_get_meta_field_pre",
-                    [ $object_meta, $this->ID, $field_name, $this ],
+                    [$object_meta, $this->ID, $field_name, $this],
                     '2.0.0',
                     "timber/{$object_type}/pre_meta"
                 );
@@ -167,7 +167,7 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface
                  */
                 do_action_deprecated(
                     "timber_{$object_type}_get_meta_pre",
-                    [ $object_meta, $this->ID, $this ],
+                    [$object_meta, $this->ID, $this],
                     '2.0.0',
                     "timber/{$object_type}/pre_meta"
                 );
@@ -176,7 +176,7 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface
 
         if (null === $object_meta) {
             // Fetch values. Auto-fetches all values if $field_name is empty.
-            $object_meta = call_user_func_array("get_{$object_type}_meta", [ $this->ID, $field_name, true ]);
+            $object_meta = call_user_func_array("get_{$object_type}_meta", [$this->ID, $field_name, true]);
 
             // Mimick $single argument when fetching all meta values.
             if (empty($field_name) && is_array($object_meta) && !empty($object_meta)) {
@@ -240,7 +240,7 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface
                  */
                 $object_meta = apply_filters_deprecated(
                     'timber/term/meta/field',
-                    [ $object_meta, $this->ID, $field_name, $this ],
+                    [$object_meta, $this->ID, $field_name, $this],
                     '2.0.0',
                     'timber/term/meta'
                 );
@@ -253,7 +253,7 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface
              */
             $object_meta = apply_filters_deprecated(
                 "timber_{$object_type}_get_meta_field",
-                [ $object_meta, $this->ID, $field_name, $this ],
+                [$object_meta, $this->ID, $field_name, $this],
                 '2.0.0',
                 "timber/{$object_type}/meta"
             );
@@ -265,7 +265,7 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface
              */
             $object_meta = apply_filters_deprecated(
                 "timber_{$object_type}_get_meta",
-                [ $object_meta, $this->ID, $this ],
+                [$object_meta, $this->ID, $this],
                 '2.0.0',
                 "timber/{$object_type}/meta"
             );

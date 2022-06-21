@@ -144,7 +144,9 @@
 
         public function testKeyGenerator()
         {
-            $post_id = $this->factory->post->create(array('post_title' => 'My Test Post'));
+            $post_id = $this->factory->post->create([
+                'post_title' => 'My Test Post',
+            ]);
             $post = Timber::get_post($post_id);
 
             $kg = new Timber\Cache\KeyGenerator();
@@ -164,7 +166,9 @@
         public function testKeyGeneratorWithArray()
         {
             $kg = new Timber\Cache\KeyGenerator();
-            $thing = array('_cache_key' => 'iAmAKeyButInAnArray');
+            $thing = [
+                '_cache_key' => 'iAmAKeyButInAnArray',
+            ];
             $key = $kg->generateKey($thing);
             $this->assertEquals('iAmAKeyButInAnArray', $key);
         }
@@ -212,7 +216,9 @@
             Timber::$twig_cache = true;
             $pid = $this->factory->post->create();
             $post = Timber::get_post($pid);
-            Timber::compile('assets/single-post.twig', array('post' => $post));
+            Timber::compile('assets/single-post.twig', [
+                'post' => $post,
+            ]);
             sleep(1);
             $this->assertFileExists($cache_dir);
             $loader = new Timber\Loader();
@@ -234,7 +240,9 @@
             Timber::$cache = true;
             $pid = $this->factory->post->create();
             $post = Timber::get_post($pid);
-            Timber::compile('assets/single-post.twig', array('post' => $post));
+            Timber::compile('assets/single-post.twig', [
+                'post' => $post,
+            ]);
             //sleep(1);
             $this->assertFileExists($cache_dir);
             $loader = new Timber\Loader();
@@ -264,7 +272,9 @@
 
             $pid = $this->factory->post->create();
             $post = Timber::get_post($pid);
-            Timber::compile('assets/single-post.twig', array( 'post' => $post ));
+            Timber::compile('assets/single-post.twig', [
+                'post' => $post,
+            ]);
             sleep(1);
 
             $this->assertFileExists($cache_dir);
@@ -280,10 +290,17 @@
         {
             $pid = $this->factory->post->create();
             $post = Timber::get_post($pid);
-            $str_old = Timber::compile('assets/single-post.twig', array('post' => $post), 600);
-            $str_another = Timber::compile('assets/single-parent.twig', array('post' => $post, 'rand' => rand(0, 99)), 500);
+            $str_old = Timber::compile('assets/single-post.twig', [
+                'post' => $post,
+            ], 600);
+            $str_another = Timber::compile('assets/single-parent.twig', [
+                'post' => $post,
+                'rand' => rand(0, 99),
+            ], 500);
             //sleep(1);
-            $str_new = Timber::compile('assets/single-post.twig', array('post' => $post), 600);
+            $str_new = Timber::compile('assets/single-post.twig', [
+                'post' => $post,
+            ], 600);
             $this->assertEquals($str_old, $str_new);
             $loader = new Timber\Loader();
             $clear = $loader->clear_cache_timber();
@@ -302,9 +319,13 @@
             $_wp_using_ext_object_cache = true;
             $pid = $this->factory->post->create();
             $post = Timber::get_post($pid);
-            $str_old = Timber::compile('assets/single-post.twig', array('post' => $post), 600, \Timber\Loader::CACHE_OBJECT);
+            $str_old = Timber::compile('assets/single-post.twig', [
+                'post' => $post,
+            ], 600, \Timber\Loader::CACHE_OBJECT);
             //sleep(1);
-            $str_new = Timber::compile('assets/single-post.twig', array('post' => $post), 600, \Timber\Loader::CACHE_OBJECT);
+            $str_new = Timber::compile('assets/single-post.twig', [
+                'post' => $post,
+            ], 600, \Timber\Loader::CACHE_OBJECT);
             $this->assertEquals($str_old, $str_new);
             $loader = new Timber\Loader();
             $clear = $loader->clear_cache_timber(\Timber\Loader::CACHE_OBJECT);
@@ -332,9 +353,15 @@
             $time = 1;
             $pid = $this->factory->post->create();
             $post = Timber::get_post($pid);
-            $str_old = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => rand(0, 99999)), $time);
+            $str_old = Timber::compile('assets/single-post.twig', [
+                'post' => $post,
+                'rand' => rand(0, 99999),
+            ], $time);
             sleep(2);
-            $str_new = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => rand(0, 99999)), $time);
+            $str_new = Timber::compile('assets/single-post.twig', [
+                'post' => $post,
+                'rand' => rand(0, 99999),
+            ], $time);
             $this->assertEquals($str_old, $str_new);
             global $wpdb;
             $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
@@ -350,9 +377,15 @@
             $post = Timber::get_post($pid);
             $r1 = rand(0, 999999);
             $r2 = rand(0, 999999);
-            $str_old = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r1), array(600, false));
+            $str_old = Timber::compile('assets/single-post-rand.twig', [
+                'post' => $post,
+                'rand' => $r1,
+            ], [600, false]);
             self::_swapFiles();
-            $str_new = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r2), array(600, false));
+            $str_new = Timber::compile('assets/single-post-rand.twig', [
+                'post' => $post,
+                'rand' => $r2,
+            ], [600, false]);
             $this->assertNotEquals($str_old, $str_new);
             self::_unswapFiles();
         }
@@ -375,9 +408,15 @@
             $pid = $this->factory->post->create();
             $post = Timber::get_post($pid);
             $r1 = rand(0, 999999);
-            $str_old = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r1), array(600, false));
+            $str_old = Timber::compile('assets/single-post-rand.twig', [
+                'post' => $post,
+                'rand' => $r1,
+            ], [600, false]);
             self::_swapFiles();
-            $str_new = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r1), array(600, false));
+            $str_new = Timber::compile('assets/single-post-rand.twig', [
+                'post' => $post,
+                'rand' => $r1,
+            ], [600, false]);
             $this->assertEquals($str_old, $str_new);
             self::_unswapFiles();
         }
@@ -388,9 +427,15 @@
             $pid = $this->factory->post->create();
             $post = Timber::get_post($pid);
             $r1 = rand(0, 999999);
-            $str_old = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r1), array(600, false), \Timber\Loader::CACHE_SITE_TRANSIENT);
+            $str_old = Timber::compile('assets/single-post-rand.twig', [
+                'post' => $post,
+                'rand' => $r1,
+            ], [600, false], \Timber\Loader::CACHE_SITE_TRANSIENT);
             self::_swapFiles();
-            $str_new = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r1), array(600, false), \Timber\Loader::CACHE_SITE_TRANSIENT);
+            $str_new = Timber::compile('assets/single-post-rand.twig', [
+                'post' => $post,
+                'rand' => $r1,
+            ], [600, false], \Timber\Loader::CACHE_SITE_TRANSIENT);
             $this->assertEquals($str_old, $str_new);
             self::_unswapFiles();
         }
@@ -403,9 +448,15 @@
             $pid = $this->factory->post->create();
             $post = Timber::get_post($pid);
             $r1 = rand(0, 999999);
-            $str_old = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r1), array(600, false), \Timber\Loader::CACHE_OBJECT);
+            $str_old = Timber::compile('assets/single-post-rand.twig', [
+                'post' => $post,
+                'rand' => $r1,
+            ], [600, false], \Timber\Loader::CACHE_OBJECT);
             self::_swapFiles();
-            $str_new = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r1), array(600, false), \Timber\Loader::CACHE_OBJECT);
+            $str_new = Timber::compile('assets/single-post-rand.twig', [
+                'post' => $post,
+                'rand' => $r1,
+            ], [600, false], \Timber\Loader::CACHE_OBJECT);
             $this->assertEquals($str_old, $str_new);
             self::_unswapFiles();
             $_wp_using_ext_object_cache = false;
@@ -420,8 +471,14 @@
             $post = Timber::get_post($pid);
             $r1 = rand(0, 999999);
             $r2 = rand(0, 999999);
-            $str_old = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => $r1), $time);
-            $str_new = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => $r2), $time);
+            $str_old = Timber::compile('assets/single-post.twig', [
+                'post' => $post,
+                'rand' => $r1,
+            ], $time);
+            $str_new = Timber::compile('assets/single-post.twig', [
+                'post' => $post,
+                'rand' => $r2,
+            ], $time);
             $this->assertEquals($str_old, $str_new);
             global $wpdb;
             $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
@@ -436,10 +493,19 @@
             $pid = $this->factory->post->create();
             $post = Timber::get_post($pid);
             set_transient('random_600', 'foo', 600);
-            $random_post = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => rand(0, 99999)), 600);
-            $str_old = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => rand(0, 99999)), $time);
+            $random_post = Timber::compile('assets/single-post.twig', [
+                'post' => $post,
+                'rand' => rand(0, 99999),
+            ], 600);
+            $str_old = Timber::compile('assets/single-post.twig', [
+                'post' => $post,
+                'rand' => rand(0, 99999),
+            ], $time);
             sleep(2);
-            $str_new = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => rand(0, 99999)), $time);
+            $str_new = Timber::compile('assets/single-post.twig', [
+                'post' => $post,
+                'rand' => rand(0, 99999),
+            ], $time);
             $this->assertEquals($str_old, $str_new);
             global $wpdb;
             $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";

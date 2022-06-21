@@ -51,7 +51,7 @@ class Timber
      *
      * @var array An array containing global context variables.
      */
-    public static $context_cache = array();
+    public static $context_cache = [];
 
     /**
      * Caching option for Twig.
@@ -278,7 +278,7 @@ class Timber
         global $wp_query;
 
         $options = wp_parse_args($options, [
-            'merge_default' => false
+            'merge_default' => false,
         ]);
 
         // Has WP already queried and found a post?
@@ -473,18 +473,18 @@ class Timber
      *                           posts with the same slug or title were found, it will select the
      *                           post with the oldest date.
      */
-    public static function get_post_by($type, $search_value, $args = array())
+    public static function get_post_by($type, $search_value, $args = [])
     {
         $post_id = false;
         $args = wp_parse_args($args, [
             'post_type' => 'any',
             'order_by' => 'post_date',
-            'order' => 'ASC'
+            'order' => 'ASC',
         ]);
         if ('slug' === $type) {
             $args = wp_parse_args($args, [
                 'name' => $search_value,
-                'fields' => 'ids'
+                'fields' => 'ids',
             ]);
             $query = new \WP_Query($args);
 
@@ -507,7 +507,7 @@ class Timber
             global $wpdb;
 
             $sql = "SELECT ID FROM $wpdb->posts WHERE post_title = %s";
-            $query_args = [ $search_value ];
+            $query_args = [$search_value];
             if (is_array($args['post_type'])) {
                 $post_type = esc_sql($args['post_type']);
                 $post_type_in_string = "'" . implode("','", $args['post_type']) . "'";
@@ -766,7 +766,11 @@ class Timber
 
         if ($wp_term === false) {
             if (empty($taxonomy) && $field != 'term_taxonomy_id') {
-                $search = [$field => $value, $taxonomy => 'any', 'hide_empty' => false];
+                $search = [
+                    $field => $value,
+                    $taxonomy => 'any',
+                    'hide_empty' => false,
+                ];
                 return static::get_term($search);
             }
 
@@ -1049,7 +1053,7 @@ class Timber
             global $wpdb;
             $blog_ids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs ORDER BY blog_id ASC");
         }
-        $return = array();
+        $return = [];
         foreach ($blog_ids as $blog_id) {
             $return[] = new Site($blog_id);
         }
@@ -1228,7 +1232,7 @@ class Timber
              */
             self::$context_cache = apply_filters_deprecated(
                 'timber_context',
-                array( self::$context_cache ),
+                [self::$context_cache],
                 '2.0.0',
                 'timber/context'
             );
@@ -1264,7 +1268,7 @@ class Timber
      * @param bool         $via_render Optional. Whether to apply optional render or compile filters. Default false.
      * @return bool|string The returned output.
      */
-    public static function compile($filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT, $via_render = false)
+    public static function compile($filenames, $data = [], $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT, $via_render = false)
     {
         if (!defined('TIMBER_LOADED')) {
             self::init();
@@ -1306,7 +1310,7 @@ class Timber
              */
             $file = apply_filters_deprecated(
                 'timber_render_file',
-                array( $file ),
+                [$file],
                 '2.0.0',
                 'timber/render/file'
             );
@@ -1327,7 +1331,7 @@ class Timber
              */
             $file = apply_filters_deprecated(
                 'timber_compile_file',
-                array( $file ),
+                [$file],
                 '2.0.0',
                 'timber/compile/file'
             );
@@ -1336,7 +1340,7 @@ class Timber
 
         if ($file !== false) {
             if (is_null($data)) {
-                $data = array();
+                $data = [];
             }
 
             if ($via_render) {
@@ -1357,7 +1361,7 @@ class Timber
                  */
                 $data = apply_filters_deprecated(
                     'timber_render_data',
-                    array( $data ),
+                    [$data],
                     '2.0.0',
                     'timber/render/data'
                 );
@@ -1379,7 +1383,7 @@ class Timber
                  */
                 $data = apply_filters_deprecated(
                     'timber_compile_data',
-                    array( $data ),
+                    [$data],
                     '2.0.0',
                     'timber/compile/data'
                 );
@@ -1429,7 +1433,7 @@ class Timber
          *
          * @deprecated 2.0.0, use `timber/compile/done`
          */
-        do_action_deprecated('timber_compile_done', array(), '2.0.0', 'timber/compile/done');
+        do_action_deprecated('timber_compile_done', [], '2.0.0', 'timber/compile/done');
 
         return $output;
     }
@@ -1450,7 +1454,7 @@ class Timber
      * @param array  $data   Optional. An array of data to use in Twig template.
      * @return bool|string
      */
-    public static function compile_string($string, $data = array())
+    public static function compile_string($string, $data = [])
     {
         $dummy_loader = new Loader();
         $twig = $dummy_loader->get_twig();
@@ -1472,7 +1476,7 @@ class Timber
      * @param string       $cache_mode Optional. Any of the cache mode constants defined in Timber\Loader.
      * @return bool|string The returned output.
      */
-    public static function fetch($filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT)
+    public static function fetch($filenames, $data = [], $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT)
     {
         Helper::deprecated(
             'fetch',
@@ -1492,7 +1496,7 @@ class Timber
          */
         $output = apply_filters_deprecated(
             'timber_compile_result',
-            array( $output ),
+            [$output],
             '2.0.0',
             'timber/compile/result'
         );
@@ -1521,7 +1525,7 @@ class Timber
      * @param string       $cache_mode Optional. Any of the cache mode constants defined in Timber\Loader.
      * @return bool|string The echoed output.
      */
-    public static function render($filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT)
+    public static function render($filenames, $data = [], $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT)
     {
         $output = self::compile($filenames, $data, $expires, $cache_mode, true);
         echo $output;
@@ -1543,7 +1547,7 @@ class Timber
      * @param array  $data   An array of data to use in Twig template.
      * @return bool|string
      */
-    public static function render_string($string, $data = array())
+    public static function render_string($string, $data = [])
     {
         $compiled = self::compile_string($string, $data);
         echo $compiled;
@@ -1560,7 +1564,7 @@ class Timber
      * @param array   $data
      * @return bool|string
      */
-    public static function get_sidebar($sidebar = 'sidebar.php', $data = array())
+    public static function get_sidebar($sidebar = 'sidebar.php', $data = [])
     {
         if (strstr(strtolower($sidebar), '.php')) {
             return self::get_sidebar_from_php($sidebar, $data);
@@ -1575,7 +1579,7 @@ class Timber
      * @param array   $data
      * @return string
      */
-    public static function get_sidebar_from_php($sidebar = '', $data = array())
+    public static function get_sidebar_from_php($sidebar = '', $data = [])
     {
         $caller = LocationManager::get_calling_script_dir(1);
         $uris = LocationManager::get_locations($caller);
@@ -1609,7 +1613,7 @@ class Timber
      */
     public static function get_widgets($widget_id)
     {
-        return trim(Helper::ob_function('dynamic_sidebar', array( $widget_id )));
+        return trim(Helper::ob_function('dynamic_sidebar', [$widget_id]));
     }
 
     /**
@@ -1621,7 +1625,7 @@ class Timber
      * @param array $prefs an array of preference data.
      * @return array|mixed
      */
-    public static function get_pagination($prefs = array())
+    public static function get_pagination($prefs = [])
     {
         Helper::deprecated(
             'get_pagination',

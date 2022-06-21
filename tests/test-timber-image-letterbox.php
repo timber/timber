@@ -89,7 +89,7 @@ class TestTimberImageLetterbox extends TimberAttachment_UnitTestCase
 
     public function testLetterboxSixCharHex()
     {
-        $data = array();
+        $data = [];
         $file_loc = TestTimberImage::copyTestAttachment('eastern.jpg');
         $upload_dir = wp_upload_dir();
         $new_file = Timber\ImageHelper::letterbox($upload_dir['url'] . '/eastern.jpg', 500, 500, '#FFFFFF', true);
@@ -117,7 +117,9 @@ class TestTimberImageLetterbox extends TimberAttachment_UnitTestCase
     public function testSideloadedJPGWithLetterbox()
     {
         $url = 'https://pbs.twimg.com/profile_images/768086933310476288/acGwPDj4_400x400.jpg';
-        $sideloaded = Timber::compile_string('{{ file|letterbox(500, 500) }}', [ 'file' => $url ]);
+        $sideloaded = Timber::compile_string('{{ file|letterbox(500, 500) }}', [
+            'file' => $url,
+        ]);
 
         $base_url = str_replace(basename($sideloaded), '', $sideloaded);
         $expected = $base_url . md5($url) . '-lbox-500x500-trans.jpg';
@@ -128,7 +130,9 @@ class TestTimberImageLetterbox extends TimberAttachment_UnitTestCase
     public function testSideloadedPNGWithLetterbox()
     {
         $url = 'https://user-images.githubusercontent.com/2084481/31230351-116569a8-a9e4-11e7-8310-48b7f679892b.png';
-        $sideloaded = Timber::compile_string('{{ file|letterbox(500, 500) }}', [ 'file' => $url ]);
+        $sideloaded = Timber::compile_string('{{ file|letterbox(500, 500) }}', [
+            'file' => $url,
+        ]);
 
         $base_url = str_replace(basename($sideloaded), '', $sideloaded);
         $expected = $base_url . md5($url) . '-lbox-500x500-trans.png';

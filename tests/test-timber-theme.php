@@ -114,7 +114,7 @@
             parent::set_up();
 
             $this->backup_wp_theme_directories = $wp_theme_directories;
-            $wp_theme_directories = array( WP_CONTENT_DIR . '/themes' );
+            $wp_theme_directories = [WP_CONTENT_DIR . '/themes'];
 
             wp_clean_themes_cache();
             unset($GLOBALS['wp_themes']);

@@ -27,7 +27,9 @@ class TestTimberMainClass extends Timber_UnitTestCase
 
     public function testGetPostBySlug()
     {
-        $this->factory->post->create([ 'post_name' => 'kill-bill' ]);
+        $this->factory->post->create([
+            'post_name' => 'kill-bill',
+        ]);
 
         $post = Timber\Timber::get_post_by('slug', 'kill-bill');
 
@@ -36,15 +38,21 @@ class TestTimberMainClass extends Timber_UnitTestCase
 
     public function testGetPostBySlugNewest()
     {
-        $post_id = $this->factory->post->create([ 'post_type' => 'post',
-                                                   'post_name' => 'privacy',
-                                                   'post_date' => '2018-01-10 02:58:18' ]);
+        $post_id = $this->factory->post->create([
+            'post_type' => 'post',
+            'post_name' => 'privacy',
+            'post_date' => '2018-01-10 02:58:18',
+        ]);
 
-        $page_id = $this->factory->post->create([ 'post_type' => 'page',
-                                                   'post_name' => 'privacy',
-                                                   'post_date' => '2020-01-10 02:58:18' ]);
+        $page_id = $this->factory->post->create([
+            'post_type' => 'page',
+            'post_name' => 'privacy',
+            'post_date' => '2020-01-10 02:58:18',
+        ]);
 
-        $post = Timber\Timber::get_post_by('slug', 'privacy', ['order' => 'DESC']);
+        $post = Timber\Timber::get_post_by('slug', 'privacy', [
+            'order' => 'DESC',
+        ]);
 
         $this->assertEquals('privacy', $post->post_name);
         $this->assertEquals($page_id, $post->ID);
@@ -52,7 +60,9 @@ class TestTimberMainClass extends Timber_UnitTestCase
 
     public function testGetPostBySlugAndPostType()
     {
-        register_post_type('movie', array('public' => true));
+        register_post_type('movie', [
+            'public' => true,
+        ]);
 
         $post_id_movie = $this->factory->post->create([
             'post_name' => 'kill-bill',
@@ -63,8 +73,12 @@ class TestTimberMainClass extends Timber_UnitTestCase
             'post_type' => 'page',
         ]);
 
-        $post_movie = Timber\Timber::get_post_by('slug', 'kill-bill', ['post_type' => 'movie']);
-        $post_page = Timber\Timber::get_post_by('slug', 'kill-bill', ['post_type' => 'page']);
+        $post_movie = Timber\Timber::get_post_by('slug', 'kill-bill', [
+            'post_type' => 'movie',
+        ]);
+        $post_page = Timber\Timber::get_post_by('slug', 'kill-bill', [
+            'post_type' => 'page',
+        ]);
 
         $this->assertEquals($post_id_movie, $post_movie->ID);
         $this->assertEquals($post_id_page, $post_page->ID);
@@ -75,7 +89,9 @@ class TestTimberMainClass extends Timber_UnitTestCase
 
     public function testGetPostBySlugForNonexistentPost()
     {
-        $this->factory->post->create([ 'post_name' => 'kill-bill' ]);
+        $this->factory->post->create([
+            'post_name' => 'kill-bill',
+        ]);
 
         $post = Timber\Timber::get_post_by('slug', 'kill-bill-2');
 
@@ -85,7 +101,9 @@ class TestTimberMainClass extends Timber_UnitTestCase
     public function testGetPostByTitle()
     {
         $post_title = 'A Post Title containing Special Characters like # or ! or Ä or ç';
-        $this->factory->post->create([ 'post_title' => $post_title ]);
+        $this->factory->post->create([
+            'post_title' => $post_title,
+        ]);
 
         $post = Timber\Timber::get_post_by('title', $post_title);
 
@@ -95,7 +113,9 @@ class TestTimberMainClass extends Timber_UnitTestCase
     public function testGetPostByTitleWithDifferentCasing()
     {
         $post_title = 'A Post Title containing Special Characters like # or ! or Ä or ç';
-        $this->factory->post->create([ 'post_title' => $post_title ]);
+        $this->factory->post->create([
+            'post_title' => $post_title,
+        ]);
 
         $lower_case_title = mb_strtolower($post_title);
         $post = Timber\Timber::get_post_by('title', $lower_case_title);
@@ -105,32 +125,44 @@ class TestTimberMainClass extends Timber_UnitTestCase
 
     public function testGetPostByTitleAndPostType()
     {
-        register_post_type('book', array('public' => true));
-        register_post_type('movie', array('public' => true));
+        register_post_type('book', [
+            'public' => true,
+        ]);
+        register_post_type('movie', [
+            'public' => true,
+        ]);
         $post_title = 'A Special Post Title containing Special Characters like # or ! or Ä or ç';
 
         $post_id_movie = $this->factory->post->create([
             'post_title' => $post_title,
             'post_type' => 'movie',
-            'post_date' => '2020-01-10 02:58:18'
+            'post_date' => '2020-01-10 02:58:18',
         ]);
 
         $post_id_book = $this->factory->post->create([
             'post_title' => $post_title,
             'post_type' => 'book',
-            'post_date' => '2020-01-13 02:58:18'
+            'post_date' => '2020-01-13 02:58:18',
         ]);
 
         $post_id_page = $this->factory->post->create([
             'post_title' => $post_title,
             'post_type' => 'page',
-            'post_date' => '2020-01-02 02:58:18'
+            'post_date' => '2020-01-02 02:58:18',
         ]);
 
-        $post_movie = Timber\Timber::get_post_by('title', $post_title, ['post_type' => 'movie']);
-        $post_page = Timber\Timber::get_post_by('title', $post_title, ['post_type' => 'page']);
-        $post_multiple = Timber\Timber::get_post_by('title', $post_title, ['post_type' => [ 'page', 'book' ]]);
-        $post_multiple_any = Timber\Timber::get_post_by('title', $post_title, ['post_type' => 'any']);
+        $post_movie = Timber\Timber::get_post_by('title', $post_title, [
+            'post_type' => 'movie',
+        ]);
+        $post_page = Timber\Timber::get_post_by('title', $post_title, [
+            'post_type' => 'page',
+        ]);
+        $post_multiple = Timber\Timber::get_post_by('title', $post_title, [
+            'post_type' => ['page', 'book'],
+        ]);
+        $post_multiple_any = Timber\Timber::get_post_by('title', $post_title, [
+            'post_type' => 'any',
+        ]);
 
         $this->assertEquals($post_id_movie, $post_movie->ID);
         $this->assertEquals($post_id_page, $post_page->ID);
@@ -197,7 +229,7 @@ class TestTimberMainClass extends Timber_UnitTestCase
         ]);
 
         $event_id = $this->factory->post->create([
-            'post_type' => 'event'
+            'post_type' => 'event',
         ]);
         $this->register_post_classmap_temporarily([
             'event' => TimberAlert::class,
@@ -209,9 +241,11 @@ class TestTimberMainClass extends Timber_UnitTestCase
     public function testGetPostWithCustomPostTypeNotPublic()
     {
         register_post_type('event', [
-            'public' => false
+            'public' => false,
         ]);
-        $pid = $this->factory->post->create(array('post_type' => 'event'));
+        $pid = $this->factory->post->create([
+            'post_type' => 'event',
+        ]);
 
         $this->register_post_classmap_temporarily([
             'event' => TimberAlert::class,
@@ -256,10 +290,10 @@ class TestTimberMainClass extends Timber_UnitTestCase
 
     public function testUserInContextLoggedIn()
     {
-        $uid = $this->factory->user->create(array(
+        $uid = $this->factory->user->create([
             'user_login' => 'timber',
             'user_pass' => 'timber',
-        ));
+        ]);
         $user = wp_set_current_user($uid);
 
         $context = Timber::context();
@@ -304,10 +338,22 @@ class TestTimberMainClass extends Timber_UnitTestCase
 
     public function testGetPostsWithClassMap()
     {
-        register_post_type('portfolio', array('public' => true));
-        register_post_type('alert', array('public' => true));
-        $this->factory->post->create(array('post_type' => 'portfolio', 'post_title' => 'A portfolio item', 'post_date' => '2015-04-23 15:13:52'));
-        $this->factory->post->create(array('post_type' => 'alert', 'post_title' => 'An alert', 'post_date' => '2015-06-23 15:13:52'));
+        register_post_type('portfolio', [
+            'public' => true,
+        ]);
+        register_post_type('alert', [
+            'public' => true,
+        ]);
+        $this->factory->post->create([
+            'post_type' => 'portfolio',
+            'post_title' => 'A portfolio item',
+            'post_date' => '2015-04-23 15:13:52',
+        ]);
+        $this->factory->post->create([
+            'post_type' => 'alert',
+            'post_title' => 'An alert',
+            'post_date' => '2015-06-23 15:13:52',
+        ]);
 
         $this->register_post_classmap_temporarily([
             'alert' => TimberAlert::class,
@@ -324,10 +370,22 @@ class TestTimberMainClass extends Timber_UnitTestCase
 
     public function testGetPostWithClassMap()
     {
-        register_post_type('portfolio', array('public' => true));
-        register_post_type('alert', array('public' => true));
-        $portfolio_id = $this->factory->post->create(array('post_type' => 'portfolio', 'post_title' => 'A portfolio item', 'post_date' => '2015-04-23 15:13:52'));
-        $alert_id = $this->factory->post->create(array('post_type' => 'alert', 'post_title' => 'An alert', 'post_date' => '2015-06-23 15:13:52'));
+        register_post_type('portfolio', [
+            'public' => true,
+        ]);
+        register_post_type('alert', [
+            'public' => true,
+        ]);
+        $portfolio_id = $this->factory->post->create([
+            'post_type' => 'portfolio',
+            'post_title' => 'A portfolio item',
+            'post_date' => '2015-04-23 15:13:52',
+        ]);
+        $alert_id = $this->factory->post->create([
+            'post_type' => 'alert',
+            'post_title' => 'An alert',
+            'post_date' => '2015-06-23 15:13:52',
+        ]);
 
         $this->register_post_classmap_temporarily([
             'alert' => TimberAlert::class,
@@ -365,15 +423,19 @@ class TestTimberMainClass extends Timber_UnitTestCase
     {
         // @todo #2087
         $this->markTestSkipped();
-        $term_id = $this->factory->term->create(array('name' => 'New England Patriots'));
+        $term_id = $this->factory->term->create([
+            'name' => 'New England Patriots',
+        ]);
         $term = Timber::get_term('new-england-patriots');
         $this->assertEquals($term->ID, $term_id);
     }
 
     public function testGetTerms()
     {
-        $posts = $this->factory->post->create_many(15, array( 'post_type' => 'post' ));
-        $tags = array();
+        $posts = $this->factory->post->create_many(15, [
+            'post_type' => 'post',
+        ]);
+        $tags = [];
         foreach ($posts as $post) {
             $tag = rand_str();
             wp_set_object_terms($post, $tag, 'post_tag');
@@ -382,7 +444,7 @@ class TestTimberMainClass extends Timber_UnitTestCase
         sort($tags);
         $terms = Timber::get_terms('tag');
         $this->assertEquals('Timber\Term', get_class($terms[0]));
-        $results = array();
+        $results = [];
         foreach ($terms as $term) {
             $results[] = $term->name;
         }
@@ -397,10 +459,15 @@ class TestTimberMainClass extends Timber_UnitTestCase
 
     public function testGetPostExcerpt()
     {
-        $editor_user_id = $this->factory->user->create(array( 'role' => 'editor' ));
+        $editor_user_id = $this->factory->user->create([
+            'role' => 'editor',
+        ]);
         wp_set_current_user($editor_user_id);
 
-        $post_id = $this->factory->post->create(array( 'post_author' => $editor_user_id, 'post_content' => "OLD CONTENT HERE" ));
+        $post_id = $this->factory->post->create([
+            'post_author' => $editor_user_id,
+            'post_content' => "OLD CONTENT HERE",
+        ]);
         _wp_put_post_revision([
             'ID' => $post_id,
             'post_title' => 'Revised Title',
@@ -423,10 +490,14 @@ class TestTimberMainClass extends Timber_UnitTestCase
 
     public function testTimberRenderString()
     {
-        $pid = $this->factory->post->create(array('post_title' => 'Zoogats'));
+        $pid = $this->factory->post->create([
+            'post_title' => 'Zoogats',
+        ]);
         $post = Timber::get_post($pid);
         ob_start();
-        Timber::render_string('<h2>{{post.title}}</h2>', array('post' => $post));
+        Timber::render_string('<h2>{{post.title}}</h2>', [
+            'post' => $post,
+        ]);
         $data = ob_get_contents();
         ob_end_clean();
         $this->assertEquals('<h2>Zoogats</h2>', trim($data));
@@ -434,10 +505,14 @@ class TestTimberMainClass extends Timber_UnitTestCase
 
     public function testTimberRender()
     {
-        $pid = $this->factory->post->create(array('post_title' => 'Foobar'));
+        $pid = $this->factory->post->create([
+            'post_title' => 'Foobar',
+        ]);
         $post = Timber::get_post($pid);
         ob_start();
-        Timber::render('assets/single-post.twig', array('post' => $post));
+        Timber::render('assets/single-post.twig', [
+            'post' => $post,
+        ]);
         $data = ob_get_contents();
         ob_end_clean();
         $this->assertEquals('<h1>Foobar</h1>', trim($data));
@@ -461,7 +536,9 @@ class TestTimberMainClass extends Timber_UnitTestCase
        */
     public function testDoubleInstantiationOfSubclass()
     {
-        $post_id = $this->factory->post->create(array( 'post_type' => 'person' ));
+        $post_id = $this->factory->post->create([
+            'post_type' => 'person',
+        ]);
 
         $this->register_post_classmap_temporarily([
             'person' => Person::class,
@@ -475,7 +552,9 @@ class TestTimberMainClass extends Timber_UnitTestCase
      */
     public function testDoubleInstantiationOfTimberPostClass()
     {
-        $post_id = $this->factory->post->create(array( 'post_type' => 'post' ));
+        $post_id = $this->factory->post->create([
+            'post_type' => 'post',
+        ]);
         // Unlike above, do NOT register a special Class Map.
         $this->assertInstanceOf(Post::class, Timber::get_post($post_id));
     }
@@ -552,16 +631,23 @@ class TestTimberMainClass extends Timber_UnitTestCase
         // Create several irrelevant posts that should NOT show up in our query.
         $this->factory->post->create_many(6);
 
-        $cat = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
-        $cats = $this->factory->post->create_many(3, array('post_category' => array($cat)));
-        $cat_post = $this->factory->post->create(array('post_category' => array($cat)));
+        $cat = $this->factory->term->create([
+            'name' => 'News',
+            'taxonomy' => 'category',
+        ]);
+        $cats = $this->factory->post->create_many(3, [
+            'post_category' => [$cat],
+        ]);
+        $cat_post = $this->factory->post->create([
+            'post_category' => [$cat],
+        ]);
 
         $cat_post = Timber::get_post($cat_post);
         $this->assertEquals('News', $cat_post->category()->title());
 
-        $this->assertCount(4, Timber\Timber::get_posts(array(
+        $this->assertCount(4, Timber\Timber::get_posts([
             'category' => $cat,
-        )));
+        ]));
     }
 
     /**
@@ -594,7 +680,7 @@ class TestTimberMainClass extends Timber_UnitTestCase
     public function testGetPostWithMergeDefault()
     {
         $cat = $this->factory->term->create([
-            'taxonomy' => 'category'
+            'taxonomy' => 'category',
         ]);
 
         // Create some irrelevant posts
@@ -626,7 +712,7 @@ class TestTimberMainClass extends Timber_UnitTestCase
     public function testGetPostsWithMergeDefault()
     {
         $cat = $this->factory->term->create([
-            'taxonomy' => 'category'
+            'taxonomy' => 'category',
         ]);
 
         $post_ids = $this->factory->post->create_many(3, [
@@ -658,17 +744,29 @@ class TestTimberMainClass extends Timber_UnitTestCase
     public function testGettingWithCatAndOtherStuff()
     {
         $pids = $this->factory->post->create_many(6);
-        $cat = $this->factory->term->create(array('name' => 'Something', 'taxonomy' => 'category'));
+        $cat = $this->factory->term->create([
+            'name' => 'Something',
+            'taxonomy' => 'category',
+        ]);
 
-        $this->factory->post->create(array('post_title' => 'Germany', 'post_category' => array($cat)));
-        $this->factory->post->create(array('post_title' => 'France', 'post_category' => array($cat)));
-        $this->factory->post->create(array('post_title' => 'England', 'post_category' => array($cat)));
+        $this->factory->post->create([
+            'post_title' => 'Germany',
+            'post_category' => [$cat],
+        ]);
+        $this->factory->post->create([
+            'post_title' => 'France',
+            'post_category' => [$cat],
+        ]);
+        $this->factory->post->create([
+            'post_title' => 'England',
+            'post_category' => [$cat],
+        ]);
 
         $posts = Timber::get_posts([
             'post_type' => 'post',
             'posts_per_page' => 2,
             'post_status' => 'publish',
-            'cat' => $cat
+            'cat' => $cat,
         ]);
 
         $this->assertEquals(2, count($posts));
@@ -680,17 +778,29 @@ class TestTimberMainClass extends Timber_UnitTestCase
     public function testGettingWithCategoryAndOtherStuff()
     {
         $pids = $this->factory->post->create_many(6);
-        $cat = $this->factory->term->create(array('name' => 'Something', 'taxonomy' => 'category'));
+        $cat = $this->factory->term->create([
+            'name' => 'Something',
+            'taxonomy' => 'category',
+        ]);
 
-        $this->factory->post->create(array('post_title' => 'Germany', 'post_category' => array($cat)));
-        $this->factory->post->create(array('post_title' => 'France', 'post_category' => array($cat)));
-        $this->factory->post->create(array('post_title' => 'England', 'post_category' => array($cat)));
+        $this->factory->post->create([
+            'post_title' => 'Germany',
+            'post_category' => [$cat],
+        ]);
+        $this->factory->post->create([
+            'post_title' => 'France',
+            'post_category' => [$cat],
+        ]);
+        $this->factory->post->create([
+            'post_title' => 'England',
+            'post_category' => [$cat],
+        ]);
 
         $posts = Timber::get_posts([
             'post_type' => 'post',
             'posts_per_page' => 2,
             'post_status' => 'publish',
-            'category' => $cat
+            'category' => $cat,
         ]);
 
         $this->assertCount(2, $posts);
@@ -701,11 +811,18 @@ class TestTimberMainClass extends Timber_UnitTestCase
      */
     public function testGettingWithCat()
     {
-        $cat = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
+        $cat = $this->factory->term->create([
+            'name' => 'News',
+            'taxonomy' => 'category',
+        ]);
 
         $pids = $this->factory->post->create_many(6);
-        $cats = $this->factory->post->create_many(3, array('post_category' => array($cat)));
-        $cat_post = $this->factory->post->create(array('post_category' => array($cat)));
+        $cats = $this->factory->post->create_many(3, [
+            'post_category' => [$cat],
+        ]);
+        $cat_post = $this->factory->post->create([
+            'post_category' => [$cat],
+        ]);
 
         $cat_post = Timber::get_post($cat_post);
         $this->assertEquals('News', $cat_post->category()->title());
@@ -772,12 +889,19 @@ class TestTimberMainClass extends Timber_UnitTestCase
     {
         // Set up some posts. Make the second one sticky.
         $ids = [
-            $this->factory->post->create(array('post_date' => '2015-04-23 15:13:52')),
-            $this->factory->post->create(array('post_date' => '2015-04-21 15:13:52')),
-            $this->factory->post->create(array('post_date' => '2015-04-24 15:13:52')),
+            $this->factory->post->create([
+                'post_date' => '2015-04-23 15:13:52',
+            ]),
+            $this->factory->post->create([
+                'post_date' => '2015-04-21 15:13:52',
+            ]),
+            $this->factory->post->create([
+                'post_date' =>
+                '2015-04-24 15:13:52',
+            ]),
         ];
         $sticky_id = $ids[1];
-        update_option('sticky_posts', array($sticky_id));
+        update_option('sticky_posts', [$sticky_id]);
 
         $posts = Timber::get_posts([
             'post_type' => 'post',
@@ -809,12 +933,16 @@ class TestTimberMainClass extends Timber_UnitTestCase
         register_post_type('job');
 
         // Set up the global query context for a single job post.
-        $post_id = $this->factory->post->create(array( 'post_type' => 'job' ));
+        $post_id = $this->factory->post->create([
+            'post_type' => 'job',
+        ]);
         $post = Timber::get_post($post_id);
         $this->go_to('?p=' . $post->ID);
 
         // Create more jobs.
-        $this->factory->post->create_many(10, array('post_type' => 'job'));
+        $this->factory->post->create_many(10, [
+            'post_type' => 'job',
+        ]);
 
         $jobs = Timber::get_posts([
             'post_type' => 'job',
@@ -855,18 +983,21 @@ class TestTimberMainClass extends Timber_UnitTestCase
         $filename = TestTimberImage::copyTestAttachment('flag.png');
         $destination_url = str_replace(ABSPATH, 'http://' . $_SERVER['HTTP_HOST'] . '/', $filename);
         $wp_filetype = wp_check_filetype(basename($filename), null);
-        $attachment = array(
+        $attachment = [
             'post_mime_type' => $wp_filetype['type'],
             'post_title' => preg_replace('/\.[^.]+$/', '', basename($filename)),
             'post_content' => '',
-            'post_status' => 'inherit'
-        );
+            'post_status' => 'inherit',
+        ];
         $attach_id = wp_insert_attachment($attachment, $filename, $post_id);
         add_post_meta($post_id, '_thumbnail_id', $attach_id, true);
 
         $data = [
             'post' => Timber::get_post($post_id),
-            'size' => ['width' => 100, 'height' => 50],
+            'size' => [
+                'width' => 100,
+                'height' => 50,
+            ],
             'crop' => 'default',
         ];
 
@@ -897,7 +1028,9 @@ class TestTimberMainClass extends Timber_UnitTestCase
      */
     public function testDeprecatedGetPostFromSlug()
     {
-        $post_id = $this->factory->post->create([ 'post_name' => 'mycoolpost' ]);
+        $post_id = $this->factory->post->create([
+            'post_name' => 'mycoolpost',
+        ]);
         $this->assertNull(Timber::get_post('mycoolpost'));
     }
 
@@ -920,7 +1053,7 @@ class TestTimberMainClass extends Timber_UnitTestCase
         $this->factory->post->create_many(2);
 
         $posts = Timber\Timber::get_posts([
-            'post_type' => 'post'
+            'post_type' => 'post',
         ], 'Deprecated class name param');
 
         $this->assertInstanceOf(Post::class, $posts[0]);
@@ -945,7 +1078,9 @@ class TestTimberMainClass extends Timber_UnitTestCase
         $this->factory->post->create_many(2);
 
         $posts = Timber\Timber::get_posts(
-            [ 'post_type' => 'post' ],
+            [
+                'post_type' => 'post',
+            ],
             'Timber\Post',
             true
         );
@@ -958,7 +1093,9 @@ class TestTimberMainClass extends Timber_UnitTestCase
      */
     public function testDeprecatedQueryPost()
     {
-        $post_id = $this->factory->post->create([ 'post_type' => 'post' ]);
+        $post_id = $this->factory->post->create([
+            'post_type' => 'post',
+        ]);
         $post = Timber\Timber::query_post($post_id);
 
         $this->assertEquals($post->ID, $post_id);
@@ -969,8 +1106,12 @@ class TestTimberMainClass extends Timber_UnitTestCase
      */
     public function testDeprecatedQueryPosts()
     {
-        $post_ids = $this->factory->post->create_many(3, [ 'post_type' => 'post' ]);
-        $posts = Timber\Timber::query_posts([ 'post_type' => 'post' ]);
+        $post_ids = $this->factory->post->create_many(3, [
+            'post_type' => 'post',
+        ]);
+        $posts = Timber\Timber::query_posts([
+            'post_type' => 'post',
+        ]);
 
         $this->assertCount(3, $posts);
     }

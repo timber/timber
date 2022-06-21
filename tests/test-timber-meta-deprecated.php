@@ -21,10 +21,10 @@ class TestTimberMetaDeprecated extends Timber_UnitTestCase
     {
         parent::set_up();
 
-        remove_filter('timber/post/pre_meta', array( AcfIntegration::class, 'post_get_meta_field' ));
-        remove_filter('timber/post/meta_object_field', array( AcfIntegration::class, 'post_meta_object' ));
-        remove_filter('timber/term/pre_meta', array( AcfIntegration::class, 'term_get_meta_field' ));
-        remove_filter('timber/user/pre_meta', array( AcfIntegration::class, 'user_get_meta_field' ));
+        remove_filter('timber/post/pre_meta', [AcfIntegration::class, 'post_get_meta_field']);
+        remove_filter('timber/post/meta_object_field', [AcfIntegration::class, 'post_meta_object']);
+        remove_filter('timber/term/pre_meta', [AcfIntegration::class, 'term_get_meta_field']);
+        remove_filter('timber/user/pre_meta', [AcfIntegration::class, 'user_get_meta_field']);
     }
 
     /**

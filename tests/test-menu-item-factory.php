@@ -29,7 +29,7 @@ class TestMenuItemFactory extends Timber_UnitTestCase
                 'post_name' => 'home',
                 'post_type' => 'page',
                 'menu_order' => 1,
-            ]
+            ],
         ]);
 
         $menu = Timber::get_menu($menu_term['term_id']);
@@ -50,7 +50,7 @@ class TestMenuItemFactory extends Timber_UnitTestCase
                 'post_name' => 'home',
                 'post_type' => 'page',
                 'menu_order' => 1,
-            ]
+            ],
         ]);
 
         $menu = Timber::get_menu($menu_term['term_id']);
@@ -74,7 +74,7 @@ class TestMenuItemFactory extends Timber_UnitTestCase
                 'post_name' => 'home',
                 'post_type' => 'page',
                 'menu_order' => 1,
-            ]
+            ],
         ]);
 
         $menu = Timber::get_menu($menu_term['term_id']);

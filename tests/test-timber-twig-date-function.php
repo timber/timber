@@ -18,7 +18,9 @@ class TestTimberTwigDateFunction extends Timber_UnitTestCase
     {
         $result = Timber\Timber::compile_string(
             "{{ (date().getTimestamp()/10)|round == date ? 'OK' : 'KO' }}",
-            [ 'date' => round(time() / 10) ]
+            [
+                'date' => round(time() / 10),
+            ]
         );
 
         $this->assertEquals('OK', $result);
@@ -38,7 +40,9 @@ class TestTimberTwigDateFunction extends Timber_UnitTestCase
     {
         $result = Timber\Timber::compile_string(
             "{{ date(date) == date('2010-10-04 13:45') ? 'OK' : 'KO' }}",
-            [ 'date' => mktime(13, 45, 0, 10, 4, 2010) ]
+            [
+                'date' => mktime(13, 45, 0, 10, 4, 2010),
+            ]
         );
 
         $this->assertEquals('OK', $result);
@@ -48,7 +52,9 @@ class TestTimberTwigDateFunction extends Timber_UnitTestCase
     {
         $result = Timber\Timber::compile_string(
             "{{ date(date) == date('2010-10-04 13:45') ? 'OK' : 'KO' }}",
-            [ 'date' => new \DateTime('2010-10-04 13:45') ]
+            [
+                'date' => new \DateTime('2010-10-04 13:45'),
+            ]
         );
 
         $this->assertEquals('OK', $result);
@@ -58,7 +64,9 @@ class TestTimberTwigDateFunction extends Timber_UnitTestCase
     {
         $result = Timber\Timber::compile_string(
             "{{ date(date) == date('2010-10-04 13:45') ? 'OK' : 'KO' }}",
-            [ 'date' => '2010-10-04 13:45' ]
+            [
+                'date' => '2010-10-04 13:45',
+            ]
         );
 
         $this->assertEquals('OK', $result);
@@ -73,7 +81,8 @@ class TestTimberTwigDateFunction extends Timber_UnitTestCase
                     'Y-m-d H:i',
                     '2010-10-04 13:45',
                     new \DateTimeZone('UTC')
-                )->getTimestamp(), // A Unix Timestamp is always GMT.
+                )->getTimestamp(),
+                // A Unix Timestamp is always GMT.
             ]
         );
 
@@ -110,7 +119,9 @@ class TestTimberTwigDateFunction extends Timber_UnitTestCase
     {
         $result = Timber\Timber::compile_string(
             "{{ date(date, 'America/New_York')|date('d/m/Y H:i:s P', false) }}",
-            [ 'date' => mktime(13, 45, 0, 10, 4, 2010) ]
+            [
+                'date' => mktime(13, 45, 0, 10, 4, 2010),
+            ]
         );
 
         $this->assertEquals('04/10/2010 09:45:00 -04:00', $result);
@@ -120,7 +131,9 @@ class TestTimberTwigDateFunction extends Timber_UnitTestCase
     {
         $result = Timber\Timber::compile_string(
             "{{ date(timezone='America/New_York', date=date)|date('d/m/Y H:i:s P', false) }}",
-            [ 'date' => mktime(13, 45, 0, 10, 4, 2010) ]
+            [
+                'date' => mktime(13, 45, 0, 10, 4, 2010),
+            ]
         );
 
         $this->assertEquals('04/10/2010 09:45:00 -04:00', $result);

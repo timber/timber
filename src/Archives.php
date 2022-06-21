@@ -110,7 +110,7 @@ class Archives extends Core
      */
     protected function get_archives_link($url, $text, $post_count = 0)
     {
-        $ret = array();
+        $ret = [];
         $ret['text'] = $ret['title'] = $ret['name'] = wptexturize($text);
         $ret['url'] = $ret['link'] = esc_url(URLHelper::prepend_to_url($url, $this->base));
         if ($post_count) {
@@ -132,7 +132,7 @@ class Archives extends Core
     protected function get_items_yearly($args, $last_changed, $join, $where, $order, $limit)
     {
         global $wpdb;
-        $output = array();
+        $output = [];
         $query = "SELECT YEAR(post_date) AS `year`, count(ID) as posts FROM {$wpdb->posts} $join $where GROUP BY YEAR(post_date) ORDER BY post_date $order $limit";
         $key = md5($query);
         $key = "wp_get_archives:$key:$last_changed";
@@ -164,10 +164,10 @@ class Archives extends Core
     protected function get_items_monthly($args, $last_changed, $join, $where, $order, $limit = '', $nested = true)
     {
         global $wpdb, $wp_locale;
-        $output = array();
-        $defaults = array(
+        $output = [];
+        $defaults = [
             'show_year' => false,
-        );
+        ];
         $r = wp_parse_args($args, $defaults);
 
         $show_year = $r['show_year'];
@@ -197,9 +197,13 @@ class Archives extends Core
             }
         }
         if ($nested) {
-            $out2 = array();
+            $out2 = [];
             foreach ($output as $year => $months) {
-                $out2[] = array('name' => $year, 'children' => $months, 'post_count' => array_sum(array_column($months, 'post_count')));
+                $out2[] = [
+                    'name' => $year,
+                    'children' => $months,
+                    'post_count' => array_sum(array_column($months, 'post_count')),
+                ];
             }
             return $out2;
         }
@@ -230,15 +234,15 @@ class Archives extends Core
     {
         global $wpdb;
 
-        $defaults = array(
+        $defaults = [
             'type' => 'monthly-nested',
             'limit' => '',
             'show_post_count' => false,
             'order' => 'DESC',
             'post_type' => 'post',
             'show_year' => false,
-            'nested' => false
-        );
+            'nested' => false,
+        ];
 
         if ($args === null) {
             $args = $this->args;
@@ -297,7 +301,7 @@ class Archives extends Core
          */
         $join = apply_filters('getarchives_join', '', $args);
 
-        $output = array();
+        $output = [];
         $last_changed = wp_cache_get('last_changed', 'posts');
         if (!$last_changed) {
             $last_changed = microtime();
@@ -315,7 +319,7 @@ class Archives extends Core
             $key = "wp_get_archives:$key:$last_changed";
             if (!$results = wp_cache_get($key, 'posts')) {
                 $results = $wpdb->get_results($query);
-                $cache = array();
+                $cache = [];
                 $cache[$key] = $results;
                 wp_cache_set($key, $results, 'posts');
             }

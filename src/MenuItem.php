@@ -25,13 +25,13 @@ class MenuItem extends CoreEntity
      * @api
      * @var array Array of children of a menu item. Empty if there are no child menu items.
      */
-    public $children = array();
+    public $children = [];
 
     /**
      * @api
      * @var array Array of class names.
      */
-    public $classes = array();
+    public $classes = [];
     public $class = '';
     public $level = 0;
     public $post_name;

@@ -9,8 +9,8 @@ namespace Timber;
  */
 class Request extends Core implements CoreInterface
 {
-    public $post = array();
-    public $get = array();
+    public $post = [];
+    public $get = [];
 
     /**
      * Constructs a Timber\Request object

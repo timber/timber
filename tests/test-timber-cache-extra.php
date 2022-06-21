@@ -33,7 +33,9 @@ class TestTimberCacheExtra extends Timber_UnitTestCase
 
     public function test_cache_tag()
     {
-        $post_id = $this->factory->post->create([ 'post_title' => 'My Test Post' ]);
+        $post_id = $this->factory->post->create([
+            'post_title' => 'My Test Post',
+        ]);
         $post = Timber::get_post($post_id);
 
         $twig = Timber::compile_string("{% cache 'post' %}{{ post.title }}{% endcache %}", [
@@ -45,7 +47,9 @@ class TestTimberCacheExtra extends Timber_UnitTestCase
 
     public function test_cache_tags()
     {
-        $post_id = $this->factory->post->create([ 'post_title' => 'My Test Post' ]);
+        $post_id = $this->factory->post->create([
+            'post_title' => 'My Test Post',
+        ]);
         $post = Timber::get_post($post_id);
 
         $twig = Timber::compile_string("{% cache 'post' tags('blog') %}{{ post.title }}{% endcache %}", [
@@ -57,7 +61,9 @@ class TestTimberCacheExtra extends Timber_UnitTestCase
 
     public function test_cache_tag_with_key_generator()
     {
-        $post_id = $this->factory->post->create([ 'post_title' => 'My Test Post' ]);
+        $post_id = $this->factory->post->create([
+            'post_title' => 'My Test Post',
+        ]);
         $post = Timber::get_post($post_id);
 
         $kg = new Timber\Cache\KeyGenerator();
@@ -73,7 +79,9 @@ class TestTimberCacheExtra extends Timber_UnitTestCase
 
     public function test_cache_tag_with_key_generator_posts()
     {
-        $post_ids = $this->factory->post->create_many(3, [ 'post_title' => 'My Test Post' ]);
+        $post_ids = $this->factory->post->create_many(3, [
+            'post_title' => 'My Test Post',
+        ]);
         $posts = Timber::get_posts($post_ids);
 
         $kg = new Timber\Cache\KeyGenerator();

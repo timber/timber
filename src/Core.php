@@ -197,7 +197,7 @@ abstract class Core
      */
     public function get_method_values()
     {
-        $ret = array();
+        $ret = [];
         $ret['can_edit'] = $this->can_edit();
         return $ret;
     }

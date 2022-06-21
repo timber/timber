@@ -12,7 +12,7 @@
         public function set_up()
         {
             parent::set_up();
-            $this->_files = array();
+            $this->_files = [];
         }
 
         public function tear_down()
@@ -24,7 +24,7 @@
                         unlink($file);
                     }
                 }
-                $this->_files = array();
+                $this->_files = [];
             }
         }
 
@@ -88,7 +88,11 @@
         {
             $filename = self::copyTestAttachment($file);
             $filetype = wp_check_filetype(basename($filename), null);
-            $attachment = array('post_title' => 'The Arch', 'post_content' => '', 'post_mime_type' => $filetype['type']);
+            $attachment = [
+                'post_title' => 'The Arch',
+                'post_content' => '',
+                'post_mime_type' => $filetype['type'],
+            ];
             $iid = wp_insert_attachment($attachment, $filename, $pid);
             return $iid;
         }

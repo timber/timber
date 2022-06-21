@@ -35,7 +35,7 @@ class CoAuthorsPlusIntegration implements IntegrationInterface
      */
     public function authors($author, $post)
     {
-        $authors = array();
+        $authors = [];
         $cauthors = get_coauthors($post->ID);
         foreach ($cauthors as $author) {
             $uid = $this->get_user_uid($author);

@@ -5,7 +5,7 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase
     public function testToStringWithException()
     {
         ob_start();
-        $wrapper = new Timber\FunctionWrapper('TestTimberFunctionWrapper::isNum', array('hi'));
+        $wrapper = new Timber\FunctionWrapper('TestTimberFunctionWrapper::isNum', ['hi']);
         echo $wrapper;
         $content = trim(ob_get_contents());
         ob_end_clean();
@@ -15,7 +15,7 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase
     public function testToStringWithoutException()
     {
         ob_start();
-        $wrapper = new Timber\FunctionWrapper('TestTimberFunctionWrapper::isNum', array(4));
+        $wrapper = new Timber\FunctionWrapper('TestTimberFunctionWrapper::isNum', [4]);
         echo $wrapper;
         $content = trim(ob_get_contents());
         ob_end_clean();
@@ -25,7 +25,7 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase
     public function testToStringWithClassObject()
     {
         ob_start();
-        $wrapper = new Timber\FunctionWrapper(array($this, 'isNum'), array(4));
+        $wrapper = new Timber\FunctionWrapper([$this, 'isNum'], [4]);
         echo $wrapper;
         $content = trim(ob_get_contents());
         ob_end_clean();
@@ -35,7 +35,7 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase
     public function testToStringWithClassString()
     {
         ob_start();
-        $wrapper = new Timber\FunctionWrapper(array(get_class($this), 'isNum'), array(4));
+        $wrapper = new Timber\FunctionWrapper([get_class($this), 'isNum'], [4]);
         echo $wrapper;
         $content = trim(ob_get_contents());
         ob_end_clean();
@@ -72,7 +72,7 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase
     public function testNakedSoloFunction()
     {
         add_filter('timber/twig', function ($twig) {
-            $twig->addFunction(new \Twig\TwigFunction('your_boo', array($this, 'your_boo')));
+            $twig->addFunction(new \Twig\TwigFunction('your_boo', [$this, 'your_boo']));
             return $twig;
         });
         $context = Timber::context();

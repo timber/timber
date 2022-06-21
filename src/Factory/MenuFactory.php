@@ -63,7 +63,9 @@ class MenuFactory
     {
         $menus = wp_get_nav_menus();
         foreach ($menus as $menu_maybe) {
-            $menu_items = wp_get_nav_menu_items($menu_maybe->term_id, array( 'update_post_term_cache' => false ));
+            $menu_items = wp_get_nav_menu_items($menu_maybe->term_id, [
+                'update_post_term_cache' => false,
+            ]);
             if ($menu_items) {
                 $menu = $menu_maybe;
                 break;

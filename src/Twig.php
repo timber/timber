@@ -25,11 +25,11 @@ class Twig
     {
         $self = new self();
 
-        add_filter('timber/twig', [ $self, 'add_timber_functions' ]);
-        add_filter('timber/twig', [ $self, 'add_timber_filters' ]);
-        add_filter('timber/twig', [ $self, 'add_timber_escapers' ]);
+        add_filter('timber/twig', [$self, 'add_timber_functions']);
+        add_filter('timber/twig', [$self, 'add_timber_filters']);
+        add_filter('timber/twig', [$self, 'add_timber_escapers']);
 
-        add_filter('timber/loader/twig', [ $self, 'set_defaults' ]);
+        add_filter('timber/loader/twig', [$self, 'set_defaults']);
     }
 
     /**
@@ -46,7 +46,7 @@ class Twig
             'action' => [
                 'callable' => function ($action_name, ...$args) {
                     do_action_ref_array($action_name, $args);
-                }
+                },
             ],
             'function' => [
                 'callable' => [$this, 'exec_function'],
@@ -355,8 +355,10 @@ class Twig
              * @todo copy this formatting to other functions
              */
             'date' => [
-                'callable' => [ $this, 'twig_date_format_filter' ],
-                'options' => [ 'needs_environment' => true ],
+                'callable' => [$this, 'twig_date_format_filter'],
+                'options' => [
+                    'needs_environment' => true,
+                ],
             ],
             'time_ago' => [
                 'callable' => ['Timber\DateTimeHelper', 'time_ago'],
@@ -571,7 +573,7 @@ class Twig
         if (is_array($arr)) {
             return $arr;
         }
-        $arr = array($arr);
+        $arr = [$arr];
         return $arr;
     }
 
@@ -599,7 +601,7 @@ class Twig
      */
     public function twig_pretags($content)
     {
-        return preg_replace_callback('|<pre.*>(.*)</pre|isU', array(&$this, 'convert_pre_entities'), $content);
+        return preg_replace_callback('|<pre.*>(.*)</pre|isU', [&$this, 'convert_pre_entities'], $content);
     }
 
     /**

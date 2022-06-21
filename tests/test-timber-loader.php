@@ -9,7 +9,7 @@
                 $php_unit->assertInstanceOf('Twig\Loader\LoaderInterface', $loader);
                 return $loader;
             });
-            $str = Timber::compile('assets/single.twig', array());
+            $str = Timber::compile('assets/single.twig', []);
         }
 
         public function testBogusTemplate()
@@ -20,19 +20,19 @@
 
         public function testBogusTemplates()
         {
-            $str = Timber::compile(array('assets/barf.twig', 'assets/lonestar.twig'));
+            $str = Timber::compile(['assets/barf.twig', 'assets/lonestar.twig']);
             $this->assertFalse($str);
         }
 
         public function testTemplateChainWithMissingTwigFiles()
         {
-            $str = Timber::compile(array('assets/lonestar.twig', 'assets/single.twig'));
+            $str = Timber::compile(['assets/lonestar.twig', 'assets/single.twig']);
             $this->assertEquals('I am single.twig', trim($str));
         }
 
         public function testWhitespaceTrimForTemplate()
         {
-            $str = Timber::compile('assets/single.twig ', array());
+            $str = Timber::compile('assets/single.twig ', []);
             $this->assertEquals('I am single.twig', trim($str));
         }
 
@@ -47,7 +47,7 @@
                 $paths[] = __DIR__ . '/october/';
                 return $paths;
             });
-            $str = Timber::compile('spooky.twig', array());
+            $str = Timber::compile('spooky.twig', []);
             $this->assertEquals('Boo!', $str);
         }
 
@@ -58,10 +58,10 @@
         {
             $php_unit = $this;
             add_filter('timber/loader/paths', function ($paths) use ($php_unit) {
-                $paths[] = array( __DIR__ . '/october/' );
+                $paths[] = [__DIR__ . '/october/'];
                 return $paths;
             });
-            $str = Timber::compile('spooky.twig', array());
+            $str = Timber::compile('spooky.twig', []);
             $this->assertEquals('Boo!', $str);
         }
 
@@ -81,17 +81,17 @@
                 $php_unit->assertEquals(2, count($paths));
                 return $paths;
             });
-            $str = Timber::compile('assets/single.twig', array());
+            $str = Timber::compile('assets/single.twig', []);
         }
 
         public function testTimberLocationsFilterAdded()
         {
             $php_unit = $this;
             add_filter('timber/locations', function ($paths) use ($php_unit) {
-                $paths[] = array( __DIR__ . '/october/' );
+                $paths[] = [__DIR__ . '/october/'];
                 return $paths;
             });
-            $str = Timber::compile('spooky.twig', array());
+            $str = Timber::compile('spooky.twig', []);
             $this->assertEquals('Boo!', $str);
         }
 
@@ -103,7 +103,7 @@
             switch_theme('fake-child-theme');
             $child_theme = get_stylesheet_directory_uri();
             $this->assertEquals(WP_CONTENT_URL . '/themes/fake-child-theme', $child_theme);
-            $context = array();
+            $context = [];
             $str = Timber::compile('single.twig', $context);
             $this->assertEquals('I am single.twig', trim($str));
         }
@@ -136,8 +136,8 @@
             $this->_setupParentTheme();
             $this->_setupChildTheme();
             switch_theme('fake-child-theme');
-            $templates = array('single-parent.twig');
-            $str = Timber::compile($templates, array());
+            $templates = ['single-parent.twig'];
+            $str = Timber::compile($templates, []);
             $this->assertEquals('I am single.twig in parent theme', trim($str));
         }
 
@@ -180,7 +180,9 @@
 
         public function testTwigLoadsFromAlternateDirName()
         {
-            Timber::$dirname = array(\Timber\Loader::MAIN_NAMESPACE => array('foo', 'views'));
+            Timber::$dirname = [
+                \Timber\Loader::MAIN_NAMESPACE => ['foo', 'views'],
+            ];
             if (!file_exists(get_template_directory() . '/foo')) {
                 mkdir(get_template_directory() . '/foo', 0777, true);
             }
@@ -191,7 +193,7 @@
 
         public function testTwigLoadsFromAlternateDirNameWithoutNamespace()
         {
-            Timber::$dirname = array(array('foo', 'views'));
+            Timber::$dirname = [['foo', 'views']];
             if (!file_exists(get_template_directory() . '/foo')) {
                 mkdir(get_template_directory() . '/foo', 0777, true);
             }
@@ -202,7 +204,7 @@
 
         public function testTwigLoadsFromAlternateDirNameWithoutNamespaceAndSimpleArray()
         {
-            Timber::$dirname = array('foo', 'views');
+            Timber::$dirname = ['foo', 'views'];
             if (!file_exists(get_template_directory() . '/foo')) {
                 mkdir(get_template_directory() . '/foo', 0777, true);
             }
@@ -220,21 +222,28 @@
 
         public function testTwigLoadsFromLocationWithNamespace()
         {
-            Timber::$locations = array( __DIR__ . '/assets' => 'assets' );
+            Timber::$locations = [
+                __DIR__ . '/assets' => 'assets',
+            ];
             $str = Timber::compile('@assets/thumb-test.twig');
             $this->assertEquals('<img src="" />', trim($str));
         }
 
         public function testTwigLoadsFromLocationWithNestedNamespace()
         {
-            Timber::$locations = array( __DIR__ . '/namespaced' => 'namespaced' );
+            Timber::$locations = [
+                __DIR__ . '/namespaced' => 'namespaced',
+            ];
             $str = Timber::compile('@namespaced/test-nested.twig');
             $this->assertEquals('This is a namespaced template.', trim($str));
         }
 
         public function testTwigLoadsFromLocationWithAndWithoutNamespaces()
         {
-            Timber::$locations = array( __DIR__ . '/namespaced' => 'namespaced', __DIR__ . '/assets' );
+            Timber::$locations = [
+                __DIR__ . '/namespaced' => 'namespaced',
+                __DIR__ . '/assets',
+            ];
 
             // Namespaced location
             $str = Timber::compile('@namespaced/test-namespaced.twig');
@@ -247,8 +256,13 @@
 
         public function testTwigLoadsFromLocationWithAndWithoutNamespacesAndDirs()
         {
-            Timber::$dirname = array(\Timber\Loader::MAIN_NAMESPACE => array('foo', 'views'));
-            Timber::$locations = array( __DIR__ . '/namespaced' => 'namespaced', __DIR__ . '/assets' );
+            Timber::$dirname = [
+                \Timber\Loader::MAIN_NAMESPACE => ['foo', 'views'],
+            ];
+            Timber::$locations = [
+                __DIR__ . '/namespaced' => 'namespaced',
+                __DIR__ . '/assets',
+            ];
 
             // Namespaced location
             $str = Timber::compile('@namespaced/test-namespaced.twig');
@@ -270,7 +284,10 @@
 
         public function testTwigLoadsFromMultipleLocationsWithNamespace()
         {
-            Timber::$locations = array( __DIR__ . '/assets' => 'assets', __DIR__ . '/namespaced' => 'assets' );
+            Timber::$locations = [
+                __DIR__ . '/assets' => 'assets',
+                __DIR__ . '/namespaced' => 'assets',
+            ];
             $str = Timber::compile('@assets/thumb-test.twig');
             $this->assertEquals('<img src="" />', trim($str));
 
@@ -280,7 +297,10 @@
 
         public function testTwigLoadsFirstTemplateWhenMultipleLocationsWithSameNamespace()
         {
-            Timber::$locations = array( __DIR__ . '/assets' => 'assets', __DIR__ . '/namespaced' => 'assets' );
+            Timber::$locations = [
+                __DIR__ . '/assets' => 'assets',
+                __DIR__ . '/namespaced' => 'assets',
+            ];
             $str = Timber::compile('@assets/thumb-test.twig');
             $this->assertEquals('<img src="" />', trim($str));
         }

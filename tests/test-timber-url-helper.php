@@ -67,12 +67,12 @@ class TestTimberURLHelper extends Timber_UnitTestCase
     public function testFileSystemToURLWithWPML()
     {
         self::_setLanguage();
-        add_filter('home_url', array($this, 'addWPMLHomeFilterForRegExTest'), 10, 2);
+        add_filter('home_url', [$this, 'addWPMLHomeFilterForRegExTest'], 10, 2);
         $image = TestTimberImage::copyTestAttachment();
 
         $url = Timber\URLHelper::file_system_to_url($image);
         $this->assertStringEndsWith('://example2.org/wp-content/uploads/' . date('Y/m') . '/arch.jpg', $url);
-        remove_filter('home_url', array($this, 'addWPMLHomeFilterForRegExTest'));
+        remove_filter('home_url', [$this, 'addWPMLHomeFilterForRegExTest']);
     }
 
     public function addWPMLHomeFilterForRegExTest($url, $path)
@@ -102,7 +102,7 @@ class TestTimberURLHelper extends Timber_UnitTestCase
     public function _setupWPMLDirectory()
     {
         self::_setLanguage();
-        add_filter('home_url', array($this, 'addWPMLHomeFilter'), 10, 2);
+        add_filter('home_url', [$this, 'addWPMLHomeFilter'], 10, 2);
     }
 
     public function testFileSystemToURLWithWPMLPrefix()
@@ -111,7 +111,7 @@ class TestTimberURLHelper extends Timber_UnitTestCase
         $image = TestTimberImage::copyTestAttachment();
         $url = Timber\URLHelper::file_system_to_url($image);
         $this->assertEquals('http://example.org/wp-content/uploads/' . date('Y/m') . '/arch.jpg', $url);
-        remove_filter('home_url', array($this, 'addWPMLHomeFilter'));
+        remove_filter('home_url', [$this, 'addWPMLHomeFilter']);
     }
 
     public function testContentSubDirectory()
@@ -352,8 +352,8 @@ class TestTimberURLHelper extends Timber_UnitTestCase
         $internal_in_uploads = 'http://example.org/uploads/my-image.png';
         $external = 'http://upstatement.com/my-image.png';
 
-        add_filter('upload_dir', array( &$this, 'mockUploadDir' ));
-        add_filter('content_url', array( &$this, 'mockContentUrl' ));
+        add_filter('upload_dir', [&$this, 'mockUploadDir']);
+        add_filter('content_url', [&$this, 'mockContentUrl']);
 
         $this->mockUploadDir = true;
 

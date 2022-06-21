@@ -8,8 +8,10 @@
         public function testTwigSidebar()
         {
             $context = Timber::context();
-            $sidebar_post = $this->factory->post->create(array('post_title' => 'Sidebar post content'));
-            $sidebar_context = array();
+            $sidebar_post = $this->factory->post->create([
+                'post_title' => 'Sidebar post content',
+            ]);
+            $sidebar_context = [];
             $sidebar_context['post'] = Timber::get_post($sidebar_post);
             $context['sidebar'] = Timber::get_sidebar('assets/sidebar.twig', $sidebar_context);
             $result = Timber::compile('assets/main-w-sidebar.twig', $context);

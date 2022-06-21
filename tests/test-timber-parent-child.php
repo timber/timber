@@ -16,7 +16,9 @@
             copy(__DIR__ . '/assets/single-course.twig', $dest_dir . '/views/single-course.twig');
             $pid = $this->factory->post->create();
             $post = Timber::get_post($pid);
-            $str = Timber::compile(array('single-course.twig', 'single.twig'), array( 'post' => $post ));
+            $str = Timber::compile(['single-course.twig', 'single.twig'], [
+                'post' => $post,
+            ]);
             $this->assertEquals('I am single course', $str);
         }
     }

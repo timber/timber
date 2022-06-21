@@ -201,7 +201,7 @@ class URLHelper
          */
         $url_parts['path'] = apply_filters_deprecated(
             'timber/URLHelper/url_to_file_system/path',
-            array( $url_parts['path'] ),
+            [$url_parts['path']],
             '2.0.0',
             'timber/url_helper/url_to_file_system/path'
         );
@@ -244,7 +244,7 @@ class URLHelper
          */
         $home = apply_filters_deprecated(
             'timber/URLHelper/file_system_to_url',
-            array( $home ),
+            [$home],
             '2.0.0',
             'timber/url_helper/file_system_to_url'
         );
@@ -280,7 +280,7 @@ class URLHelper
          */
         $home_url = apply_filters_deprecated(
             'timber/URLHelper/get_content_subdir/home_url',
-            array( $home_url ),
+            [$home_url],
             '2.0.0',
             'timber/url_helper/get_content_subdir/home_url'
         );
@@ -313,7 +313,7 @@ class URLHelper
     public static function remove_double_slashes($url)
     {
         $url = str_replace('//', '/', $url);
-        $schemes_whitelist = apply_filters('timber/url/schemes-whitelist', array( 'http', 'https', 's3', 'gs' ));
+        $schemes_whitelist = apply_filters('timber/url/schemes-whitelist', ['http', 'https', 's3', 'gs']);
         foreach ($schemes_whitelist as $scheme) {
             if (strstr($url, $scheme . ':') && !strstr($url, $scheme . '://')) {
                 $url = str_replace($scheme . ':/', $scheme . '://', $url);

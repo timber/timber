@@ -36,9 +36,17 @@ class TestTimberPostQuery extends Timber_UnitTestCase
 
     public function testCollectionWithWP_PostArray()
     {
-        $cat = $this->factory->term->create(array('name' => 'Things', 'taxonomy' => 'category'));
-        $pids = $this->factory->post->create_many(4, array('category' => $cat));
-        $posts = get_posts(array('post_category' => array($cat), 'posts_per_page' => 3));
+        $cat = $this->factory->term->create([
+            'name' => 'Things',
+            'taxonomy' => 'category',
+        ]);
+        $pids = $this->factory->post->create_many(4, [
+            'category' => $cat,
+        ]);
+        $posts = get_posts([
+            'post_category' => [$cat],
+            'posts_per_page' => 3,
+        ]);
         $pc = new PostArrayObject($posts);
         $pagination = $pc->pagination();
         $this->assertNull($pagination);
@@ -48,7 +56,9 @@ class TestTimberPostQuery extends Timber_UnitTestCase
     {
         $this->setPermalinkStructure('/%postname%/');
         register_post_type('portfolio');
-        $pids = $this->factory->post->create_many(55, array( 'post_type' => 'portfolio' ));
+        $pids = $this->factory->post->create_many(55, [
+            'post_type' => 'portfolio',
+        ]);
 
         // Set up the global query
         query_posts('post_type=portfolio&paged=3');
@@ -60,11 +70,16 @@ class TestTimberPostQuery extends Timber_UnitTestCase
     public function testBasicCollectionWithPagination()
     {
         $pids = $this->factory->post->create_many(130);
-        $page = $this->factory->post->create(array('post_title' => 'Test', 'post_type' => 'page'));
+        $page = $this->factory->post->create([
+            'post_title' => 'Test',
+            'post_type' => 'page',
+        ]);
         $this->go_to('/');
-        query_posts(array('post_type=post'));
+        query_posts(['post_type=post']);
         $pc = new PostQuery(new WP_Query('post_type=post'));
-        $str = Timber::compile('assets/collection-pagination.twig', array('posts' => $pc));
+        $str = Timber::compile('assets/collection-pagination.twig', [
+            'posts' => $pc,
+        ]);
         $str = preg_replace('/\s+/', ' ', $str);
         $this->assertEquals('<h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <div class="l--pagination"> <div class="pagination-inner"> <div class="pagination-previous"> <span class="pagination-previous-link pagination-disabled">Previous</span> </div> <div class="pagination-pages"> <ul class="pagination-pages-list"> <li class="pagination-list-item pagination-page">1</li> <li class="pagination-list-item pagination-seperator">of</li> <li class="pagination-list-item pagination-page">13</li> </ul> </div> <div class="pagination-next"> <a href="http://example.org/?paged=2" class="pagination-next-link ">Next</a> </div> </div> </div>', trim($str));
     }
@@ -76,7 +91,9 @@ class TestTimberPostQuery extends Timber_UnitTestCase
     {
         $this->factory->post->create_many(3);
 
-        $this->assertCount(3, Timber::get_posts(['post_type' => 'post'])->get_posts());
+        $this->assertCount(3, Timber::get_posts([
+            'post_type' => 'post',
+        ])->get_posts());
     }
 
     public function testFoundPosts()
@@ -105,10 +122,10 @@ class TestTimberPostQuery extends Timber_UnitTestCase
     public function testTheLoop()
     {
         foreach (range(1, 3) as $i) {
-            $this->factory->post->create(array(
+            $this->factory->post->create([
                 'post_title' => 'TestPost' . $i,
-                'post_date' => ('2018-09-0' . $i . ' 01:56:01')
-            ));
+                'post_date' => ('2018-09-0' . $i . ' 01:56:01'),
+            ]);
         }
 
         $wp_query = new WP_Query('post_type=post');
@@ -134,9 +151,9 @@ class TestTimberPostQuery extends Timber_UnitTestCase
         // internals over time.
         $compiled = Timber::compile_string(
             "{% for p in posts %}\n{{loop|json_encode}}\n{% endfor %}\n",
-            array(
-            'posts' => new PostQuery($wp_query),
-        )
+            [
+                'posts' => new PostQuery($wp_query),
+            ]
         );
 
         // Get each iteration as an object (each should have its own line).
@@ -228,7 +245,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase
         ]);
 
         $query = new PostQuery(new WP_Query([
-            'post_type' => ['post', 'page', 'custom']
+            'post_type' => ['post', 'page', 'custom'],
         ]));
 
         $expected = [
@@ -375,7 +392,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase
         });
 
         $query = new PostQuery(new WP_Query([
-            'post_type' => ['post', 'page', 'custom']
+            'post_type' => ['post', 'page', 'custom'],
         ]));
 
         $arr = $query->to_array();

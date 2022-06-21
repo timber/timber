@@ -84,7 +84,9 @@ class TestTimberIntegrationWPML extends Timber_UnitTestCase
         TestTimberMenu::setPermalinkStructure();
         TestTimberMenu::_createTestMenu();
         $menu = Timber::get_menu();
-        $nav_menu = wp_nav_menu(array( 'echo' => false ));
+        $nav_menu = wp_nav_menu([
+            'echo' => false,
+        ]);
         $this->assertGreaterThanOrEqual(3, count($menu->get_items()));
         $items = $menu->get_items();
         $item = $items[0];
@@ -96,10 +98,19 @@ class TestTimberIntegrationWPML extends Timber_UnitTestCase
 
     public function testWPMLMenu2()
     {
-        $items = array();
-        $items[] = (object) array('type' => 'link', 'link' => '/');
-        $items[] = (object) array('type' => 'link', 'link' => '/foo');
-        $items[] = (object) array('type' => 'link', 'link' => '/bar/');
+        $items = [];
+        $items[] = (object) [
+            'type' => 'link',
+            'link' => '/',
+        ];
+        $items[] = (object) [
+            'type' => 'link',
+            'link' => '/foo',
+        ];
+        $items[] = (object) [
+            'type' => 'link',
+            'link' => '/bar/',
+        ];
 
         TestTimberMenu::buildMenu('Froggy', $items);
 
@@ -108,14 +119,20 @@ class TestTimberIntegrationWPML extends Timber_UnitTestCase
 
         TestTimberMenu::buildMenu('Zappy', $items);
         $theme = new Timber\Theme();
-        $data = array('nav_menu_locations' => array('header-menu' => 0, 'extra-menu' => $built_menu_id, 'bonus' => 0));
+        $data = [
+            'nav_menu_locations' => [
+                'header-menu' => 0,
+                'extra-menu' => $built_menu_id,
+                'bonus' => 0,
+                
+            ], ];
         update_option('theme_mods_' . $theme->slug, $data);
         register_nav_menus(
-            array(
+            [
                 'header-menu' => 'Header Menu',
                 'extra-menu' => 'Extra Menu',
-                'bonus' => 'The Bonus'
-            )
+                'bonus' => 'The Bonus',
+            ]
         );
         $menu = Timber::get_menu('extra-menu');
         $this->assertEquals('Ziggy', $menu->name);

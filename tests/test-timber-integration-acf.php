@@ -16,7 +16,9 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
         update_field('subhead', 'foobar', $post_id);
         $str = '{{post.meta("subhead")}}';
         $post = Timber::get_post($post_id);
-        $str = Timber::compile_string($str, array( 'post' => $post ));
+        $str = Timber::compile_string($str, [
+            'post' => $post,
+        ]);
         $this->assertEquals('foobar', $str);
     }
 
@@ -25,7 +27,9 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
         $post_id = $this->factory->post->create();
         $str = '{% if post.has_field("heythisdoesntexist") %}FAILED{% else %}WORKS{% endif %}';
         $post = Timber::get_post($post_id);
-        $str = Timber::compile_string($str, array( 'post' => $post ));
+        $str = Timber::compile_string($str, [
+            'post' => $post,
+        ]);
         $this->assertEquals('WORKS', $str);
     }
 
@@ -35,7 +39,9 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
         update_post_meta($post_id, 'best_radiohead_album', 'in_rainbows');
         $str = '{% if post.has_field("best_radiohead_album") %}In Rainbows{% else %}OK Computer{% endif %}';
         $post = Timber::get_post($post_id);
-        $str = Timber::compile_string($str, array( 'post' => $post ));
+        $str = Timber::compile_string($str, [
+            'post' => $post,
+        ]);
         $this->assertEquals('In Rainbows', $str);
     }
 
@@ -46,7 +52,9 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
         $cat = Timber::get_term($tid);
         $this->assertEquals('blue', $cat->color);
         $str = '{{term.color}}';
-        $this->assertEquals('blue', Timber::compile_string($str, array( 'term' => $cat )));
+        $this->assertEquals('blue', Timber::compile_string($str, [
+            'term' => $cat,
+        ]));
     }
 
     public function testACFCustomFieldTermTag()
@@ -55,7 +63,9 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
         update_field('color', 'green', 'post_tag_' . $tid);
         $term = Timber::get_term($tid);
         $str = '{{term.color}}';
-        $this->assertEquals('green', Timber::compile_string($str, array( 'term' => $term )));
+        $this->assertEquals('green', Timber::compile_string($str, [
+            'term' => $term,
+        ]));
     }
 
     public function testACFGetFieldTermTag()
@@ -64,7 +74,9 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
         update_field('color', 'blue', 'post_tag_' . $tid);
         $term = Timber::get_term($tid);
         $str = '{{term.meta("color")}}';
-        $this->assertEquals('blue', Timber::compile_string($str, array( 'term' => $term )));
+        $this->assertEquals('blue', Timber::compile_string($str, [
+            'term' => $term,
+        ]));
     }
 
     public function testACFFieldObject()
@@ -85,14 +97,16 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
 
         $post = Timber::get_post($post_id);
         $template = '{{ post.meta("thinger") }} / {{ post.field_object("thinger").key }}';
-        $str = Timber::compile_string($template, array( 'post' => $post ));
+        $str = Timber::compile_string($template, [
+            'post' => $post,
+        ]);
 
         $this->assertEquals('foo / ' . $key, $str);
     }
 
     public function testACFFormatValue()
     {
-        acf_add_local_field_group(array(
+        acf_add_local_field_group([
             'key' => 'group_1',
             'title' => 'Group 1',
             'fields' => [
@@ -112,16 +126,20 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
                     ],
                 ],
             ],
-        ));
+        ]);
 
         $post_id = $this->factory->post->create();
         $post = Timber::get_post($post_id);
         update_field('lead', 'Murder Spagurders are dangerous sneks.', $post_id);
 
-        $string = trim(Timber::compile_string("{{ post.meta('lead') }}", [ 'post' => $post ]));
+        $string = trim(Timber::compile_string("{{ post.meta('lead') }}", [
+            'post' => $post,
+        ]));
         $this->assertEquals('<p>Murder Spagurders are dangerous sneks.</p>', $string);
 
-        $string = trim(Timber::compile_string("{{ post.meta('lead', { format_value: false }) }}", [ 'post' => $post ]));
+        $string = trim(Timber::compile_string("{{ post.meta('lead', { format_value: false }) }}", [
+            'post' => $post,
+        ]));
         $this->assertEquals('Murder Spagurders are dangerous sneks.', $string);
     }
 
@@ -135,7 +153,9 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
         update_field($field_name, $image_id, $post_id);
         $post = Timber::get_post($post_id);
 
-        $image = $post->meta($field_name, ['transform_value' => true]);
+        $image = $post->meta($field_name, [
+            'transform_value' => true,
+        ]);
         $this->assertInstanceOf('Timber\Image', $image);
         $this->assertEquals($image_id, $image->ID);
     }
@@ -167,7 +187,9 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
         update_field($field_name, $image_id, $post_id);
         $post = Timber::get_post($post_id);
 
-        $image = $post->meta($field_name, ['transform_value' => false]);
+        $image = $post->meta($field_name, [
+            'transform_value' => false,
+        ]);
         $this->assertTrue(is_array($image));
         $this->assertEquals($image['id'], $image_id);
     }
@@ -175,14 +197,18 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
     public function testACFTransformImageCustomReturnFormat()
     {
         $field_name = 'my_image_meta_custom_return_format';
-        $this->register_field($field_name, 'image', ['return_format' => 'id']);
+        $this->register_field($field_name, 'image', [
+            'return_format' => 'id',
+        ]);
 
         $post_id = $this->factory->post->create();
         $image_id = TimberAttachment_UnitTestCase::get_attachment($post_id);
         update_field($field_name, $image_id, $post_id);
         $post = Timber::get_post($post_id);
 
-        $image = $post->meta($field_name, ['transform_value' => false]);
+        $image = $post->meta($field_name, [
+            'transform_value' => false,
+        ]);
 
         $this->assertTrue(is_numeric($image));
         $this->assertEquals($image, $image_id);
@@ -197,7 +223,9 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
         update_field($field_name, '20210222', $post_id);
         $post = Timber::get_post($post_id);
 
-        $date = $post->meta($field_name, ['transform_value' => true]);
+        $date = $post->meta($field_name, [
+            'transform_value' => true,
+        ]);
         $this->assertInstanceOf('DateTimeImmutable', $date);
         $this->assertEquals('2021-02-22', $date->format('Y-m-d'));
     }
@@ -211,7 +239,9 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
         update_field($field_name, '2021-02-22 17:30:25', $post_id);
         $post = Timber::get_post($post_id);
 
-        $date_time = $post->meta($field_name, ['transform_value' => true]);
+        $date_time = $post->meta($field_name, [
+            'transform_value' => true,
+        ]);
         $this->assertInstanceOf('DateTimeImmutable', $date_time);
         $this->assertEquals('2021-02-22 17:30:25', $date_time->format('Y-m-d H:i:s'));
     }
@@ -226,7 +256,9 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
         update_field($field_name, $related_post_id, $post_id);
         $post = Timber::get_post($post_id);
 
-        $related_post = $post->meta($field_name, ['transform_value' => true]);
+        $related_post = $post->meta($field_name, [
+            'transform_value' => true,
+        ]);
         $this->assertInstanceOf('Timber\Post', $related_post);
         $this->assertEquals($related_post_id, $related_post->ID);
     }
@@ -234,7 +266,9 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
     public function testACFTransformPostObjectMultiple()
     {
         $field_name = 'my_post_object_multiple_meta';
-        $this->register_field($field_name, 'post_object', ['multiple' => true]);
+        $this->register_field($field_name, 'post_object', [
+            'multiple' => true,
+        ]);
 
         $post_id = $this->factory->post->create();
         $related_post_1_id = $this->factory->post->create();
@@ -242,7 +276,9 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
         update_field($field_name, [$related_post_1_id, $related_post_2_id], $post_id);
         $post = Timber::get_post($post_id);
 
-        $related_posts = $post->meta($field_name, ['transform_value' => true]);
+        $related_posts = $post->meta($field_name, [
+            'transform_value' => true,
+        ]);
         $this->assertInstanceOf('Timber\PostArrayObject', $related_posts);
         $this->assertEquals($related_post_2_id, $related_posts[1]->ID);
     }
@@ -258,7 +294,9 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
         update_field($field_name, [$related_post_1_id, $related_post_2_id], $post_id);
         $post = Timber::get_post($post_id);
 
-        $related_posts = $post->meta($field_name, ['transform_value' => true]);
+        $related_posts = $post->meta($field_name, [
+            'transform_value' => true,
+        ]);
         $this->assertInstanceOf('Timber\PostArrayObject', $related_posts);
         $this->assertEquals($related_post_2_id, $related_posts[1]->ID);
     }
@@ -273,7 +311,9 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
         update_field($field_name, $term_id, $post_id);
         $post = Timber::get_post($post_id);
 
-        $term = $post->meta($field_name, ['transform_value' => true]);
+        $term = $post->meta($field_name, [
+            'transform_value' => true,
+        ]);
         $this->assertInstanceOf('Timber\Term', $term[0]);
         $this->assertEquals($term_id, $term[0]->ID);
     }
@@ -281,14 +321,18 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
     public function testACFTransformTaxonomyMultiple()
     {
         $field_name = 'my_taxonomy_multiple';
-        $this->register_field($field_name, 'taxonomy', ['field_type' => 'radio']);
+        $this->register_field($field_name, 'taxonomy', [
+            'field_type' => 'radio',
+        ]);
 
         $post_id = $this->factory->post->create();
         $term_id = $this->factory->term->create();
         update_field($field_name, $term_id, $post_id);
         $post = Timber::get_post($post_id);
 
-        $term = $post->meta($field_name, ['transform_value' => true]);
+        $term = $post->meta($field_name, [
+            'transform_value' => true,
+        ]);
         $this->assertInstanceOf('Timber\Term', $term);
         $this->assertEquals($term_id, $term->ID);
     }
@@ -303,7 +347,9 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
         update_field($field_name, $user_id, $post_id);
         $post = Timber::get_post($post_id);
 
-        $user = $post->meta($field_name, ['transform_value' => true]);
+        $user = $post->meta($field_name, [
+            'transform_value' => true,
+        ]);
         $this->assertInstanceOf('Timber\User', $user);
         $this->assertEquals($user_id, $user->ID);
     }
@@ -315,7 +361,9 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
         }, 100, 2);
 
         $field_name = 'my_user_multiple_meta';
-        $this->register_field($field_name, 'user', ['multiple' => true]);
+        $this->register_field($field_name, 'user', [
+            'multiple' => true,
+        ]);
 
         $post_id = $this->factory->post->create();
         $user_1_id = $this->factory->user->create();
@@ -323,7 +371,9 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
         update_field($field_name, [$user_1_id, $user_2_id], $post_id);
         $post = Timber::get_post($post_id);
 
-        $users = $post->meta($field_name, ['transform_value' => true]);
+        $users = $post->meta($field_name, [
+            'transform_value' => true,
+        ]);
         $this->assertInstanceOf('Timber\User', $users[0]);
         $this->assertEquals($user_2_id, $users[1]->ID);
     }
@@ -374,12 +424,16 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
 
     public function testACFContentField()
     {
-        $post_id = $this->factory->post->create(array('post_content' => 'Cool content bro!'));
+        $post_id = $this->factory->post->create([
+            'post_content' => 'Cool content bro!',
+        ]);
         update_field('content', 'I am custom content', $post_id);
         update_field('_content', 'I am also custom content', $post_id);
         $str = '{{ post.content }}';
         $post = Timber::get_post($post_id);
-        $str = Timber::compile_string($str, array( 'post' => $post ));
+        $str = Timber::compile_string($str, [
+            'post' => $post,
+        ]);
         $this->assertEquals('<p>Cool content bro!</p>', trim($str));
     }
 
@@ -395,8 +449,12 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
         update_field($field_file_name, '', $post_id);
         $post = Timber::get_post($post_id);
 
-        $image = $post->meta($field_image_name, ['transform_value' => true]);
-        $file = $post->meta($field_file_name, ['transform_value' => true]);
+        $image = $post->meta($field_image_name, [
+            'transform_value' => true,
+        ]);
+        $file = $post->meta($field_file_name, [
+            'transform_value' => true,
+        ]);
         $this->assertEquals(false, $image);
         $this->assertEquals(false, $file);
     }
@@ -412,7 +470,7 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
             'type' => $field_type,
         ], $field_args);
 
-        acf_add_local_field_group(array(
+        acf_add_local_field_group([
             'key' => $group_key,
             'title' => 'Group',
             'fields' => [
@@ -427,6 +485,6 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
                     ],
                 ],
             ],
-        ));
+        ]);
     }
 }

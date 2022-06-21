@@ -25,7 +25,9 @@ class TestTimberPost extends Timber_UnitTestCase
 
     public function testIDDataType()
     {
-        $uid = $this->factory->post->create(array('title' => 'Air Force Once'));
+        $uid = $this->factory->post->create([
+            'title' => 'Air Force Once',
+        ]);
         $post = Timber::get_post($uid);
         $this->assertEquals('integer', gettype($post->id));
         $this->assertEquals('integer', gettype($post->ID));
@@ -37,23 +39,32 @@ class TestTimberPost extends Timber_UnitTestCase
         $post = Timber::get_post($post_id);
         $this->assertFalse($post->password_required());
 
-        $post_id = $this->factory->post->create(array('post_password' => 'jiggypoof'));
+        $post_id = $this->factory->post->create([
+            'post_password' => 'jiggypoof',
+        ]);
         $post = Timber::get_post($post_id);
         $this->assertTrue($post->password_required());
     }
 
     public function testNameMethod()
     {
-        $post_id = $this->factory->post->create(array('post_title' => 'Battlestar Galactica'));
+        $post_id = $this->factory->post->create([
+            'post_title' => 'Battlestar Galactica',
+        ]);
         $post = Timber::get_post($post_id);
         $this->assertEquals('Battlestar Galactica', $post->name());
     }
 
     public function testGetImageViaPostMeta()
     {
-        $post_id = $this->factory->post->create(array('post_title' => 'St. Louis History'));
+        $post_id = $this->factory->post->create([
+            'post_title' => 'St. Louis History',
+        ]);
         $filename = TestTimberImage::copyTestAttachment('arch.jpg');
-        $attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
+        $attachment = [
+            'post_title' => 'The Arch',
+            'post_content' => '',
+        ];
         $iid = wp_insert_attachment($attachment, $filename, $post_id);
         update_post_meta($post_id, 'landmark', $iid);
         $post = Timber::get_post($post_id);
@@ -64,9 +75,13 @@ class TestTimberPost extends Timber_UnitTestCase
 
     public function testPostString()
     {
-        $post_id = $this->factory->post->create(array('post_title' => 'Gobbles'));
+        $post_id = $this->factory->post->create([
+            'post_title' => 'Gobbles',
+        ]);
         $post = Timber::get_post($post_id);
-        $str = Timber::compile_string('<h1>{{post}}</h1>', array('post' => $post));
+        $str = Timber::compile_string('<h1>{{post}}</h1>', [
+            'post' => $post,
+        ]);
         $this->assertEquals('<h1>Gobbles</h1>', $str);
     }
 
@@ -74,7 +89,10 @@ class TestTimberPost extends Timber_UnitTestCase
     {
         $pid = $this->factory->post->create();
         $filename = TestTimberImage::copyTestAttachment('arch.jpg');
-        $attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
+        $attachment = [
+            'post_title' => 'The Arch',
+            'post_content' => '',
+        ];
         $iid = wp_insert_attachment($attachment, $filename, $pid);
         update_post_meta($iid, 'architect', 'Eero Saarinen');
         $image = Timber::get_post($iid);
@@ -122,17 +140,21 @@ class TestTimberPost extends Timber_UnitTestCase
         $post_id = $this->factory->post->create();
         $post = Timber::get_post($post_id);
         $template = '{{post.donkey}}';
-        $str = Timber::compile_string($template, array('post' => $post));
+        $str = Timber::compile_string($template, [
+            'post' => $post,
+        ]);
         $this->assertEquals('', $str);
         //$this->assertFalse( $post->donkey() );
     }
 
     public function testNext()
     {
-        $posts = array();
+        $posts = [];
         for ($i = 0; $i < 2; $i++) {
             $j = $i + 1;
-            $posts[] = $this->factory->post->create(array('post_date' => '2014-02-0' . $j . ' 12:00:00'));
+            $posts[] = $this->factory->post->create([
+                'post_date' => '2014-02-0' . $j . ' 12:00:00',
+            ]);
         }
         $firstPost = Timber::get_post($posts[0]);
         $nextPost = Timber::get_post($posts[1]);
@@ -141,10 +163,12 @@ class TestTimberPost extends Timber_UnitTestCase
 
     public function testNextCategory()
     {
-        $posts = array();
+        $posts = [];
         for ($i = 0; $i < 4; $i++) {
             $j = $i + 1;
-            $posts[] = $this->factory->post->create(array('post_date' => '2014-02-0' . $j . ' 12:00:00'));
+            $posts[] = $this->factory->post->create([
+                'post_date' => '2014-02-0' . $j . ' 12:00:00',
+            ]);
         }
         wp_set_object_terms($posts[0], 'TestMe', 'category', false);
         wp_set_object_terms($posts[2], 'TestMe', 'category', false);
@@ -160,10 +184,12 @@ class TestTimberPost extends Timber_UnitTestCase
             $this->markTestSkipped('Custom taxonomy prev/next not supported until 3.8');
         } else {
             register_taxonomy('pizza', 'post');
-            $posts = array();
+            $posts = [];
             for ($i = 0; $i < 4; $i++) {
                 $j = $i + 1;
-                $posts[] = $this->factory->post->create(array('post_date' => '2014-02-0' . $j . ' 12:00:00'));
+                $posts[] = $this->factory->post->create([
+                    'post_date' => '2014-02-0' . $j . ' 12:00:00',
+                ]);
             }
             wp_set_object_terms($posts[0], 'Cheese', 'pizza', false);
             wp_set_object_terms($posts[2], 'Cheese', 'pizza', false);
@@ -176,10 +202,12 @@ class TestTimberPost extends Timber_UnitTestCase
 
     public function testPrev()
     {
-        $posts = array();
+        $posts = [];
         for ($i = 0; $i < 2; $i++) {
             $j = $i + 1;
-            $posts[] = $this->factory->post->create(array('post_date' => '2014-02-0' . $j . ' 12:00:00'));
+            $posts[] = $this->factory->post->create([
+                'post_date' => '2014-02-0' . $j . ' 12:00:00',
+            ]);
         }
         $lastPost = Timber::get_post($posts[1]);
         $prevPost = Timber::get_post($posts[0]);
@@ -193,10 +221,13 @@ class TestTimberPost extends Timber_UnitTestCase
             $this->markTestSkipped('Custom taxonomy prev/next not supported until 3.8');
         } else {
             register_taxonomy('pizza', 'post');
-            $posts = array();
+            $posts = [];
             for ($i = 0; $i < 3; $i++) {
                 $j = $i + 1;
-                $posts[] = $this->factory->post->create(array('post_date' => '2014-02-0' . $j . ' 12:00:00', 'post_title' => "Pizza $j is so good!"));
+                $posts[] = $this->factory->post->create([
+                    'post_date' => '2014-02-0' . $j . ' 12:00:00',
+                    'post_title' => "Pizza $j is so good!",
+                ]);
             }
             $cat = wp_insert_term('Cheese', 'pizza');
             self::set_object_terms($posts[0], $cat, 'pizza', false);
@@ -208,10 +239,12 @@ class TestTimberPost extends Timber_UnitTestCase
 
     public function testPrevCategory()
     {
-        $posts = array();
+        $posts = [];
         for ($i = 0; $i < 3; $i++) {
             $j = $i + 1;
-            $posts[] = $this->factory->post->create(array('post_date' => '2014-02-0' . $j . ' 12:00:00'));
+            $posts[] = $this->factory->post->create([
+                'post_date' => '2014-02-0' . $j . ' 12:00:00',
+            ]);
         }
         $cat = wp_insert_term('TestMe', 'category');
         self::set_object_terms($posts[0], $cat, 'category', false);
@@ -223,24 +256,31 @@ class TestTimberPost extends Timber_UnitTestCase
 
     public function testNextWithDraftAndFallover()
     {
-        $posts = array();
+        $posts = [];
         for ($i = 0; $i < 3; $i++) {
             $j = $i + 1;
-            $posts[] = $this->factory->post->create(array('post_date' => '2014-02-0' . $j . ' 12:00:00'));
+            $posts[] = $this->factory->post->create([
+                'post_date' => '2014-02-0' . $j . ' 12:00:00',
+            ]);
         }
         $firstPost = Timber::get_post($posts[0]);
         $nextPost = Timber::get_post($posts[1]);
         $nextPostAfter = Timber::get_post($posts[2]);
-        wp_update_post(array('ID' => $nextPost->ID, 'post_status' => 'draft'));
+        wp_update_post([
+            'ID' => $nextPost->ID,
+            'post_status' => 'draft',
+        ]);
         $this->assertEquals($nextPostAfter->ID, $firstPost->next()->ID);
     }
 
     public function testNextWithDraft()
     {
-        $posts = array();
+        $posts = [];
         for ($i = 0; $i < 2; $i++) {
             $j = $i + 1;
-            $posts[] = $this->factory->post->create(array('post_date' => '2014-02-0' . $j . ' 12:00:00'));
+            $posts[] = $this->factory->post->create([
+                'post_date' => '2014-02-0' . $j . ' 12:00:00',
+            ]);
         }
         $firstPost = Timber::get_post($posts[0]);
         $nextPost = Timber::get_post($posts[1]);
@@ -273,7 +313,9 @@ class TestTimberPost extends Timber_UnitTestCase
     public function testCanEdit()
     {
         wp_set_current_user(1);
-        $post_id = $this->factory->post->create(array('post_author' => 1));
+        $post_id = $this->factory->post->create([
+            'post_author' => 1,
+        ]);
         $post = Timber::get_post($post_id);
         $this->assertTrue($post->can_edit());
         wp_set_current_user(0);
@@ -294,23 +336,23 @@ class TestTimberPost extends Timber_UnitTestCase
         global $current_user;
         global $wp_query;
 
-        $post_id = $this->factory->post->create(array(
+        $post_id = $this->factory->post->create([
             'post_author' => 5,
-        ));
+        ]);
         update_field('test_field', 'The custom field content', $post_id);
 
         $assertCustomFieldVal = 'This has been revised';
-        $revision_id = $this->factory->post->create(array(
+        $revision_id = $this->factory->post->create([
             'post_type' => 'revision',
             'post_status' => 'inherit',
             'post_parent' => $post_id,
-        ));
+        ]);
         update_field('test_field', $assertCustomFieldVal, $revision_id);
 
-        $uid = $this->factory->user->create(array(
+        $uid = $this->factory->user->create([
             'user_login' => 'timber',
             'user_pass' => 'timber',
-        ));
+        ]);
         $user = wp_set_current_user($uid);
         $user->add_role('administrator');
 
@@ -319,8 +361,12 @@ class TestTimberPost extends Timber_UnitTestCase
         $_GET['preview'] = true;
         $_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
         $post = Timber::get_post($post_id);
-        $str_direct = Timber::compile_string('{{post.test_field}}', array('post' => $post));
-        $str_getfield = Timber::compile_string('{{post.meta(\'test_field\')}}', array('post' => $post));
+        $str_direct = Timber::compile_string('{{post.test_field}}', [
+            'post' => $post,
+        ]);
+        $str_getfield = Timber::compile_string('{{post.meta(\'test_field\')}}', [
+            'post' => $post,
+        ]);
 
         $this->assertEquals($assertCustomFieldVal, $str_direct);
         $this->assertEquals($assertCustomFieldVal, $str_getfield);
@@ -332,23 +378,23 @@ class TestTimberPost extends Timber_UnitTestCase
         global $wp_query;
         $original_content = 'The custom field content';
 
-        $post_id = $this->factory->post->create(array(
+        $post_id = $this->factory->post->create([
             'post_author' => 5,
-        ));
+        ]);
         update_field('test_field', $original_content, $post_id);
 
         $assertCustomFieldVal = 'This has been revised';
-        $revision_id = $this->factory->post->create(array(
+        $revision_id = $this->factory->post->create([
             'post_type' => 'revision',
             'post_status' => 'inherit',
             'post_parent' => $post_id,
-        ));
+        ]);
         update_field('test_field', $assertCustomFieldVal, $revision_id);
 
-        $uid = $this->factory->user->create(array(
+        $uid = $this->factory->user->create([
             'user_login' => 'timber',
             'user_pass' => 'timber',
-        ));
+        ]);
         $user = wp_set_current_user($uid);
         $user->add_role('administrator');
 
@@ -357,8 +403,12 @@ class TestTimberPost extends Timber_UnitTestCase
 
         $post = Timber::get_post($post_id);
 
-        $str_direct = Timber::compile_string('{{post.test_field}}', array('post' => $post));
-        $str_getfield = Timber::compile_string('{{post.meta(\'test_field\')}}', array('post' => $post));
+        $str_direct = Timber::compile_string('{{post.test_field}}', [
+            'post' => $post,
+        ]);
+        $str_getfield = Timber::compile_string('{{post.meta(\'test_field\')}}', [
+            'post' => $post,
+        ]);
 
         $this->assertEquals($original_content, $str_direct);
         $this->assertEquals($original_content, $str_getfield);
@@ -395,7 +445,9 @@ class TestTimberPost extends Timber_UnitTestCase
         $quote .= '<!--nextpage-->';
         $quote .= $page2 = "No, try not. Do or do not. There is no try.";
 
-        $post_id = $this->factory->post->create(array('post_content' => $quote));
+        $post_id = $this->factory->post->create([
+            'post_content' => $quote,
+        ]);
 
         $this->go_to(get_permalink($post_id));
 
@@ -416,53 +468,83 @@ class TestTimberPost extends Timber_UnitTestCase
     public function testPostParent()
     {
         $parent_id = $this->factory->post->create();
-        $child_id = $this->factory->post->create(array('post_parent' => $parent_id));
+        $child_id = $this->factory->post->create([
+            'post_parent' => $parent_id,
+        ]);
         $child_post = Timber::get_post($child_id);
         $this->assertEquals($parent_id, $child_post->parent()->ID);
     }
 
     public function testPostSlug()
     {
-        $pid = $this->factory->post->create(array('post_name' => 'the-adventures-of-tom-sawyer'));
+        $pid = $this->factory->post->create([
+            'post_name' => 'the-adventures-of-tom-sawyer',
+        ]);
         $post = Timber::get_post($pid);
         $this->assertEquals('the-adventures-of-tom-sawyer', $post->slug);
     }
 
     public function testPostAuthor()
     {
-        $author_id = $this->factory->user->create(array('display_name' => 'Jared Novack', 'user_login' => 'jared-novack'));
-        $pid = $this->factory->post->create(array('post_author' => $author_id));
+        $author_id = $this->factory->user->create([
+            'display_name' => 'Jared Novack',
+            'user_login' => 'jared-novack',
+        ]);
+        $pid = $this->factory->post->create([
+            'post_author' => $author_id,
+        ]);
         $post = Timber::get_post($pid);
         $this->assertEquals('jared-novack', $post->author()->slug());
         $this->assertEquals('Jared Novack', $post->author()->name());
         $template = 'By {{post.author}}';
-        $authorCompile = Timber::compile_string($template, array('post' => $post));
+        $authorCompile = Timber::compile_string($template, [
+            'post' => $post,
+        ]);
         $template = 'By {{post.author.name}}';
-        $authorNameCompile = Timber::compile_string($template, array('post' => $post));
+        $authorNameCompile = Timber::compile_string($template, [
+            'post' => $post,
+        ]);
         $this->assertEquals($authorCompile, $authorNameCompile);
         $this->assertEquals('By Jared Novack', $authorCompile);
     }
 
     public function testPostAuthorInTwig()
     {
-        $author_id = $this->factory->user->create(array('display_name' => 'Jon Stewart', 'user_login' => 'jon-stewart'));
-        $pid = $this->factory->post->create(array('post_author' => $author_id));
+        $author_id = $this->factory->user->create([
+            'display_name' => 'Jon Stewart',
+            'user_login' => 'jon-stewart',
+        ]);
+        $pid = $this->factory->post->create([
+            'post_author' => $author_id,
+        ]);
         $post = Timber::get_post($pid);
         $this->assertEquals('jon-stewart', $post->author()->slug());
         $this->assertEquals('Jon Stewart', $post->author()->name());
         $template = 'By {{post.author}}';
-        $authorCompile = Timber::compile_string($template, array('post' => $post));
+        $authorCompile = Timber::compile_string($template, [
+            'post' => $post,
+        ]);
         $template = 'By {{post.author.name}}';
-        $authorNameCompile = Timber::compile_string($template, array('post' => $post));
+        $authorNameCompile = Timber::compile_string($template, [
+            'post' => $post,
+        ]);
         $this->assertEquals($authorCompile, $authorNameCompile);
         $this->assertEquals('By Jon Stewart', $authorCompile);
     }
 
     public function testPostModifiedAuthor()
     {
-        $author_id = $this->factory->user->create(array('display_name' => 'Woodward', 'user_login' => 'bob-woodward'));
-        $mod_author_id = $this->factory->user->create(array('display_name' => 'Bernstein', 'user_login' => 'carl-bernstein'));
-        $pid = $this->factory->post->create(array('post_author' => $author_id));
+        $author_id = $this->factory->user->create([
+            'display_name' => 'Woodward',
+            'user_login' => 'bob-woodward',
+        ]);
+        $mod_author_id = $this->factory->user->create([
+            'display_name' => 'Bernstein',
+            'user_login' => 'carl-bernstein',
+        ]);
+        $pid = $this->factory->post->create([
+            'post_author' => $author_id,
+        ]);
         $post = Timber::get_post($pid);
         $this->assertEquals('bob-woodward', $post->author()->slug());
         $this->assertEquals('bob-woodward', $post->modified_author()->slug());
@@ -494,7 +576,7 @@ class TestTimberPost extends Timber_UnitTestCase
 
     public function testPostFormat()
     {
-        add_theme_support('post-formats', array( 'aside', 'gallery' ));
+        add_theme_support('post-formats', ['aside', 'gallery']);
         $pid = $this->factory->post->create();
         set_post_format($pid, 'aside');
         $post = Timber::get_post($pid);
@@ -507,7 +589,9 @@ class TestTimberPost extends Timber_UnitTestCase
         $category = wp_insert_term('Uncategorized', 'category');
         self::set_object_terms($pid, $category, 'category', true);
         $post = Timber::get_post($pid);
-        $str = Timber::compile_string("{{ post.class }}", array('post' => $post));
+        $str = Timber::compile_string("{{ post.class }}", [
+            'post' => $post,
+        ]);
         $this->assertEquals('post-' . $pid . ' post type-post status-publish format-standard hentry category-uncategorized', $str);
     }
 
@@ -552,7 +636,9 @@ class TestTimberPost extends Timber_UnitTestCase
     public function testPostChildren()
     {
         $parent_id = $this->factory->post->create();
-        $children = $this->factory->post->create_many(8, array('post_parent' => $parent_id));
+        $children = $this->factory->post->create_many(8, [
+            'post_parent' => $parent_id,
+        ]);
         $parent = Timber::get_post($parent_id);
         $this->assertEquals(8, count($parent->children()));
     }
@@ -560,29 +646,48 @@ class TestTimberPost extends Timber_UnitTestCase
     public function testPostChildrenOfInheritStatus()
     {
         $parent_id = $this->factory->post->create();
-        $children = $this->factory->post->create_many(4, array('post_parent' => $parent_id));
-        $children = $this->factory->post->create_many(4, array('post_parent' => $parent_id,
-                                                                                                                        'post_status' => 'inherit'));
+        $children = $this->factory->post->create_many(4, [
+            'post_parent' => $parent_id,
+        ]);
+        $children = $this->factory->post->create_many(4, [
+            'post_parent' => $parent_id,
+            'post_status' => 'inherit',
+        ]);
         $parent = Timber::get_post($parent_id);
         $this->assertEquals(8, count($parent->children()));
     }
 
     public function testPostChildrenOfParentType()
     {
-        $parent_id = $this->factory->post->create(array('post_type' => 'foo'));
-        $children = $this->factory->post->create_many(8, array('post_parent' => $parent_id));
-        $children = $this->factory->post->create_many(4, array('post_parent' => $parent_id, 'post_type' => 'foo'));
+        $parent_id = $this->factory->post->create([
+            'post_type' => 'foo',
+        ]);
+        $children = $this->factory->post->create_many(8, [
+            'post_parent' => $parent_id,
+        ]);
+        $children = $this->factory->post->create_many(4, [
+            'post_parent' => $parent_id,
+            'post_type' => 'foo',
+        ]);
         $parent = Timber::get_post($parent_id);
         $this->assertEquals(4, count($parent->children('parent')));
     }
 
     public function testPostChildrenWithArray()
     {
-        $parent_id = $this->factory->post->create(array('post_type' => 'foo'));
-        $children = $this->factory->post->create_many(8, array('post_parent' => $parent_id, 'post_type' => 'bar'));
-        $children = $this->factory->post->create_many(4, array('post_parent' => $parent_id, 'post_type' => 'foo'));
+        $parent_id = $this->factory->post->create([
+            'post_type' => 'foo',
+        ]);
+        $children = $this->factory->post->create_many(8, [
+            'post_parent' => $parent_id,
+            'post_type' => 'bar',
+        ]);
+        $children = $this->factory->post->create_many(4, [
+            'post_parent' => $parent_id,
+            'post_type' => 'foo',
+        ]);
         $parent = Timber::get_post($parent_id);
-        $this->assertEquals(12, count($parent->children(array('foo', 'bar'))));
+        $this->assertEquals(12, count($parent->children(['foo', 'bar'])));
     }
 
     public function testPostNoConstructorArgument()
@@ -606,7 +711,9 @@ class TestTimberPost extends Timber_UnitTestCase
     {
         $struc = '/blog/%year%/%monthnum%/%postname%/';
         update_option('permalink_structure', $struc);
-        $pid = $this->factory->post->create(array('post_date' => '2014-05-28'));
+        $pid = $this->factory->post->create([
+            'post_date' => '2014-05-28',
+        ]);
         $post = Timber::get_post($pid);
         $this->assertStringStartsWith('http://example.org/blog/2014/05/post-title', $post->link());
         $this->assertStringStartsWith('/blog/2014/05/post-title', $post->path());
@@ -627,7 +734,7 @@ class TestTimberPost extends Timber_UnitTestCase
         $cat = wp_insert_term('Uncategorized', 'category');
         self::set_object_terms($pid, $cat, 'category');
         $post = Timber::get_post($pid);
-        $category_names = array('News', 'Sports', 'Obits');
+        $category_names = ['News', 'Sports', 'Obits'];
 
         // Uncategorized is applied by default
         $default_categories = $post->categories();
@@ -644,7 +751,7 @@ class TestTimberPost extends Timber_UnitTestCase
     {
         $pid = $this->factory->post->create();
         $post = Timber::get_post($pid);
-        $tag_names = array('News', 'Sports', 'Obits');
+        $tag_names = ['News', 'Sports', 'Obits'];
 
         foreach ($tag_names as $tag_name) {
             $tag = wp_insert_term($tag_name, 'post_tag');
@@ -673,7 +780,7 @@ class TestTimberPost extends Timber_UnitTestCase
 
         // register a custom taxonomy, create some terms in it and associate to post
         register_taxonomy('team', 'post');
-        $team_names = array('Patriots', 'Bills', 'Dolphins', 'Jets');
+        $team_names = ['Patriots', 'Bills', 'Dolphins', 'Jets'];
 
         foreach ($team_names as $team_name) {
             $team_term = wp_insert_term($team_name, 'team');
@@ -698,13 +805,13 @@ class TestTimberPost extends Timber_UnitTestCase
         $this->assertEquals($post->categories(), $post->terms('category'));
 
         // test using an array of taxonomies
-        $post_tag_terms = $post->terms(array('post_tag'));
+        $post_tag_terms = $post->terms(['post_tag']);
         $this->assertEquals(1, count($post_tag_terms));
-        $post_team_terms = $post->terms(array('team'));
+        $post_team_terms = $post->terms(['team']);
         $this->assertEquals(count($team_names), count($post_team_terms));
 
         // test multiple taxonomies
-        $post_tag_and_team_terms = $post->terms(array('post_tag', 'team'));
+        $post_tag_and_team_terms = $post->terms(['post_tag', 'team']);
         $this->assertEquals(count($post_tag_terms) + count($post_team_terms), count($post_tag_and_team_terms));
     }
 
@@ -720,64 +827,64 @@ class TestTimberPost extends Timber_UnitTestCase
         self::set_object_terms($pid, $dummy_tag, 'post_tag');
 
         // test expected tags
-        $timber_tags = $post->terms(array(
-            'query' => array(
+        $timber_tags = $post->terms([
+            'query' => [
                 'taxonomy' => 'post_tag',
-            ),
-        ));
+            ],
+        ]);
         $dummy_timber_tag = Timber::get_term($dummy_tag['term_id'], 'post_tag');
         $this->assertEquals('whatever', $timber_tags[0]->slug);
         $this->assertEquals($dummy_timber_tag, $timber_tags[0]);
 
         // register a custom taxonomy, create some terms in it and associate to post
         register_taxonomy('team', 'post');
-        $team_names = array( 'Patriots', 'Bills', 'Dolphins', 'Jets' );
+        $team_names = ['Patriots', 'Bills', 'Dolphins', 'Jets'];
 
         foreach ($team_names as $team_name) {
             $team_term = wp_insert_term($team_name, 'team');
             self::set_object_terms($pid, $team_term, 'team');
         }
 
-        $this->assertEquals(count($team_names), count($post->terms(array(
-            'query' => array(
+        $this->assertEquals(count($team_names), count($post->terms([
+            'query' => [
                 'taxonomy' => 'team',
-            ),
-        ))));
+            ],
+        ])));
 
         // test tags method - wrapper for $this->get_terms('tags')
-        $this->assertEquals($post->tags(), $post->terms(array(
-            'query' => array(
+        $this->assertEquals($post->tags(), $post->terms([
+            'query' => [
                 'taxonomy' => 'post_tag',
-            ),
-        )));
+            ],
+        ]));
 
         // test categories method - wrapper for $this->get_terms('category')
-        $this->assertEquals($post->categories(), $post->terms(array(
-            'query' => array(
+        $this->assertEquals($post->categories(), $post->terms([
+            'query' => [
                 'taxonomy' => 'category',
-            ),
-        )));
+            ],
+        ]));
 
         // test using an array of taxonomies
-        $post_tag_terms = $post->terms(array(
-            'query' => array(
-                'taxonomy' => array( 'post_tag' ),
-            ),
-        ));
+        $post_tag_terms = $post->terms([
+            'query' => [
+                'taxonomy' => ['post_tag'],
+            ],
+        ]);
         $this->assertEquals(1, count($post_tag_terms));
-        $post_team_terms = $post->terms(array(
-            'query' => array(
-                'taxonomy' => array( 'team' ),
-            ),
-        ));
+        $post_team_terms = $post->terms([
+            'query' => [
+                'taxonomy' => ['team'],
+            ],
+        ]);
         $this->assertEquals(count($team_names), count($post_team_terms));
 
         // test multiple taxonomies
-        $post_tag_and_team_terms = $post->terms(array(
-            'query' => array(
-                'taxonomy' => array( 'post_tag', 'team' ),
-            ),
-        ));
+        $post_tag_and_team_terms = $post->terms([
+            'query' => [
+                'taxonomy' => ['post_tag', 'team'],
+            ],
+        ]);
         $this->assertEquals(count($post_tag_terms) + count($post_team_terms), count($post_tag_and_team_terms));
     }
 
@@ -788,7 +895,7 @@ class TestTimberPost extends Timber_UnitTestCase
 
         // register a custom taxonomy, create some terms in it and associate to post
         register_taxonomy('team', 'post');
-        $team_names = array( 'Patriots', 'Bills', 'Dolphins', 'Jets' );
+        $team_names = ['Patriots', 'Bills', 'Dolphins', 'Jets'];
 
         foreach ($team_names as $team_name) {
             $team_term = wp_insert_term($team_name, 'team');
@@ -796,19 +903,19 @@ class TestTimberPost extends Timber_UnitTestCase
         }
 
         register_taxonomy('book', 'post');
-        $book_names = array( 'Fall of Giants', 'Winter of the World', 'Edge of Eternity' );
+        $book_names = ['Fall of Giants', 'Winter of the World', 'Edge of Eternity'];
 
         foreach ($book_names as $book_name) {
             $book_term = wp_insert_term($book_name, 'book');
             self::set_object_terms($pid, $book_term, 'book');
         }
 
-        $team_and_book_terms = $post->terms(array(
-            'query' => array(
-                'taxonomy' => array( 'team', 'book' ),
-            ),
+        $team_and_book_terms = $post->terms([
+            'query' => [
+                'taxonomy' => ['team', 'book'],
+            ],
             'merge' => false,
-        ));
+        ]);
         $this->assertEquals(4, count($team_and_book_terms['team']));
         $this->assertEquals(3, count($team_and_book_terms['book']));
     }
@@ -820,7 +927,7 @@ class TestTimberPost extends Timber_UnitTestCase
 
         // register a custom taxonomy, create some terms in it and associate to post
         register_taxonomy('team', 'post');
-        $team_names = array( 'Patriots', 'Bills', 'Dolphins', 'Jets' );
+        $team_names = ['Patriots', 'Bills', 'Dolphins', 'Jets'];
 
         foreach ($team_names as $team_name) {
             $team_term = wp_insert_term($team_name, 'team');
@@ -828,7 +935,7 @@ class TestTimberPost extends Timber_UnitTestCase
         }
 
         register_taxonomy('book', 'post');
-        $book_names = array( 'Fall of Giants', 'Winter of the World', 'Edge of Eternity' );
+        $book_names = ['Fall of Giants', 'Winter of the World', 'Edge of Eternity'];
 
         foreach ($book_names as $book_name) {
             $book_term = wp_insert_term($book_name, 'book');
@@ -836,23 +943,23 @@ class TestTimberPost extends Timber_UnitTestCase
         }
 
         // Test order.
-        $team_and_book_terms = $post->terms(array(
-            'query' => array(
-                'taxonomy' => array( 'team', 'book' ),
+        $team_and_book_terms = $post->terms([
+            'query' => [
+                'taxonomy' => ['team', 'book'],
                 'orderby' => 'name',
-            ),
-        ));
+            ],
+        ]);
 
         $this->assertEquals('Bills', $team_and_book_terms[0]->title);
         $this->assertEquals('Edge of Eternity', $team_and_book_terms[2]->title);
 
         // Test number of terms
-        $team_and_book_terms = $post->terms(array(
-            'query' => array(
-                'taxonomy' => array( 'team', 'book' ),
+        $team_and_book_terms = $post->terms([
+            'query' => [
+                'taxonomy' => ['team', 'book'],
                 'number' => 3,
-            ),
-        ));
+            ],
+        ]);
 
         $this->assertCount(3, $team_and_book_terms);
 
@@ -864,7 +971,9 @@ class TestTimberPost extends Timber_UnitTestCase
                                 number: 3,
                                 orderby: 'name'
                         }
-            })|join(', ') }}", array( 'post' => $post ));
+            })|join(', ') }}", [
+            'post' => $post,
+        ]);
 
         $this->assertEquals('Bills, Dolphins, Edge of Eternity', $string);
     }
@@ -894,7 +1003,7 @@ class TestTimberPost extends Timber_UnitTestCase
 
         $this->add_filter_temporarily('timber/term/classmap', function () {
             return [
-                'post_tag' => TimberTermSubclass::class
+                'post_tag' => TimberTermSubclass::class,
             ];
         });
 
@@ -911,7 +1020,9 @@ class TestTimberPost extends Timber_UnitTestCase
     public function testPostContentLength()
     {
         $crawl = "The evil leaders of Planet Spaceball having foolishly spuandered their precious atmosphere, have devised a secret plan to take every breath of air away from their peace-loving neighbor, Planet Druidia. Today is Princess Vespa's wedding day. Unbeknownest to the princess, but knowest to us, danger lurks in the stars above...";
-        $pid = $this->factory->post->create(array('post_content' => $crawl));
+        $pid = $this->factory->post->create([
+            'post_content' => $crawl,
+        ]);
         $post = Timber::get_post($pid);
         $content = trim(strip_tags($post->content(0, 6)));
         $this->assertEquals("The evil leaders of Planet Spaceball&hellip;", $content);
@@ -927,7 +1038,10 @@ class TestTimberPost extends Timber_UnitTestCase
 
     public function testPage()
     {
-        $pid = $this->factory->post->create(array('post_type' => 'page', 'post_title' => 'My Page'));
+        $pid = $this->factory->post->create([
+            'post_type' => 'page',
+            'post_title' => 'My Page',
+        ]);
         $post = Timber::get_post($pid);
         $this->assertEquals($pid, $post->ID);
         $this->assertEquals('My Page', $post->title());
@@ -955,7 +1069,7 @@ class TestTimberPost extends Timber_UnitTestCase
         $pid = $this->factory->post->create();
         $post = Timber::get_post($pid);
 
-        $this->assertEquals(array(), $post->audio());
+        $this->assertEquals([], $post->audio());
     }
 
     public function testPostWithAudio()
@@ -964,7 +1078,9 @@ class TestTimberPost extends Timber_UnitTestCase
         $quote .= '[embed]http://www.noiseaddicts.com/samples_1w72b820/280.mp3[/embed]';
         $quote .= "No, try not. Do or do not. There is no try.";
 
-        $pid = $this->factory->post->create(array('post_content' => $quote));
+        $pid = $this->factory->post->create([
+            'post_content' => $quote,
+        ]);
         $post = Timber::get_post($pid);
         $expected = 'http://www.noiseaddicts.com/samples_1w72b820/280.mp3';
 
@@ -978,7 +1094,9 @@ class TestTimberPost extends Timber_UnitTestCase
         $quote .= '[embed]http://www.noiseaddicts.com/samples_1w72b820/280.mp3[/embed]';
         $quote .= "No, try not. Do or do not. There is no try.";
 
-        $pid = $this->factory->post->create(array('post_content' => $quote));
+        $pid = $this->factory->post->create([
+            'post_content' => $quote,
+        ]);
         update_post_meta($pid, 'audio', 'foo');
         $expected = 'http://www.noiseaddicts.com/samples_1w72b820/280.mp3';
         $post = Timber::get_post($pid);
@@ -991,7 +1109,7 @@ class TestTimberPost extends Timber_UnitTestCase
         $pid = $this->factory->post->create();
         $post = Timber::get_post($pid);
 
-        $this->assertEquals(array(), $post->video());
+        $this->assertEquals([], $post->video());
     }
 
     public function testPostWithVideo()
@@ -1000,7 +1118,9 @@ class TestTimberPost extends Timber_UnitTestCase
         $quote .= '[embed]https://www.youtube.com/watch?v=Jf37RalsnEs[/embed]';
         $quote .= "No, try not. Do or do not. There is no try.";
 
-        $pid = $this->factory->post->create(array('post_content' => $quote));
+        $pid = $this->factory->post->create([
+            'post_content' => $quote,
+        ]);
         $post = Timber::get_post($pid);
 
         $video = $post->video();
@@ -1025,7 +1145,9 @@ class TestTimberPost extends Timber_UnitTestCase
         }
 
         /* test */
-        $pid = $this->factory->post->create(array('post_name' => 'my-cool-post'));
+        $pid = $this->factory->post->create([
+            'post_name' => 'my-cool-post',
+        ]);
         $post = Timber::get_post($pid);
         $this->assertEquals('http://example.org:3000/my-cool-post/', $post->link());
         $this->assertEquals('/my-cool-post/', $post->path());
@@ -1045,10 +1167,15 @@ class TestTimberPost extends Timber_UnitTestCase
         ini_set("error_log", "/tmp/php-error.log");
 
         global $current_user;
-        $current_user = array();
+        $current_user = [];
 
-        $uid = $this->factory->user->create(array('display_name' => 'Franklin Delano Roosevelt', 'user_login' => 'fdr'));
-        $pid = $this->factory->post->create(array('post_author' => $uid));
+        $uid = $this->factory->user->create([
+            'display_name' => 'Franklin Delano Roosevelt',
+            'user_login' => 'fdr',
+        ]);
+        $pid = $this->factory->post->create([
+            'post_author' => $uid,
+        ]);
         $post = Timber::get_post($pid);
         $edit_url = $post->edit_link();
         $this->assertEquals('', $edit_url);

@@ -38,7 +38,7 @@
         {
             self::resetPermalinks();
             parent::tear_down();
-            Timber::$context_cache = array();
+            Timber::$context_cache = [];
 
             // remove any hooks added during this test run
             foreach ($this->temporary_hook_removals as $callback) {
@@ -163,8 +163,8 @@
                 $ending = substr($file, -$extension_length);
                 $starting = substr($file, 0, strlen($locale));
 
-                if (!in_array($file, [ $locale . '.po', $locale . '.mo' ], true)
-                    && !in_array($ending, [ '-' . $locale . '.po', '-' . $locale . '.mo' ], true)
+                if (!in_array($file, [$locale . '.po', $locale . '.mo'], true)
+                    && !in_array($ending, ['-' . $locale . '.po', '-' . $locale . '.mo'], true)
                     && $locale !== $starting
                 ) {
                     continue;

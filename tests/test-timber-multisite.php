@@ -50,22 +50,28 @@ class TestTimberMultisite extends Timber_UnitTestCase
         //$others = $this->factory->post->create_many(8);
         foreach ($site_ids as $site_id) {
             switch_to_blog($site_id);
-            $this->factory->post->create(array('post_title' => array_pop($post_titles)));
+            $this->factory->post->create([
+                'post_title' => array_pop($post_titles),
+            ]);
         }
 
-        $timber_posts = array();
-        $wp_posts = array();
+        $timber_posts = [];
+        $wp_posts = [];
         $sites = Timber::get_sites();
         foreach ($sites as $site) {
             switch_to_blog($site->blog_id);
             //error_log(print_r($site, true));
             // fetch all the posts
-            $timber_query = Timber::get_posts(array('post_type' => 'post'));
+            $timber_query = Timber::get_posts([
+                'post_type' => 'post',
+            ]);
             foreach ($timber_query as $post) {
                 $timber_posts[] = $post;
             }
 
-            $wp_query = get_posts(array('post_type' => 'post'));
+            $wp_query = get_posts([
+                'post_type' => 'post',
+            ]);
             foreach ($wp_query as $post) {
                 $wp_posts[] = $post;
             }
@@ -77,7 +83,9 @@ class TestTimberMultisite extends Timber_UnitTestCase
         $this->assertEquals(6, count($wp_posts));
 
         // ensure tha the current site's post count is distinct from our test condition
-        $current_site_all_posts = get_posts(array('post_type' => 'post'));
+        $current_site_all_posts = get_posts([
+            'post_type' => 'post',
+        ]);
         $this->assertEquals(2, count($current_site_all_posts));
     }
 
@@ -97,11 +105,13 @@ class TestTimberMultisite extends Timber_UnitTestCase
         $post_titles = ["I don't like zebras", "Zebra and a half", "Have a zebra of a time"];
         foreach ($site_ids as $site_id) {
             switch_to_blog($site_id);
-            $this->factory->post->create(['post_title' => 'Zebras are good on site ID = ' . $site_id]);
+            $this->factory->post->create([
+                'post_title' => 'Zebras are good on site ID = ' . $site_id,
+            ]);
         }
         $this->go_to('/');
-        $timber_posts = array();
-        $wp_posts = array();
+        $timber_posts = [];
+        $wp_posts = [];
         $sites = Timber::get_sites();
         foreach ($sites as $site) {
             switch_to_blog($site->blog_id);
@@ -141,21 +151,27 @@ class TestTimberMultisite extends Timber_UnitTestCase
         $others = $this->factory->post->create_many(8);
         foreach ($site_ids as $site_id) {
             switch_to_blog($site_id);
-            $this->factory->post->create(array('post_title' => array_pop($post_titles)));
+            $this->factory->post->create([
+                'post_title' => array_pop($post_titles),
+            ]);
         }
 
-        $timber_posts = array();
-        $wp_posts = array();
+        $timber_posts = [];
+        $wp_posts = [];
         $sites = Timber::get_sites();
         foreach ($sites as $site) {
             switch_to_blog($site->blog_id);
             // fetch all the posts
-            $timber_query = Timber::get_posts(['s' => 'zebra']);
+            $timber_query = Timber::get_posts([
+                's' => 'zebra',
+            ]);
             foreach ($timber_query as $post) {
                 $timber_posts[] = $post;
             }
 
-            $wp_query = get_posts(['s' => 'zebra']);
+            $wp_query = get_posts([
+                's' => 'zebra',
+            ]);
             foreach ($wp_query as $post) {
                 $wp_posts[] = $post;
             }
@@ -201,7 +217,9 @@ class TestTimberMultisite extends Timber_UnitTestCase
 
         // test resizing
         $template = '{{ image|resize(300, 300) }}?template=true';
-        $img_resized_src = Timber::compile_string($template, ['image' => $image_2_src]);
+        $img_resized_src = Timber::compile_string($template, [
+            'image' => $image_2_src,
+        ]);
         $this->assertStringStartsWith($site_2_upload_dir['baseurl'], $img_resized_src);
     }
 

@@ -200,8 +200,8 @@ class TestTimberPostArrayObject extends Timber_UnitTestCase
         });
 
         $wp_query = new WP_Query([
-      'post_type' => ['post', 'page', 'custom']
-    ]);
+            'post_type' => ['post', 'page', 'custom'],
+        ]);
 
         $collection = new PostArrayObject($wp_query->posts);
 

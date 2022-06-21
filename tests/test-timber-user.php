@@ -20,7 +20,9 @@ use Timber\User;
 
         public function testIDDataType()
         {
-            $uid = $this->factory->user->create(array('display_name' => 'James Marshall'));
+            $uid = $this->factory->user->create([
+                'display_name' => 'James Marshall',
+            ]);
             $user = Timber::get_user($uid);
             $this->assertEquals('integer', gettype($user->id));
             $this->assertEquals('integer', gettype($user->ID));
@@ -28,7 +30,9 @@ use Timber\User;
 
         public function testInitWithID()
         {
-            $uid = $this->factory->user->create(array('display_name' => 'Baberaham Lincoln'));
+            $uid = $this->factory->user->create([
+                'display_name' => 'Baberaham Lincoln',
+            ]);
             $user = Timber::get_user($uid);
             $this->assertEquals('Baberaham Lincoln', $user->name);
             $this->assertEquals($uid, $user->id);
@@ -36,7 +40,10 @@ use Timber\User;
 
         public function testInitWithSlug()
         {
-            $uid = $this->factory->user->create(array('display_name' => 'Tito Bottitta', 'user_login' => 'mbottitta'));
+            $uid = $this->factory->user->create([
+                'display_name' => 'Tito Bottitta',
+                'user_login' => 'mbottitta',
+            ]);
             $user = Timber::get_user_by('login', 'mbottitta');
             $this->assertEquals('Tito Bottitta', $user->name);
             $this->assertEquals($uid, $user->id);
@@ -45,18 +52,27 @@ use Timber\User;
         public function testPostWithBlankUser()
         {
             $post_id = wp_insert_post(
-                [ 'post_title' => 'Baseball', 'post_content' => 'is fine, I guess', 'post_status' => 'publish'
+                [
+                    'post_title' => 'Baseball',
+                    'post_content' => 'is fine, I guess',
+                    'post_status' => 'publish',
                 ]
             );
             $post = Timber::get_post($post_id);
             $template = '{{ post.title }} by {{ post.author }}';
-            $str = Timber::compile_string($template, array('post' => $post));
+            $str = Timber::compile_string($template, [
+                'post' => $post,
+            ]);
             $this->assertEquals('Baseball by', trim($str));
         }
 
         public function testUserCapability()
         {
-            $uid = $this->factory->user->create(array('display_name' => 'Tito Bottitta', 'user_login' => 'mbottitta', 'role' => 'editor'));
+            $uid = $this->factory->user->create([
+                'display_name' => 'Tito Bottitta',
+                'user_login' => 'mbottitta',
+                'role' => 'editor',
+            ]);
             $user = Timber::get_user_by('login', 'mbottitta');
             $this->assertTrue($user->can('edit_posts'));
             $this->assertFalse($user->can('activate_plugins'));
@@ -64,34 +80,49 @@ use Timber\User;
 
         public function testUserRole()
         {
-            $uid = $this->factory->user->create(array('display_name' => 'Tito Bottitta', 'user_login' => 'mbottitta', 'role' => 'editor'));
+            $uid = $this->factory->user->create([
+                'display_name' => 'Tito Bottitta',
+                'user_login' => 'mbottitta',
+                'role' => 'editor',
+            ]);
             $user = Timber::get_user_by('login', 'mbottitta');
             $this->assertArrayHasKey('editor', $user->roles());
         }
 
         public function testDescription()
         {
-            $uid = $this->factory->user->create(array('display_name' => 'Baberaham Lincoln', 'user_login' => 'blincoln'));
+            $uid = $this->factory->user->create([
+                'display_name' => 'Baberaham Lincoln',
+                'user_login' => 'blincoln',
+            ]);
             update_user_meta($uid, 'description', 'Sixteenth President');
             $user = Timber::get_user($uid);
             $this->assertEquals('Sixteenth President', $user->meta('description'));
 
-            $pid = $this->factory->post->create(array('post_author' => $uid));
+            $pid = $this->factory->post->create([
+                'post_author' => $uid,
+            ]);
             $post = Timber::get_post($pid);
-            $str = Timber::compile_string("{{post.author.meta('description')}}", array('post' => $post));
+            $str = Timber::compile_string("{{post.author.meta('description')}}", [
+                'post' => $post,
+            ]);
             $this->assertEquals('Sixteenth President', $str);
         }
 
         public function testInitShouldUnsetPassword()
         {
-            $uid = $this->factory->user->create(array('display_name' => 'Tom Riddle'));
+            $uid = $this->factory->user->create([
+                'display_name' => 'Tom Riddle',
+            ]);
             $user = Timber::get_user($uid);
             $this->assertFalse(property_exists($user, 'user_pass'));
         }
 
         public function testInitWithObject()
         {
-            $uid = $this->factory->user->create(array('display_name' => 'Baberaham Lincoln'));
+            $uid = $this->factory->user->create([
+                'display_name' => 'Baberaham Lincoln',
+            ]);
             $wp_user = get_user_by('id', $uid);
             $user = Timber::get_user($wp_user);
             $this->assertEquals('Baberaham Lincoln', $user->name);
@@ -100,7 +131,10 @@ use Timber\User;
         public function testLinks()
         {
             $this->setPermalinkStructure('/blog/%year%/%monthnum%/%postname%/');
-            $uid = $this->factory->user->create(array('display_name' => 'Baberaham Lincoln', 'user_login' => 'lincoln'));
+            $uid = $this->factory->user->create([
+                'display_name' => 'Baberaham Lincoln',
+                'user_login' => 'lincoln',
+            ]);
             $uid = get_user_by('id', $uid);
             $user = Timber::get_user($uid);
             $this->assertEquals('http://example.org/blog/author/lincoln/', trailingslashit($user->link()));
@@ -117,9 +151,15 @@ use Timber\User;
                 return User::class;
             });
 
-            $uid = $this->factory->user->create(array('display_name' => 'Maciej Palmowski', 'user_login' => 'palmiak', 'user_email' => 'm.palmowski@spiders.agency'));
+            $uid = $this->factory->user->create([
+                'display_name' => 'Maciej Palmowski',
+                'user_login' => 'palmiak',
+                'user_email' => 'm.palmowski@spiders.agency',
+            ]);
             $user = Timber::get_user($uid);
             $this->assertEquals('http://2.gravatar.com/avatar/b2965625410b81a2b25ef02b54493ce0?s=96&d=mm&r=g', $user->avatar());
-            $this->assertEquals('http://2.gravatar.com/avatar/b2965625410b81a2b25ef02b54493ce0?s=120&d=mm&r=g', $user->avatar(['size' => 120]));
+            $this->assertEquals('http://2.gravatar.com/avatar/b2965625410b81a2b25ef02b54493ce0?s=120&d=mm&r=g', $user->avatar([
+                'size' => 120,
+            ]));
         }
     }

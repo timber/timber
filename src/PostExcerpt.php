@@ -121,7 +121,7 @@ class PostExcerpt
      *
      * @var array List of tags that should always be destroyed.
      */
-    protected $destroy_tags = array('script', 'style');
+    protected $destroy_tags = ['script', 'style'];
 
     /**
      * PostExcerpt constructor.
@@ -151,7 +151,7 @@ class PostExcerpt
      *                                          shorter than the post’s content). Default `false`.
      * }
      */
-    public function __construct($post, array $options = array())
+    public function __construct($post, array $options = [])
     {
         $this->post = $post;
 
@@ -380,7 +380,7 @@ class PostExcerpt
              */
             $read_more_class = apply_filters_deprecated(
                 'timber/post/preview/read_more_class',
-                [ $read_more_class ],
+                [$read_more_class],
                 '2.0.0',
                 'timber/post/excerpt/read_more_class'
             );
@@ -418,7 +418,7 @@ class PostExcerpt
              */
             $link = apply_filters_deprecated(
                 'timber/post/get_preview/read_more_link',
-                [ $link ],
+                [$link],
                 '2.0.0',
                 'timber/post/excerpt/read_more_link'
             );
@@ -435,7 +435,7 @@ class PostExcerpt
     protected function run()
     {
         $allowable_tags = ($this->strip && is_string($this->strip)) ? $this->strip : false;
-        $readmore_matches = array();
+        $readmore_matches = [];
         $text = '';
         $add_read_more = false;
         $add_end = false;

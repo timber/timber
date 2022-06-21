@@ -105,7 +105,7 @@ class Comment extends CoreEntity
 
     public $_depth = 0;
 
-    protected $children = array();
+    protected $children = [];
 
     /**
      * Construct a Timber\Comment. This is protected to prevent direct instantiation,
@@ -221,7 +221,10 @@ class Comment extends CoreEntity
 
         $email = $this->avatar_email();
 
-        $args = array('size' => $size, 'default' => $default);
+        $args = [
+            'size' => $size,
+            'default' => $default,
+        ];
         $args = apply_filters('pre_get_avatar_data', $args, $email);
         if (isset($args['url'])) {
             return $args['url'];
@@ -448,13 +451,13 @@ class Comment extends CoreEntity
         $max_depth = get_option('thread_comments_depth');
 
         // Default args
-        $args = array(
+        $args = [
             'add_below' => 'comment',
             'respond_id' => 'respond',
             'reply_text' => $reply_text,
             'depth' => $this->depth() + 1,
             'max_depth' => $max_depth,
-        );
+        ];
 
         return get_comment_reply_link($args, $this->ID, $this->post_id);
     }

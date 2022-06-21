@@ -24,12 +24,12 @@ class Loader
     /** Identifier of the main namespace. Will likely mirror Twig\Loader\FilesystemLoader::MAIN_NAMESPACE */
     public const MAIN_NAMESPACE = '__main__';
 
-    public static $cache_modes = array(
+    public static $cache_modes = [
         self::CACHE_NONE,
         self::CACHE_OBJECT,
         self::CACHE_TRANSIENT,
-        self::CACHE_SITE_TRANSIENT
-    );
+        self::CACHE_SITE_TRANSIENT,
+    ];
 
     protected $cache_mode = self::CACHE_TRANSIENT;
 
@@ -67,7 +67,7 @@ class Loader
          */
         $this->cache_mode = apply_filters_deprecated(
             'timber_cache_mode',
-            array( $this->cache_mode ),
+            [$this->cache_mode],
             '2.0.0',
             'timber/cache/mode'
         );
@@ -130,7 +130,7 @@ class Loader
                  */
                 do_action_deprecated(
                     'timber_loader_render_file',
-                    array( $result ),
+                    [$result],
                     '2.0.0',
                     'timber/loader/render_file'
                 );
@@ -157,7 +157,7 @@ class Loader
              */
             $data = apply_filters_deprecated(
                 'timber_loader_render_data',
-                array( $data ),
+                [$data],
                 '2.0.0',
                 'timber/loader/render_data'
             );
@@ -191,7 +191,7 @@ class Loader
          *
          * @deprecated 2.0.0, use `timber/output`
          */
-        $output = apply_filters_deprecated('timber_output', array( $output ), '2.0.0', 'timber/output');
+        $output = apply_filters_deprecated('timber_output', [$output], '2.0.0', 'timber/output');
 
         return $output;
     }
@@ -251,7 +251,7 @@ class Loader
          */
         $paths = apply_filters_deprecated(
             'timber/loader/paths',
-            array( $paths ),
+            [$paths],
             '2.0.0',
             'timber/locations'
         );
@@ -262,7 +262,7 @@ class Loader
             $rootPath = null;
         }
 
-        $fs = new FilesystemLoader(array(), $rootPath);
+        $fs = new FilesystemLoader([], $rootPath);
 
         foreach ($paths as $namespace => $path_locations) {
             if (is_array($path_locations)) {
@@ -305,11 +305,11 @@ class Loader
     {
 
         // Default options.
-        $environment_options = array(
+        $environment_options = [
             'debug' => WP_DEBUG,
             'autoescape' => false,
             'cache' => false,
-        );
+        ];
 
         /**
          * Filters the environment options that are used when creating a Twig Environment instance.
@@ -413,7 +413,7 @@ class Loader
              */
             $twig_cache_loc = apply_filters_deprecated(
                 'timber/cache/location',
-                array( $twig_cache_loc ),
+                [$twig_cache_loc],
                 '2.0.0',
                 'timber/twig/environment/options'
             );
@@ -464,7 +464,7 @@ class Loader
          *
          * @deprecated 2.0.0, use `timber/twig`
          */
-        $twig = apply_filters_deprecated('twig_apply_filters', [ $twig ], '2.0.0', 'timber/twig');
+        $twig = apply_filters_deprecated('twig_apply_filters', [$twig], '2.0.0', 'timber/twig');
 
         /**
          * Filters the Twig environment used in the global context.
@@ -503,7 +503,7 @@ class Loader
          *
          * @deprecated 2.0.0
          */
-        $twig = apply_filters_deprecated('get_twig', array( $twig ), '2.0.0', 'timber/twig');
+        $twig = apply_filters_deprecated('get_twig', [$twig], '2.0.0', 'timber/twig');
 
         return $twig;
     }

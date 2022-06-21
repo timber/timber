@@ -72,11 +72,14 @@ class TestCommentFactory extends Timber_UnitTestCase
 
         $post_comment_id = $this->factory->comment->create([
             'comment_post_ID' => $this->factory->post->create(),
-            'comment_content' => "blorg"
+            'comment_content' => "blorg",
         ]);
         $page_comment_id = $this->factory->comment->create([
-            'comment_post_ID' => $this->factory->post->create(['post_type' => 'page']),
-            'comment_content' => "porge"
+            'comment_post_ID' => $this->factory->post->create([
+                'post_type' => 'page',
+            ]),
+            'comment_content' =>
+"porge",
         ]);
 
         $commentFactory = new CommentFactory();
@@ -98,7 +101,7 @@ class TestCommentFactory extends Timber_UnitTestCase
 
         $post_comment_id = $this->factory->comment->create([
             'comment_post_ID' => $this->factory->post->create(),
-            'comment_content' => "blorg"
+            'comment_content' => "blorg",
         ]);
 
         $commentFactory = new CommentFactory();
@@ -115,7 +118,7 @@ class TestCommentFactory extends Timber_UnitTestCase
 
         $post_comment_id = $this->factory->comment->create([
             'comment_post_ID' => $this->factory->post->create(),
-            'comment_content' => "blorg"
+            'comment_content' => "blorg",
         ]);
 
         $bad_comment_obj = new BadComment();
@@ -145,14 +148,19 @@ class TestCommentFactory extends Timber_UnitTestCase
 
         $post_comment_id = $this->factory->comment->create([
             'comment_post_ID' => $this->factory->post->create(),
-            'comment_content' => "blorg"
+            'comment_content' => "blorg",
         ]);
         $page_comment_id = $this->factory->comment->create([
-            'comment_post_ID' => $this->factory->post->create(['post_type' => 'page']),
-            'comment_content' => "porge"
+            'comment_post_ID' => $this->factory->post->create([
+                'post_type' => 'page',
+            ]),
+            'comment_content' =>
+"porge",
         ]);
         $page_comment_id = $this->factory->comment->create([
-            'comment_post_ID' => $this->factory->post->create(['post_type' => 'page']),
+            'comment_post_ID' => $this->factory->post->create([
+                'post_type' => 'page',
+            ]),
             'comment_content' => "impeachment inquiry DESTROYS snowflake president",
         ]);
 
@@ -179,7 +187,9 @@ class TestCommentFactory extends Timber_UnitTestCase
         ]);
 
         $commentFactory = new CommentFactory();
-        $res = $commentFactory->from(get_comments(['post_id' => $pid]));
+        $res = $commentFactory->from(get_comments([
+            'post_id' => $pid,
+        ]));
 
         $this->assertTrue(true, is_array($res));
         $this->assertCount(2, $res);

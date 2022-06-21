@@ -2,7 +2,9 @@
 
 class WP_Overrides
 {
-    public static function media_handle_upload($file_id, $post_id, $post_data = array(), $overrides = array( 'test_form' => false ))
+    public static function media_handle_upload($file_id, $post_id, $post_data = [], $overrides = [
+        'test_form' => false,
+    ])
     {
         $time = current_time('mysql');
         if ($post = get_post($post_id)) {
@@ -88,13 +90,13 @@ class WP_Overrides
         }
 
         // Construct the attachment array
-        $attachment = array_merge(array(
-                'post_mime_type' => $type,
-                'guid' => $url,
-                'post_parent' => $post_id,
-                'post_title' => $title,
-                'post_content' => $content,
-            ), $post_data);
+        $attachment = array_merge([
+            'post_mime_type' => $type,
+            'guid' => $url,
+            'post_parent' => $post_id,
+            'post_title' => $title,
+            'post_content' => $content,
+        ], $post_data);
 
         // This should never be set as it would then overwrite an existing attachment.
         if (isset($attachment['ID'])) {
@@ -116,7 +118,9 @@ class WP_Overrides
         if (!function_exists('wp_handle_upload_error')) {
             function wp_handle_upload_error(&$file, $message)
             {
-                return array( 'error' => $message );
+                return [
+                    'error' => $message,
+                ];
             }
         }
 
@@ -144,7 +148,7 @@ class WP_Overrides
         $action = 'wp_handle_upload';
 
         // Courtesy of php.net, the strings that describe the error indicated in $_FILES[{form field}]['error'].
-        $upload_error_strings = array( false,
+        $upload_error_strings = [false,
             __("The uploaded file exceeds the upload_max_filesize directive in php.ini."),
             __("The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form."),
             __("The uploaded file was only partially uploaded."),
@@ -152,7 +156,7 @@ class WP_Overrides
             '',
             __("Missing a temporary folder."),
             __("Failed to write file to disk."),
-            __("File upload stopped by extension.") );
+            __("File upload stopped by extension."), ];
 
         // All tests are on by default. Most can be turned off by $overrides[{test_name}] = false;
         $test_form = true;
@@ -264,6 +268,10 @@ class WP_Overrides
          * }
          * @param string  $context The type of upload action. Accepts 'upload' or 'sideload'.
          */
-        return apply_filters('wp_handle_upload', array( 'file' => $new_file, 'url' => $url, 'type' => $type ), 'upload');
+        return apply_filters('wp_handle_upload', [
+            'file' => $new_file,
+            'url' => $url,
+            'type' => $type,
+        ], 'upload');
     }
 }

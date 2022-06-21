@@ -101,11 +101,11 @@ class TestTimberContext extends Timber_UnitTestCase
         $this->factory->post->create_many(3, [
             'post_content' => 'here are some things',
             'post_status' => 'publish',
-      ]);
+        ]);
         $this->factory->post->create_many(3, [
             'post_content' => 'here is some stuff',
             'post_status' => 'publish',
-      ]);
+        ]);
         query_posts('s=stuff');
 
         $context = Timber::context();
@@ -125,7 +125,7 @@ class TestTimberContext extends Timber_UnitTestCase
             'post_content' => 'here are some things',
             'post_author' => $uid,
             'post_status' => 'publish',
-      ]);
+        ]);
         query_posts('author=' . $uid);
 
         $context = Timber::context();
@@ -142,7 +142,7 @@ class TestTimberContext extends Timber_UnitTestCase
         $stuff = wp_insert_term('Stuff', 'category');
         $cat_posts = $this->factory->post->create_many(3, [
             'post_status' => 'publish',
-      ]);
+        ]);
         foreach ($cat_posts as $id) {
             wp_set_object_terms($id, $stuff, 'category');
         }
@@ -150,7 +150,7 @@ class TestTimberContext extends Timber_UnitTestCase
         // 3 uncategorized posts
         $this->factory->post->create_many(3, [
             'post_status' => 'publish',
-      ]);
+        ]);
 
         query_posts('cat=' . $stuff['term_id']);
 
@@ -169,7 +169,7 @@ class TestTimberContext extends Timber_UnitTestCase
         $stuff = wp_insert_term('Stuff', 'post_tag');
         $cat_posts = $this->factory->post->create_many(3, [
             'post_status' => 'publish',
-      ]);
+        ]);
         foreach ($cat_posts as $id) {
             wp_set_object_terms($id, $stuff, 'post_tag');
         }
@@ -177,7 +177,7 @@ class TestTimberContext extends Timber_UnitTestCase
         // 3 untagged posts
         $this->factory->post->create_many(3, [
             'post_status' => 'publish',
-      ]);
+        ]);
 
         query_posts('tag=stuff');
 
@@ -199,7 +199,7 @@ class TestTimberContext extends Timber_UnitTestCase
         $stuff = wp_insert_term('Stuff', 'thingy');
         $cat_posts = $this->factory->post->create_many(3, [
             'post_status' => 'publish',
-      ]);
+        ]);
         foreach ($cat_posts as $id) {
             wp_set_object_terms($id, $stuff, 'thingy');
         }
@@ -207,7 +207,7 @@ class TestTimberContext extends Timber_UnitTestCase
         // 3 non-thingy posts
         $this->factory->post->create_many(3, [
             'post_status' => 'publish',
-      ]);
+        ]);
 
         query_posts([
             'tax_query' => [

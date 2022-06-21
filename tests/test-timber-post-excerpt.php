@@ -25,7 +25,9 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase
         $this->add_filter_temporarily('timber/post/excerpt/read_more_class', function ($class) {
             return $class . ' and-foo';
         });
-        $post_id = $this->factory->post->create(array('post_excerpt' => 'It turned out that just about anyone in authority — cops, judges, city leaders — was in on the game.'));
+        $post_id = $this->factory->post->create([
+            'post_excerpt' => 'It turned out that just about anyone in authority — cops, judges, city leaders — was in on the game.',
+        ]);
         $post = Timber::get_post($post_id);
 
         $text = new PostExcerpt($post, [
@@ -77,7 +79,9 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase
 
     public function testExcerptTags()
     {
-        $post_id = $this->factory->post->create(array('post_excerpt' => 'It turned out that just about anyone in authority — cops, judges, city leaders — was in on the game.'));
+        $post_id = $this->factory->post->create([
+            'post_excerpt' => 'It turned out that just about anyone in authority — cops, judges, city leaders — was in on the game.',
+        ]);
         $post = Timber::get_post($post_id);
         $text = new PostExcerpt($post, [
             'words' => 20,
@@ -94,7 +98,9 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase
         $struc = false;
         $wp_rewrite->permalink_structure = $struc;
         update_option('permalink_structure', $struc);
-        $post_id = $this->factory->post->create(array('post_content' => 'this is super dooper trooper long words'));
+        $post_id = $this->factory->post->create([
+            'post_content' => 'this is super dooper trooper long words',
+        ]);
         $post = Timber::get_post($post_id);
 
         // no excerpt
@@ -102,7 +108,9 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase
         $str = Timber::compile_string('{{ post.excerpt({
             words: 3,
             always_add_read_more: true
-        }) }}', [ 'post' => $post ]);
+        }) }}', [
+            'post' => $post,
+        ]);
         $this->assertMatchesRegularExpression('/this is super&hellip; <a href="http:\/\/example.org\/\?p=\d+" class="read-more">Read More<\/a>/', $str);
 
         // excerpt set, force is false, no read more
@@ -139,7 +147,10 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase
         add_shortcode('mythang', function ($text) {
             return 'mythangy';
         });
-        $pid = $this->factory->post->create([ 'post_content' => 'jared [mythang]', 'post_excerpt' => '' ]);
+        $pid = $this->factory->post->create([
+            'post_content' => 'jared [mythang]',
+            'post_excerpt' => '',
+        ]);
         $post = Timber::get_post($pid);
         $this->assertEquals('jared mythangy', $post->excerpt());
 
@@ -151,7 +162,10 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase
         add_shortcode('duck', function ($text) {
             return 'Quack!';
         });
-        $pid = $this->factory->post->create(array('post_content' => 'jared [duck] <!--more--> joojoo', 'post_excerpt' => ''));
+        $pid = $this->factory->post->create([
+            'post_content' => 'jared [duck] <!--more--> joojoo',
+            'post_excerpt' => '',
+        ]);
         $post = Timber::get_post($pid);
         $this->assertEquals(
             sprintf('jared Quack! <a href="%s" class="read-more">Read More</a>', $post->link()),
@@ -165,7 +179,7 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase
     {
         $pid = $this->factory->post->create([
             'post_content' => 'Lauren is a duck, but a great duck let me tell you why <!--more--> Lauren is not a duck',
-            'post_excerpt' => ''
+            'post_excerpt' => '',
         ]);
         $post = Timber::get_post($pid);
         $excerpt = new PostExcerpt($post, [
@@ -181,7 +195,10 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase
 
     public function testExcerptWithMoreTagAndForcedLength()
     {
-        $pid = $this->factory->post->create(array('post_content' => 'Lauren is a duck<!-- more--> Lauren is not a duck', 'post_excerpt' => ''));
+        $pid = $this->factory->post->create([
+            'post_content' => 'Lauren is a duck<!-- more--> Lauren is not a duck',
+            'post_excerpt' => '',
+        ]);
         $post = Timber::get_post($pid);
         $this->assertEquals(
             sprintf('Lauren is a duck <a href="%s" class="read-more">Read More</a>', $post->link()),
@@ -191,7 +208,10 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase
 
     public function testExcerptWithCustomMoreTag()
     {
-        $pid = $this->factory->post->create(array('post_content' => 'Eric is a polar bear <!-- more But what is Elaina? --> Lauren is not a duck', 'post_excerpt' => ''));
+        $pid = $this->factory->post->create([
+            'post_content' => 'Eric is a polar bear <!-- more But what is Elaina? --> Lauren is not a duck',
+            'post_excerpt' => '',
+        ]);
         $post = Timber::get_post($pid);
         $this->assertEquals(
             'Eric is a polar bear <a href="' . $post->link() . '" class="read-more">But what is Elaina?</a>',
@@ -203,7 +223,7 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase
     {
         $pid = $this->factory->post->create([
             'post_content' => 'Lauren is a duck, but a great duck let me tell you why Lauren is a duck',
-            'post_excerpt' => ''
+            'post_excerpt' => '',
         ]);
         $post = Timber::get_post($pid);
         $excerpt = new PostExcerpt($post, [
@@ -222,7 +242,7 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase
     public function testExcerptWithCustomStripTags()
     {
         $pid = $this->factory->post->create([
-            'post_content' => '<span>Even in the <a href="">world</a> of make-believe there have to be rules. The parts have to be consistent and belong together</span>'
+            'post_content' => '<span>Even in the <a href="">world</a> of make-believe there have to be rules. The parts have to be consistent and belong together</span>',
         ]);
         $post = Timber::get_post($pid);
         $post->post_excerpt = '';

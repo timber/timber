@@ -290,7 +290,7 @@ class User extends CoreEntity
         $wp_roles = wp_roles();
         $names = $wp_roles->get_names();
 
-        $values = array();
+        $values = [];
 
         foreach ($roles as $role) {
             $name = $role;

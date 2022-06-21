@@ -16,14 +16,14 @@ class TestTimberWPFunctions extends Timber_UnitTestCase
     {
         global $wp_scripts;
         $wp_scripts = null;
-        wp_enqueue_script('jquery', false, array(), false, true);
-        $fw1 = new FunctionWrapper('wp_footer', array(), true);
-        $fw2 = new FunctionWrapper('wp_footer', array(), true);
+        wp_enqueue_script('jquery', false, [], false, true);
+        $fw1 = new FunctionWrapper('wp_footer', [], true);
+        $fw2 = new FunctionWrapper('wp_footer', [], true);
         $this->assertGreaterThan(50, strlen($fw1->call()));
         //this is bunk because footer scripts will only print once
         $this->assertEquals(0, strlen($fw2->call()));
         wp_dequeue_script('jquery');
-        $wp_footer_output1 = new FunctionWrapper('wp_footer', array(), true);
+        $wp_footer_output1 = new FunctionWrapper('wp_footer', [], true);
         $this->assertEquals(0, strlen($wp_footer_output1));
     }
 
@@ -31,8 +31,8 @@ class TestTimberWPFunctions extends Timber_UnitTestCase
     {
         global $wp_scripts;
         $wp_scripts = null;
-        wp_enqueue_script('jquery', false, array(), false, true);
-        $fw1 = new FunctionWrapper('wp_footer', array(), true);
+        wp_enqueue_script('jquery', false, [], false, true);
+        $fw1 = new FunctionWrapper('wp_footer', [], true);
         $this->assertGreaterThan(50, strlen($fw1->call()));
     }
 
@@ -41,8 +41,8 @@ class TestTimberWPFunctions extends Timber_UnitTestCase
         add_action('jared_action', function () {
             echo 'bar';
         });
-        $fw1 = new FunctionWrapper('do_jared_action', array(), true);
-        $fw2 = new FunctionWrapper('do_jared_action', array(), true);
+        $fw1 = new FunctionWrapper('do_jared_action', [], true);
+        $fw2 = new FunctionWrapper('do_jared_action', [], true);
         $this->assertEquals($fw1->call(), $fw2->call());
         $this->assertEquals('bar', $fw1->call());
     }
@@ -52,8 +52,8 @@ class TestTimberWPFunctions extends Timber_UnitTestCase
         global $wp_scripts;
         $wp_scripts = null;
         add_action('wp_footer', 'echo_junk');
-        $fw1 = new FunctionWrapper('wp_footer', array(), true);
-        $fw2 = new FunctionWrapper('wp_footer', array(), true);
+        $fw1 = new FunctionWrapper('wp_footer', [], true);
+        $fw2 = new FunctionWrapper('wp_footer', [], true);
         $this->assertEquals($fw1->call(), $fw2->call());
         $pos = strpos($fw2->call(), 'foo');
         $this->assertGreaterThan(-1, $pos);
@@ -64,8 +64,8 @@ class TestTimberWPFunctions extends Timber_UnitTestCase
     {
         global $wp_scripts;
         $wp_scripts = null;
-        wp_enqueue_script('jquery', false, array(), false, true);
-        $str = Timber::compile('assets/wp-footer.twig', array());
+        wp_enqueue_script('jquery', false, [], false, true);
+        $str = Timber::compile('assets/wp-footer.twig', []);
         $pos = strpos($str, 'wp-includes/js/jquery/jquery');
         $this->assertGreaterThan(-1, $pos);
     }
@@ -74,8 +74,8 @@ class TestTimberWPFunctions extends Timber_UnitTestCase
     {
         global $wp_scripts;
         $wp_scripts = null;
-        wp_enqueue_script('jquery', false, array(), false, true);
-        $str = Timber::compile_string('{{function("wp_footer")}}', array());
+        wp_enqueue_script('jquery', false, [], false, true);
+        $str = Timber::compile_string('{{function("wp_footer")}}', []);
         $pos = strpos($str, 'wp-includes/js/jquery/jquery');
         $this->assertGreaterThan(-1, $pos);
     }
@@ -84,13 +84,13 @@ class TestTimberWPFunctions extends Timber_UnitTestCase
     {
         global $wp_scripts;
         $wp_scripts = null;
-        wp_enqueue_script('colorpicker', false, array(), false, true);
-        wp_enqueue_script('fake-js', 'http://example.org/fake-js.js', array(), false, true);
+        wp_enqueue_script('colorpicker', false, [], false, true);
+        wp_enqueue_script('fake-js', 'http://example.org/fake-js.js', [], false, true);
         $wp_footer = Helper::ob_function('wp_footer');
         global $wp_scripts;
         $wp_scripts = null;
-        wp_enqueue_script('colorpicker', false, array(), false, true);
-        wp_enqueue_script('fake-js', 'http://example.org/fake-js.js', array(), false, true);
+        wp_enqueue_script('colorpicker', false, [], false, true);
+        wp_enqueue_script('fake-js', 'http://example.org/fake-js.js', [], false, true);
         $str = Timber::compile_string('{{function("wp_footer")}}');
         $this->assertEquals($wp_footer, $str);
         $this->assertGreaterThan(50, strlen($str));
@@ -102,9 +102,9 @@ class TestTimberWPFunctions extends Timber_UnitTestCase
         global $wp_scripts;
         $wp_scripts = null;
         //send colorpicker to the header
-        wp_enqueue_script('colorpicker', false, array(), false, false);
+        wp_enqueue_script('colorpicker', false, [], false, false);
         //send fake-js to the footer
-        wp_enqueue_script('fake-js', 'http://example.org/fake-js.js', array(), false, true);
+        wp_enqueue_script('fake-js', 'http://example.org/fake-js.js', [], false, true);
         $str = Timber::compile_string('<head>{{function("wp_head")}}</head><footer>{{function("wp_footer")}}</footer>');
         $footer_tag = strpos($str, '<footer>');
         $colorpicker = strpos($str, 'colorpicker');

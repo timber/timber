@@ -176,7 +176,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase
         self::setPermalinkStructure();
         $attach = self::get_attachment();
         $image = Timber::get_post($attach);
-        $links = array();
+        $links = [];
         $links[] = 'http://example.org/' . $image->post_name . '/';
         $links[] = 'http://example.org/?attachment_id=' . $image->ID;
         $this->assertContains($image->link(), $links);
@@ -195,15 +195,17 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase
         $post_id = $this->factory->post->create();
         $filename = self::copyTestAttachment('arch.jpg');
 
-        $attachment = array(
+        $attachment = [
             'post_mime_type' => 'image/jpeg',
             'post_title' => preg_replace('/\.[^.]+$/', '', basename($filename)),
             'post_content' => '',
-            'post_status' => 'inherit'
-        );
+            'post_status' => 'inherit',
+        ];
 
         $attach_id = wp_insert_attachment($attachment, $filename, $post_id);
-        $image = Timber::get_post(['ID' => $attach_id]);
+        $image = Timber::get_post([
+            'ID' => $attach_id,
+        ]);
         $path = explode('/', $image->file);
 
         $this->assertEquals('arch.jpg', $path[2]);
@@ -213,7 +215,10 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase
     {
         $pid = $this->factory->post->create();
         $filename = self::copyTestAttachment('arch.jpg');
-        $attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
+        $attachment = [
+            'post_title' => 'The Arch',
+            'post_content' => '',
+        ];
         $iid = wp_insert_attachment($attachment, $filename, $pid);
         $attachment = Timber::get_post($iid);
         $this->assertEquals('The Arch', $attachment->title());
@@ -223,7 +228,10 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase
     {
         $pid = $this->factory->post->create();
         $filename = self::copyTestAttachment('arch.jpg');
-        $attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
+        $attachment = [
+            'post_title' => 'The Arch',
+            'post_content' => '',
+        ];
         $iid = wp_insert_attachment($attachment, $filename, $pid);
         $image = Timber::get_attachment_by('path', $filename);
         $path_parts = $image->pathinfo();
@@ -236,7 +244,9 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase
         $attachment = Timber::get_post($iid);
         $post = get_post($iid);
         $str = '{{ get_post(post).src }}';
-        $result = Timber::compile_string($str, array('post' => $post));
+        $result = Timber::compile_string($str, [
+            'post' => $post,
+        ]);
         $this->assertEquals($attachment->src(), $result);
     }
 
@@ -246,7 +256,9 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase
         $pid = $this->factory->post->create();
         $iid = self::get_attachment($pid, 'dummy-pdf.pdf');
         $str = '{{ get_post(post).src }}';
-        $result = Timber::compile_string($str, array('post' => $iid));
+        $result = Timber::compile_string($str, [
+            'post' => $iid,
+        ]);
         $this->assertEquals('http://example.org/wp-content/uploads/' . date('Y/m') . '/dummy-pdf.pdf', $result);
     }
 
@@ -255,7 +267,9 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase
         $pid = $this->factory->post->create();
         $iid = self::get_attachment($pid, 'dummy-pdf.pdf');
         $str = '{{ get_post(post).size }}';
-        $result = Timber::compile_string($str, array( 'post' => $iid ));
+        $result = Timber::compile_string($str, [
+            'post' => $iid,
+        ]);
         $this->assertEquals('16&nbsp;KB', $result);
     }
 
@@ -264,7 +278,9 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase
         $pid = $this->factory->post->create();
         $iid = self::get_attachment($pid, 'dummy-pdf.pdf');
         $str = '{{ get_post(post).size_raw }}';
-        $result = Timber::compile_string($str, array( 'post' => $iid ));
+        $result = Timber::compile_string($str, [
+            'post' => $iid,
+        ]);
         $this->assertEquals('16555', $result);
         $this->assertFalse(Timber::get_post($iid)->is_image());
     }
@@ -274,7 +290,9 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase
         $pid = $this->factory->post->create();
         $iid = self::get_attachment($pid, 'dummy-pdf.pdf');
         $str = '{{ get_post(post).extension }}';
-        $result = Timber::compile_string($str, array( 'post' => $iid ));
+        $result = Timber::compile_string($str, [
+            'post' => $iid,
+        ]);
         $this->assertEquals('PDF', $result);
     }
 }

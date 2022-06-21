@@ -195,7 +195,9 @@ class Menu extends CoreEntity
 
         // Skip the menu term guessing part, we already have our menu term
 
-        $menu_items = wp_get_nav_menu_items($menu->term_id, ['update_post_term_cache' => false]);
+        $menu_items = wp_get_nav_menu_items($menu->term_id, [
+            'update_post_term_cache' => false,
+        ]);
 
         _wp_menu_item_classes_by_context($menu_items);
 
@@ -542,7 +544,7 @@ class Menu extends CoreEntity
 
     public function __toString()
     {
-        static $menu_id_slugs = array();
+        static $menu_id_slugs = [];
 
         $args = $this->args;
 
@@ -559,7 +561,7 @@ class Menu extends CoreEntity
             * @param string[] $tags The acceptable HTML tags for use as menu containers.
             *                       Default is array containing 'div' and 'nav'.
             */
-            $allowed_tags = apply_filters('wp_nav_menu_container_allowedtags', array( 'div', 'nav' ));
+            $allowed_tags = apply_filters('wp_nav_menu_container_allowedtags', ['div', 'nav']);
 
             if (is_string($args->container) && in_array($args->container, $allowed_tags, true)) {
                 $show_container = true;

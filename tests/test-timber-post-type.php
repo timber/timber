@@ -34,7 +34,9 @@
             $post_id = $this->factory->post->create();
             $post = Timber::get_post($post_id);
             $template = '{{post.post_type}}';
-            $str = Timber::compile_string($template, array('post' => $post));
+            $str = Timber::compile_string($template, [
+                'post' => $post,
+            ]);
             $this->assertEquals('post', $str);
         }
 
@@ -43,7 +45,9 @@
             $post_id = $this->factory->post->create();
             $post = Timber::get_post($post_id);
             $template = '{{post.type}}';
-            $str = Timber::compile_string($template, array('post' => $post));
+            $str = Timber::compile_string($template, [
+                'post' => $post,
+            ]);
             $this->assertEquals('post', $str);
         }
 
@@ -52,7 +56,9 @@
             $post_id = $this->factory->post->create();
             $post = Timber::get_post($post_id);
             $template = '{{post.type.labels.name}}';
-            $str = Timber::compile_string($template, array('post' => $post));
+            $str = Timber::compile_string($template, [
+                'post' => $post,
+            ]);
             $this->assertEquals('Posts', $str);
         }
     }

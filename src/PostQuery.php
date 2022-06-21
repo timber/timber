@@ -119,7 +119,7 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
      *
      * @return \Timber\Pagination object
      */
-    public function pagination($prefs = array())
+    public function pagination($prefs = [])
     {
         if (!$this->pagination && $this->wp_query instanceof \WP_Query) {
             $this->pagination = new Pagination($prefs, $this->wp_query);

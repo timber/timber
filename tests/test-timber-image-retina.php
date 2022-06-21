@@ -26,13 +26,15 @@ class TestTimberImageRetina extends Timber_UnitTestCase
     {
         $filename = TestTimberImage::copyTestAttachment('eastern.jpg');
         $wp_filetype = wp_check_filetype(basename($filename), null);
-        $post_id = $this->factory->post->create(array( 'post_title' => 'Thing One' ));
-        $attachment = array(
+        $post_id = $this->factory->post->create([
+            'post_title' => 'Thing One',
+        ]);
+        $attachment = [
             'post_mime_type' => $wp_filetype['type'],
             'post_title' => preg_replace('/\.[^.]+$/', '', basename($filename)),
             'post_excerpt' => '',
-            'post_status' => 'inherit'
-        );
+            'post_status' => 'inherit',
+        ];
         $attach_id = wp_insert_attachment($attachment, $filename, $post_id);
         add_post_meta($post_id, '_thumbnail_id', $attach_id, true);
 
@@ -47,13 +49,15 @@ class TestTimberImageRetina extends Timber_UnitTestCase
     {
         $filename = TestTimberImage::copyTestAttachment('eastern.jpg');
         $wp_filetype = wp_check_filetype(basename($filename), null);
-        $post_id = $this->factory->post->create(array( 'post_title' => 'Thing One' ));
-        $attachment = array(
+        $post_id = $this->factory->post->create([
+            'post_title' => 'Thing One',
+        ]);
+        $attachment = [
             'post_mime_type' => $wp_filetype['type'],
             'post_title' => preg_replace('/\.[^.]+$/', '', basename($filename)),
             'post_excerpt' => '',
-            'post_status' => 'inherit'
-        );
+            'post_status' => 'inherit',
+        ];
         $attach_id = wp_insert_attachment($attachment, $filename, $post_id);
         add_post_meta($post_id, '_thumbnail_id', $attach_id, true);
 
@@ -69,12 +73,12 @@ class TestTimberImageRetina extends Timber_UnitTestCase
         $filename = TestTimberImage::copyTestAttachment('eastern.jpg');
         $wp_filetype = wp_check_filetype(basename($filename), null);
         $post_id = $this->factory->post->create();
-        $attachment = array(
+        $attachment = [
             'post_mime_type' => $wp_filetype['type'],
             'post_title' => preg_replace('/\.[^.]+$/', '', basename($filename)),
             'post_excerpt' => '',
-            'post_status' => 'inherit'
-        );
+            'post_status' => 'inherit',
+        ];
         $attach_id = wp_insert_attachment($attachment, $filename, $post_id);
         add_post_meta($post_id, '_thumbnail_id', $attach_id, true);
 

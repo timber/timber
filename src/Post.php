@@ -76,12 +76,12 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     /**
      * @var array Stores the results of the next Timber\Post in a set inside an array (in order to manage by-taxonomy)
      */
-    protected $_next = array();
+    protected $_next = [];
 
     /**
      * @var array Stores the results of the previous Timber\Post in a set inside an array (in order to manage by-taxonomy)
      */
-    protected $_prev = array();
+    protected $_prev = [];
 
     /**
      * @var string Stores the CSS classes for the post (ex: "post post-type-book post-123")
@@ -340,15 +340,15 @@ class Post extends CoreEntity implements DatedInterface, Setupable
 
     protected function get_post_preview_id($query)
     {
-        $can = array(
+        $can = [
             get_post_type_object($query->queried_object->post_type)->cap->edit_post,
-        );
+        ];
 
         if ($query->queried_object->author_id !== get_current_user_id()) {
             $can[] = get_post_type_object($query->queried_object->post_type)->cap->edit_others_posts;
         }
 
-        $can_preview = array();
+        $can_preview = [];
 
         foreach ($can as $type) {
             if (current_user_can($type, $query->queried_object_id)) {
@@ -421,7 +421,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * ```
      * @return \Timber\PostExcerpt
      */
-    public function excerpt(array $options = array())
+    public function excerpt(array $options = [])
     {
         return new PostExcerpt($this, $options);
     }
@@ -498,9 +498,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      *                    for reference on acceptable parameters
      * @return string of HTML for the form
      */
-    public function comment_form($args = array())
+    public function comment_form($args = [])
     {
-        return trim(Helper::ob_function('comment_form', array( $args, $this->ID )));
+        return trim(Helper::ob_function('comment_form', [$args, $this->ID]));
     }
 
     /**
@@ -572,7 +572,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     {
         // Make it possible to use a taxonomy or an array of taxonomies as a shorthand.
         if (!is_array($query_args) || isset($query_args[0])) {
-            $query_args = [ 'taxonomy' => $query_args ];
+            $query_args = [
+                'taxonomy' => $query_args,
+            ];
         }
 
         /**
@@ -589,11 +591,11 @@ class Post extends CoreEntity implements DatedInterface, Setupable
 
         // Defaults.
         $query_args = wp_parse_args($query_args, [
-            'taxonomy' => 'all'
+            'taxonomy' => 'all',
         ]);
 
         $options = wp_parse_args($options, [
-            'merge' => true
+            'merge' => true,
         ]);
 
         $taxonomies = $query_args['taxonomy'];
@@ -885,7 +887,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
          * @param array        $authors An array of User objects. Default: User object for `post_author`.
          * @param \Timber\Post $post    The post object.
          */
-        return apply_filters('timber/post/authors', array($this->author()), $this);
+        return apply_filters('timber/post/authors', [$this->author()], $this);
     }
 
     /**
@@ -1022,7 +1024,11 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         $commenter = wp_get_current_commenter();
         $comment_author_email = $commenter['comment_author_email'];
 
-        $args = array('status' => $status, 'order' => $order, 'type' => $type);
+        $args = [
+            'status' => $status,
+            'order' => $order,
+            'type' => $type,
+        ];
         if ($count > 0) {
             $args['number'] = $count;
         }
@@ -1030,13 +1036,13 @@ class Post extends CoreEntity implements DatedInterface, Setupable
             $args['order'] = get_option('comment_order');
         }
         if ($user_ID) {
-            $args['include_unapproved'] = array($user_ID);
+            $args['include_unapproved'] = [$user_ID];
         } elseif (!empty($comment_author_email)) {
-            $args['include_unapproved'] = array($comment_author_email);
+            $args['include_unapproved'] = [$comment_author_email];
         } elseif (function_exists('wp_get_unapproved_comment_author_email')) {
             $unapproved_email = wp_get_unapproved_comment_author_email();
             if ($unapproved_email) {
-                $args['include_unapproved'] = array($unapproved_email);
+                $args['include_unapproved'] = [$unapproved_email];
             }
         }
         $ct = new CommentThread($this->ID, false);
@@ -1104,11 +1110,11 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     protected function get_revised_data_from_method($method, $args = false)
     {
         if (!is_array($args)) {
-            $args = array($args);
+            $args = [$args];
         }
         $rev = $this->get_post_preview_object();
         if ($rev && $this->ID == $rev->post_parent && $this->ID != $rev->ID) {
-            return call_user_func_array([ $rev, $method ], $args);
+            return call_user_func_array([$rev, $method], $args);
         }
     }
 
@@ -1139,7 +1145,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      */
     public function content($page = 0, $len = -1)
     {
-        if ($rd = $this->get_revised_data_from_method('content', array($page, $len))) {
+        if ($rd = $this->get_revised_data_from_method('content', [$page, $len])) {
             return $rd;
         }
         if ($form = $this->maybe_show_password_form()) {
@@ -1535,7 +1541,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     {
         if (!isset($this->_next) || !isset($this->_next[$in_same_term])) {
             global $post;
-            $this->_next = array();
+            $this->_next = [];
             $old_global = $post;
             $post = $this;
             if (is_string($in_same_term) && strlen($in_same_term)) {
@@ -1596,11 +1602,16 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     {
         global $post, $page, $numpages, $multipage;
         $post = $this;
-        $ret = array();
+        $ret = [];
         if ($multipage) {
             for ($i = 1; $i <= $numpages; $i++) {
                 $link = self::get_wp_link_page($i);
-                $data = array('name' => $i, 'title' => $i, 'text' => $i, 'link' => $link);
+                $data = [
+                    'name' => $i,
+                    'title' => $i,
+                    'text' => $i,
+                    'link' => $link,
+                ];
                 if ($i == $page) {
                     $data['current'] = true;
                 }
@@ -1609,12 +1620,16 @@ class Post extends CoreEntity implements DatedInterface, Setupable
             $i = $page - 1;
             if ($i) {
                 $link = self::get_wp_link_page($i);
-                $ret['prev'] = array('link' => $link);
+                $ret['prev'] = [
+                    'link' => $link,
+                ];
             }
             $i = $page + 1;
             if ($i <= $numpages) {
                 $link = self::get_wp_link_page($i);
-                $ret['next'] = array('link' => $link);
+                $ret['next'] = [
+                    'link' => $link,
+                ];
             }
         }
         return $ret;
@@ -1808,7 +1823,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
 
         // Only get audio from the content if a playlist isn’t present.
         if (false === strpos($this->content(), 'wp-playlist-script')) {
-            $audio = get_media_embedded_in_content($this->content(), array('audio'));
+            $audio = get_media_embedded_in_content($this->content(), ['audio']);
         }
 
         return $audio;
@@ -1830,7 +1845,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
 
         // Only get video from the content if a playlist isn't present.
         if (false === strpos($this->content(), 'wp-playlist-script')) {
-            $video = get_media_embedded_in_content($this->content(), array( 'video', 'object', 'embed', 'iframe' ));
+            $video = get_media_embedded_in_content($this->content(), ['video', 'object', 'embed', 'iframe']);
         }
 
         return $video;

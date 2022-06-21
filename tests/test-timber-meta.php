@@ -30,10 +30,10 @@ class TestTimberMeta extends Timber_UnitTestCase
         require_once 'php/MetaUser.php';
         require_once 'php/MetaComment.php';
 
-        remove_filter('timber/post/pre_meta', [ AcfIntegration::class, 'post_get_meta_field' ]);
-        remove_filter('timber/post/meta_object_field', [ AcfIntegration::class, 'post_meta_object' ]);
-        remove_filter('timber/term/pre_meta', [ AcfIntegration::class, 'term_get_meta_field' ]);
-        remove_filter('timber/user/pre_meta', [ AcfIntegration::class, 'user_get_meta_field' ]);
+        remove_filter('timber/post/pre_meta', [AcfIntegration::class, 'post_get_meta_field']);
+        remove_filter('timber/post/meta_object_field', [AcfIntegration::class, 'post_meta_object']);
+        remove_filter('timber/term/pre_meta', [AcfIntegration::class, 'term_get_meta_field']);
+        remove_filter('timber/user/pre_meta', [AcfIntegration::class, 'user_get_meta_field']);
     }
 
     /**
@@ -249,19 +249,27 @@ class TestTimberMeta extends Timber_UnitTestCase
 
         $post_string = Timber::compile_string(
             "{{ post.raw_meta('my_custom_property') }}",
-            [ 'post' => $post ]
+            [
+                'post' => $post,
+            ]
         );
         $term_string = Timber::compile_string(
             "{{ term.raw_meta('my_custom_property') }}",
-            [ 'term' => $term ]
+            [
+                'term' => $term,
+            ]
         );
         $user_string = Timber::compile_string(
             "{{ user.raw_meta('my_custom_property') }}",
-            [ 'user' => $user ]
+            [
+                'user' => $user,
+            ]
         );
         $comment_string = Timber::compile_string(
             "{{ comment.raw_meta('my_custom_property') }}",
-            [ 'comment' => $comment ]
+            [
+                'comment' => $comment,
+            ]
         );
 
         $this->assertEquals('Sweet Honey', $post->raw_meta('my_custom_property'));
@@ -332,19 +340,27 @@ class TestTimberMeta extends Timber_UnitTestCase
 
         $post_string = Timber::compile_string(
             "{{ post.raw_meta('my_custom_property_inexistent') }}",
-            [ 'post' => $post ]
+            [
+                'post' => $post,
+            ]
         );
         $term_string = Timber::compile_string(
             "{{ term.raw_meta('my_custom_property_inexistent') }}",
-            [ 'term' => $term ]
+            [
+                'term' => $term,
+            ]
         );
         $user_string = Timber::compile_string(
             "{{ user.raw_meta('my_custom_property_inexistent') }}",
-            [ 'user' => $user ]
+            [
+                'user' => $user,
+            ]
         );
         $comment_string = Timber::compile_string(
             "{{ comment.raw_meta('my_custom_property_inexistent') }}",
-            [ 'comment' => $comment ]
+            [
+                'comment' => $comment,
+            ]
         );
 
         $this->assertEquals(null, $post->raw_meta('my_custom_property_inexistent'));
@@ -382,19 +398,27 @@ class TestTimberMeta extends Timber_UnitTestCase
 
         $post_string = Timber::compile_string(
             'My {{ post.my_custom_property }}',
-            [ 'post' => $post ]
+            [
+                'post' => $post,
+            ]
         );
         $term_string = Timber::compile_string(
             'My {{ term.my_custom_property }}',
-            [ 'term' => $term ]
+            [
+                'term' => $term,
+            ]
         );
         $user_string = Timber::compile_string(
             'My {{ user.my_custom_property }}',
-            [ 'user' => $user ]
+            [
+                'user' => $user,
+            ]
         );
         $comment_string = Timber::compile_string(
             'My {{ comment.my_custom_property }}',
-            [ 'comment' => $comment ]
+            [
+                'comment' => $comment,
+            ]
         );
 
         $this->assertEquals('Sweet Honey', $post->my_custom_property);
@@ -421,7 +445,9 @@ class TestTimberMeta extends Timber_UnitTestCase
         $post_id = $this->factory->post->create();
         $term_id = $this->factory->term->create();
         $user_id = $this->factory->user->create();
-        $comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id));
+        $comment_id = $this->factory->comment->create([
+            'comment_post_ID' => $post_id,
+        ]);
 
         update_post_meta($post_id, 'public_method', 'I am a meta value');
         update_term_meta($term_id, 'public_method', 'I am a meta value');
@@ -436,7 +462,7 @@ class TestTimberMeta extends Timber_UnitTestCase
 
         $this->add_filter_temporarily('timber/term/classmap', function () {
             return [
-                'post_tag' => MetaTerm::class
+                'post_tag' => MetaTerm::class,
             ];
         });
         $this->add_filter_temporarily('timber/user/class', function () {
@@ -455,19 +481,27 @@ class TestTimberMeta extends Timber_UnitTestCase
 
         $post_string = Timber::compile_string(
             '{{ post.public_method }}',
-            [ 'post' => $post ]
+            [
+                'post' => $post,
+            ]
         );
         $term_string = Timber::compile_string(
             '{{ term.public_method }}',
-            [ 'term' => $term ]
+            [
+                'term' => $term,
+            ]
         );
         $user_string = Timber::compile_string(
             '{{ user.public_method }}',
-            [ 'user' => $user ]
+            [
+                'user' => $user,
+            ]
         );
         $comment_string = Timber::compile_string(
             '{{ comment.public_method }}',
-            [ 'comment' => $comment ]
+            [
+                'comment' => $comment,
+            ]
         );
 
         $this->assertEquals('I am a public method', $post->public_method());
@@ -498,7 +532,9 @@ class TestTimberMeta extends Timber_UnitTestCase
         $post_id = $this->factory->post->create();
         $term_id = $this->factory->term->create();
         $user_id = $this->factory->user->create();
-        $comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id));
+        $comment_id = $this->factory->comment->create([
+            'comment_post_ID' => $post_id,
+        ]);
 
         update_post_meta($post_id, 'protected_method', 'I am a meta value');
         update_term_meta($term_id, 'protected_method', 'I am a meta value');
@@ -526,19 +562,27 @@ class TestTimberMeta extends Timber_UnitTestCase
 
         $post_string = Timber::compile_string(
             '{{ post.protected_method }}',
-            [ 'post' => $post ]
+            [
+                'post' => $post,
+            ]
         );
         $term_string = Timber::compile_string(
             '{{ term.protected_method }}',
-            [ 'term' => $term ]
+            [
+                'term' => $term,
+            ]
         );
         $user_string = Timber::compile_string(
             '{{ user.protected_method }}',
-            [ 'user' => $user ]
+            [
+                'user' => $user,
+            ]
         );
         $comment_string = Timber::compile_string(
             '{{ comment.protected_method }}',
-            [ 'comment' => $comment ]
+            [
+                'comment' => $comment,
+            ]
         );
 
         $this->assertEquals('I am a meta value', $post->protected_method());
@@ -574,7 +618,9 @@ class TestTimberMeta extends Timber_UnitTestCase
         ]);
 
         $post = Timber::get_post($post_id);
-        $post_string = Timber::compile_string('{{ post.public_method_with_args }}', [ 'post' => $post ]);
+        $post_string = Timber::compile_string('{{ post.public_method_with_args }}', [
+            'post' => $post,
+        ]);
 
         $this->assertEquals('I am a meta value', $post_string);
     }
@@ -592,13 +638,13 @@ class TestTimberMeta extends Timber_UnitTestCase
 
         $this->add_filter_temporarily('timber/term/classmap', function () {
             return [
-                'post_tag' => MetaTerm::class
+                'post_tag' => MetaTerm::class,
             ];
         });
 
         $term = Timber::get_term($term_id);
         $term_string = Timber::compile_string('{{ term.public_method_with_args }}', [
-            'term' => $term
+            'term' => $term,
         ]);
 
         $this->assertEquals('I am a meta value', $term_string);
@@ -624,7 +670,9 @@ class TestTimberMeta extends Timber_UnitTestCase
         });
 
         $user = Timber::get_user($user_id);
-        $user_string = Timber::compile_string('{{ user.public_method_with_args }}', [ 'user' => $user ]);
+        $user_string = Timber::compile_string('{{ user.public_method_with_args }}', [
+            'user' => $user,
+        ]);
 
         $this->assertEquals('I am a meta value', $user_string);
     }
@@ -638,7 +686,9 @@ class TestTimberMeta extends Timber_UnitTestCase
         $this->expectException(\ArgumentCountError::class);
 
         $post_id = $this->factory->post->create();
-        $comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id));
+        $comment_id = $this->factory->comment->create([
+            'comment_post_ID' => $post_id,
+        ]);
 
         update_comment_meta($comment_id, 'public_method_with_args', 'I am a meta value');
 
@@ -652,7 +702,9 @@ class TestTimberMeta extends Timber_UnitTestCase
         });
 
         $comment = Timber::get_comment($comment_id);
-        $comment_string = Timber::compile_string('{{ comment.public_method_with_args }}', [ 'comment' => $comment ]);
+        $comment_string = Timber::compile_string('{{ comment.public_method_with_args }}', [
+            'comment' => $comment,
+        ]);
 
         $this->assertEquals('I am a meta value', $comment_string);
     }
@@ -668,7 +720,9 @@ class TestTimberMeta extends Timber_UnitTestCase
         $post_id = $this->factory->post->create();
         $term_id = $this->factory->term->create();
         $user_id = $this->factory->user->create();
-        $comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id));
+        $comment_id = $this->factory->comment->create([
+            'comment_post_ID' => $post_id,
+        ]);
 
         update_post_meta($post_id, 'public_property', 'I am a meta value');
         update_term_meta($term_id, 'public_property', 'I am a meta value');
@@ -683,7 +737,7 @@ class TestTimberMeta extends Timber_UnitTestCase
 
         $this->add_filter_temporarily('timber/term/classmap', function () {
             return [
-                'post_tag' => MetaTerm::class
+                'post_tag' => MetaTerm::class,
             ];
         });
         $this->add_filter_temporarily('timber/user/class', function () {
@@ -702,19 +756,27 @@ class TestTimberMeta extends Timber_UnitTestCase
 
         $post_string = Timber::compile_string(
             '{{ post.public_property }}',
-            [ 'post' => $post ]
+            [
+                'post' => $post,
+            ]
         );
         $term_string = Timber::compile_string(
             '{{ term.public_property }}',
-            [ 'term' => $term ]
+            [
+                'term' => $term,
+            ]
         );
         $user_string = Timber::compile_string(
             '{{ user.public_property }}',
-            [ 'user' => $user ]
+            [
+                'user' => $user,
+            ]
         );
         $comment_string = Timber::compile_string(
             '{{ comment.public_property }}',
-            [ 'comment' => $comment ]
+            [
+                'comment' => $comment,
+            ]
         );
 
         $this->assertEquals('I am a public property', $post_string);
@@ -769,19 +831,27 @@ class TestTimberMeta extends Timber_UnitTestCase
 
         $post_string = Timber::compile_string(
             '{{ post.protected_property }}',
-            [ 'post' => $post ]
+            [
+                'post' => $post,
+            ]
         );
         $term_string = Timber::compile_string(
             '{{ term.protected_property }}',
-            [ 'term' => $term ]
+            [
+                'term' => $term,
+            ]
         );
         $user_string = Timber::compile_string(
             '{{ user.protected_property }}',
-            [ 'user' => $user ]
+            [
+                'user' => $user,
+            ]
         );
         $comment_string = Timber::compile_string(
             '{{ comment.protected_property }}',
-            [ 'comment' => $comment ]
+            [
+                'comment' => $comment,
+            ]
         );
 
         $this->assertEquals('I am a meta value', $post_string);
@@ -809,7 +879,9 @@ class TestTimberMeta extends Timber_UnitTestCase
         update_post_meta($post_id, 'inaccessible', 'Boo!');
 
         $post = Timber::get_post($post_id);
-        $string = Timber::compile_string('{{ post.custom.inaccessible }}', array( 'post' => $post ));
+        $string = Timber::compile_string('{{ post.custom.inaccessible }}', [
+            'post' => $post,
+        ]);
 
         $this->assertEquals('', $string);
         $this->assertEquals(false, $post->custom);
@@ -827,7 +899,9 @@ class TestTimberMeta extends Timber_UnitTestCase
         update_term_meta($term_id, 'inaccessible', 'Boo!');
 
         $term = Timber::get_term($term_id);
-        $string = Timber::compile_string('{{ term.custom.inaccessible }}', array( 'term' => $term ));
+        $string = Timber::compile_string('{{ term.custom.inaccessible }}', [
+            'term' => $term,
+        ]);
 
         $this->assertEquals('', $string);
         $this->assertEquals(false, $term->custom);
@@ -845,7 +919,9 @@ class TestTimberMeta extends Timber_UnitTestCase
         update_user_meta($user_id, 'inaccessible', 'Boo!');
 
         $user = Timber::get_user($user_id);
-        $string = Timber::compile_string('{{ user.custom.inaccessible }}', array( 'user' => $user ));
+        $string = Timber::compile_string('{{ user.custom.inaccessible }}', [
+            'user' => $user,
+        ]);
 
         $this->assertEquals('', $string);
         $this->assertEquals(false, $user->custom);
@@ -863,7 +939,9 @@ class TestTimberMeta extends Timber_UnitTestCase
         update_comment_meta($comment_id, 'inaccessible', 'Boo!');
 
         $comment = Timber::get_comment($comment_id);
-        $string = Timber::compile_string('{{ comment.custom.inaccessible }}', array( 'comment' => $comment ));
+        $string = Timber::compile_string('{{ comment.custom.inaccessible }}', [
+            'comment' => $comment,
+        ]);
 
         $this->assertEquals('', $string);
         $this->assertEquals(false, $comment->custom);
@@ -906,19 +984,27 @@ class TestTimberMeta extends Timber_UnitTestCase
 
         $post_string = Timber::compile_string(
             '{{ post.inexistent }}',
-            [ 'post' => $post ]
+            [
+                'post' => $post,
+            ]
         );
         $term_string = Timber::compile_string(
             '{{ term.inexistent }}',
-            [ 'term' => $term ]
+            [
+                'term' => $term,
+            ]
         );
         $user_string = Timber::compile_string(
             '{{ user.inexistent }}',
-            [ 'user' => $user ]
+            [
+                'user' => $user,
+            ]
         );
         $comment_string = Timber::compile_string(
             '{{ comment.inexistent }}',
-            [ 'comment' => $comment ]
+            [
+                'comment' => $comment,
+            ]
         );
 
         $this->assertEquals('', $post_string);
@@ -939,12 +1025,17 @@ class TestTimberMeta extends Timber_UnitTestCase
      */
     public function testCustomTimeField()
     {
-        $pid = $this->factory->post->create(array('post_content' => 'Cool content bro!', 'post_date' => '2020-02-07 08:03:00'));
+        $pid = $this->factory->post->create([
+            'post_content' => 'Cool content bro!',
+            'post_date' => '2020-02-07 08:03:00',
+        ]);
         update_field('_time', 'I am custom time', $pid);
         update_field('time', 'I am custom time', $pid);
         $str = '{{ post.time }}';
         $post = Timber::get_post($pid);
-        $str = Timber::compile_string($str, array( 'post' => $post ));
+        $str = Timber::compile_string($str, [
+            'post' => $post,
+        ]);
         $this->assertEquals('8:03 am', trim($str));
     }
 
@@ -953,11 +1044,15 @@ class TestTimberMeta extends Timber_UnitTestCase
      */
     public function testCustomContentField()
     {
-        $pid = $this->factory->post->create(array('post_content' => 'Cool content bro!'));
+        $pid = $this->factory->post->create([
+            'post_content' => 'Cool content bro!',
+        ]);
         update_field('_content', 'I am custom content', $pid);
         $str = '{{ post.content }}';
         $post = Timber::get_post($pid);
-        $str = Timber::compile_string($str, array( 'post' => $post ));
+        $str = Timber::compile_string($str, [
+            'post' => $post,
+        ]);
         $this->assertEquals('<p>Cool content bro!</p>', trim($str));
     }
 }

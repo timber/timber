@@ -13,23 +13,43 @@ use Timber\PostArrayObject;
     {
         public function testPluckArray()
         {
-            $arr = array();
-            $arr[] = array('name' => 'Bill', 'number' => 42);
-            $arr[] = array('name' => 'Barack', 'number' => 44);
-            $arr[] = array('name' => 'Hillary', 'number' => 45);
+            $arr = [];
+            $arr[] = [
+                'name' => 'Bill',
+                'number' => 42,
+            ];
+            $arr[] = [
+                'name' => 'Barack',
+                'number' => 44,
+            ];
+            $arr[] = [
+                'name' => 'Hillary',
+                'number' => 45,
+            ];
             $names = \Timber\Helper::pluck($arr, 'name');
-            $this->assertEquals(array('Bill', 'Barack', 'Hillary'), $names);
+            $this->assertEquals(['Bill', 'Barack', 'Hillary'], $names);
         }
 
         public function testPluckArrayMissing()
         {
-            $arr = array();
-            $arr[] = array('name' => 'Bill', 'number' => 42);
-            $arr[] = array('name' => 'Barack', 'number' => 44);
-            $arr[] = array('name' => 'Hillary', 'number' => 45);
-            $arr[] = array('name' => 'Donald');
+            $arr = [];
+            $arr[] = [
+                'name' => 'Bill',
+                'number' => 42,
+            ];
+            $arr[] = [
+                'name' => 'Barack',
+                'number' => 44,
+            ];
+            $arr[] = [
+                'name' => 'Hillary',
+                'number' => 45,
+            ];
+            $arr[] = [
+                'name' => 'Donald',
+            ];
             $names = \Timber\Helper::pluck($arr, 'number');
-            $this->assertEquals(array(42, 44, 45), $names);
+            $this->assertEquals([42, 44, 45], $names);
         }
 
         public function testPluckObject()
@@ -40,9 +60,9 @@ use Timber\PostArrayObject;
             $jimmy = new stdClass();
             $jimmy->name = 'Jimmy Chamberlin';
             $jimmy->instrument = 'drums';
-            $pumpkins = array($billy, $jimmy);
+            $pumpkins = [$billy, $jimmy];
             $instruments = \Timber\Helper::pluck($pumpkins, 'instrument');
-            $this->assertEquals(array('guitar', 'drums'), $instruments);
+            $this->assertEquals(['guitar', 'drums'], $instruments);
         }
 
         public function testPluckObjectWithMethod()
@@ -54,9 +74,9 @@ use Timber\PostArrayObject;
             $tps = Timber::get_post($this->factory->post->create());
             $jimmy = new stdClass();
             $jimmy->name = 'Jimmy';
-            $pumpkins = array($tps, $jimmy);
+            $pumpkins = [$tps, $jimmy];
             $bar = \Timber\Helper::pluck($pumpkins, 'foo');
-            $this->assertEquals(array('bar'), $bar);
+            $this->assertEquals(['bar'], $bar);
         }
 
         public function testTrimCharacters()
@@ -78,7 +98,7 @@ use Timber\PostArrayObject;
             $post_id = $this->factory->post->create();
             global $post;
             $post = get_post($post_id);
-            $form = Timber\Helper::ob_function('comment_form', array( array(), $post_id ));
+            $form = Timber\Helper::ob_function('comment_form', [[], $post_id]);
             $form = trim($form);
             $this->assertStringStartsWith('<div id="respond"', $form);
         }
@@ -95,7 +115,9 @@ use Timber\PostArrayObject;
         {
             //since we're testing with twentyfourteen -- need to remove its filters on wp_title
             remove_all_filters('wp_title');
-            $post_id = $this->factory->post->create(array('post_title' => 'My New Post'));
+            $post_id = $this->factory->post->create([
+                'post_title' => 'My New Post',
+            ]);
             $post = get_post($post_id);
             $this->go_to(site_url('?p=' . $post_id));
             $this->assertEquals('My New Post', Timber\Helper::get_wp_title());
@@ -110,14 +132,22 @@ use Timber\PostArrayObject;
 
         public function testArrayToObject()
         {
-            $arr = array('jared' => 'super cool');
+            $arr = [
+                'jared' => 'super cool',
+            ];
             $obj = Timber\Helper::array_to_object($arr);
             $this->assertEquals('super cool', $obj->jared);
         }
 
         public function testArrayArrayToObject()
         {
-            $arr = array('jared' => 'super cool', 'prefs' => array('food' => 'spicy', 'women' => 'spicier'));
+            $arr = [
+                'jared' => 'super cool',
+                'prefs' => [
+                    'food' => 'spicy',
+                    'women' => 'spicier',
+                    
+                ], ];
             $obj = Timber\Helper::array_to_object($arr);
             $this->assertEquals('spicy', $obj->prefs->food);
         }
@@ -130,7 +160,7 @@ use Timber\PostArrayObject;
             $obj2 = new stdClass();
             $obj2->name = 'austin';
             $obj2->skill = 'cooking';
-            $arr = array($obj1, $obj2);
+            $arr = [$obj1, $obj2];
             $index = Timber\Helper::get_object_index_by_property($arr, 'skill', 'cooking');
             $this->assertEquals(1, $index);
             $obj = Timber\Helper::get_object_by_property($arr, 'skill', 'cooking');
@@ -142,20 +172,20 @@ use Timber\PostArrayObject;
             $obj1 = new stdClass();
             $obj1->name = 'mark';
             $obj1->skill = 'acro yoga';
-            $arr = array($obj1);
+            $arr = [$obj1];
             $result = Timber\Helper::get_object_by_property($arr, 'skill', 'cooking');
             $this->assertFalse($result);
         }
 
         public function testGetArrayIndexByProperty()
         {
-            $obj1 = array();
+            $obj1 = [];
             $obj1['name'] = 'mark';
             $obj1['skill'] = 'acro yoga';
-            $obj2 = array();
+            $obj2 = [];
             $obj2['name'] = 'austin';
             $obj2['skill'] = 'cooking';
-            $arr = array($obj1, $obj2);
+            $arr = [$obj1, $obj2];
             $index = \Timber\Helper::get_object_index_by_property($arr, 'skill', 'cooking');
             $this->assertEquals(1, $index);
             $this->assertFalse(\Timber\Helper::get_object_index_by_property('butts', 'skill', 'cooking'));
@@ -182,7 +212,7 @@ use Timber\PostArrayObject;
 
         public function testArrayTruncate()
         {
-            $arr = array('Buster', 'GOB', 'Michael', 'Lindsay');
+            $arr = ['Buster', 'GOB', 'Michael', 'Lindsay'];
             $arr = Timber\Helper::array_truncate($arr, 2);
             $this->assertContains('Buster', $arr);
             $this->assertEquals(2, count($arr));
@@ -215,7 +245,7 @@ use Timber\PostArrayObject;
         {
             ob_start();
             $this->assertTrue(Timber\Helper::error_log('foo'));
-            $this->assertTrue(Timber\Helper::error_log(array('Dark Helmet', 'Barf')));
+            $this->assertTrue(Timber\Helper::error_log(['Dark Helmet', 'Barf']));
             $data = ob_get_flush();
         }
 
@@ -230,7 +260,7 @@ use Timber\PostArrayObject;
             $boo = new stdClass();
             $boo->name = 'Robbie';
             $boo->year = 1989;
-            $people = array($lauren, $michael, $boo);
+            $people = [$lauren, $michael, $boo];
             Timber\Helper::osort($people, 'year');
             $this->assertEquals('Michael', $people[0]->name);
             $this->assertEquals('Lauren', $people[1]->name);
@@ -245,12 +275,23 @@ use Timber\PostArrayObject;
         public function testNewArrayFilter()
         {
             $posts = [];
-            $posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
-            $posts[] = $this->factory->post->create(array('post_title' => 'Snoop', 'post_content' => 'Felicia Pearson'));
-            $posts[] = $this->factory->post->create(array('post_title' => 'Cheese', 'post_content' => 'Method Man'));
+            $posts[] = $this->factory->post->create([
+                'post_title' => 'Stringer Bell',
+                'post_content' => 'Idris Elba',
+            ]);
+            $posts[] = $this->factory->post->create([
+                'post_title' => 'Snoop',
+                'post_content' => 'Felicia Pearson',
+            ]);
+            $posts[] = $this->factory->post->create([
+                'post_title' => 'Cheese',
+                'post_content' => 'Method Man',
+            ]);
             $posts = Timber::get_posts($posts);
             $template = '{% for post in posts | wp_list_filter("snoop")%}{{ post.content|striptags }}{% endfor %}';
-            $str = Timber::compile_string($template, array('posts' => $posts));
+            $str = Timber::compile_string($template, [
+                'posts' => $posts,
+            ]);
             $this->assertEquals('Felicia Pearson', trim($str));
         }
 
@@ -259,7 +300,10 @@ use Timber\PostArrayObject;
             $arr = [14, 21, 'thing'];
             $this->assertFalse(Timber\Helper::is_array_assoc($arr));
 
-            $assoc_array = ['thing' => 'yeah', 'foo' => 'bar'];
+            $assoc_array = [
+                'thing' => 'yeah',
+                'foo' => 'bar',
+            ];
             $this->assertTrue(Timber\Helper::is_array_assoc($assoc_array));
         }
 
@@ -277,7 +321,9 @@ use Timber\PostArrayObject;
         {
             $this->expectException(Twig\Error\RuntimeError::class);
             $template = '{% for post in posts | filter({slug:"snoop", post_content:"Idris Elba"}, "OR")%}{{ post.title }} {% endfor %}';
-            $str = Timber::compile_string($template, array('posts' => 'foobar'));
+            $str = Timber::compile_string($template, [
+                'posts' => 'foobar',
+            ]);
             $this->assertEquals('', $str);
         }
 
@@ -307,7 +353,7 @@ use Timber\PostArrayObject;
             $convert_int = \Timber\Helper::convert_wp_object($random_int);
             $this->assertTrue($convert_int === $random_int);
 
-            $array = array();
+            $array = [];
             $convert_array = \Timber\Helper::convert_wp_object($array);
             $this->assertTrue(is_array($convert_array));
         }
@@ -321,7 +367,10 @@ use Timber\PostArrayObject;
                 'sport' => Sport::class,
             ]);
 
-            $sport_id = $this->factory->post->create(array('post_type' => 'sport', 'post_title' => 'Basketball Player'));
+            $sport_id = $this->factory->post->create([
+                'post_type' => 'sport',
+                'post_title' => 'Basketball Player',
+            ]);
             $wp_post = get_post($sport_id);
             $sport_post = \Timber\Helper::convert_wp_object($wp_post);
             $this->assertInstanceOf(Sport::class, $sport_post);

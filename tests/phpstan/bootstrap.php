@@ -10,7 +10,7 @@ function wpml_object_id_filter($locations, $nav_menu)
 }
 function get_coauthors($id)
 {
-    return array();
+    return [];
 }
 function get_field($selector, $post_id = false, $format_value = true)
 {
@@ -26,7 +26,7 @@ function update_field($selector, $value, $post_id = false)
 }
 function get_fields($post_id = false, $format_value = true)
 {
-    return array();
+    return [];
 }
 
 // Loads twig_array_filter()

@@ -19,124 +19,124 @@ class TestTimberMenu extends Timber_UnitTestCase
 
         $menu_term = wp_insert_term(self::MENU_NAME, 'nav_menu');
         $menu_id = $menu_term['term_id'];
-        $menu_items = array();
+        $menu_items = [];
 
         // Page
-        $parent_page = wp_insert_post(array(
+        $parent_page = wp_insert_post([
             'post_title' => 'Home',
             'post_status' => 'publish',
             'post_name' => 'home',
             'post_type' => 'page',
-            'menu_order' => 1
-        ));
+            'menu_order' => 1,
+        ]);
 
         // Menu item
-        $menu_items[] = $parent_id = wp_update_nav_menu_item($menu_id, 0, array(
+        $menu_items[] = $parent_id = wp_update_nav_menu_item($menu_id, 0, [
             'menu-item-object-id' => $parent_page,
             'menu-item-object' => 'page',
             'menu-item-type' => 'post_type',
             'menu-item-status' => 'publish',
-        ));
+        ]);
 
         // Menu item
-        $menu_items[] = $link_id = wp_update_nav_menu_item($menu_id, 0, array(
+        $menu_items[] = $link_id = wp_update_nav_menu_item($menu_id, 0, [
             'menu-item-title' => 'Upstatement',
             'menu-item-url' => 'https://upstatement.com',
             'menu-item-status' => 'publish',
             'menu-item-target' => '_blank',
-        ));
+        ]);
 
         /* make a child page */
         // Page
-        $child_id = wp_insert_post(array(
+        $child_id = wp_insert_post([
             'post_title' => 'Child Page',
             'post_status' => 'publish',
             'post_name' => 'child-page',
             'post_type' => 'page',
             'menu_order' => 3,
-        ));
+        ]);
 
-        $menu_items[] = $child_menu_item_id = wp_update_nav_menu_item($menu_id, 0, array(
+        $menu_items[] = $child_menu_item_id = wp_update_nav_menu_item($menu_id, 0, [
             'menu-item-object-id' => $child_id,
             'menu-item-object' => 'page',
             'menu-item-type' => 'post_type',
             'menu-item-status' => 'publish',
             'menu-item-parent-id' => $parent_id,
-        ));
+        ]);
 
         /* make a grandchild page */
-        $grandchild_id = wp_insert_post(array(
-                'post_title' => 'Grandchild Page',
-                'post_status' => 'publish',
-                'post_name' => 'grandchild-page',
-                'post_type' => 'page',
-        ));
-        $menu_items[] = $grandchild_menu_item_id = wp_update_nav_menu_item($menu_id, 0, array(
+        $grandchild_id = wp_insert_post([
+            'post_title' => 'Grandchild Page',
+            'post_status' => 'publish',
+            'post_name' => 'grandchild-page',
+            'post_type' => 'page',
+        ]);
+        $menu_items[] = $grandchild_menu_item_id = wp_update_nav_menu_item($menu_id, 0, [
             'menu-item-object-id' => $grandchild_id,
             'menu-item-object' => 'page',
             'menu-item-type' => 'post_type',
             'menu-item-status' => 'publish',
             'menu-item-parent-id' => $child_menu_item_id,
             'menu-item-position' => 100,
-        ));
+        ]);
 
         /* make another grandchild page */
-        $other_grandchild_id = wp_insert_post(array(
+        $other_grandchild_id = wp_insert_post([
             'post_title' => 'Other Grandchild Page',
             'post_status' => 'publish',
             'post_name' => 'other-grandchild-page',
             'post_type' => 'page',
-        ));
-        $menu_items[] = $other_grandchild_menu_item = wp_update_nav_menu_item($menu_id, 0, array(
+        ]);
+        $menu_items[] = $other_grandchild_menu_item = wp_update_nav_menu_item($menu_id, 0, [
             'menu-item-object-id' => $other_grandchild_id,
             'menu-item-object' => 'page',
             'menu-item-type' => 'post_type',
             'menu-item-status' => 'publish',
             'menu-item-parent-id' => $child_menu_item_id,
             'menu-item-position' => 101,
-        ));
+        ]);
 
-        $menu_items[] = $root_url_link_id = wp_update_nav_menu_item($menu_id, 0, array(
+        $menu_items[] = $root_url_link_id = wp_update_nav_menu_item($menu_id, 0, [
             'menu-item-title' => 'Root Home',
             'menu-item-url' => '/',
             'menu-item-status' => 'publish',
             'menu-item-position' => 4,
-        ));
+        ]);
 
-        $menu_items[] = $link_id = wp_update_nav_menu_item($menu_id, 0, array(
+        $menu_items[] = $link_id = wp_update_nav_menu_item($menu_id, 0, [
             'menu-item-title' => 'People',
             'menu-item-url' => '#people',
             'menu-item-status' => 'publish',
             'menu-item-position' => 6,
-        ));
+        ]);
 
-        $menu_items[] = $link_id = wp_update_nav_menu_item($menu_id, 0, array(
+        $menu_items[] = $link_id = wp_update_nav_menu_item($menu_id, 0, [
             'menu-item-title' => 'More People',
             'menu-item-url' => 'http://example.org/#people',
             'menu-item-status' => 'publish',
             'menu-item-position' => 7,
-        ));
+        ]);
 
-        $menu_items[] = $link_id = wp_update_nav_menu_item($menu_id, 0, array(
+        $menu_items[] = $link_id = wp_update_nav_menu_item($menu_id, 0, [
             'menu-item-title' => 'Manual Home',
             'menu-item-url' => 'http://example.org',
             'menu-item-status' => 'publish',
             'menu-item-position' => 8,
-        ));
+        ]);
 
         $some_category = wp_insert_term('Some Category', 'category');
-        $menu_items[] = $link_id = wp_update_nav_menu_item($menu_id, 0, array(
+        $menu_items[] = $link_id = wp_update_nav_menu_item($menu_id, 0, [
             'menu-item-object-id' => $some_category['term_id'],
             'menu-item-object' => 'category',
             'menu-item-type' => 'taxonomy',
             'menu-item-status' => 'publish',
-        ));
+        ]);
 
-        $menu_items[] = wp_update_nav_menu_item($menu_id, 0, array(
+        $menu_items[] = wp_update_nav_menu_item($menu_id, 0, [
             'menu-item-object' => 'dummy-post-type',
             'menu-item-type' => 'post_type_archive',
             'menu-item-status' => 'publish',
-        ));
+        ]);
 
         foreach ($menu_items as $menu_item_id) {
             update_post_meta($menu_item_id, 'tobias', 'funke');
@@ -150,12 +150,12 @@ class TestTimberMenu extends Timber_UnitTestCase
         $i = 0;
         foreach ($items as $item) {
             if ($item->type == 'link') {
-                wp_update_nav_menu_item($menu_term['term_id'], 0, array(
+                wp_update_nav_menu_item($menu_term['term_id'], 0, [
                     'menu-item-title' => '',
                     'menu-item-url' => $item->link,
                     'menu-item-status' => 'publish',
                     'menu-item-position' => $i,
-                ));
+                ]);
             }
             $i++;
         }
@@ -166,35 +166,35 @@ class TestTimberMenu extends Timber_UnitTestCase
     {
         $theme = new Timber\Theme();
 
-        update_option('theme_mods_' . $theme->slug, array(
+        update_option('theme_mods_' . $theme->slug, [
             'nav_menu_locations' => $locations,
-        ));
+        ]);
 
         register_nav_menus(
-            array(
+            [
                 'header-menu' => 'Header Menu',
                 'extra-menu' => 'Extra Menu',
-                'bonus' => 'The Bonus'
-            )
+                'bonus' => 'The Bonus',
+            ]
         );
     }
 
     public static function _createSimpleMenu($name = 'My Menu')
     {
         $menu_term = wp_insert_term($name, 'nav_menu');
-        $parent_page = wp_insert_post(array(
+        $parent_page = wp_insert_post([
             'post_title' => 'Home',
             'post_status' => 'publish',
             'post_name' => 'home',
             'post_type' => 'page',
-            'menu_order' => 1
-        ));
-        $menu_item_id = wp_update_nav_menu_item($menu_term['term_id'], 0, array(
+            'menu_order' => 1,
+        ]);
+        $menu_item_id = wp_update_nav_menu_item($menu_term['term_id'], 0, [
             'menu-item-object-id' => $parent_page,
             'menu-item-object' => 'page',
             'menu-item-type' => 'post_type',
             'menu-item-status' => 'publish',
-        ));
+        ]);
         update_post_meta($menu_item_id, 'flood', 'molasses');
 
         return $menu_term;
@@ -246,7 +246,9 @@ class TestTimberMenu extends Timber_UnitTestCase
         self::setPermalinkStructure();
         self::_createTestMenu();
         $menu = Timber::get_menu();
-        $nav_menu = wp_nav_menu(array( 'echo' => false ));
+        $nav_menu = wp_nav_menu([
+            'echo' => false,
+        ]);
         $this->assertGreaterThanOrEqual(3, count($menu->get_items()));
         $items = $menu->get_items();
         $item = $items[0];
@@ -261,10 +263,19 @@ class TestTimberMenu extends Timber_UnitTestCase
     public function testTrailingSlashesOrNot()
     {
         self::setPermalinkStructure();
-        $items = array();
-        $items[] = (object) array('type' => 'link', 'link' => '/');
-        $items[] = (object) array('type' => 'link', 'link' => '/foo');
-        $items[] = (object) array('type' => 'link', 'link' => '/bar/');
+        $items = [];
+        $items[] = (object) [
+            'type' => 'link',
+            'link' => '/',
+        ];
+        $items[] = (object) [
+            'type' => 'link',
+            'link' => '/foo',
+        ];
+        $items[] = (object) [
+            'type' => 'link',
+            'link' => '/bar/',
+        ];
         $menu = $this->buildMenu('Blanky', $items);
         $menu = Timber::get_menu($menu['term_id']);
         $items = $menu->get_items();
@@ -297,7 +308,9 @@ class TestTimberMenu extends Timber_UnitTestCase
         $nav_menu = Timber::get_menu($menu_term['term_id']);
 
         $str = '{{ menu.items[0].ID }} - {{ menu.items[0].master_object.thumbnail.src }}';
-        $result = Timber::compile_string($str, array( 'menu' => $nav_menu ));
+        $result = Timber::compile_string($str, [
+            'menu' => $nav_menu,
+        ]);
         $this->assertEquals($menu_items[0]->ID . ' - http://example.org/wp-content/uploads/' . date('Y/m') . '/arch.jpg', $result);
     }
 
@@ -307,7 +320,9 @@ class TestTimberMenu extends Timber_UnitTestCase
         $menu = Timber::get_menu('Main Tester');
         $items = $menu->get_items();
         $item = $items[0];
-        $array = array('classes' => array('menu-test-class'));
+        $array = [
+            'classes' => ['menu-test-class'],
+        ];
         $item->import_classes($array);
         $this->assertContains('menu-test-class', $item->classes);
     }
@@ -322,13 +337,13 @@ class TestTimberMenu extends Timber_UnitTestCase
         $this->add_filter_temporarily('wp_nav_menu_objects', function ($menu_items) {
             // Be carefull with indexes, they are strings here
             $menu_items['9']->current = true;
-            $menu_items['9']->classes = array_merge((array)$menu_items[8]->classes, array( 'current-menu-item', 'my-custom-item-class' ));
+            $menu_items['9']->classes = array_merge((array)$menu_items[8]->classes, ['current-menu-item', 'my-custom-item-class']);
             return $menu_items;
         }, 2);
 
-        $arguments = array(
+        $arguments = [
             'depth' => 1,
-        );
+        ];
         $menu = Timber::get_menu('Menu One', $arguments);
         $menu_items = $menu->get_items();
 
@@ -372,9 +387,9 @@ class TestTimberMenu extends Timber_UnitTestCase
         $this->assertEquals((object) $defaults, $menu->args);
 
         // With Valid options set.
-        $args = wp_parse_args(array(
+        $args = wp_parse_args([
             'depth' => 1,
-        ), $defaults);
+        ], $defaults);
         $menu = Timber::get_menu('Menu One', $args);
         $args['menu'] = 'Menu One';
         $this->assertIsInt($menu->depth);
@@ -385,9 +400,9 @@ class TestTimberMenu extends Timber_UnitTestCase
         $this->assertEquals((object) $args, $menu->args);
 
         // With invalid option set.
-        $args = array(
+        $args = [
             'depth' => 'boogie',
-        );
+        ];
         $menu = Timber::get_menu('Menu One', $args);
         $this->assertIsInt($menu->depth);
         $this->assertEquals(0, $menu->depth);
@@ -396,9 +411,9 @@ class TestTimberMenu extends Timber_UnitTestCase
     public function testMenuOptions_Depth()
     {
         self::_createTestMenu();
-        $arguments = array(
+        $arguments = [
             'depth' => 1,
-        );
+        ];
         $menu = Timber::get_menu('Menu One', $arguments);
 
         // Confirm that none of them have "children" set.
@@ -408,9 +423,9 @@ class TestTimberMenu extends Timber_UnitTestCase
         }
 
         // Confirm two levels deep
-        $arguments = array(
+        $arguments = [
             'depth' => 2,
-        );
+        ];
         $menu = Timber::get_menu('Menu One', $arguments);
         foreach ($items as $item) {
             if ($item->children) {
@@ -426,7 +441,9 @@ class TestTimberMenu extends Timber_UnitTestCase
         self::setPermalinkStructure();
         $menu_arr = self::_createTestMenu();
         $menu = Timber::get_menu($menu_arr['term_id']);
-        $nav_menu = wp_nav_menu(array( 'echo' => false ));
+        $nav_menu = wp_nav_menu([
+            'echo' => false,
+        ]);
         $this->assertGreaterThanOrEqual(3, count($menu->get_items()));
         $items = $menu->get_items();
         $item = $items[1];
@@ -441,9 +458,9 @@ class TestTimberMenu extends Timber_UnitTestCase
         $term = self::_createTestMenu();
         $menu_id = $term['term_id'];
 
-        $this->registerNavMenus(array(
+        $this->registerNavMenus([
             'secondary' => $menu_id,
-        ));
+        ]);
 
         $filter = function ($classes, $item, $args) {
             $this->assertEquals(3, $args->depth);
@@ -504,26 +521,28 @@ class TestTimberMenu extends Timber_UnitTestCase
         global $wpdb;
         register_post_type(
             'gallery',
-            array(
-                'labels' => array(
+            [
+                'labels' => [
                     'name' => __('Gallery'),
-                    'singular_name' => __('Gallery')
-                ),
-                'taxonomies' => array( 'post_tag' ),
-                'supports' => array( 'title', 'editor', 'thumbnail', 'revisions' ),
+                    'singular_name' => __('Gallery'),
+                ],
+                'taxonomies' => ['post_tag'],
+                'supports' => ['title', 'editor', 'thumbnail', 'revisions'],
                 'public' => true,
                 'has_archive' => true,
-                'rewrite' => array( 'slug' => 'gallery' ),
-            )
+                'rewrite' => [
+                    'slug' => 'gallery',
+                ],
+            ]
         );
         $menu = self::_createTestMenu();
-        $menu_item_id = wp_insert_post(array(
-                'post_title' => 'Gallery',
-                'post_name' => 'gallery',
-                'post_status' => 'publish',
-                'post_type' => 'nav_menu_item',
-                'menu_order' => -100,
-            ));
+        $menu_item_id = wp_insert_post([
+            'post_title' => 'Gallery',
+            'post_name' => 'gallery',
+            'post_status' => 'publish',
+            'post_type' => 'nav_menu_item',
+            'menu_order' => -100,
+        ]);
         update_post_meta($menu_item_id, '_menu_item_type', 'post_type_archive');
         update_post_meta($menu_item_id, '_menu_item_object', 'gallery');
         update_post_meta($menu_item_id, '_menu_item_menu_item_parent', 0);
@@ -605,7 +624,9 @@ class TestTimberMenu extends Timber_UnitTestCase
         $menu_id = $term['term_id'];
         add_term_meta($menu_id, 'nationality', 'Canadian');
         $menu = Timber::get_menu($menu_id);
-        $string = Timber::compile_string('{{menu.meta("nationality")}}', array('menu' => $menu));
+        $string = Timber::compile_string('{{menu.meta("nationality")}}', [
+            'menu' => $menu,
+        ]);
         $this->assertEquals('Canadian', $string);
     }
 
@@ -667,18 +688,31 @@ class TestTimberMenu extends Timber_UnitTestCase
     {
         $menu_arr = self::_createTestMenu();
         $menu = Timber::get_menu($menu_arr['term_id']);
-        $str = Timber::compile_string('{{menu.items[0].title}}', array('menu' => $menu));
+        $str = Timber::compile_string('{{menu.items[0].title}}', [
+            'menu' => $menu,
+        ]);
         $this->assertEquals('Home', $str);
-        $str = Timber::compile_string('{{menu.items[0]}}', array('menu' => $menu));
+        $str = Timber::compile_string('{{menu.items[0]}}', [
+            'menu' => $menu,
+        ]);
         $this->assertEquals('Home', $str);
     }
 
     public function testMenuLocations()
     {
-        $items = array();
-        $items[] = (object) array('type' => 'link', 'link' => '/');
-        $items[] = (object) array('type' => 'link', 'link' => '/foo');
-        $items[] = (object) array('type' => 'link', 'link' => '/bar/');
+        $items = [];
+        $items[] = (object) [
+            'type' => 'link',
+            'link' => '/',
+        ];
+        $items[] = (object) [
+            'type' => 'link',
+            'link' => '/foo',
+        ];
+        $items[] = (object) [
+            'type' => 'link',
+            'link' => '/bar/',
+        ];
 
         $this->buildMenu('Froggy', $items);
 
@@ -687,11 +721,11 @@ class TestTimberMenu extends Timber_UnitTestCase
 
         $this->buildMenu('Zappy', $items);
 
-        $this->registerNavMenus(array(
+        $this->registerNavMenus([
             'header-menu' => 0,
             'extra-menu' => $built_menu_id,
             'bonus' => 0,
-        ));
+        ]);
 
         $menu = Timber::get_menu('extra-menu');
         $this->assertEquals('Ziggy', $menu->name);
@@ -699,10 +733,19 @@ class TestTimberMenu extends Timber_UnitTestCase
 
     public function testConstructMenuByName()
     {
-        $items = array();
-        $items[] = (object) array('type' => 'link', 'link' => '/');
-        $items[] = (object) array('type' => 'link', 'link' => '/foo');
-        $items[] = (object) array('type' => 'link', 'link' => '/bar/');
+        $items = [];
+        $items[] = (object) [
+            'type' => 'link',
+            'link' => '/',
+        ];
+        $items[] = (object) [
+            'type' => 'link',
+            'link' => '/foo',
+        ];
+        $items[] = (object) [
+            'type' => 'link',
+            'link' => '/bar/',
+        ];
 
         $this->buildMenu('Fancy Suit', $items);
 
@@ -712,10 +755,19 @@ class TestTimberMenu extends Timber_UnitTestCase
 
     public function testConstructMenuBySlug()
     {
-        $items = array();
-        $items[] = (object) array('type' => 'link', 'link' => '/');
-        $items[] = (object) array('type' => 'link', 'link' => '/foo');
-        $items[] = (object) array('type' => 'link', 'link' => '/bar/');
+        $items = [];
+        $items[] = (object) [
+            'type' => 'link',
+            'link' => '/',
+        ];
+        $items[] = (object) [
+            'type' => 'link',
+            'link' => '/foo',
+        ];
+        $items[] = (object) [
+            'type' => 'link',
+            'link' => '/bar/',
+        ];
 
         $this->buildMenu('Jolly Jeepers', $items);
 
@@ -725,10 +777,19 @@ class TestTimberMenu extends Timber_UnitTestCase
 
     public function testGetCurrentItem()
     {
-        $items = array();
-        $items[] = (object) array('type' => 'link', 'link' => '/');
-        $items[] = (object) array('type' => 'link', 'link' => '/zazzy');
-        $items[] = (object) array('type' => 'link', 'link' => '/stuffy');
+        $items = [];
+        $items[] = (object) [
+            'type' => 'link',
+            'link' => '/',
+        ];
+        $items[] = (object) [
+            'type' => 'link',
+            'link' => '/zazzy',
+        ];
+        $items[] = (object) [
+            'type' => 'link',
+            'link' => '/stuffy',
+        ];
 
         $this->buildMenu('The Zazziest Menu', $items);
 
@@ -745,10 +806,19 @@ class TestTimberMenu extends Timber_UnitTestCase
 
     public function testGetCurrentItemWithAncestor()
     {
-        $items = array();
-        $items[] = (object) array('type' => 'link', 'link' => '/');
-        $items[] = (object) array('type' => 'link', 'link' => '/grandpa');
-        $items[] = (object) array('type' => 'link', 'link' => '/joe-shmoe');
+        $items = [];
+        $items[] = (object) [
+            'type' => 'link',
+            'link' => '/',
+        ];
+        $items[] = (object) [
+            'type' => 'link',
+            'link' => '/grandpa',
+        ];
+        $items[] = (object) [
+            'type' => 'link',
+            'link' => '/joe-shmoe',
+        ];
 
         $this->buildMenu('Ancestry.com Main Menu', $items);
 
@@ -860,9 +930,9 @@ class TestTimberMenu extends Timber_UnitTestCase
         $term = self::_createTestMenu();
         $menu_id = $term['term_id'];
 
-        $this->registerNavMenus(array(
+        $this->registerNavMenus([
             'secondary' => $menu_id,
-        ));
+        ]);
 
         $menu = Timber::get_menu($menu_id);
 
@@ -878,9 +948,9 @@ class TestTimberMenu extends Timber_UnitTestCase
         $term = self::_createTestMenu();
         $menu_id = $term['term_id'];
 
-        $this->registerNavMenus(array(
+        $this->registerNavMenus([
             'secondary' => $menu_id,
-        ));
+        ]);
 
         $filter = function ($classes, $item, $args) {
             if ('secondary' === $args->theme_location) {
@@ -919,9 +989,9 @@ class TestTimberMenu extends Timber_UnitTestCase
         $term = self::_createTestMenu();
         $menu_id = $term['term_id'];
 
-        $this->registerNavMenus(array(
+        $this->registerNavMenus([
             'secondary' => $menu_id,
-        ));
+        ]);
 
         $menu = Timber::get_menu($term['term_id']);
         $item = $menu->items[0];
@@ -935,8 +1005,16 @@ class TestTimberMenu extends Timber_UnitTestCase
      */
     public function testMissingMenu()
     {
-        $pg_1 = $this->factory->post->create(array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ));
-        $pg_2 = $this->factory->post->create(array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ));
+        $pg_1 = $this->factory->post->create([
+            'post_type' => 'page',
+            'post_title' => 'Foo Page',
+            'menu_order' => 10,
+        ]);
+        $pg_2 = $this->factory->post->create([
+            'post_type' => 'page',
+            'post_title' => 'Bar Page',
+            'menu_order' => 1,
+        ]);
         $missing_menu = Timber::get_menu(14);
         $this->assertNull($missing_menu);
     }

@@ -129,7 +129,7 @@ class TestUserFactory extends Timber_UnitTestCase
         $userFactory = new UserFactory();
 
         // Pass a list of IDs.
-        list($user, $invalid) = $userFactory->from([ $user_id, 256 ]);
+        list($user, $invalid) = $userFactory->from([$user_id, 256]);
 
         $this->assertInstanceOf(Timber\User::class, $user);
         $this->assertNull($invalid);

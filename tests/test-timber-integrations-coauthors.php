@@ -45,12 +45,12 @@ use Timber\Integration\CoAuthorsPlusIntegration;
         {
             $filename = self::copyTestImage($thumb);
             $wp_filetype = wp_check_filetype(basename($filename), null);
-            $attachment = array(
+            $attachment = [
                 'post_mime_type' => $wp_filetype['type'],
                 'post_title' => preg_replace('/\.[^.]+$/', '', basename($filename)),
                 'post_excerpt' => '',
-                'post_status' => 'inherit'
-            );
+                'post_status' => 'inherit',
+            ];
             $attach_id = wp_insert_attachment($attachment, $filename, $guest_id);
             add_post_meta($guest_id, '_thumbnail_id', $attach_id, true);
             return $attach_id;
@@ -73,11 +73,18 @@ use Timber\Integration\CoAuthorsPlusIntegration;
 
         public function testAuthors()
         {
-            $uid = $this->factory->user->create(array('display_name' => 'Jen Weinman', 'user_login' => 'aquajenus'));
-            $pid = $this->factory->post->create(array('post_author' => $uid));
+            $uid = $this->factory->user->create([
+                'display_name' => 'Jen Weinman',
+                'user_login' => 'aquajenus',
+            ]);
+            $pid = $this->factory->post->create([
+                'post_author' => $uid,
+            ]);
             $post = Timber::get_post($pid);
             $template_string = '{% for author in post.authors %}{{author.name}}{% endfor %}';
-            $str = Timber::compile_string($template_string, array('post' => $post));
+            $str = Timber::compile_string($template_string, [
+                'post' => $post,
+            ]);
             $this->assertEquals('Jen Weinman', $str);
         }
 
@@ -89,11 +96,14 @@ use Timber\Integration\CoAuthorsPlusIntegration;
             $user_login = 'bmotia';
             $display_name = 'Motia';
             $guest_id = self::create_guest_author(
-                array('user_login' => $user_login, 'display_name' => $display_name)
+                [
+                    'user_login' => $user_login,
+                    'display_name' => $display_name,
+                ]
             );
 
             global $coauthors_plus;
-            $coauthors_plus->add_coauthors($pid, array($user_login));
+            $coauthors_plus->add_coauthors($pid, [$user_login]);
 
             $authors = $post->authors();
             $author = $authors[0];
@@ -103,25 +113,35 @@ use Timber\Integration\CoAuthorsPlusIntegration;
 
         public function testGuestAuthorWithRegularAuthor()
         {
-            $uid = $this->factory->user->create(array('display_name' => 'Alexander Hamilton', 'user_login' => 'ahamilton'));
-            $pid = $this->factory->post->create(array('post_author' => $uid));
+            $uid = $this->factory->user->create([
+                'display_name' => 'Alexander Hamilton',
+                'user_login' => 'ahamilton',
+            ]);
+            $pid = $this->factory->post->create([
+                'post_author' => $uid,
+            ]);
             $post = Timber::get_post($pid);
 
             $user_login = 'bmotia';
             $display_name = 'Motia';
             $guest_id = self::create_guest_author(
-                array('user_login' => $user_login, 'display_name' => $display_name)
+                [
+                    'user_login' => $user_login,
+                    'display_name' => $display_name,
+                ]
             );
 
             global $coauthors_plus;
-            $coauthors_plus->add_coauthors($pid, array('ahamilton', $user_login));
+            $coauthors_plus->add_coauthors($pid, ['ahamilton', $user_login]);
 
             $authors = $post->authors();
             $author = $authors[1];
             $this->assertEquals($display_name, $author->display_name);
             $this->assertInstanceOf(CoAuthorsPlusUser::class, $author);
             $template_string = '{% for author in post.authors %}{{author.name}}, {% endfor %}';
-            $str = Timber::compile_string($template_string, array('post' => $post));
+            $str = Timber::compile_string($template_string, [
+                'post' => $post,
+            ]);
             $this->assertEquals('Alexander Hamilton, Motia,', trim($str));
         }
 
@@ -138,17 +158,23 @@ use Timber\Integration\CoAuthorsPlusIntegration;
             $user_login = 'truelogin';
             $display_name = 'True Name';
 
-            $uid = $this->factory->user->create(array('display_name' => $display_name, 'user_login' => $user_login));
+            $uid = $this->factory->user->create([
+                'display_name' => $display_name,
+                'user_login' => $user_login,
+            ]);
             $user = Timber::get_user($uid);
 
             $guest_login = 'linkguestlogin';
             $guest_display_name = 'LGuest D Name';
             $guest_id = self::create_guest_author(
-                array('user_login' => $guest_login, 'display_name' => $guest_display_name)
+                [
+                    'user_login' => $guest_login,
+                    'display_name' => $guest_display_name,
+                ]
             );
             add_post_meta($guest_id, 'cap-linked_account', $user_login, true);
 
-            $coauthors_plus->add_coauthors($pid, array($user_login));
+            $coauthors_plus->add_coauthors($pid, [$user_login]);
 
             $coauthors_plus->force_guest_authors = false;
             $authors = $post->authors();
@@ -185,25 +211,29 @@ use Timber\Integration\CoAuthorsPlusIntegration;
             $display_name = 'Have Featured';
             $email = 'admin@admin.com';
             $guest_id = self::create_guest_author(
-                array(
+                [
                     'user_email' => $email,
                     'user_login' => $user_login,
-                    'display_name' => $display_name
-                )
+                    'display_name' => $display_name,
+                ]
             );
             $attach_id = self::attach_featured_image($guest_id, 'avt-1.jpg');
             $image = Timber::get_post($attach_id);
 
             global $coauthors_plus;
-            $coauthors_plus->add_coauthors($pid, array($user_login));
+            $coauthors_plus->add_coauthors($pid, [$user_login]);
 
             // NOTE: this used to be `{{author.avatar.src}}` but now avatar() just returns a string
             $template_string = '{% for author in post.authors %}{{author.avatar}}{% endfor %}';
-            $str1 = Timber::compile_string($template_string, array('post' => $post));
+            $str1 = Timber::compile_string($template_string, [
+                'post' => $post,
+            ]);
             $this->assertEquals($image->src(), $str1);
 
             add_filter('timber/co_authors_plus/prefer_gravatar', '__return_true');
-            $str2 = Timber::compile_string($template_string, array('post' => $post));
+            $str2 = Timber::compile_string($template_string, [
+                'post' => $post,
+            ]);
             $this->assertEquals(get_avatar_url($email), $str2);
         }
     }

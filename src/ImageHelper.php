@@ -34,9 +34,9 @@ class ImageHelper
     public static function init()
     {
         self::$home_url = get_home_url();
-        add_action('delete_attachment', array(__CLASS__, 'delete_attachment'));
-        add_filter('wp_generate_attachment_metadata', array(__CLASS__, 'generate_attachment_metadata'), 10, 2);
-        add_filter('upload_dir', array(__CLASS__, 'add_relative_upload_dir_key'), 10, 2);
+        add_action('delete_attachment', [__CLASS__, 'delete_attachment']);
+        add_filter('wp_generate_attachment_metadata', [__CLASS__, 'generate_attachment_metadata'], 10, 2);
+        add_filter('upload_dir', [__CLASS__, 'add_relative_upload_dir_key'], 10, 2);
         return true;
     }
 
@@ -94,12 +94,15 @@ class ImageHelper
         if (isset($_wp_additional_image_sizes[ $size ])) {
             $w = $_wp_additional_image_sizes[ $size ]['width'];
             $h = $_wp_additional_image_sizes[ $size ]['height'];
-        } elseif (in_array($size, array('thumbnail', 'medium', 'large'))) {
+        } elseif (in_array($size, ['thumbnail', 'medium', 'large'])) {
             $w = get_option($size . '_size_w');
             $h = get_option($size . '_size_h');
         }
         if (isset($w) && isset($h) && ($w || $h)) {
-            return array('w' => $w, 'h' => $h);
+            return [
+                'w' => $w,
+                'h' => $h,
+            ];
         }
         return false;
     }
@@ -179,16 +182,16 @@ class ImageHelper
          * SVG images are not allowed by default in WordPress, so we have to pass a default mime
          * type for SVG images.
          */
-        $mime = wp_check_filetype_and_ext($file_path, PathHelper::basename($file_path), array(
+        $mime = wp_check_filetype_and_ext($file_path, PathHelper::basename($file_path), [
             'svg' => 'image/svg+xml',
-        ));
+        ]);
 
-        return in_array($mime['type'], array(
+        return in_array($mime['type'], [
             'image/svg+xml',
             'text/html',
             'text/plain',
             'image/svg',
-        ));
+        ]);
     }
 
     /**
@@ -419,13 +422,13 @@ class ImageHelper
          * @ticket 1098
          * @link https://github.com/timber/timber/issues/1098
          */
-        add_filter('upload_dir', [ __CLASS__, 'set_sideload_image_upload_dir' ]);
+        add_filter('upload_dir', [__CLASS__, 'set_sideload_image_upload_dir']);
 
         $loc = self::get_sideloaded_file_loc($file);
         if (file_exists($loc)) {
             $url = URLHelper::file_system_to_url($loc);
 
-            remove_filter('upload_dir', [ __CLASS__, 'set_sideload_image_upload_dir' ]);
+            remove_filter('upload_dir', [__CLASS__, 'set_sideload_image_upload_dir']);
 
             return $url;
         }
@@ -435,7 +438,7 @@ class ImageHelper
         }
         $tmp = download_url($file);
         preg_match('/[^\?]+\.(jpe?g|jpe|gif|png)\b/i', $file, $matches);
-        $file_array = array();
+        $file_array = [];
         $file_array['name'] = PathHelper::basename($matches[0]);
         $file_array['tmp_name'] = $tmp;
         // If error storing temporarily, do not use
@@ -448,7 +451,7 @@ class ImageHelper
         // delete tmp file
         @unlink($file_array['tmp_name']);
 
-        remove_filter('upload_dir', [ __CLASS__, 'set_sideload_image_upload_dir' ]);
+        remove_filter('upload_dir', [__CLASS__, 'set_sideload_image_upload_dir']);
 
         return $file['url'];
     }
@@ -515,15 +518,22 @@ class ImageHelper
      */
     public static function analyze_url($url)
     {
-        $result = array(
-            'url' => $url, // the initial url
-            'absolute' => URLHelper::is_absolute($url), // is the url absolute or relative (to home_url)
-            'base' => 0, // is the image in uploads dir, or in content dir (theme or plugin)
-            'subdir' => '', // the path between base (uploads or content) and file
-            'filename' => '', // the filename, without extension
-            'extension' => '', // the file extension
-            'basename' => '', // full file name
-        );
+        $result = [
+            'url' => $url,
+            // the initial url
+            'absolute' => URLHelper::is_absolute($url),
+            // is the url absolute or relative (to home_url)
+            'base' => 0,
+            // is the image in uploads dir, or in content dir (theme or plugin)
+            'subdir' => '',
+            // the path between base (uploads or content) and file
+            'filename' => '',
+            // the filename, without extension
+            'extension' => '',
+            // the file extension
+            'basename' => '',
+            // full file name
+        ];
         $upload_dir = wp_upload_dir();
         $tmp = $url;
         if (TextHelper::starts_with($tmp, ABSPATH) || TextHelper::starts_with($tmp, '/srv/www/')) {

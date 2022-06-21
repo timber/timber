@@ -43,7 +43,9 @@
         public function testFormat()
         {
             $str = '{{ "I like %s and %s"|format(foo, "bar") }}';
-            $return = Timber::compile_string($str, array('foo' => 'foo'));
+            $return = Timber::compile_string($str, [
+                'foo' => 'foo',
+            ]);
             $this->assertEquals('I like foo and bar', $return);
         }
 
@@ -51,11 +53,15 @@
         {
             $td = $this->_setupTranslationFiles();
             $str = "I like {{ __('thingy', '$td') }}";
-            $return = Timber::compile_string($str, array('foo' => 'foo'));
+            $return = Timber::compile_string($str, [
+                'foo' => 'foo',
+            ]);
             $this->assertEquals('I like Cheesy Poofs', $return);
 
             $str = "I like {{ __('doobie', '$td') }}";
-            $return = Timber::compile_string($str, array('foo' => 'foo'));
+            $return = Timber::compile_string($str, [
+                'foo' => 'foo',
+            ]);
             $this->assertEquals('I like doobie', $return);
         }
 
@@ -76,7 +82,7 @@
             global $action_tally;
             global $php_unit;
             $php_unit = $this;
-            $action_tally = array();
+            $action_tally = [];
 
             $my_action_foo = function () {
                 global $action_tally, $php_unit;
@@ -113,8 +119,11 @@
 
         public function testWordPressPasswordFilters()
         {
-            $post_id = $this->factory->post->create(array('post_title' => 'My Private Post', 'post_password' => 'abc123'));
-            $context = array();
+            $post_id = $this->factory->post->create([
+                'post_title' => 'My Private Post',
+                'post_password' => 'abc123',
+            ]);
+            $context = [];
             add_filter('protected_title_format', function ($title) {
                 return 'Protected: ' . $title;
             });
@@ -132,22 +141,29 @@
         {
             $thing = 'thing';
             $str = '{% for thing in things|array %}{{thing}}{% endfor %}';
-            $this->assertEquals('thing', Timber::compile_string($str, array('things' => $thing)));
+            $this->assertEquals('thing', Timber::compile_string($str, [
+                'things' => $thing,
+            ]));
         }
 
         public function testToArrayWithArray()
         {
-            $thing = array('thing', 'thang');
+            $thing = ['thing', 'thang'];
             $str = '{% for thing in things|array %}{{thing}}{% endfor %}';
-            $this->assertEquals('thingthang', Timber::compile_string($str, array('things' => $thing)));
+            $this->assertEquals('thingthang', Timber::compile_string($str, [
+                'things' => $thing,
+            ]));
         }
 
         public function testTwigString()
         {
             $str = 'Foo';
-            $arr = array('Bar', 'Quack');
+            $arr = ['Bar', 'Quack'];
             $twig = '{{string|join}}x{{array|join("x")}}';
-            $this->assertEquals('FooxBarxQuack', trim(Timber::compile_string($twig, array('string' => $str, 'array' => $arr))));
+            $this->assertEquals('FooxBarxQuack', trim(Timber::compile_string($twig, [
+                'string' => $str,
+                'array' => $arr,
+            ])));
         }
 
         /**
@@ -155,43 +171,57 @@
          */
         public function testFilterFunction()
         {
-            $pid = $this->factory->post->create(array('post_title' => 'Foo'));
+            $pid = $this->factory->post->create([
+                'post_title' => 'Foo',
+            ]);
             $post = Timber::get_post($pid);
             $str = 'I am a {{post | get_class }}';
-            $this->assertEquals('I am a Timber\Post', Timber::compile_string($str, array('post' => $post)));
+            $this->assertEquals('I am a Timber\Post', Timber::compile_string($str, [
+                'post' => $post,
+            ]));
         }
 
         public function testFilterTruncate()
         {
             $gettysburg = 'Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal.';
-            $str = Timber::compile_string("{{address | truncate(6)}}", array('address' => $gettysburg));
+            $str = Timber::compile_string("{{address | truncate(6)}}", [
+                'address' => $gettysburg,
+            ]);
             $this->assertEquals('Four score and seven years ago&hellip;', $str);
         }
 
         public function testFilterTrimCharacters()
         {
             $gettysburg = 'Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal.';
-            $str = Timber::compile_string("{{content | excerpt_chars(100)}}", array('content' => $gettysburg));
+            $str = Timber::compile_string("{{content | excerpt_chars(100)}}", [
+                'content' => $gettysburg,
+            ]);
             $this->assertEquals('Four score and seven years ago our fathers brought forth on this continent, a new nation, co&hellip;', $str);
         }
 
         public function testSetSimple()
         {
-            $result = Timber::compile('assets/set-simple.twig', array('foo' => 'bar'));
+            $result = Timber::compile('assets/set-simple.twig', [
+                'foo' => 'bar',
+            ]);
             $this->assertEquals('jiggy', trim($result));
         }
 
         public function testEscUrl()
         {
             $url = 'http://example.com/Mr WordPress';
-            $str = Timber::compile_string("{{the_url | e('esc_url')}}", array( 'the_url' => $url ));
+            $str = Timber::compile_string("{{the_url | e('esc_url')}}", [
+                'the_url' => $url,
+            ]);
             $this->assertEquals('http://example.com/Mr%20WordPress', $str);
         }
 
         public function testWpKsesPost()
         {
             $evil_script = '<div foo="bar" src="bum">Foo</div><script>DoEvilThing();</script>';
-            $str = Timber::compile_string("{{ evil_script | e('wp_kses_post') }}", array( 'evil_script' => $evil_script ));
+            $str = Timber::compile_string("{{ evil_script | e('wp_kses_post') }}", [
+                'evil_script' => $evil_script,
+            ]);
             $this->assertEquals('<div>Foo</div>DoEvilThing();', $str);
         }
 
@@ -201,14 +231,18 @@
             // Simple string
             $html = "The quick brown fox.";
 
-            $str = Timber::compile_string("{{text | e('esc_html')}}", array( 'text' => $html ));
+            $str = Timber::compile_string("{{text | e('esc_html')}}", [
+                'text' => $html,
+            ]);
 
             $this->assertEquals($html, $str);
 
 
             $escaped = "http://localhost/trunk/wp-login.php?action=logout&amp;_wpnonce=cd57d75985";
 
-            $str = Timber::compile_string("{{text | e('esc_html')}}", array( 'text' => 'http://localhost/trunk/wp-login.php?action=logout&_wpnonce=cd57d75985' ));
+            $str = Timber::compile_string("{{text | e('esc_html')}}", [
+                'text' => 'http://localhost/trunk/wp-login.php?action=logout&_wpnonce=cd57d75985',
+            ]);
 
             $this->assertEquals($escaped, $str);
 
@@ -216,19 +250,25 @@
 
             $escaped = "SELECT meta_key, meta_value FROM wp_trunk_sitemeta WHERE meta_key IN (&#039;site_name&#039;, &#039;siteurl&#039;, &#039;active_sitewide_plugins&#039;, &#039;_site_transient_timeout_theme_roots&#039;, &#039;_site_transient_theme_roots&#039;, &#039;site_admins&#039;, &#039;can_compress_scripts&#039;, &#039;global_terms_enabled&#039;) AND site_id = 1";
 
-            $str = Timber::compile_string("{{text | e('esc_html')}}", array( 'text' => "SELECT meta_key, meta_value FROM wp_trunk_sitemeta WHERE meta_key IN ('site_name', 'siteurl', 'active_sitewide_plugins', '_site_transient_timeout_theme_roots', '_site_transient_theme_roots', 'site_admins', 'can_compress_scripts', 'global_terms_enabled') AND site_id = 1"));
+            $str = Timber::compile_string("{{text | e('esc_html')}}", [
+                'text' => "SELECT meta_key, meta_value FROM wp_trunk_sitemeta WHERE meta_key IN ('site_name', 'siteurl', 'active_sitewide_plugins', '_site_transient_timeout_theme_roots', '_site_transient_theme_roots', 'site_admins', 'can_compress_scripts', 'global_terms_enabled') AND site_id = 1",
+            ]);
             $this->assertEquals($escaped, $str);
         }
 
         public function testEscJs()
         {
             $escaped = 'foo &amp; bar &amp;baz; &nbsp;';
-            $str = Timber::compile_string("{{text | e('esc_js')}}", array( 'text' => 'foo & bar &baz; &nbsp;' ));
+            $str = Timber::compile_string("{{text | e('esc_js')}}", [
+                'text' => 'foo & bar &baz; &nbsp;',
+            ]);
 
             $this->assertEquals($escaped, $str);
 
             $escaped = "foo \\' bar \\' baz &#x26;";
-            $str = Timber::compile_string("{{text | e('esc_js')}}", array( 'text' => 'foo &#x27; bar &#39; baz &#x26;' ));
+            $str = Timber::compile_string("{{text | e('esc_js')}}", [
+                'text' => 'foo &#x27; bar &#39; baz &#x26;',
+            ]);
 
             $this->assertEquals($escaped, $str);
         }
@@ -236,9 +276,13 @@
         public function testSetObject()
         {
             $this->expectException(\Twig\Error\SyntaxError::class);
-            $pid = $this->factory->post->create(array('post_title' => 'Spaceballs'));
+            $pid = $this->factory->post->create([
+                'post_title' => 'Spaceballs',
+            ]);
             $post = Timber::get_post($pid);
-            $result = Timber::compile('assets/set-object.twig', array('post' => $post));
+            $result = Timber::compile('assets/set-object.twig', [
+                'post' => $post,
+            ]);
             $this->assertEquals('Spaceballs: may the schwartz be with you', trim($result));
         }
 
@@ -299,9 +343,9 @@
         {
             Timber::$autoescape = true;
 
-            $str = Timber\Timber::compile_string('The {{ region }} remembers…', array(
+            $str = Timber\Timber::compile_string('The {{ region }} remembers…', [
                 'region' => '<strong>North</strong>',
-            ));
+            ]);
 
             $this->assertEquals(
                 'The &lt;strong&gt;North&lt;/strong&gt; remembers…',
@@ -321,9 +365,9 @@
 
             add_filter('timber/twig/environment/options', $autoescape_filter);
 
-            $str = Timber\Timber::compile_string('The {{ region }} remembers…', array(
+            $str = Timber\Timber::compile_string('The {{ region }} remembers…', [
                 'region' => '<strong>North</strong>',
-            ));
+            ]);
 
             remove_filter('timber/twig/environment/options', $autoescape_filter);
 
@@ -343,9 +387,9 @@
 
             add_filter('timber/twig/environment/options', $autoescape_filter);
 
-            $str = Timber\Timber::compile_string('The {{ region }} remembers…', array(
+            $str = Timber\Timber::compile_string('The {{ region }} remembers…', [
                 'region' => '<strong>North</strong>',
-            ));
+            ]);
 
             remove_filter('timber/twig/environment/options', $autoescape_filter);
 
@@ -362,7 +406,9 @@
                 unset($functions['shortcode']);
                 return $functions;
             });
-            Timber::compile_string("{{ text|shortcode }}", ['text' => 'A function has been removed']);
+            Timber::compile_string("{{ text|shortcode }}", [
+                'text' => 'A function has been removed',
+            ]);
         }
 
         public function testRemoveADefaultFilter()
@@ -372,6 +418,8 @@
                 unset($filters['wpautop']);
                 return $filters;
             });
-            Timber::compile_string("{{ text|wpautop }}", ['text' => 'A filter has been removed']);
+            Timber::compile_string("{{ text|wpautop }}", [
+                'text' => 'A filter has been removed',
+            ]);
         }
     }

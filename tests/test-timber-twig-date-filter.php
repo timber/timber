@@ -40,7 +40,8 @@ class TestTimberTwigDateFilter extends Timber_UnitTestCase
                 'Y-m-d H:i',
                 '2010-10-04 13:45',
                 new \DateTimeZone('UTC')
-            )->getTimestamp(), // A unix timestamp is always GMT
+            )->getTimestamp(),
+            // A unix timestamp is always GMT
             'date5' => -189291360,
             // \DateTime::createFromFormat('Y-m-d H:i', '1964-01-02 03:04', new \DateTimeZone('UTC'))->getTimestamp(),
             'date6' => new \DateTime('2010-10-04 13:45', new \DateTimeZone('America/New_York')),

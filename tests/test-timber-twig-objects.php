@@ -49,21 +49,25 @@ class TestTimberTwigObjects extends Timber_UnitTestCase
      */
     public function testImagesInTwig()
     {
-        $images = array();
+        $images = [];
         $images[] = TestTimberImage::get_attachment(0, 'arch.jpg');
         $images[] = TestTimberImage::get_attachment(0, 'city-museum.jpg');
         $str = '{% for image in Image(images) %}{{image.src}}{% endfor %}';
-        $compiled = Timber::compile_string($str, array('images' => $images));
+        $compiled = Timber::compile_string($str, [
+            'images' => $images,
+        ]);
         $this->assertEquals('http://example.org/wp-content/uploads/' . date('Y') . '/' . date('m') . '/arch.jpghttp://example.org/wp-content/uploads/' . date('Y') . '/' . date('m') . '/city-museum.jpg', $compiled);
     }
 
     public function testImagesWithGetPostsInTwig()
     {
-        $images = array();
+        $images = [];
         $images[] = TestTimberImage::get_attachment(0, 'arch.jpg');
         $images[] = TestTimberImage::get_attachment(0, 'city-museum.jpg');
         $str = '{% for image in get_posts(images) %}{{image.src}}{% endfor %}';
-        $compiled = Timber::compile_string($str, array('images' => $images));
+        $compiled = Timber::compile_string($str, [
+            'images' => $images,
+        ]);
         $this->assertEquals('http://example.org/wp-content/uploads/' . date('Y') . '/' . date('m') . '/arch.jpghttp://example.org/wp-content/uploads/' . date('Y') . '/' . date('m') . '/city-museum.jpg', $compiled);
     }
 
@@ -72,11 +76,13 @@ class TestTimberTwigObjects extends Timber_UnitTestCase
      */
     public function testTimberImagesInTwig()
     {
-        $images = array();
+        $images = [];
         $images[] = TestTimberImage::get_attachment(0, 'arch.jpg');
         $images[] = TestTimberImage::get_attachment(0, 'city-museum.jpg');
         $str = '{% for image in TimberImage(images) %}{{image.src}}{% endfor %}';
-        $compiled = Timber::compile_string($str, array('images' => $images));
+        $compiled = Timber::compile_string($str, [
+            'images' => $images,
+        ]);
         $this->assertEquals('http://example.org/wp-content/uploads/' . date('Y') . '/' . date('m') . '/arch.jpghttp://example.org/wp-content/uploads/' . date('Y') . '/' . date('m') . '/city-museum.jpg', $compiled);
     }
 
@@ -105,7 +111,9 @@ class TestTimberTwigObjects extends Timber_UnitTestCase
      */
     public function testTimberPostInTwig()
     {
-        $pid = $this->factory->post->create(array('post_title' => 'Foo'));
+        $pid = $this->factory->post->create([
+            'post_title' => 'Foo',
+        ]);
         $str = '{{ TimberPost(' . $pid . ').title }}';
         $this->assertEquals('Foo', Timber::compile_string($str));
     }
@@ -115,14 +123,18 @@ class TestTimberTwigObjects extends Timber_UnitTestCase
      */
     public function testPostInTwig()
     {
-        $pid = $this->factory->post->create(array('post_title' => 'Foo'));
+        $pid = $this->factory->post->create([
+            'post_title' => 'Foo',
+        ]);
         $str = '{{Post(' . $pid . ').title}}';
         $this->assertEquals('Foo', Timber::compile_string($str));
     }
 
     public function testGetPostInTwig()
     {
-        $pid = $this->factory->post->create([ 'post_title' => 'Foo' ]);
+        $pid = $this->factory->post->create([
+            'post_title' => 'Foo',
+        ]);
         $this->assertEquals('Foo', Timber::compile_string('{{ get_post(pid).title }}', [
             'pid' => $pid,
         ]));
@@ -133,10 +145,16 @@ class TestTimberTwigObjects extends Timber_UnitTestCase
      */
     public function testTimberPostsInTwig()
     {
-        $pids[] = $this->factory->post->create(array('post_title' => 'Foo'));
-        $pids[] = $this->factory->post->create(array('post_title' => 'Bar'));
+        $pids[] = $this->factory->post->create([
+            'post_title' => 'Foo',
+        ]);
+        $pids[] = $this->factory->post->create([
+            'post_title' => 'Bar',
+        ]);
         $str = '{% for post in TimberPost(pids) %}{{post.title}}{% endfor %}';
-        $this->assertEquals('FooBar', Timber::compile_string($str, array('pids' => $pids)));
+        $this->assertEquals('FooBar', Timber::compile_string($str, [
+            'pids' => $pids,
+        ]));
     }
 
     /**
@@ -144,18 +162,30 @@ class TestTimberTwigObjects extends Timber_UnitTestCase
      */
     public function testPostsInTwig()
     {
-        $pids[] = $this->factory->post->create(array('post_title' => 'Foo'));
-        $pids[] = $this->factory->post->create(array('post_title' => 'Bar'));
+        $pids[] = $this->factory->post->create([
+            'post_title' => 'Foo',
+        ]);
+        $pids[] = $this->factory->post->create([
+            'post_title' => 'Bar',
+        ]);
         $str = '{% for post in Post(pids) %}{{post.title}}{% endfor %}';
-        $this->assertEquals('FooBar', Timber::compile_string($str, array('pids' => $pids)));
+        $this->assertEquals('FooBar', Timber::compile_string($str, [
+            'pids' => $pids,
+        ]));
     }
 
     public function testGetPostsInTwig()
     {
-        $pids[] = $this->factory->post->create([ 'post_title' => 'Foo' ]);
-        $pids[] = $this->factory->post->create([ 'post_title' => 'Bar' ]);
+        $pids[] = $this->factory->post->create([
+            'post_title' => 'Foo',
+        ]);
+        $pids[] = $this->factory->post->create([
+            'post_title' => 'Bar',
+        ]);
         $str = '{% for post in get_posts(pids) %}{{post.title}}{% endfor %}';
-        $this->assertEquals('FooBar', Timber::compile_string($str, [ 'pids' => $pids ]));
+        $this->assertEquals('FooBar', Timber::compile_string($str, [
+            'pids' => $pids,
+        ]));
     }
 
     /**
@@ -163,20 +193,32 @@ class TestTimberTwigObjects extends Timber_UnitTestCase
      */
     public function testGetPostsWithQueryStringInTwig()
     {
-        $pids[] = $this->factory->post->create(array( 'post_title' => 'Foo' ));
-        $pids[] = $this->factory->post->create(array( 'post_title' => 'Bar' ));
+        $pids[] = $this->factory->post->create([
+            'post_title' => 'Foo',
+        ]);
+        $pids[] = $this->factory->post->create([
+            'post_title' => 'Bar',
+        ]);
         $str = "{% for post in get_posts('post_type=post&posts_per_page=-1&order=ASC') %}{{ post.title }}{% endfor %}";
 
-        $this->assertEquals('FooBar', Timber::compile_string($str, array( 'pids' => $pids )));
+        $this->assertEquals('FooBar', Timber::compile_string($str, [
+            'pids' => $pids,
+        ]));
     }
 
     public function testGetPostsWithArgsInTwig()
     {
-        $pids[] = $this->factory->post->create([ 'post_title' => 'Foo' ]);
-        $pids[] = $this->factory->post->create([ 'post_title' => 'Bar' ]);
+        $pids[] = $this->factory->post->create([
+            'post_title' => 'Foo',
+        ]);
+        $pids[] = $this->factory->post->create([
+            'post_title' => 'Bar',
+        ]);
         $str = "{% for post in get_posts({ post_type: 'post', posts_per_page: -1, order: 'ASC'}) %}{{ post.title }}{% endfor %}";
 
-        $this->assertEquals('FooBar', Timber::compile_string($str, [ 'pids' => $pids ]));
+        $this->assertEquals('FooBar', Timber::compile_string($str, [
+            'pids' => $pids,
+        ]));
     }
 
     /**
@@ -184,7 +226,9 @@ class TestTimberTwigObjects extends Timber_UnitTestCase
      */
     public function testTimberUserInTwig()
     {
-        $uid = $this->factory->user->create(array('display_name' => 'Pete Karl'));
+        $uid = $this->factory->user->create([
+            'display_name' => 'Pete Karl',
+        ]);
         $template = '{{ TimberUser(' . $uid . ').name }}';
         $str = Timber::compile_string($template);
         $this->assertEquals('Pete Karl', $str);
@@ -195,20 +239,32 @@ class TestTimberTwigObjects extends Timber_UnitTestCase
      */
     public function testUsersInTwig()
     {
-        $uids[] = $this->factory->user->create(array('display_name' => 'Mark Watabe'));
-        $uids[] = $this->factory->user->create(array('display_name' => 'Austin Tzou'));
+        $uids[] = $this->factory->user->create([
+            'display_name' => 'Mark Watabe',
+        ]);
+        $uids[] = $this->factory->user->create([
+            'display_name' => 'Austin Tzou',
+        ]);
         $str = '{% for user in User(uids) %}{{user.name}} {% endfor %}';
-        $this->assertEquals('Mark Watabe Austin Tzou', trim(Timber::compile_string($str, array('uids' => $uids))));
+        $this->assertEquals('Mark Watabe Austin Tzou', trim(Timber::compile_string($str, [
+            'uids' => $uids,
+        ])));
     }
 
     public function testGetUsersInTwig()
     {
-        $uids[] = $this->factory->user->create([ 'display_name' => 'Mark Watabe' ]);
-        $uids[] = $this->factory->user->create([ 'display_name' => 'Austin Tzou' ]);
+        $uids[] = $this->factory->user->create([
+            'display_name' => 'Mark Watabe',
+        ]);
+        $uids[] = $this->factory->user->create([
+            'display_name' => 'Austin Tzou',
+        ]);
         $str = '{% for user in get_users(uids) %}{{ user.name }} {% endfor %}';
         $this->assertEquals(
             'Mark Watabe Austin Tzou',
-            trim(Timber::compile_string($str, [ 'uids' => $uids ]))
+            trim(Timber::compile_string($str, [
+                'uids' => $uids,
+            ]))
         );
     }
 
@@ -217,14 +273,18 @@ class TestTimberTwigObjects extends Timber_UnitTestCase
      */
     public function testUserInTwig()
     {
-        $uid = $this->factory->user->create(array('display_name' => 'Nathan Hass'));
+        $uid = $this->factory->user->create([
+            'display_name' => 'Nathan Hass',
+        ]);
         $str = '{{User(' . $uid . ').name}}';
         $this->assertEquals('Nathan Hass', Timber::compile_string($str));
     }
 
     public function testGetUserInTwig()
     {
-        $uid = $this->factory->user->create([ 'display_name' => 'Nathan Hass' ]);
+        $uid = $this->factory->user->create([
+            'display_name' => 'Nathan Hass',
+        ]);
         $str = '{{ get_user(' . $uid . ').name }}';
         $this->assertEquals('Nathan Hass', Timber::compile_string($str));
     }
@@ -234,10 +294,16 @@ class TestTimberTwigObjects extends Timber_UnitTestCase
      */
     public function testTimberUsersInTwig()
     {
-        $uids[] = $this->factory->user->create(array('display_name' => 'Estelle Getty'));
-        $uids[] = $this->factory->user->create(array('display_name' => 'Bea Arthur'));
+        $uids[] = $this->factory->user->create([
+            'display_name' => 'Estelle Getty',
+        ]);
+        $uids[] = $this->factory->user->create([
+            'display_name' => 'Bea Arthur',
+        ]);
         $str = '{% for user in TimberUser(uids) %}{{user.name}} {% endfor %}';
-        $this->assertEquals('Estelle Getty Bea Arthur', trim(Timber::compile_string($str, array('uids' => $uids))));
+        $this->assertEquals('Estelle Getty Bea Arthur', trim(Timber::compile_string($str, [
+            'uids' => $uids,
+        ])));
     }
 
     /**
@@ -245,9 +311,13 @@ class TestTimberTwigObjects extends Timber_UnitTestCase
      */
     public function testTimberTermInTwig()
     {
-        $tid = $this->factory->term->create(array('name' => 'Golden Girls'));
+        $tid = $this->factory->term->create([
+            'name' => 'Golden Girls',
+        ]);
         $str = '{{ TimberTerm(tid).title }}';
-        $this->assertEquals('Golden Girls', Timber::compile_string($str, array('tid' => $tid)));
+        $this->assertEquals('Golden Girls', Timber::compile_string($str, [
+            'tid' => $tid,
+        ]));
     }
 
     /**
@@ -255,16 +325,24 @@ class TestTimberTwigObjects extends Timber_UnitTestCase
      */
     public function testTermInTwig()
     {
-        $tid = $this->factory->term->create(array('name' => 'Mythbusters'));
+        $tid = $this->factory->term->create([
+            'name' => 'Mythbusters',
+        ]);
         $str = '{{Term(tid).title}}';
-        $this->assertEquals('Mythbusters', Timber::compile_string($str, array('tid' => $tid)));
+        $this->assertEquals('Mythbusters', Timber::compile_string($str, [
+            'tid' => $tid,
+        ]));
     }
 
     public function testGetTermInTwig()
     {
-        $tid = $this->factory->term->create([ 'name' => 'Mythbusters' ]);
+        $tid = $this->factory->term->create([
+            'name' => 'Mythbusters',
+        ]);
         $str = '{{ get_term(tid).title }}';
-        $this->assertEquals('Mythbusters', Timber::compile_string($str, [ 'tid' => $tid ]));
+        $this->assertEquals('Mythbusters', Timber::compile_string($str, [
+            'tid' => $tid,
+        ]));
     }
 
     /**
@@ -272,10 +350,16 @@ class TestTimberTwigObjects extends Timber_UnitTestCase
      */
     public function testTimberTermsInTwig()
     {
-        $tids[] = $this->factory->term->create(array('name' => 'Foods'));
-        $tids[] = $this->factory->term->create(array('name' => 'Cars'));
+        $tids[] = $this->factory->term->create([
+            'name' => 'Foods',
+        ]);
+        $tids[] = $this->factory->term->create([
+            'name' => 'Cars',
+        ]);
         $str = '{% for term in TimberTerm(tids) %}{{term.title}} {% endfor %}';
-        $this->assertEquals('Foods Cars ', Timber::compile_string($str, array('tids' => $tids)));
+        $this->assertEquals('Foods Cars ', Timber::compile_string($str, [
+            'tids' => $tids,
+        ]));
     }
 
     /**
@@ -283,17 +367,29 @@ class TestTimberTwigObjects extends Timber_UnitTestCase
      */
     public function testTermsInTwig()
     {
-        $tids[] = $this->factory->term->create(array('name' => 'Animals'));
-        $tids[] = $this->factory->term->create(array('name' => 'Germans'));
+        $tids[] = $this->factory->term->create([
+            'name' => 'Animals',
+        ]);
+        $tids[] = $this->factory->term->create([
+            'name' => 'Germans',
+        ]);
         $str = '{% for term in Term(tids) %}{{term.title}} {% endfor %}';
-        $this->assertEquals('Animals Germans ', Timber::compile_string($str, array('tids' => $tids)));
+        $this->assertEquals('Animals Germans ', Timber::compile_string($str, [
+            'tids' => $tids,
+        ]));
     }
 
     public function testGetTermsInTwig()
     {
-        $tids[] = $this->factory->term->create([ 'name' => 'Animals' ]);
-        $tids[] = $this->factory->term->create([ 'name' => 'Germans' ]);
+        $tids[] = $this->factory->term->create([
+            'name' => 'Animals',
+        ]);
+        $tids[] = $this->factory->term->create([
+            'name' => 'Germans',
+        ]);
         $str = '{% for term in get_terms(tids) %}{{term.title}} {% endfor %}';
-        $this->assertEquals('Animals Germans ', Timber::compile_string($str, [ 'tids' => $tids ]));
+        $this->assertEquals('Animals Germans ', Timber::compile_string($str, [
+            'tids' => $tids,
+        ]));
     }
 }

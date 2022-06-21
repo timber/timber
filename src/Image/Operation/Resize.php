@@ -31,7 +31,7 @@ class Resize extends ImageOperation
         $this->w = $w;
         $this->h = $h;
         // Sanitize crop position
-        $allowed_crop_positions = array('default', 'center', 'top', 'bottom', 'left', 'right', 'top-center', 'bottom-center');
+        $allowed_crop_positions = ['default', 'center', 'top', 'bottom', 'left', 'right', 'top-center', 'bottom-center'];
         if ($crop !== false && !in_array($crop, $allowed_crop_positions)) {
             $crop = $allowed_crop_positions[0];
         }
@@ -110,11 +110,14 @@ class Resize extends ImageOperation
         }
 
         if (!$crop || $crop === 'default') {
-            return array(
-                'x' => 0, 'y' => 0,
-                'src_w' => $src_w, 'src_h' => $src_h,
-                'target_w' => $w, 'target_h' => $h
-            );
+            return [
+                'x' => 0,
+                'y' => 0,
+                'src_w' => $src_w,
+                'src_h' => $src_h,
+                'target_w' => $w,
+                'target_h' => $h,
+            ];
         }
         // Get ratios
         $dest_ratio = $w / $h;
@@ -156,16 +159,22 @@ class Resize extends ImageOperation
         }
         // Crop the image
         return ($dest_ratio > $src_ratio)
-            ? array(
-                'x' => 0, 'y' => $src_y,
-                'src_w' => $src_w, 'src_h' => $src_ht,
-                'target_w' => $w, 'target_h' => $h
-            )
-            : array(
-                'x' => $src_x, 'y' => 0,
-                'src_w' => $src_wt, 'src_h' => $src_h,
-                'target_w' => $w, 'target_h' => $h
-            );
+            ? [
+                'x' => 0,
+                'y' => $src_y,
+                'src_w' => $src_w,
+                'src_h' => $src_ht,
+                'target_w' => $w,
+                'target_h' => $h,
+            ]
+            : [
+                'x' => $src_x,
+                'y' => 0,
+                'src_w' => $src_wt,
+                'src_h' => $src_h,
+                'target_w' => $w,
+                'target_h' => $h,
+            ];
     }
 
     /**

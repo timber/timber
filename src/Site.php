@@ -375,7 +375,7 @@ class Site extends Core implements CoreInterface
          */
         $value = apply_filters_deprecated(
             'timber_site_set_meta',
-            array( $value, $key, $this->ID, $this ),
+            [$value, $key, $this->ID, $this],
             '2.0.0',
             'timber/site/update_option'
         );

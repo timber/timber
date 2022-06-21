@@ -198,7 +198,7 @@ class TestMenuFactory extends Timber_UnitTestCase
 
         $this->add_filter_temporarily('timber/menu/classmap', function () {
             return [
-                'custom' => MyMenu::class
+                'custom' => MyMenu::class,
             ];
         });
 

@@ -93,7 +93,7 @@ class Helper
              */
             $force = apply_filters_deprecated(
                 'timber_force_transients',
-                array( $force ),
+                [$force],
                 '2.0.0',
                 'timber/transient/force_transients'
             );
@@ -243,7 +243,7 @@ class Helper
      *
      * @return string
      */
-    public static function ob_function($function, $args = array(null))
+    public static function ob_function($function, $args = [null])
     {
         ob_start();
         call_user_func_array($function, $args);
@@ -457,7 +457,7 @@ class Helper
          *
          * @deprecated 2.0.0, use `timber/helper/wp_title_separator`
          */
-        $separator = apply_filters_deprecated('timber_wp_title_seperator', array( $separator ), '2.0.0', 'timber/helper/wp_title_separator');
+        $separator = apply_filters_deprecated('timber_wp_title_seperator', [$separator], '2.0.0', 'timber/helper/wp_title_separator');
 
         return trim(wp_title($separator, false, $seplocation));
     }
@@ -637,7 +637,7 @@ class Helper
      */
     public static function pluck($array, $key)
     {
-        $return = array();
+        $return = [];
         foreach ($array as $obj) {
             if (is_object($obj) && method_exists($obj, $key)) {
                 $return[] = $obj->$key();
@@ -666,11 +666,13 @@ class Helper
     public static function wp_list_filter($list, $args, $operator = 'AND')
     {
         if (!is_array($args)) {
-            $args = array( 'slug' => $args );
+            $args = [
+                'slug' => $args,
+            ];
         }
 
         if (!is_array($list) && !is_a($list, 'Traversable')) {
-            return array();
+            return [];
         }
 
         $util = new \WP_List_Util($list);

@@ -25,7 +25,9 @@
             $template = '{{ post.customfield | shortcodes }}';
 
             $post = Timber::get_post($post_id);
-            $compiled = Timber::compile_string($template, ['post' => $post]);
+            $compiled = Timber::compile_string($template, [
+                'post' => $post,
+            ]);
 
             $this->assertEquals('barfoo', $compiled);
         }

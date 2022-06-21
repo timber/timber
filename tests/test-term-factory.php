@@ -27,8 +27,14 @@ class TestTermFactory extends Timber_UnitTestCase
 
     public function testGetTerm()
     {
-        $tag_id = $this->factory->term->create(['name' => 'Toyota',    'taxonomy' => 'post_tag']);
-        $cat_id = $this->factory->term->create(['name' => 'Chevrolet', 'taxonomy' => 'category']);
+        $tag_id = $this->factory->term->create([
+            'name' => 'Toyota',
+            'taxonomy' => 'post_tag',
+        ]);
+        $cat_id = $this->factory->term->create([
+            'name' => 'Chevrolet',
+            'taxonomy' => 'category',
+        ]);
 
         $termFactory = new TermFactory();
         $tag = $termFactory->from($tag_id);
@@ -60,7 +66,9 @@ class TestTermFactory extends Timber_UnitTestCase
 
     public function testGetTermFromTaxonomyName()
     {
-        $term_ids = $this->factory->term->create_many(3, ['taxonomy' => 'post_tag']);
+        $term_ids = $this->factory->term->create_many(3, [
+            'taxonomy' => 'post_tag',
+        ]);
 
         // by default hide_empty is true, so assign each term to a post
         wp_set_object_terms(
@@ -90,9 +98,18 @@ class TestTermFactory extends Timber_UnitTestCase
         };
         $this->add_filter_temporarily('timber/term/classmap', $my_class_map);
 
-        $tag_id = $this->factory->term->create(['name' => 'Toyota',        'taxonomy' => 'post_tag']);
-        $cat_id = $this->factory->term->create(['name' => 'Chevrolet',     'taxonomy' => 'category']);
-        $whackness_id = $this->factory->term->create(['name' => 'Wiggity-Whack', 'taxonomy' => 'whackness']);
+        $tag_id = $this->factory->term->create([
+            'name' => 'Toyota',
+            'taxonomy' => 'post_tag',
+        ]);
+        $cat_id = $this->factory->term->create([
+            'name' => 'Chevrolet',
+            'taxonomy' => 'category',
+        ]);
+        $whackness_id = $this->factory->term->create([
+            'name' => 'Wiggity-Whack',
+            'taxonomy' => 'whackness',
+        ]);
 
         $termFactory = new TermFactory();
         $tag = $termFactory->from($tag_id);
@@ -111,7 +128,10 @@ class TestTermFactory extends Timber_UnitTestCase
         };
         $this->add_filter_temporarily('timber/term/class', $my_class_filter, 10, 2);
 
-        $cat_id = $this->factory->term->create(['name' => 'Chevrolet',     'taxonomy' => 'category']);
+        $cat_id = $this->factory->term->create([
+            'name' => 'Chevrolet',
+            'taxonomy' => 'category',
+        ]);
 
         $termFactory = new TermFactory();
         $cat = $termFactory->from($cat_id);
@@ -132,15 +152,27 @@ class TestTermFactory extends Timber_UnitTestCase
                     return ($term->name === 'Hella Whack')
                         ? HellaWhackTerm::class
                         : WhacknessLevel::class;
-                }
+                },
             ];
         };
         $this->add_filter_temporarily('timber/term/classmap', $my_class_map);
 
-        $tag_id = $this->factory->term->create(['name' => 'Toyota',        'taxonomy' => 'post_tag']);
-        $cat_id = $this->factory->term->create(['name' => 'Chevrolet',     'taxonomy' => 'category']);
-        $whackness_id = $this->factory->term->create(['name' => 'Wiggity-Whack', 'taxonomy' => 'whackness']);
-        $hella_id = $this->factory->term->create(['name' => 'Hella Whack',   'taxonomy' => 'whackness']);
+        $tag_id = $this->factory->term->create([
+            'name' => 'Toyota',
+            'taxonomy' => 'post_tag',
+        ]);
+        $cat_id = $this->factory->term->create([
+            'name' => 'Chevrolet',
+            'taxonomy' => 'category',
+        ]);
+        $whackness_id = $this->factory->term->create([
+            'name' => 'Wiggity-Whack',
+            'taxonomy' => 'whackness',
+        ]);
+        $hella_id = $this->factory->term->create([
+            'name' => 'Hella Whack',
+            'taxonomy' => 'whackness',
+        ]);
 
         $termFactory = new TermFactory();
         $tag = $termFactory->from($tag_id);
@@ -156,8 +188,14 @@ class TestTermFactory extends Timber_UnitTestCase
 
     public function testFromArray()
     {
-        $a = $this->factory->term->create(['name' => 'A', 'taxonomy' => 'post_tag']);
-        $b = $this->factory->term->create(['name' => 'B', 'taxonomy' => 'post_tag']);
+        $a = $this->factory->term->create([
+            'name' => 'A',
+            'taxonomy' => 'post_tag',
+        ]);
+        $b = $this->factory->term->create([
+            'name' => 'B',
+            'taxonomy' => 'post_tag',
+        ]);
 
         $termFactory = new TermFactory();
         $res = $termFactory->from(get_terms([
@@ -185,8 +223,14 @@ class TestTermFactory extends Timber_UnitTestCase
         };
         $this->add_filter_temporarily('timber/term/classmap', $my_class_map);
 
-        $toyota = $this->factory->term->create(['name' => 'Toyota',    'taxonomy' => 'make']);
-        $chevy = $this->factory->term->create(['name' => 'Chevrolet', 'taxonomy' => 'make']);
+        $toyota = $this->factory->term->create([
+            'name' => 'Toyota',
+            'taxonomy' => 'make',
+        ]);
+        $chevy = $this->factory->term->create([
+            'name' => 'Chevrolet',
+            'taxonomy' => 'make',
+        ]);
 
         $termFactory = new TermFactory();
         $res = $termFactory->from(get_terms([
@@ -211,8 +255,14 @@ class TestTermFactory extends Timber_UnitTestCase
         };
         $this->add_filter_temporarily('timber/term/classmap', $my_class_map);
 
-        $cat_id = $this->factory->term->create(['name' => 'Red Herring', 'taxonomy' => 'category']);
-        $toyota_id = $this->factory->term->create(['name' => 'Toyota',    'taxonomy' => 'make']);
+        $cat_id = $this->factory->term->create([
+            'name' => 'Red Herring',
+            'taxonomy' => 'category',
+        ]);
+        $toyota_id = $this->factory->term->create([
+            'name' => 'Toyota',
+            'taxonomy' => 'make',
+        ]);
 
         $cat = get_term($cat_id);
         $toyota = get_term($toyota_id);
@@ -232,9 +282,18 @@ class TestTermFactory extends Timber_UnitTestCase
         };
         $this->add_filter_temporarily('timber/term/classmap', $my_class_map);
 
-        $this->factory->term->create(['name' => 'Red Herring', 'taxonomy' => 'category']);
-        $toyota = $this->factory->term->create(['name' => 'Toyota',    'taxonomy' => 'make']);
-        $chevy = $this->factory->term->create(['name' => 'Chevrolet', 'taxonomy' => 'make']);
+        $this->factory->term->create([
+            'name' => 'Red Herring',
+            'taxonomy' => 'category',
+        ]);
+        $toyota = $this->factory->term->create([
+            'name' => 'Toyota',
+            'taxonomy' => 'make',
+        ]);
+        $chevy = $this->factory->term->create([
+            'name' => 'Chevrolet',
+            'taxonomy' => 'make',
+        ]);
 
         $termFactory = new TermFactory();
         $termQuery = new WP_Term_Query([
@@ -261,9 +320,18 @@ class TestTermFactory extends Timber_UnitTestCase
         };
         $this->add_filter_temporarily('timber/term/classmap', $my_class_map);
 
-        $geo_id = $this->factory->term->create(['name' => 'Geo',        'taxonomy' => 'make']);
-        $datsun_id = $this->factory->term->create(['name' => 'Datsun',     'taxonomy' => 'make']);
-        $studebaker_id = $this->factory->term->create(['name' => 'Studebaker', 'taxonomy' => 'make']);
+        $geo_id = $this->factory->term->create([
+            'name' => 'Geo',
+            'taxonomy' => 'make',
+        ]);
+        $datsun_id = $this->factory->term->create([
+            'name' => 'Datsun',
+            'taxonomy' => 'make',
+        ]);
+        $studebaker_id = $this->factory->term->create([
+            'name' => 'Studebaker',
+            'taxonomy' => 'make',
+        ]);
 
         $termFactory = new TermFactory();
 
@@ -290,9 +358,18 @@ class TestTermFactory extends Timber_UnitTestCase
         };
         $this->add_filter_temporarily('timber/term/classmap', $my_class_map);
 
-        $this->factory->term->create(['name' => 'Red Herring', 'taxonomy' => 'category']);
-        $toyota = $this->factory->term->create(['name' => 'Toyota',    'taxonomy' => 'make']);
-        $chevy = $this->factory->term->create(['name' => 'Chevrolet', 'taxonomy' => 'make']);
+        $this->factory->term->create([
+            'name' => 'Red Herring',
+            'taxonomy' => 'category',
+        ]);
+        $toyota = $this->factory->term->create([
+            'name' => 'Toyota',
+            'taxonomy' => 'make',
+        ]);
+        $chevy = $this->factory->term->create([
+            'name' => 'Chevrolet',
+            'taxonomy' => 'make',
+        ]);
 
         $termFactory = new TermFactory();
 
@@ -310,8 +387,14 @@ class TestTermFactory extends Timber_UnitTestCase
 
     public function testTermBy()
     {
-        $post_tag_id = $this->factory->term->create(array('name' => 'Security', 'taxonomy' => 'post_tag'));
-        $category_id = $this->factory->term->create(array('name' => 'Security', 'taxonomy' => 'category'));
+        $post_tag_id = $this->factory->term->create([
+            'name' => 'Security',
+            'taxonomy' => 'post_tag',
+        ]);
+        $category_id = $this->factory->term->create([
+            'name' => 'Security',
+            'taxonomy' => 'category',
+        ]);
 
         $term_post_tag = Timber::get_term_by('slug', 'security', 'post_tag');
         $this->assertEquals('post_tag', $term_post_tag->taxonomy);
@@ -324,8 +407,14 @@ class TestTermFactory extends Timber_UnitTestCase
 
     public function testTermByNoTaxonomy()
     {
-        $category_id = $this->factory->term->create(array('name' => 'Breaking News', 'taxonomy' => 'category'));
-        $terms = Timber::get_terms(['name' => 'Breaking News', 'hide_empty' => false]);
+        $category_id = $this->factory->term->create([
+            'name' => 'Breaking News',
+            'taxonomy' => 'category',
+        ]);
+        $terms = Timber::get_terms([
+            'name' => 'Breaking News',
+            'hide_empty' => false,
+        ]);
 
         $term_category = Timber::get_term_by('name', 'Breaking News');
         $this->assertEquals('category', $term_category->taxonomy);

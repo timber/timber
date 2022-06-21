@@ -48,7 +48,11 @@ abstract class Operation
             $hexstr = $hexstr[0] . $hexstr[0] . $hexstr[1] . $hexstr[1] . $hexstr[2] . $hexstr[2];
         }
         $int = hexdec($hexstr);
-        return array("red" => 0xFF & ($int >> 0x10), "green" => 0xFF & ($int >> 0x8), "blue" => 0xFF & $int);
+        return [
+            "red" => 0xFF & ($int >> 0x10),
+            "green" => 0xFF & ($int >> 0x8),
+            "blue" => 0xFF & $int,
+        ];
     }
 
     public static function rgbhex($r, $g, $b)

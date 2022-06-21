@@ -320,7 +320,7 @@ class Term extends CoreEntity
          */
         $link = apply_filters_deprecated(
             'timber_term_link',
-            array( $link, $this ),
+            [$link, $this],
             '2.0.0',
             'timber/term/link'
         );
@@ -384,7 +384,7 @@ class Term extends CoreEntity
          */
         $rel = apply_filters_deprecated(
             'timber_term_path',
-            array( $rel, $this ),
+            [$rel, $this],
             '2.0.0',
             'timber/term/path'
         );
@@ -578,7 +578,7 @@ class Term extends CoreEntity
          */
         $value = apply_filters_deprecated(
             'timber_term_set_meta',
-            array( $value, $key, $this->ID, $this ),
+            [$value, $key, $this->ID, $this],
             '2.0.0',
             false,
             'This filter will be removed in a future version of Timber. There is no replacement.'
@@ -593,7 +593,7 @@ class Term extends CoreEntity
          */
         $value = apply_filters_deprecated(
             'timber/term/meta/set',
-            array( $value, $key, $this->ID, $this ),
+            [$value, $key, $this->ID, $this],
             '2.0.0',
             false,
             'This filter will be removed in a future version of Timber. There is no replacement.'

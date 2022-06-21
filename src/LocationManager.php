@@ -13,7 +13,7 @@ class LocationManager
     public static function get_locations($caller = false)
     {
         //priority: user locations, caller (but not theme), child theme, parent theme, caller, open_basedir
-        $locs = array();
+        $locs = [];
         $locs = array_merge_recursive($locs, self::get_locations_user());
         $locs = array_merge_recursive($locs, self::get_locations_caller($caller));
         //remove themes from caller
@@ -46,7 +46,7 @@ class LocationManager
          *
          * @deprecated 2.0.0, use `timber/locations`
          */
-        $locs = apply_filters_deprecated('timber_locations', array( $locs ), '2.0.0', 'timber/locations');
+        $locs = apply_filters_deprecated('timber_locations', [$locs], '2.0.0', 'timber/locations');
 
         return $locs;
     }
@@ -57,9 +57,9 @@ class LocationManager
      */
     protected static function get_locations_theme()
     {
-        $theme_locs = array();
+        $theme_locs = [];
         $theme_dirs = LocationManager::get_locations_theme_dir();
-        $roots = array( get_stylesheet_directory(), get_template_directory() );
+        $roots = [get_stylesheet_directory(), get_template_directory()];
         $roots = array_map('realpath', $roots);
         $roots = array_unique($roots);
         foreach ($roots as $root) {
@@ -92,7 +92,7 @@ class LocationManager
      */
     public static function get_calling_script_file($offset = 0)
     {
-        $callers = array();
+        $callers = [];
         $backtrace = debug_backtrace();
         foreach ($backtrace as $trace) {
             if (array_key_exists('file', $trace) && $trace['file'] != __FILE__) {
@@ -126,7 +126,9 @@ class LocationManager
     public static function get_locations_theme_dir()
     {
         if (is_string(Timber::$dirname)) {
-            return array( Loader::MAIN_NAMESPACE => array( Timber::$dirname ) );
+            return [
+                Loader::MAIN_NAMESPACE => [Timber::$dirname],
+            ];
         }
         return Timber::$dirname;
     }
@@ -138,10 +140,10 @@ class LocationManager
      */
     protected static function get_locations_user()
     {
-        $locs = array();
+        $locs = [];
         if (isset(Timber::$locations)) {
             if (is_string(Timber::$locations)) {
-                Timber::$locations = array( Timber::$locations );
+                Timber::$locations = [Timber::$locations];
             }
             foreach (Timber::$locations as $tloc => $namespace_or_tloc) {
                 if (is_string($tloc)) {
@@ -175,7 +177,7 @@ class LocationManager
     protected static function convert_to_array($var)
     {
         if (is_string($var)) {
-            $var = array($var);
+            $var = [$var];
         }
         return $var;
     }
@@ -186,7 +188,7 @@ class LocationManager
      */
     protected static function get_locations_caller($caller = false)
     {
-        $locs = array();
+        $locs = [];
         if ($caller && is_string($caller)) {
             $caller = realpath($caller);
             if (is_dir($caller)) {
@@ -216,10 +218,10 @@ class LocationManager
     {
         $open_basedir = ini_get('open_basedir');
 
-        return array(
-            Loader::MAIN_NAMESPACE => array(
-                $open_basedir ? ABSPATH : '/'
-            )
-        );
+        return [
+            Loader::MAIN_NAMESPACE => [
+                $open_basedir ? ABSPATH : '/',
+            ],
+        ];
     }
 }

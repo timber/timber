@@ -36,8 +36,8 @@ class PathHelper
     ) {
         $info = pathinfo(
             str_replace(
-                array( '%2F', '%5C' ),
-                array( '/', '\\' ),
+                ['%2F', '%5C'],
+                ['/', '\\'],
                 rawurlencode($path)
             ),
             $options
@@ -72,7 +72,7 @@ class PathHelper
     {
         return rawurldecode(
             basename(
-                str_replace(array( '%2F', '%5C' ), '/', rawurlencode($path)),
+                str_replace(['%2F', '%5C'], '/', rawurlencode($path)),
                 $suffix
             )
         );

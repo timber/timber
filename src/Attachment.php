@@ -95,7 +95,7 @@ class Attachment extends Post
      *
      * @var array An array of supported relative file types.
      */
-    private $image_file_types = array(
+    private $image_file_types = [
         'jpg',
         'jpeg',
         'png',
@@ -105,7 +105,7 @@ class Attachment extends Post
         'gif',
         'tiff',
         'pdf',
-    );
+    ];
 
     /**
      * Caption text.

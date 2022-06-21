@@ -61,15 +61,15 @@
             $filename = TestTimberImage::copyTestAttachment('flag.png');
             $destination_url = str_replace(ABSPATH, 'http://' . $_SERVER['HTTP_HOST'] . '/', $filename);
             $wp_filetype = wp_check_filetype(basename($filename), null);
-            $attachment = array(
+            $attachment = [
                 'post_mime_type' => $wp_filetype['type'],
                 'post_title' => preg_replace('/\.[^.]+$/', '', basename($filename)),
                 'post_content' => '',
-                'post_status' => 'inherit'
-            );
+                'post_status' => 'inherit',
+            ];
             $attach_id = wp_insert_attachment($attachment, $filename, $post_id);
             add_post_meta($post_id, '_thumbnail_id', $attach_id, true);
-            $data = array();
+            $data = [];
             $data['post'] = Timber::get_post($post_id);
             $data['size'] = $size;
             $data['crop'] = 'default';
@@ -185,11 +185,17 @@
             return [
                 [
                     'assets/thumb-test.twig',
-                    ['width' => 100, 'height' => 50]
+                    [
+                        'width' => 100,
+                        'height' => 50,
+                    ],
                 ], [
                     'assets/thumb-test-relative.twig',
-                    ['width' => 50, 'height' => 100]
-                ]
+                    [
+                        'width' => 50,
+                        'height' => 100,
+                    ],
+                ],
             ];
         }
     }

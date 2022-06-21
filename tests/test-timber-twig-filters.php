@@ -13,19 +13,21 @@
         {
             $data = '<pre><h1>thing</h1></pre>';
             $template = '{{foo|pretags}}';
-            $str = Timber::compile_string($template, array('foo' => $data));
+            $str = Timber::compile_string($template, [
+                'foo' => $data,
+            ]);
             $this->assertEquals('<pre>&lt;h1&gt;thing&lt;/h1&gt;</pre>', $str);
         }
 
         public function testTimberFilterString()
         {
-            $data['arr'] = array('foo', 'foo');
+            $data['arr'] = ['foo', 'foo'];
             $str = Timber::compile_string('{{arr|join(" ")}}', $data);
             $this->assertEquals('foo foo', trim($str));
-            $data['arr'] = array('bar');
+            $data['arr'] = ['bar'];
             $str = Timber::compile_string('{{arr|join}}', $data);
             $this->assertEquals('bar', trim($str));
-            $data['arr'] = array('foo', 'bar');
+            $data['arr'] = ['foo', 'bar'];
             $str = Timber::compile_string('{{arr|join(", ")}}', $data);
             $this->assertEquals('foo, bar', trim($str));
             $data['arr'] = 6;
@@ -35,14 +37,14 @@
 
         public function testTwigFilterList()
         {
-            $data['authors'] = array('Tom', 'Rick', 'Harry', 'Mike');
+            $data['authors'] = ['Tom', 'Rick', 'Harry', 'Mike'];
             $str = Timber::compile_string("{{authors|list}}", $data);
             $this->assertEquals('Tom, Rick, Harry and Mike', $str);
         }
 
         public function testTwigFilterListOxford()
         {
-            $data['authors'] = array('Tom', 'Rick', 'Harry', 'Mike');
+            $data['authors'] = ['Tom', 'Rick', 'Harry', 'Mike'];
             $str = Timber::compile_string("{{authors|list(',', ', and')}}", $data);
             $this->assertEquals('Tom, Rick, Harry, and Mike', $str);
         }

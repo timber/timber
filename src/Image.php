@@ -64,7 +64,7 @@ class Image extends Attachment
      * @api
      * @var array An array of available sizes for the image.
      */
-    public $sizes = array();
+    public $sizes = [];
 
     /**
      * Image dimensions.
@@ -100,7 +100,7 @@ class Image extends Attachment
             'Image::get_dimension',
             '2.0.0'
         );
-        return array($this->width(), $this->height());
+        return [$this->width(), $this->height()];
     }
 
     /**
@@ -148,10 +148,10 @@ class Image extends Attachment
             }
         }
 
-        return (object) array(
+        return (object) [
             'width' => $width,
             'height' => $height,
-        );
+        ];
     }
 
     /**
@@ -167,7 +167,7 @@ class Image extends Attachment
         );
         $pc = get_post_custom($iid);
         if (is_bool($pc)) {
-            return array();
+            return [];
         }
         return $pc;
     }
@@ -226,7 +226,7 @@ class Image extends Attachment
          */
         $src = apply_filters_deprecated(
             'timber_image_src',
-            array( $src, $this->ID ),
+            [$src, $this->ID],
             '2.0.0',
             'timber/image/src'
         );
@@ -343,7 +343,7 @@ class Image extends Attachment
             } else {
                 list($width, $height) = getimagesize($this->file_loc);
 
-                $this->dimensions = array();
+                $this->dimensions = [];
                 $this->dimensions[0] = $width;
                 $this->dimensions[1] = $height;
             }

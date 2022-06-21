@@ -57,7 +57,7 @@ class CommentThread extends \ArrayObject
      * @param array|boolean $args    Optional. An array of arguments or false if initialization
      *                               should be skipped.
      */
-    public function __construct($post_id, $args = array())
+    public function __construct($post_id, $args = [])
     {
         parent::__construct();
         $this->post_id = $post_id;
@@ -69,7 +69,7 @@ class CommentThread extends \ArrayObject
     /**
      * @internal
      */
-    protected function fetch_comments($args = array())
+    protected function fetch_comments($args = [])
     {
         $args['post_id'] = $this->post_id;
         $comments = get_comments($args);
@@ -88,7 +88,10 @@ class CommentThread extends \ArrayObject
 
     protected function merge_args($args)
     {
-        $base = array('status' => 'approve', 'order' => $this->_order);
+        $base = [
+            'status' => 'approve',
+            'order' => $this->_order,
+        ];
         return array_merge($base, $args);
     }
 
@@ -118,12 +121,12 @@ class CommentThread extends \ArrayObject
    * @internal
      * @param array $args Optional.
      */
-    public function init($args = array())
+    public function init($args = [])
     {
         global $overridden_cpage;
         $args = self::merge_args($args);
         $comments = $this->fetch_comments($args);
-        $tcs = array();
+        $tcs = [];
         if ('' == get_query_var('cpage') && get_option('page_comments')) {
             set_query_var('cpage', 'newest' == get_option('default_comments_page') ? get_comment_pages_count() : 1);
             $overridden_cpage = true;
@@ -134,8 +137,8 @@ class CommentThread extends \ArrayObject
             $tcs[$timber_comment->id] = $timber_comment;
         }
 
-        $parents = array();
-        $children = array();
+        $parents = [];
+        $children = [];
 
         foreach ($tcs as $comment) {
             if ($comment->is_child()) {
@@ -167,7 +170,7 @@ class CommentThread extends \ArrayObject
      */
     protected function clear()
     {
-        $this->exchangeArray(array());
+        $this->exchangeArray([]);
     }
 
     /**

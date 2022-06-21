@@ -97,7 +97,7 @@ class TextHelper
      *
      * @return null|string|string[]
      */
-    public static function remove_tags($string, $tags = array())
+    public static function remove_tags($string, $tags = [])
     {
         return preg_replace('#<(' . implode('|', $tags) . ')(?:[^>]+)?>.*?</\1>#s', '', $string);
     }
@@ -157,8 +157,8 @@ class TextHelper
                 unset($closedtags[array_search($openedtags[$i], $closedtags)]);
             }
         }
-        $html = str_replace(array('</br>', '</hr>', '</wbr>'), '', $html);
-        $html = str_replace(array('<br>', '<hr>', '<wbr>'), array('<br />', '<hr />', '<wbr />'), $html);
+        $html = str_replace(['</br>', '</hr>', '</wbr>'], '', $html);
+        $html = str_replace(['<br>', '<hr>', '<wbr>'], ['<br />', '<hr />', '<wbr />'], $html);
         return $html;
     }
 }

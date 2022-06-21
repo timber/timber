@@ -38,10 +38,14 @@
                 return true;
             });
             add_filter('timber/post/content/password_form', function ($form, $post) {
-                return Timber::compile('assets/password-form.twig', array('post' => $post));
+                return Timber::compile('assets/password-form.twig', [
+                    'post' => $post,
+                ]);
             }, 10, 2);
             $quote = 'The way to do well is to do well.';
-            $post_id = $this->factory->post->create(array('post_title' => 'Secrets!'));
+            $post_id = $this->factory->post->create([
+                'post_title' => 'Secrets!',
+            ]);
             $post = Timber::get_post($post_id);
             $post->post_content = $quote;
             $post->post_password = 'burrito';
