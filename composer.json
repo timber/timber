@@ -91,9 +91,10 @@
     "grump:install": "grumphp git:init",
     "lint": "parallel-lint --exclude .git --exclude vendor .",
     "qa": [
+      "@composer normalize --dry-run",
       "@lint",
-      "@cs",
-      "@test"
+      "@test",
+      "@cs"
     ],
     "test": "phpunit",
     "test:codecov": "phpunit --coverage-clover ./build/logs/clover.xml",
