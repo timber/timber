@@ -90,7 +90,7 @@ jobs:
           coverage: ${{ matrix.coverage && 'pcov' || 'none' }}
           tools: composer:v2
           extensions: curl, date, dom, iconv, json, libxml, mysql, ${{ matrix.extensions }}
-          ini-values: pcov.directory=lib
+          ini-values: pcov.directory=src
 
       - name: Shutdown default MySQL service
         run: sudo service mysql stop

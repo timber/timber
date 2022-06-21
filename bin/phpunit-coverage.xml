@@ -24,7 +24,7 @@
     </logging>
     <filter>
     	<whitelist processUncoveredFilesFromWhitelist="true">
-    		<directory suffix=".php">lib</directory>
+    		<directory suffix=".php">src</directory>
     		<file>timber.php</file>
   		</whitelist>
 	</filter>

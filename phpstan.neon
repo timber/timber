@@ -4,7 +4,7 @@ parameters:
     #level: max
     level: 5
     paths:
-        - lib/
+        - src/
     scanFiles:
         # Plugin stubs
         - vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php

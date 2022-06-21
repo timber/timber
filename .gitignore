@@ -7,7 +7,7 @@ bin/timber.php
 bin/deploy-to-wp-org.sh
 build
 /cache
-!/lib/Cache
+!/src/Cache
 *.swp
 *~
 wp-content
