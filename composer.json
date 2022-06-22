@@ -36,7 +36,7 @@
   },
   "require-dev": {
     "johnpbloch/wordpress": "*",
-    "phpunit/phpunit": "5.7.16 || 6.*",
+    "phpunit/phpunit": "5.7.21 || 6.*",
     "squizlabs/php_codesniffer": "3.*",
     "wp-coding-standards/wpcs": "^2.0",
     "wpackagist-plugin/advanced-custom-fields": "5.*",
