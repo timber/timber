@@ -3,7 +3,7 @@ Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 4.9.8
 Tested up to: 5.9.3
-Stable tag: 1.19.2
+Stable tag: 1.20.0
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -37,6 +37,10 @@ _Twig is the template language powering Timber; if you need a little background 
 **Changes for Theme Developers**
 
 **Fixes and improvements**
+
+= 1.20.0 =
+
+* Use newest version of Upstatement/routes for WordPress 6.0 by @jarednova in #2595
 
 = 1.19.2 =
 
