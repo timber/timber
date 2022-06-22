@@ -2,8 +2,8 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 4.9.8
-Tested up to: 5.8.1
-Stable tag: 1.19.1
+Tested up to: 6.0
+Stable tag: 1.19.2
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -37,7 +37,20 @@ _Twig is the template language powering Timber; if you need a little background 
 **Changes for Theme Developers**
 
 **Fixes and improvements**
-* Fix documented return type for Timber\Image::thumbnail #2463 (thanks @titouanmathis)
+
+= 1.19.2 =
+
+**Fixes and improvements**
+
+* Handle for duplicate term names in difft taxes by @jarednova in #2390
+* Fix typo in resize error message. by @Web-Assembler in #2523
+* Add webp support to letterbox filter by @ThomasBerends in #2528
+* Update composer/installers from v1 to v2 by @adamtomat in #2543
+* Improve composer version ranges by @gchtr in #2550
+
+* @Web-Assembler made their first contribution in #2523
+* @ThomasBerends made their first contribution in #2528
+* Full Changelog: https://github.com/timber/timber/compare/1.19.1...1.19.2
 
 = 1.19.1 =
 
