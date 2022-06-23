@@ -1,5 +1,5 @@
 ---
-name: 1.x Release Checklist
+name: Release Checklist (1.x)
 about: "\U0001F512 Maintainers only: create a checklist for a regular release process"
 
 ---
