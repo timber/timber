@@ -67,7 +67,7 @@ composer lint
 You can check a single file like this:
 
 ```bash
-./vendor/bin/phpcs ./lib/Menu.php
+./vendor/bin/phpcs ./src/Menu.php
 ```
 
 Use `./vendor/bin/phpcs --help` for a list of available settings or refer to the [PHP_CodeSniffer documentation](https://github.com/squizlabs/PHP_CodeSniffer/wiki).

@@ -4,7 +4,7 @@ title: "Custom Integrations"
 
 The new Integrations API (available from Timber 2.0) provides a generalized way to integrate with third-party plugins.
 
-It’s how, for example, the built-in [Advanced Custom Fields](/docs/v2/integrations/advanced-custom-fields/) integration is implemented: There is nothing in the Timber core (i.e. `Timber\Timber`) that "knows" about ACF. All the convenient `meta` mapping and stuff gets hooked in by a [single class](https://github.com/timber/timber/blob/2.x/lib/Integration/AcfIntegration.php) (`Timber\Integration\AcfIntegration`).
+It’s how, for example, the built-in [Advanced Custom Fields](/docs/v2/integrations/advanced-custom-fields/) integration is implemented: There is nothing in the Timber core (i.e. `Timber\Timber`) that "knows" about ACF. All the convenient `meta` mapping and stuff gets hooked in by a [single class](https://github.com/timber/timber/blob/2.x/src/Integration/AcfIntegration.php) (`Timber\Integration\AcfIntegration`).
 
 To achieve this, that class implements an interface: `Timber\Integrations\IntegrationInterface`:
 
@@ -64,7 +64,7 @@ This tells Timber two important things:
 
 First, the `should_init()` method tells Timber to initialize this integration (i.e. call `init()`) if Advanced Custom Fields is activated (in which case the `ACF` class will exist). In your own integration, this should return `true` _if and only if_ the plugin of choice is activated. Choosing a reasonable check to make is up to you, and will of course depend on the plugin.
 
-Second, `init()` extends Timber’s core logic, in this case the `timber/post/pre_meta` hook, which is called internally in `Timber\Post` _before_ the core WordPress function `get_post_meta()` is called. This ensures that Timber will always prefer ACF’s behavior over the normal WP way. 
+Second, `init()` extends Timber’s core logic, in this case the `timber/post/pre_meta` hook, which is called internally in `Timber\Post` _before_ the core WordPress function `get_post_meta()` is called. This ensures that Timber will always prefer ACF’s behavior over the normal WP way.
 
 There are many [actions](/docs/v2/hooks/actions) and [filters](/docs/v2/hooks/filters) to hook into: For your integration, find the ones you need to override and call them from your `init()` method.
 
