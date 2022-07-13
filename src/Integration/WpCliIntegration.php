@@ -5,6 +5,11 @@ namespace Timber\Integration;
 use Timber\Integration\CLI\TimberCommand;
 use WP_CLI;
 
+/**
+ * Class WpCliIntegration
+ *
+ * Adds a "timber" command to WP CLI.
+ */
 class WpCliIntegration implements IntegrationInterface
 {
     public function should_init(): bool

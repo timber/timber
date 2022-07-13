@@ -11,7 +11,7 @@ if (!class_exists('WP_CLI_Command')) {
 class TimberCommand extends \WP_CLI_Command
 {
     /**
-     * Clears Timber and Twig's Cache
+     * Clears Timber and Twig’s cache
      *
      * ## EXAMPLES
      *
@@ -22,6 +22,7 @@ class TimberCommand extends \WP_CLI_Command
     {
         $mode = $mode ?: 'all';
         $cleared = Cleaner::clear_cache($mode);
+
         if ($cleared) {
             \WP_CLI::success("Cleared {$mode} cached contents");
         } else {
@@ -30,7 +31,7 @@ class TimberCommand extends \WP_CLI_Command
     }
 
     /**
-     * Clears Twig's Cache
+     * Clears Twig’s Cache
      *
      * ## EXAMPLES
      *
@@ -43,7 +44,7 @@ class TimberCommand extends \WP_CLI_Command
     }
 
     /**
-     * Clears Timber's Cache
+     * Clears Timber’s cache
      *
      * ## EXAMPLES
      *
