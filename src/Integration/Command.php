@@ -1,6 +1,6 @@
 <?php
 
-namespace Timber\Integrations;
+namespace Timber\Integration;
 
 use Timber\Loader;
 
