@@ -2,7 +2,7 @@
 
 namespace Timber\Integration\CLI;
 
-use Timber\Integration\Command;
+use Timber\Cache\Cleaner;
 
 if (!class_exists('WP_CLI_Command')) {
     return;
@@ -21,7 +21,7 @@ class TimberCommand extends \WP_CLI_Command
     public function clear_cache($mode = 'all')
     {
         $mode = $mode ?: 'all';
-        $cleared = Command::clear_cache($mode);
+        $cleared = Cleaner::clear_cache($mode);
         if ($cleared) {
             \WP_CLI::success("Cleared {$mode} cached contents");
         } else {
