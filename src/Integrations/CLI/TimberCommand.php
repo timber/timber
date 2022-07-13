@@ -1,6 +1,6 @@
 <?php
 
-namespace Timber\Integrations;
+namespace Timber\Integrations\CLI;
 
 use Timber\Integrations\Command;
 
@@ -8,7 +8,7 @@ if ( !class_exists('WP_CLI_Command') ) {
 	return;
 }
 
-class Timber_WP_CLI_Command extends \WP_CLI_Command {
+class TimberCommand extends \WP_CLI_Command {
 
 	/**
 	 * Clears Timber and Twig's Cache
