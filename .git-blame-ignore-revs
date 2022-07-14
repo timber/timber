@@ -1,0 +1,17 @@
+# Ignore commits from blame views.
+
+# Renamed lib/ to src/
+29d729e449a377cdcae81dc80ef3c614bba370c2
+
+# Coding Style: Indented with spaces
+34fe63cc8f956a653fe80d3e45ed42036942176f
+
+# Coding Style: Applied PSR-12
+c160302780b0800a3d9ecb3b0ab7c5a311537033
+
+# Coding Style: Updates Array notation
+b2474ccd46f9374d52f00c8a195be2266463cf4f
+7f2fa4b2637f60f509294fbd3df0050047b4cfcc
+
+# Coding Style: Updated Spaces
+73123a96d3fc055f08da036b0121b469a75e3371
