@@ -41,7 +41,15 @@ class TestTimberWpCli extends Timber_UnitTestCase
         sleep(1);
     }
 
-    public function test_clear_cache_command()
+    public function test_clear_cache_command_without_cache()
+    {
+        $command = new TimberCommand();
+        $command->clear_cache();
+
+        $this->expectOutputString('Success: Cleared all cached contents');
+    }
+
+    public function test_clear_cache_command_with_caches()
     {
         // Make sure Timber and Twig caches exist.
         $this->create_timber_database_cache();
@@ -53,14 +61,6 @@ class TestTimberWpCli extends Timber_UnitTestCase
         $command->clear_cache();
 
         $this->expectOutputString('Success: Cleared all cached contents');
-    }
-
-    public function test_clear_cache_command_fail()
-    {
-        $command = new TimberCommand();
-        $command->clear_cache();
-
-        $this->expectOutputString('Warning: Failed to clear all cached contents');
     }
 
     public function test_clear_cache_timber_command()
@@ -78,6 +78,7 @@ class TestTimberWpCli extends Timber_UnitTestCase
     public function test_clear_cache_twig_command()
     {
         // Make sure a Twig cache exists.
+        $this->enable_twig_cache();
         $this->create_twig_cache();
 
         $command = new TimberCommand();
@@ -86,11 +87,21 @@ class TestTimberWpCli extends Timber_UnitTestCase
         $this->expectOutputString('Success: Cleared twig cached contents');
     }
 
-    public function test_clear_cache_twig_command_fail()
+    public function test_clear_cache_twig_command_without_cache()
     {
         $command = new TimberCommand();
         $command->clear_cache_twig();
 
-        $this->expectOutputString('Warning: Failed to clear twig cached contents');
+        $this->expectOutputString('Success: Cleared twig cached contents');
+    }
+
+    public function test_clear_cache_twig_command_without_cache_but_twig_cache_activated()
+    {
+        $this->enable_twig_cache();
+
+        $command = new TimberCommand();
+        $command->clear_cache_twig();
+
+        $this->expectOutputString('Success: Cleared twig cached contents');
     }
 }
