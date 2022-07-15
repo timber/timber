@@ -71,3 +71,21 @@ function wpml_object_id_filter($element_id, $element_type = 'post', $return_orig
 
 // Make sure translations are installed.
 Timber_UnitTestCase::install_translation('de_DE');
+
+/**
+ * Bootstrap the CLI dependencies.
+ *
+ * This is important to test the CLI classes.
+ */
+if (!defined('WP_CLI_ROOT')) {
+    define('WP_CLI_ROOT', __DIR__ . '/../vendor/wp-cli/wp-cli');
+}
+
+require_once WP_CLI_ROOT . '/php/utils.php';
+require_once WP_CLI_ROOT . '/php/dispatcher.php';
+require_once WP_CLI_ROOT . '/php/class-wp-cli.php';
+require_once WP_CLI_ROOT . '/php/class-wp-cli-command.php';
+require_once __DIR__ . '/WpCliLogger.php';
+
+\WP_CLI\Utils\load_dependencies();
+\WP_CLI::set_logger(new WpCliLogger(false));
