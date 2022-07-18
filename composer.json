@@ -42,7 +42,6 @@
     "symplify/easy-coding-standard": "^11.0",
     "szepeviktor/phpstan-wordpress": "^1.1",
     "twig/cache-extra": "^3.3",
-    "wp-cli/wp-cli": "^2.6",
     "wp-coding-standards/wpcs": "^2.0",
     "wpackagist-plugin/advanced-custom-fields": "^5.0",
     "wpackagist-plugin/co-authors-plus": "^3.3",

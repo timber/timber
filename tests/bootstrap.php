@@ -78,14 +78,16 @@ Timber_UnitTestCase::install_translation('de_DE');
  * This is important to test the CLI classes.
  */
 if (!defined('WP_CLI_ROOT')) {
-    define('WP_CLI_ROOT', __DIR__ . '/../vendor/wp-cli/wp-cli');
+    define('WP_CLI_ROOT', "phar://{$_tests_dir}/wp-cli.phar/vendor/wp-cli/wp-cli");
 }
 
 require_once WP_CLI_ROOT . '/php/utils.php';
 require_once WP_CLI_ROOT . '/php/dispatcher.php';
 require_once WP_CLI_ROOT . '/php/class-wp-cli.php';
 require_once WP_CLI_ROOT . '/php/class-wp-cli-command.php';
-require_once __DIR__ . '/WpCliLogger.php';
 
 \WP_CLI\Utils\load_dependencies();
+
+require_once __DIR__ . '/WpCliLogger.php';
+
 \WP_CLI::set_logger(new WpCliLogger(false));
