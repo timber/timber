@@ -116,6 +116,22 @@ class Attachment extends Post
     public $caption;
 
     /**
+     * Create and initialize a new instance of the called Post class
+     * (i.e. Timber\Attachment or a subclass).
+     *
+     * @internal
+     * @return Timber\Attachment
+     */
+    public static function build(WP_Post $wp_post): self
+    {
+        $post = parent::build($wp_post);
+
+        $post->caption = $post->post_excerpt;
+
+        return $post;
+    }
+
+    /**
      * Gets the src for an attachment.
      *
      * @api
