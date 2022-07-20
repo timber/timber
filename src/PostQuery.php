@@ -139,6 +139,19 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
     }
 
     /**
+     * Gets the original query used to get a collection of Timber posts.
+     *
+     * @deprecated 2.0.0, use PostQuery::query() instead.
+     * @return WP_Query|null
+     */
+    public function get_query()
+    {
+        Helper::deprecated('Timber\PostQuery::get_query()', 'Timber\PostQuery::query()', '2.0.0');
+
+        return $this->wp_query;
+    }
+
+    /**
      * Override data printed by var_dump() and similar. Realizes the collection before
      * returning. Due to a PHP bug, this only works in PHP >= 7.4.
      *
