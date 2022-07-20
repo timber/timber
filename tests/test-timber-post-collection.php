@@ -137,6 +137,23 @@ class TestTimberPostQuery extends Timber_UnitTestCase
         $this->assertEquals([$post_ids[0]], $posts->query()->query_vars['post__in']);
     }
 
+    /**
+     * @ticket https://github.com/timber/timber/issues/2605
+     * @expectedDeprecated Timber\PostQuery::get_query()
+     * @return void
+     */
+    public function testQueryGetterDeprecated()
+    {
+        $post_ids = $this->factory->post->create_many(2);
+
+        $posts = Timber::get_posts([
+            'post_type' => 'post',
+            'post__in' => [$post_ids[0]],
+        ]);
+
+        $this->assertEquals([$post_ids[0]], $posts->get_query()->query_vars['post__in']);
+    }
+
     public function testTheLoop()
     {
         foreach (range(1, 3) as $i) {
