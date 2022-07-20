@@ -108,30 +108,6 @@ class Attachment extends Post
     ];
 
     /**
-     * Caption text.
-     *
-     * @api
-     * @var string The caption that is stored as post_excerpt in the posts table in the database.
-     */
-    public $caption;
-
-    /**
-     * Create and initialize a new instance of the called Post class
-     * (i.e. Timber\Attachment or a subclass).
-     *
-     * @internal
-     * @return Timber\Attachment
-     */
-    public static function build(WP_Post $wp_post): self
-    {
-        $post = parent::build($wp_post);
-
-        $post->caption = $post->post_excerpt;
-
-        return $post;
-    }
-
-    /**
      * Gets the src for an attachment.
      *
      * @api
@@ -307,6 +283,29 @@ class Attachment extends Post
         }
 
         return wp_get_attachment_url($this->ID);
+    }
+
+    /**
+     * Gets the caption of an attachment.
+     *
+     * @api
+     * @since 2.0
+     * @example
+     * ```twig
+     * <figure>
+     *     <img src="{{ post.thumbnail.src }}">
+     *
+     *     {% if post.thumbnail is not empty %}
+     *         <figcaption>{{ post.thumbnail.caption }}</figcaption
+     *     {% endif %}
+     * </figure>
+     * ```
+     *
+     * @return string
+     */
+    public function caption()
+    {
+        return $this->post_excerpt;
     }
 
     /**
