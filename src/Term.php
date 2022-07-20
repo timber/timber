@@ -44,6 +44,15 @@ use WP_Term;
  */
 class Term extends CoreEntity
 {
+    /**
+     * The underlying WordPress Core object.
+     *
+     * @since 2.0.0
+     *
+     * @var \WP_Term|null
+     */
+    protected ?WP_Term $wp_object;
+
     public $object_type = 'term';
 
     public static $representation = 'term';
@@ -143,6 +152,7 @@ class Term extends CoreEntity
     {
         $this->ID = $term->term_id;
         $this->id = $term->term_id;
+        $this->wp_object = $term;
         $this->import($term);
     }
 
@@ -217,6 +227,18 @@ class Term extends CoreEntity
 
     /* Public methods
     ===================== */
+
+    /**
+     * Gets the underlying WordPress Core object.
+     *
+     * @since 2.0.0
+     *
+     * @return WP_Term|null
+     */
+    public function wp_object(): ?WP_Term
+    {
+        return $this->wp_object;
+    }
 
     /**
      * @deprecated 2.0.0, use `{{ term.edit_link }}` instead.

@@ -2,7 +2,7 @@
 
 namespace Timber;
 
-abstract class CoreEntity extends Core implements CoreInterface, MetaInterface
+abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInterface, MetaInterface
 {
     /**
      * Gets an object meta value.

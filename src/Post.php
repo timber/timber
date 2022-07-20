@@ -52,6 +52,15 @@ use WP_Post;
 class Post extends CoreEntity implements DatedInterface, Setupable
 {
     /**
+     * The underlying WordPress Core object.
+     *
+     * @since 2.0.0
+     *
+     * @var \WP_Post|null
+     */
+    protected ?WP_Post $wp_object;
+
+    /**
      * @var string What does this class represent in WordPress terms?
      */
     public $object_type = 'post';
@@ -173,6 +182,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
 
         $post->id = $wp_post->ID;
         $post->ID = $wp_post->ID;
+        $post->wp_object = $wp_post;
 
         $data = $post->get_info($wp_post);
 
@@ -236,6 +246,18 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         }
 
         return parent::__call($field, $args);
+    }
+
+    /**
+     * Gets the underlying WordPress Core object.
+     *
+     * @since 2.0.0
+     *
+     * @return WP_Post|null
+     */
+    public function wp_object(): ?WP_Post
+    {
+        return $this->wp_object;
     }
 
     /**
