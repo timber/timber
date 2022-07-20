@@ -296,6 +296,10 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase
         $this->assertEquals('PDF', $result);
     }
 
+    /**
+     * @ticket https://github.com/timber/timber/issues/2607
+     * @return void
+     */
     public function testAttachmentCaption()
     {
         $caption = 'Hummingbirds can’t walk.';
@@ -307,6 +311,6 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase
         ]);
         $attachment = Timber::get_post($attachment_id);
 
-        $this->assertEquals($caption, $attachment->caption);
+        $this->assertEquals($caption, $attachment->caption());
     }
 }
