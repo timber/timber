@@ -295,4 +295,18 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase
         ]);
         $this->assertEquals('PDF', $result);
     }
+
+    public function testAttachmentCaption()
+    {
+        $caption = 'Hummingbirds can’t walk.';
+        $post_id = $this->factory->post->create();
+        $attachment_id = self::get_attachment($post_id, 'dummy-pdf.pdf');
+        wp_update_post([
+            'ID' => $attachment_id,
+            'post_excerpt' => $caption,
+        ]);
+        $attachment = Timber::get_post($attachment_id);
+
+        $this->assertEquals($caption, $attachment->caption);
+    }
 }
