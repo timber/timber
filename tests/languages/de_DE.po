@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-07-26T10:52:21+00:00\n"
-"PO-Revision-Date: 2022-07-26 13:07+0200\n"
+"PO-Revision-Date: 2022-07-26 13:40+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -14,6 +14,12 @@ msgstr ""
 "X-Generator: Poedit 3.1.1\n"
 "X-Poedit-Basepath: ../../src\n"
 "X-Poedit-SearchPath-0: .\n"
+
+#. translators: Time difference between two dates, in days. %s: Number of days.
+msgid "%s day"
+msgid_plural "%s days"
+msgstr[0] "%s Tag"
+msgstr[1] "%s Tagen"
 
 #. translators: 1: Month name, 2: 4-digit year.
 #. translators: 1: Month, 2: Year.
