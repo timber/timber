@@ -46,7 +46,7 @@ class TestTimberWpCli extends Timber_UnitTestCase
         $command = new TimberCommand();
         $command->clear_cache();
 
-        $this->expectOutputString('Success: Cleared all cached contents');
+        $this->expectOutputString('Clearing all caches …Success: Cleared all caches.');
     }
 
     public function test_clear_cache_command_with_caches()
@@ -60,7 +60,7 @@ class TestTimberWpCli extends Timber_UnitTestCase
         $command = new TimberCommand();
         $command->clear_cache();
 
-        $this->expectOutputString('Success: Cleared all cached contents');
+        $this->expectOutputString('Clearing all caches …Success: Cleared all caches.');
     }
 
     public function test_clear_cache_timber_command()
@@ -70,9 +70,9 @@ class TestTimberWpCli extends Timber_UnitTestCase
         $this->create_timber_object_cache();
 
         $command = new TimberCommand();
-        $command->clear_cache_timber();
+        $command->clear_cache(['timber']);
 
-        $this->expectOutputString('Success: Cleared timber cached contents');
+        $this->expectOutputString('Clearing Timber caches …Success: Cleared Timber caches.');
     }
 
     public function test_clear_cache_twig_command()
@@ -82,17 +82,17 @@ class TestTimberWpCli extends Timber_UnitTestCase
         $this->create_twig_cache();
 
         $command = new TimberCommand();
-        $command->clear_cache_twig();
+        $command->clear_cache(['twig']);
 
-        $this->expectOutputString('Success: Cleared twig cached contents');
+        $this->expectOutputString('Clearing Twig caches …Success: Cleared Twig caches.');
     }
 
     public function test_clear_cache_twig_command_without_cache()
     {
         $command = new TimberCommand();
-        $command->clear_cache_twig();
+        $command->clear_cache(['twig']);
 
-        $this->expectOutputString('Success: Cleared twig cached contents');
+        $this->expectOutputString('Clearing Twig caches …Success: Cleared Twig caches.');
     }
 
     public function test_clear_cache_twig_command_without_cache_but_twig_cache_activated()
@@ -100,8 +100,8 @@ class TestTimberWpCli extends Timber_UnitTestCase
         $this->enable_twig_cache();
 
         $command = new TimberCommand();
-        $command->clear_cache_twig();
+        $command->clear_cache(['twig']);
 
-        $this->expectOutputString('Success: Cleared twig cached contents');
+        $this->expectOutputString('Clearing Twig caches …Success: Cleared Twig caches.');
     }
 }

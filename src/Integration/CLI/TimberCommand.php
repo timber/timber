@@ -8,51 +8,46 @@ if (!class_exists('WP_CLI_Command')) {
     return;
 }
 
+/**
+ * Class TimberCommand
+ *
+ * Handles WP-CLI commands.
+ */
 class TimberCommand extends \WP_CLI_Command
 {
     /**
-     * Clears Timber and Twig’s cache
+     * Clears caches in Timber.
+     *
+     * ## OPTIONS
+     *
+     * [<mode>]
+     * : Optional. The type of cache to clear. Accepts 'timber' or 'twig'. If not provided, the command will clear all caches.
      *
      * ## EXAMPLES
      *
-     *    wp timber clear_cache
+     *    # Clear all caches.
+     *    wp timber clear-cache
      *
+     *    # Clear Timber caches.
+     *    wp timber clear-cache timber
+     *
+     *    # Clear Twig caches.
+     *    wp timber clear-cache twig
+     *
+     * @subcommand clear-cache
+     * @alias clear_cache
      */
-    public function clear_cache($mode = 'all')
+    public function clear_cache($args = [])
     {
-        $mode = $mode ?: 'all';
-        $cleared = Cleaner::clear_cache($mode);
+        $mode = $args[0] ?? 'all';
+        $mode_string = 'all' !== $mode ? ucfirst($mode) : $mode;
 
-        if ($cleared) {
-            \WP_CLI::success("Cleared {$mode} cached contents");
+        \WP_CLI::log("Clearing {$mode_string} caches …");
+
+        if (Cleaner::clear_cache($mode)) {
+            \WP_CLI::success("Cleared {$mode_string} caches.");
         } else {
-            \WP_CLI::warning("Failed to clear {$mode} cached contents");
+            \WP_CLI::warning("Failed to clear {$mode_string} cached contents.");
         }
-    }
-
-    /**
-     * Clears Twig’s Cache
-     *
-     * ## EXAMPLES
-     *
-     *    wp timber clear_cache_twig
-     *
-     */
-    public function clear_cache_twig()
-    {
-        $this->clear_cache('twig');
-    }
-
-    /**
-     * Clears Timber’s cache
-     *
-     * ## EXAMPLES
-     *
-     *    wp timber clear_cache_timber
-     *
-     */
-    public function clear_cache_timber()
-    {
-        $this->clear_cache('timber');
     }
 }

@@ -11,38 +11,23 @@ Before you can use the CLI, you need to [install WP-CLI](https://make.wordpress.
 
 ## Commands
 
-You can run the following commands from the root directory of your WordPress installation.
+You can run the following CLI commands from the root directory of your WordPress installation.
 
-### `wp timber`
+If you need help with a command, use `wp help timber` or `wp help timber <command>`, e.g. `wp help timber clear-cache`.
 
-The `wp timber` command doesn’t do anything. But if you run it, it tells you which commands are available.
+### `wp timber clear-cache`
 
-```bash
-wp timber
-```
-
-### `wp timber clear_cache`
-
-Clears Timber and Twig’s cache. Runs `Timber\Cache\Cleaner::clear_cache()`.
+Clears Timber and Twig caches. Runs `Timber\Cache\Cleaner::clear_cache()` in the background.
 
 ```bash
-wp timber clear_cache
-```
+# Clear all caches.
+wp timber clear-cache
 
-### `wp timber clear_cache_twig`
+# Clear Timber caches.
+wp timber clear-cache timber
 
-Clears Twig’s cache only. Runs `Timber\Cache\Cleaner::clear_cache_twig()`.
-
-```bash
-wp timber clear_cache_twig
-```
-
-### `wp timber clear_cache_timber`
-
-Clears Timber’s cache only. Runs `Timber\Cache\Cleaner::clear_cache_timber()`.
-
-```bash
-wp timber clear_cache_timber
+# Clear Twig caches.
+wp timber clear-cache twig
 ```
 
 ## Contributing commands
