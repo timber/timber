@@ -6,12 +6,8 @@ use Timber\Loader;
 
 class Cleaner
 {
-    public static function clear_cache($mode = 'all')
+    public static function clear_cache(string $mode = 'all'): bool
     {
-        if (is_array($mode)) {
-            $mode = reset($mode);
-        }
-
         switch ($mode) {
             case 'all':
                 $twig_cache = self::clear_cache_twig();
