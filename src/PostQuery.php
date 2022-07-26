@@ -133,7 +133,7 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
      * @since 2.0
      * @return WP_Query|null
      */
-    public function query()
+    public function query(): ?WP_Query
     {
         return $this->wp_query;
     }
@@ -144,7 +144,7 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
      * @deprecated 2.0.0, use PostQuery::query() instead.
      * @return WP_Query|null
      */
-    public function get_query()
+    public function get_query(): ?WP_Query
     {
         Helper::deprecated('Timber\PostQuery::get_query()', 'Timber\PostQuery::query()', '2.0.0');
 
