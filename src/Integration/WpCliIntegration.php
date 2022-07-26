@@ -14,7 +14,7 @@ class WpCliIntegration implements IntegrationInterface
 {
     public function should_init(): bool
     {
-        return defined('WP_CLI') && WP_CLI;
+        return defined('WP_CLI') && class_exists('WP_CLI');
     }
 
     public function init(): void
