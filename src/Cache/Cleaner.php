@@ -4,9 +4,34 @@ namespace Timber\Cache;
 
 use Timber\Loader;
 
+/**
+ * Class Cleaner
+ *
+ * @api
+ */
 class Cleaner
 {
     public static function clear_cache(string $mode = 'all'): bool
+    /**
+     * Clears Timber’s caches.
+     *
+     * @api
+     * @since 2.0.0
+     * @example
+     * ```php
+     * // Clear all caches.
+     * Timber\Cache\Cleaner::clear_cache();
+     *
+     * // Clear Timber’s cache only.
+     * Timber\Cache\Cleaner::clear_cache( 'timber' );
+     *
+     * // Clear Twigs’s cache only.
+     * Timber\Cache\Cleaner::clear_cache( 'twig' );
+     * ```
+     *
+     * @param string $mode Optional. The cache to clear. Accepts ``, `timber` or `twig`. Default ``, which clears all caches.
+     * @return bool
+     */
     {
         switch ($mode) {
             case 'all':
@@ -27,12 +52,36 @@ class Cleaner
         return false;
     }
 
+    /**
+     * Clears Timber’s cache.
+     *
+     * @api
+     * @since 2.0.0
+     * @example
+     * ```php
+     * Timber\Cache\Cleaner::clear_cache_timber();
+     * ```
+     *
+     * @return bool
+     */
     public static function clear_cache_timber()
     {
         $loader = new Loader();
         return $loader->clear_cache_timber();
     }
 
+    /**
+     * Clears Twig’s cache.
+     *
+     * @api
+     * @since 2.0.0
+     * @example
+     * ```php
+     * Timber\Cache\Cleaner::clear_cache_twig();
+     * ```
+     *
+     * @return bool
+     */
     public static function clear_cache_twig()
     {
         $loader = new Loader();
