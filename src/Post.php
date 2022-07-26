@@ -174,7 +174,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * (i.e. Timber\Post or a subclass).
      *
      * @internal
-     * @return Timber\Post
+     * @return \Timber\Post
      */
     public static function build(WP_Post $wp_post): self
     {
@@ -279,13 +279,10 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         global $post;
         global $wp_query;
 
-        // @todo: Load $wp_post in Post::build() and save it in a property.
-        $wp_post = get_post($this->ID);
-
         // Mimick WordPress behavior to improve compatibility with third party plugins.
         $wp_query->in_the_loop = true;
 
-        if (!$wp_post) {
+        if (!$this->wp_object) {
             return $this;
         }
 
@@ -297,11 +294,11 @@ class Post extends CoreEntity implements DatedInterface, Setupable
          */
         // phpcs:ignore WordPress.WP.GlobalVariablesOverride.OverrideProhibited
         if (!$post || isset($post->ID) && $post->ID !== $this->ID) {
-            $post = $wp_post;
+            $post = $this->wp_object;
         }
 
         // The setup_postdata() function will call the 'the_post' action.
-        $wp_query->setup_postdata($wp_post);
+        $wp_query->setup_postdata($this->wp_object);
 
         return $this;
     }
