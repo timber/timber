@@ -176,6 +176,15 @@ install_db() {
 	fi
 }
 
+# Install WP-CLI
+install_wp_cli() {
+    curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+    chmod +x wp-cli.phar
+    mkdir -p $TMPDIR/wp-cli
+    mv wp-cli.phar $WP_TESTS_DIR/
+}
+
 install_wp
 install_test_suite
 install_db
+install_wp_cli

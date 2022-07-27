@@ -33,6 +33,26 @@ tests_add_filter('muplugins_loaded', '_manually_load_plugin');
 // WPML integration
 define('ICL_LANGUAGE_CODE', 'en');
 
+/**
+ * Bootstrap the CLI dependencies.
+ *
+ * This is important to test the CLI classes.
+ */
+if (!defined('WP_CLI_ROOT')) {
+    define('WP_CLI_ROOT', "phar://{$_tests_dir}/wp-cli.phar/vendor/wp-cli/wp-cli");
+}
+
+require_once WP_CLI_ROOT . '/php/utils.php';
+require_once WP_CLI_ROOT . '/php/dispatcher.php';
+require_once WP_CLI_ROOT . '/php/class-wp-cli.php';
+require_once WP_CLI_ROOT . '/php/class-wp-cli-command.php';
+
+\WP_CLI\Utils\load_dependencies();
+
+require_once __DIR__ . '/WpCliLogger.php';
+
+\WP_CLI::set_logger(new WpCliLogger(false));
+
 /*
  * Bootstrap WordPress. This will also load the Composer autoload file, the PHPUnit Polyfills
  * and the custom autoloader for the TestCase and the mock object classes.
