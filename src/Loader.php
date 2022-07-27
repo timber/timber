@@ -306,7 +306,6 @@ class Loader
      */
     public function get_twig()
     {
-
         // Default options.
         $environment_options = [
             'debug' => WP_DEBUG,
@@ -511,58 +510,92 @@ class Loader
         return $twig;
     }
 
+    /**
+     * Clears Timber’s cache.
+     *
+     * @param string $cache_mode
+     * @return bool Whether Timber’s cache was cleared
+     */
     public function clear_cache_timber($cache_mode = self::CACHE_USE_DEFAULT)
     {
         //_transient_timberloader
-        $object_cache = false;
-        if (isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache'])) {
-            $object_cache = true;
-        }
         $cache_mode = $this->_get_cache_mode($cache_mode);
+
         if (self::CACHE_TRANSIENT === $cache_mode || self::CACHE_SITE_TRANSIENT === $cache_mode) {
-            return self::clear_cache_timber_database();
-        } elseif (self::CACHE_OBJECT === $cache_mode && $object_cache) {
-            return self::clear_cache_timber_object();
+            // $wpdb->query() might return 0 affected rows, but that means it’s still successful.
+            return false !== self::clear_cache_timber_database();
+        } elseif (self::CACHE_OBJECT === $cache_mode && $this->is_object_cache()) {
+            return false !== self::clear_cache_timber_object();
         }
+
         return false;
     }
 
+    /**
+     * Clears Timber cache in database.
+     *
+     * @return bool|int Number of deleted rows or false on error.
+     */
     protected static function clear_cache_timber_database()
     {
         global $wpdb;
-        $query = $wpdb->prepare(
+
+        return $wpdb->query($wpdb->prepare(
             "DELETE FROM $wpdb->options WHERE option_name LIKE '%s'",
             '_transient%timberloader_%'
-        );
-        return $wpdb->query($query);
+        ));
     }
 
+    /**
+     * @return bool True when no cache was found or all cache was deleted, false when there was an
+     *              error deleting the cache.
+     */
     protected static function clear_cache_timber_object()
     {
         global $wp_object_cache;
-        if (isset($wp_object_cache->cache[self::CACHEGROUP])) {
-            $items = $wp_object_cache->cache[self::CACHEGROUP];
-            foreach ($items as $key => $value) {
-                if (is_multisite()) {
-                    $key = preg_replace('/^(.*?):/', '', $key);
-                }
-                wp_cache_delete($key, self::CACHEGROUP);
-            }
-            return true;
+
+        $result = true;
+
+        // Return true if no object cache is set.
+        if (!isset($wp_object_cache->cache[self::CACHEGROUP])) {
+            return $result;
         }
+
+        $items = $wp_object_cache->cache[self::CACHEGROUP];
+
+        foreach ($items as $key => $value) {
+            if (is_multisite()) {
+                $key = preg_replace('/^(.*?):/', '', $key);
+            }
+
+            // If any cache couldn’t be deleted, the result will be false.
+            if (!wp_cache_delete($key, self::CACHEGROUP)) {
+                $result = false;
+            }
+        }
+
+        return $result;
     }
 
     public function clear_cache_twig()
     {
         $twig = $this->get_twig();
-        if (method_exists($twig, 'clearCacheFiles')) {
-            $twig->clearCacheFiles();
-        }
-        $cache = $twig->getCache();
-        if ($cache) {
-            self::rrmdir($twig->getCache());
+
+        // Get the configured cache location.
+        // @todo What if this is a custom caching implementation?
+        $cache_location = $twig->getCache(true);
+
+        // Cache not activated.
+        if (!$cache_location) {
             return true;
         }
+
+        if (is_string($cache_location) && is_dir($cache_location)) {
+            // @todo What if not all files could be deleted?
+            self::rrmdir($cache_location);
+            return true;
+        }
+
         return false;
     }
 
@@ -616,22 +649,15 @@ class Loader
      */
     public function get_cache($key, $group = self::CACHEGROUP, $cache_mode = self::CACHE_USE_DEFAULT)
     {
-        $object_cache = false;
-
-        if (isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache'])) {
-            $object_cache = true;
-        }
-
         $cache_mode = $this->_get_cache_mode($cache_mode);
-
         $value = false;
-
         $trans_key = substr($group . '_' . $key, 0, self::TRANS_KEY_LEN);
+
         if (self::CACHE_TRANSIENT === $cache_mode) {
             $value = get_transient($trans_key);
         } elseif (self::CACHE_SITE_TRANSIENT === $cache_mode) {
             $value = get_site_transient($trans_key);
-        } elseif (self::CACHE_OBJECT === $cache_mode && $object_cache) {
+        } elseif (self::CACHE_OBJECT === $cache_mode && $this->is_object_cache()) {
             $value = wp_cache_get($key, $group);
         }
 
@@ -648,12 +674,6 @@ class Loader
      */
     public function set_cache($key, $value, $group = self::CACHEGROUP, $expires = 0, $cache_mode = self::CACHE_USE_DEFAULT)
     {
-        $object_cache = false;
-
-        if (isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache'])) {
-            $object_cache = true;
-        }
-
         if ((int) $expires < 1) {
             $expires = 0;
         }
@@ -665,7 +685,7 @@ class Loader
             set_transient($trans_key, $value, $expires);
         } elseif (self::CACHE_SITE_TRANSIENT === $cache_mode) {
             set_site_transient($trans_key, $value, $expires);
-        } elseif (self::CACHE_OBJECT === $cache_mode && $object_cache) {
+        } elseif (self::CACHE_OBJECT === $cache_mode && $this->is_object_cache()) {
             wp_cache_set($key, $value, $group, $expires);
         }
 
@@ -688,5 +708,16 @@ class Loader
         }
 
         return $cache_mode;
+    }
+
+    /**
+     * Checks whether WordPress object cache is activated.
+     *
+     * @since 2.0.0
+     * @return bool
+     */
+    protected function is_object_cache()
+    {
+        return isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']);
     }
 }
