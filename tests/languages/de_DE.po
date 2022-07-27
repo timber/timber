@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-07-26T10:52:21+00:00\n"
-"PO-Revision-Date: 2022-07-26 13:40+0200\n"
+"PO-Revision-Date: 2022-07-27 17:33+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -26,10 +26,6 @@ msgstr[1] "%s Tagen"
 #: Archives.php:188
 msgid "%1$s %2$d"
 msgstr "%1$s %2$d"
-
-#: Archives.php:190
-msgid "%1$s"
-msgstr "%1$s"
 
 #. translators: %s: Human-readable time difference.
 #: DateTimeHelper.php:73
