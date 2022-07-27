@@ -6,7 +6,7 @@ require_once dirname(__DIR__) . '/vendor/yoast/wp-test-utils/src/WPIntegration/b
 
 $_tests_dir = Yoast\WPTestUtils\WPIntegration\get_path_to_wp_test_dir();
 
-if (!is_dir($_tests_dir)) {
+if (!is_file("{$_tests_dir}/includes/functions.php")) {
     echo "Could not find {$_tests_dir}/includes/functions.php, have you run bin/install-wp-tests.sh <db-name> <db-user> <db-pass> [db-host] [wp-version] [skip-database-creation]?" . PHP_EOL; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     exit(1);
 }
