@@ -11,7 +11,7 @@ The Class Map is the central hub for Timber to select the right PHP class for po
 - `timber/term/classmap` for terms
 - `timber/comment/classmap` for comments
 - `timber/menu/classmap` and `timber/menu/class` for menus
-- `timber/menuitem/class` for menu items
+- `timber/menuitem/classmap` and `timber/menuitem/class` for menu item classes
 - `timber/user/class` for users
 
 ## The Post Class Map
@@ -190,13 +190,13 @@ The callback function receives a `WP_Comment` object and should return the name 
 
 ## The Menu Class Map
 
-With the `timber/menu/classmap` filter, you can tell Timber which class it should use for menu objects based on the menu location.
+With the `timber/menu/classmap` filter, you can tell Timber which class it should use for menu objects based on the menu location. It’s pretty much the same as the `timber/menuitem/classmap` filter, just for menus instead of menu items.
 
 The Menu Class Map is used:
 
 - When you get a menu through `Timber::get_menu()`.
 
-Here’s an a example for a basic filter where we select different menu objects based on the `primary` and `secondary` nav menu locations.
+Here’s an example for a basic filter where we select different menu objects based on the `primary` and `secondary` nav menu locations.
 
 **functions.php**
 
@@ -211,9 +211,7 @@ add_filter( 'timber/menu/classmap', function( $classmap ) {
 }, 10 );
 ```
 
-Menu locations that you don’t list in the class map will use `Timber\Menu` as a default class.
-
-If selecting a menu class based on the location isn’t enough for you, you can also use the `timber/menu/class` filter.
+Menu locations that you don’t list in the class map will use `Timber\Menu` as a default class. If selecting a menu class based on the location isn’t enough for you, you can further customize the class selection using the `timber/menu/class` filter.
 
 The following example demonstrates how you can use custom classes (`SingleLevelMenu` or `MultiLevelMenu`)  based on the depth of the menu.
 
@@ -226,6 +224,29 @@ add_filter( 'timber/menu/class', function( $class, $term, $args ) {
     return MultiLevelMenu::class;
 }, 10, 3 );
 ```
+
+## The MenuItem class map filter
+
+With the `timber/menuitem/classmap` filter, you can tell Timber which class it should use for menu items based on the menu location. It’s pretty much the same as the `timber/menu/classmap` filter, just for menu items instead of menus.
+
+The Menu Class Map is used:
+
+- When you get a menu through `Timber::get_menu()`.
+
+Here’s an example for a basic filter where we select different menu objects based on the `primary` and `secondary` nav menu locations.
+
+```php
+add_filter( 'timber/menuitem/classmap', function( $classmap ) {
+    $custom_classmap = [
+        'primary'   => MenuItemFooter::class,
+        'secondary' => MenuItemHeader::class,
+    ];
+
+    return array_merge( $classmap, $custom_classmap );
+} );
+```
+
+Menu locations that you don’t list in the class map will use `Timber\MenuItem` as a default class. You can further customize the class that is being used with the `timber/menuitem/class` filter.
 
 ## The MenuItem class filter
 
