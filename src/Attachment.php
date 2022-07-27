@@ -305,7 +305,16 @@ class Attachment extends Post
      */
     public function caption()
     {
-        return $this->post_excerpt;
+        /**
+         * Filters the attachment caption.
+         *
+         * @since WordPress 4.6.0
+         * @since 2.0.0
+         *
+         * @param string $caption Caption for the given attachment.
+         * @param int    $post_id Attachment ID.
+         */
+        return apply_filters('wp_get_attachment_caption', $this->post_excerpt, $this->ID);
     }
 
     /**
