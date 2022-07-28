@@ -48,7 +48,7 @@ class TermFactory
         return null;
     }
 
-    protected function from_id(int $id)
+    protected function from_id(int $id): ?Term
     {
         $wp_term = get_term($id);
 

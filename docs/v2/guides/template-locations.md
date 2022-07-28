@@ -4,7 +4,7 @@ order: "75"
 ---
 
 ```php
-Timber::render( 'teaser.twig' );
+Timber::render('teaser.twig');
 ```
 
 When you use [`Timber::render()`](https://timber.github.io/docs/v2/reference/timber-timber/#render), [`Timber::compile()`](https://timber.github.io/docs/v2/reference/timber-timber/#compile), or [Twig includes](https://timber.github.io/docs/v2/guides/twig/#includes) to render a Twig template file, Timber will look for that template in different directories. It will first look in the child theme and then falls back to the parent theme (it’s the same logic as in WordPress).
@@ -43,7 +43,7 @@ Timber::$dirname = [
         'templates',
         'templates/shared/mods',
         'twigs',
-        'views'
+        'views',
     ],
 ];
 ```
@@ -53,7 +53,7 @@ Timber::$dirname = [
 You can always reference **subdirectories** in your template folders relatively. For example:
 
 ```php
-Timber::render( 'shared/headers/header-home.twig' );
+Timber::render('shared/headers/header-home.twig');
 ```
 
 ... might correspond to a file in
@@ -66,10 +66,10 @@ You can set your own locations for your twig files with...
 **functions.php**
 
 ```php
-add_filter( 'timber/locations', function($paths) {
-	$paths[] = array('/Users/lukas/Sandbox/templates');
+add_filter('timber/locations', function ($paths) {
+    $paths[] = ['/Users/lukas/Sandbox/templates'];
 
-	return $paths;
+    return $paths;
 });
 ```
 
@@ -78,14 +78,14 @@ Use the full file path to make sure Timber knows what you're trying to draw from
 **functions.php**
 
 ```php
-add_filter( 'timber/locations', function($paths) {
-	$paths[] = array(
-		'/Users/lukas/Sandbox/templates',
-		'~/Sites/timber-templates/',
-		ABSPATH.'/wp-content/templates'
-	);
+add_filter('timber/locations', function ($paths) {
+    $paths[] = [
+        '/Users/lukas/Sandbox/templates',
+        '~/Sites/timber-templates/',
+        ABSPATH . '/wp-content/templates',
+    ];
 
-	return $paths;
+    return $paths;
 });
 ```
 
@@ -96,12 +96,12 @@ You can use [namespaces](https://symfony.com/doc/current/templating/namespaced_p
 **functions.php**
 
 ```php
-add_filter( 'timber/locations', function($paths) {
-	$paths['styleguide'] = [
-		ABSPATH . '/wp-content/styleguide'
-	];
+add_filter('timber/locations', function ($paths) {
+    $paths['styleguide'] = [
+        ABSPATH . '/wp-content/styleguide',
+    ];
 
-	return $paths;
+    return $paths;
 });
 ```
 
@@ -117,13 +117,13 @@ You can also register multiple paths for the same namespace. Order is important 
 **functions.php**
 
 ```php
-add_filter( 'timber/locations', function($paths) {
-	$paths['styleguide'] = array(
-		ABSPATH.'/wp-content/styleguide',
-		'/Users/lukas/Sandbox/styleguide'
-	);
+add_filter('timber/locations', function ($paths) {
+    $paths['styleguide'] = [
+        ABSPATH . '/wp-content/styleguide',
+        '/Users/lukas/Sandbox/styleguide',
+    ];
 
-	return $paths;
+    return $paths;
 });
 ```
 

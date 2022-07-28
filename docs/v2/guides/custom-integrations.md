@@ -11,9 +11,11 @@ To achieve this, that class implements an interface: `Timber\Integrations\Integr
 ```php
 namespace Timber\Integration;
 
-interface IntegrationInterface {
-    public function should_init() : bool;
-    public function init() : void;
+interface IntegrationInterface
+{
+    public function should_init(): bool;
+
+    public function init(): void;
 }
 ```
 
@@ -38,24 +40,28 @@ use ACF;
 /**
  * Class used to handle integration with Advanced Custom Fields
  */
-class MyAcfIntegration implements IntegrationInterface {
-    public function should_init() : bool {
-        return class_exists( ACF::class );
+class MyAcfIntegration implements IntegrationInterface
+{
+    public function should_init(): bool
+    {
+        return class_exists(ACF::class);
     }
 
-    public function init() : void {
+    public function init(): void
+    {
         // Hook into Timber’s post meta logic.
-        add_filter( 'timber/post/pre_meta', [ $this, 'post_get_meta_field' ], 10, 5 );
+        add_filter('timber/post/pre_meta', [$this, 'post_get_meta_field'], 10, 5);
     }
 
-    public static function post_get_meta_field( $value, $post_id, $field_name, $post, $args ) {
-      $args = wp_parse_args( $args, array(
-          // Apply formatting logic (defined when configuring the field).
-          'format_value' => true,
-      ) );
+    public static function post_get_meta_field($value, $post_id, $field_name, $post, $args)
+    {
+        $args = wp_parse_args($args, [
+            // Apply formatting logic (defined when configuring the field).
+            'format_value' => true,
+        ]);
 
-      // NOTE: get_field() is defined by ACF itself. We’re simply delegating.
-      return get_field( $field_name, $post_id, $args['format_value'] );
+        // NOTE: get_field() is defined by ACF itself. We’re simply delegating.
+        return get_field($field_name, $post_id, $args['format_value']);
     }
 }
 ```
@@ -79,11 +85,11 @@ The hard part’s over. Now you need to tell Timber about your class:
 ```php
 use MyProject\MyAcfIntegration;
 
-add_filter( 'timber/integrations', function( array $classes ) : array {
+add_filter('timber/integrations', function (array $classes): array {
     $classes[] = MyAcfIntegration::class;
 
     return $classes;
-} );
+});
 ```
 
 Timber will call the method(s) you defined and initialize your integration if applicable.

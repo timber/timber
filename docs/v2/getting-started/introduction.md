@@ -38,9 +38,7 @@ To render a view, you can use `Timber::render()`.
 **index.php**
 
 ```php
-<?php
-
-Timber::render( 'index.twig' );
+Timber::render('index.twig');
 ```
 
 This will look for an **index.twig** file in the **views** folder of your theme and render the contents of that template.
@@ -54,13 +52,11 @@ This will look for an **index.twig** file in the **views** folder of your theme 
 We don’t have any data yet. Let’s create an array with data that we then pass to our view with the second parameter for `Timber::render()`.
 
 ```php
-<?php
-
 $data = [
     'title' => 'A Timber Tutorial',
 ];
 
-Timber::render( 'index.twig', $data );
+Timber::render('index.twig', $data);
 ```
 
 **index.twig**
@@ -80,13 +76,11 @@ The `title` variable is still a static string. Let’s make it a little more dyn
 **index.php**
 
 ```php
-<?php
-
 $data = [
     'title' => get_the_title(),
 ];
 
-Timber::render( 'index.twig', $data );
+Timber::render('index.twig', $data);
 ```
 
 See how there’s no HTML in our PHP file? And do you see how we fetch the data we need in PHP and output it in Twig? This is an important concept called [*separation of concerns*](https://en.wikipedia.org/wiki/Separation_of_concerns).
@@ -100,11 +94,9 @@ Most of Timber’s templates look like this:
 **index.php**
 
 ```php
-<?php
-
 $context = Timber::context();
 
-Timber::render( 'index.twig', $context );
+Timber::render('index.twig', $context);
 ```
 
 What happens here? In Timber, you can use the `Timber::context()` function to get **an array of data that you need in most of your templates**. It includes things like the site name, the site description or the navigation menu that you probably need in every template. You can read more about this in the [Context Guide](https://timber.github.io/docs/v2/guides/context/) whenever you’re ready.

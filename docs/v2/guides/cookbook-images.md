@@ -114,19 +114,17 @@ This is where we’ll start in PHP.
 **single.php**
 
 ```php
-<?php
-
 $post = Timber::get_post();
 
-if ( isset( $post->hero_image ) && strlen( $post->hero_image ) ) {
-    $post->hero_image = Timber::get_image( $post->hero_image );
+if (isset($post->hero_image) && strlen($post->hero_image)) {
+    $post->hero_image = Timber::get_image($post->hero_image);
 }
 
-$data = Timber::context( [
-    'post' => $post
-] );
+$data = Timber::context([
+    'post' => $post,
+]);
 
-Timber::render( 'single.twig', $data );
+Timber::render('single.twig', $data);
 ```
 
 `Timber\Image` should be initialized using a WordPress image ID. It can also take URLs and image objects, but that requires extra processing.

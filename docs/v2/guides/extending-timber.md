@@ -16,30 +16,30 @@ Let’s look at how we could add a method to **calculate the reading time for a 
 **src/BlogPost.php**
 
 ```php
-<?php
-
 /**
  * Class BlogPost
  */
-class BlogPost extends \Timber\Post {
-   /**
-    * Estimates time required to read a post.
-    *
-    * The words per minute are based on the English language, which e.g. is much
-    * faster than German or French.
-    *
-    * @link https://www.irisreading.com/average-reading-speed-in-various-languages/
-    *
-    * @return string
-    */
-    public function reading_time() {
+class BlogPost extends \Timber\Post
+{
+    /**
+     * Estimates time required to read a post.
+     *
+     * The words per minute are based on the English language, which e.g. is much
+     * faster than German or French.
+     *
+     * @link https://www.irisreading.com/average-reading-speed-in-various-languages/
+     *
+     * @return string
+     */
+    public function reading_time()
+    {
         $words_per_minute = 228;
 
-        $words   = str_word_count( wp_strip_all_tags( $this->content() ) );
-        $minutes = round( $words / $words_per_minute );
+        $words = str_word_count(wp_strip_all_tags($this->content()));
+        $minutes = round($words / $words_per_minute);
 
         /* translators: %s: Time duration in minute or minutes. */
-        return sprintf( _n( '%s minute', '%s minutes', $minutes ), (int) $minutes );
+        return sprintf(_n('%s minute', '%s minutes', $minutes), (int) $minutes);
     }
 }
 ```
@@ -53,15 +53,15 @@ To register your own classes with Timber, you use Class Maps. Refer to the [Clas
 **functions.php**
 
 ```php
-require_once( 'src/BlogPost.php' );
+require_once('src/BlogPost.php');
 
-add_filter( 'timber/post/classmap', function( $classmap ) {
+add_filter('timber/post/classmap', function ($classmap) {
     $custom_classmap = [
         'post' => BlogPost::class,
     ];
 
-    return array_merge( $classmap, $custom_classmap );
-} );
+    return array_merge($classmap, $custom_classmap);
+});
 ```
 
 With that, Timber will use the `BlogPost` class for all your posts with the post type `post`, whenever you use a Timber function that returns a `Timber\Post`.
@@ -114,11 +114,10 @@ Then, you would use that namespace for your `BlogPost` class.
 **src/BlogPost.php**
 
 ```php
-<?php
-
 namespace Theme;
 
-class BlogPost {
+class BlogPost
+{
     // ...
 }
 ```
@@ -128,13 +127,13 @@ And in your Class Map, you could reference that class with the `use` statement.
 ```php
 use Theme\BlogPost;
 
-add_filter( 'timber/post/classmap', function( $classmap ) {
+add_filter('timber/post/classmap', function ($classmap) {
     $custom_classmap = [
         'post' => BlogPost::class,
     ];
 
-    return array_merge( $classmap, $custom_classmap );
-} );
+    return array_merge($classmap, $custom_classmap);
+});
 ```
 
 ## Move your logic from your template files to your classes
@@ -142,55 +141,55 @@ add_filter( 'timber/post/classmap', function( $classmap ) {
 In the Getting Started Guide for [Archive Pages](/docs/v2/getting-started/a-post-archive/), we looked at how you can load related posts and add them to the context.
 
 ```php
-<?php
-
 $context = Timber::context();
 
 $post = $context['post'];
 
-$context['related_posts'] = Timber::get_posts( [
-	'post_type'      => 'post',
+$context['related_posts'] = Timber::get_posts([
+    'post_type' => 'post',
     'posts_per_page' => 3,
-    'orderby'        => 'date',
-    'order'          => 'DESC',
-    'post__not_in'   => [ $post->ID ],
-    'category__in'   => $post->terms( [
+    'orderby' => 'date',
+    'order' => 'DESC',
+    'post__not_in' => [$post->ID],
+    'category__in' => $post->terms([
         'taxonomy' => 'category',
-        'fields'   => 'ids',
-    ] ),
-] );
+        'fields' => 'ids',
+    ]),
+]);
 
-Timber::render( 'single.twig', $context );
+Timber::render('single.twig', $context);
 ```
 
 We can move this function over to the `BlogPost` class. The only difference is that instead of using `$post`, you would use `$this` to reference properties and methods.
 
 ```php
-<?php
-
-class MySitePost extends \Timber\Post {
+class MySitePost extends \Timber\Post
+{
+}
 
 /**
  * Class BlogPost
  */
-class BlogPost extends \Timber\Post {
+class BlogPost extends \Timber\Post
+{
     /**
      * Gets related posts for that post object.
      *
      * @return \Timber\PostQuery
      */
-    public function related_posts() {
-        return Timber::get_posts( [
-            'post_type'      => $this->post_type,
+    public function related_posts()
+    {
+        return Timber::get_posts([
+            'post_type' => $this->post_type,
             'posts_per_page' => 3,
-            'orderby'        => 'date',
-            'order'          => 'DESC',
-            'post__not_in'   => [ $this->ID ],
-            'category__in'   => $this->terms( [
+            'orderby' => 'date',
+            'order' => 'DESC',
+            'post__not_in' => [$this->ID],
+            'category__in' => $this->terms([
                 'taxonomy' => 'category',
-                'fields'   => 'ids',
-            ] ),
-        ] );
+                'fields' => 'ids',
+            ]),
+        ]);
     }
 }
 ```
@@ -212,12 +211,11 @@ Now, you can still loop over your related posts in your Twig template:
 However, because of the if-statement, we call the `related_posts()` method twice. This might be bad for performance, because we call `Timber::get_posts()` twice. So let’s add a small cache via a `related_posts` property. This way, we can call `related_posts()` as many times as we need.
 
 ```php
-<?php
-
 /**
  * Class BlogPost
  */
-class BlogPost extends \Timber\Post {
+class BlogPost extends \Timber\Post
+{
     /**
      * Related posts cache.
      *
@@ -230,23 +228,24 @@ class BlogPost extends \Timber\Post {
      *
      * @return \Timber\PostCollectionInterface
      */
-    public function related_posts() {
+    public function related_posts()
+    {
         // Return related posts early if we already loaded them.
-        if ( ! empty( $this->related_posts ) ) {
+        if (!empty($this->related_posts)) {
             return $this->related_posts;
         }
 
-        $this->related_posts = Timber::get_posts( [
-            'post_type'      => $this->post_type,
+        $this->related_posts = Timber::get_posts([
+            'post_type' => $this->post_type,
             'posts_per_page' => 3,
-            'orderby'        => 'date',
-            'order'          => 'DESC',
-            'post__not_in'   => [ $this->ID ],
-            'category__in'   => $this->terms( [
+            'orderby' => 'date',
+            'order' => 'DESC',
+            'post__not_in' => [$this->ID],
+            'category__in' => $this->terms([
                 'taxonomy' => 'category',
-                'fields'   => 'ids',
-            ] ),
-        ] );
+                'fields' => 'ids',
+            ]),
+        ]);
 
         return $this->related_posts;
     }
@@ -269,11 +268,12 @@ Let’s look at an example where you work with a post’s relationship to other 
 Of course, `Timber\Post` has no built-in concept of an issue. Imagine there’s a custom taxonomy called `issue`. So we're going to extend `Timber\Post` to give it an `issue()` method.
 
 ```php
-<?php
+class MySitePost extends \Timber\Post
+{
+}
 
-class MySitePost extends \Timber\Post {
-
-class MagazinePost extends \Timber\Post {
+class MagazinePost extends \Timber\Post
+{
     /**
      * Issue cache.
      *
@@ -286,16 +286,17 @@ class MagazinePost extends \Timber\Post {
      *
      * @return \Timber\Term|null;
      */
-    public function issue() {
-        if ( ! empty( $this->_issue ) ) {
+    public function issue()
+    {
+        if (!empty($this->_issue)) {
             return $this->issue;
         }
 
-        $issues = $this->terms( [
-            'taxonomy' => 'issues'
-        ] );
+        $issues = $this->terms([
+            'taxonomy' => 'issues',
+        ]);
 
-        if ( is_array( $issues ) && ! empty( $issues ) ) {
+        if (is_array($issues) && !empty($issues)) {
             $this->issue = $issues[0];
         }
 
@@ -326,20 +327,22 @@ But you could also define your own `date_display` method to display that date.
 /**
  * Class Event
  */
-class Event extends \Timber\Post {
+class Event extends \Timber\Post
+{
     /**
      * Gets display date.
      *
      * @return string
      */
-    public function date_display( $date_format = 'F j Y' ) {
-        $date_start = DateTimeImmutable::createFromFormat( 'Ymd', $this->meta( 'date_start' ) );
+    public function date_display($date_format = 'F j Y')
+    {
+        $date_start = DateTimeImmutable::createFromFormat('Ymd', $this->meta('date_start'));
 
-        if ( empty( $date_start ) ) {
+        if (empty($date_start)) {
             return '';
         }
 
-        return wp_date( $date_format, $date_start->getTimestamp() );
+        return wp_date($date_format, $date_start->getTimestamp());
     }
 }
 ```
@@ -369,7 +372,8 @@ You can also make the date formats a little more dynamic here by using an argume
 /**
  * Class Event
  */
-class Event extends \Timber\Post {
+class Event extends \Timber\Post
+{
     /**
      * Gets display date.
      *
@@ -377,43 +381,44 @@ class Event extends \Timber\Post {
      *
      * @return string
      */
-    public function date_display( $formats = [] ) {
-        $formats = wp_parse_args( $formats, [
-            'single'           => 'F j Y',
-            'yearless'         => 'F j',
+    public function date_display($formats = [])
+    {
+        $formats = wp_parse_args($formats, [
+            'single' => 'F j Y',
+            'yearless' => 'F j',
             'same_month_start' => 'j',
-            'same_month_end'   => 'j F Y'
-        ] );
+            'same_month_end' => 'j F Y',
+        ]);
 
         $date_start = DateTimeImmutable::createFromFormat(
             'Ymd',
-            $this->meta( 'date_start' )
+            $this->meta('date_start')
         );
         $date_end = DateTimeImmutable::createFromFormat(
             'Ymd',
-            $this->meta( 'date_end' )
+            $this->meta('date_end')
         );
 
-        if ( empty( $date_start ) ) {
+        if (empty($date_start)) {
             return '';
         }
 
-        if ( empty( $date_end ) ) {
+        if (empty($date_end)) {
             // There’s only a start date.
-            $date_string = wp_date( $formats['single'], $date_start->getTimestamp() );
+            $date_string = wp_date($formats['single'], $date_start->getTimestamp());
         } else {
             // Different format if month is the same.
-            if ( $date_start->format( 'm' ) === $date_end->format( 'm' ) ) {
+            if ($date_start->format('m') === $date_end->format('m')) {
                 $date_string = sprintf(
                     '%1$s &ndash %2$s',
-                    wp_date( $formats['same_month_start'], $date_start->getTimestamp() ),
-                    wp_date( $formats['same_month_end'], $date_end->getTimestamp() )
+                    wp_date($formats['same_month_start'], $date_start->getTimestamp()),
+                    wp_date($formats['same_month_end'], $date_end->getTimestamp())
                 );
             } else {
                 $date_string = sprintf(
                     '%1$s &ndash %2$s',
-                    wp_date( $formats['yearless'], $date_start->getTimestamp() ),
-                    wp_date( $formats['single'], $date_end->getTimestamp() )
+                    wp_date($formats['yearless'], $date_start->getTimestamp()),
+                    wp_date($formats['single'], $date_end->getTimestamp())
                 );
             }
         }
@@ -438,37 +443,37 @@ In Twig, you could use it like this:
 You could make it even more dynamic and use the default date format you set in your WordPress settings.
 
 ```php
-$formats = wp_parse_args( $formats, [
-    'single'           => get_option( 'date_format' ),
-    'yearless'         => trim(
-        preg_replace( '/[Yy]/', '', get_option( 'date_format' ) )
+$formats = wp_parse_args($formats, [
+    'single' => get_option('date_format'),
+    'yearless' => trim(
+        preg_replace('/[Yy]/', '', get_option('date_format'))
     ),
     'same_month_start' => 'j',
-    'same_month_end'   => 'j F Y'
-] );
+    'same_month_end' => 'j F Y',
+]);
 ```
 
 Or you could add a filter to update your date formats globally.
 
 ```php
-$formats = wp_parse_args( $formats, [
-    'single'           => 'F j Y',
-    'yearless'         => 'F j',
+$formats = wp_parse_args($formats, [
+    'single' => 'F j Y',
+    'yearless' => 'F j',
     'same_month_start' => 'j',
-    'same_month_end'   => 'j F Y'
-] );
+    'same_month_end' => 'j F Y',
+]);
 
-$formats = apply_filters( 'theme/event/date_formats', $formats );
+$formats = apply_filters('theme/event/date_formats', $formats);
 ```
 
 You would use that filter like this.
 
 ```php
-add_filter( 'theme/event/date_formats', function( $formats ) {
+add_filter('theme/event/date_formats', function ($formats) {
     $formats['same_month_end'] = 'j M Y';
 
     return $formats;
-} );
+});
 ```
 
 And with this, we have a method or even a class that we can reuse in other projects.
@@ -499,7 +504,8 @@ But you could also reduce the logic you have in Twig an move it your custom clas
 /**
  * Class Event
  */
-class Event extends \Timber\Post {
+class Event extends \Timber\Post
+{
     /**
      * Sponsors cache.
      *
@@ -512,12 +518,13 @@ class Event extends \Timber\Post {
      *
      * @return \Timber\PostCollectionInterface
      */
-    public function sponsors() {
-        if ( empty( $this->sponsors ) ) {
+    public function sponsors()
+    {
+        if (empty($this->sponsors)) {
             return $this->sponsors;
         }
 
-        $this->sponsors = Timber::get_posts( $this->meta( 'sponsors' ) )
+        $this->sponsors = Timber::get_posts($this->meta('sponsors'));
 
         return $this->sponsors;
     }
