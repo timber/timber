@@ -17,7 +17,7 @@ Makes sure a variable is an array to safely loop over it without running into an
 $things = 'thing';
 
 // Or
-$things = [ 'thing', 'thang' ];
+$things = ['thing', 'thang'];
 ```
 
 **Twig**
@@ -215,11 +215,11 @@ Converts an array of strings into a comma-separated list.
 **PHP**
 
 ```php
-$context['contributors'] = array(
+$context['contributors'] = [
     'Blake Allen',
     'Rachel White',
-    'Maddy May'
-);
+    'Maddy May',
+];
 ```
 
 **Twig**

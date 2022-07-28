@@ -11,17 +11,20 @@ For the desired usage of `[youtube id=xxxx]`, we only need a few lines of code:
 
 ```php
 // Should be called from within an init action hook
-add_shortcode( 'youtube', 'youtube_shortcode' );
+add_shortcode('youtube', 'youtube_shortcode');
 
-function youtube_shortcode( $atts ) {
-    if( isset( $atts['id'] ) ) {
-        $id = sanitize_text_field( $atts['id'] );
+function youtube_shortcode($atts)
+{
+    if (isset($atts['id'])) {
+        $id = sanitize_text_field($atts['id']);
     } else {
         $id = false;
     }
 
     // This time we use Timber::compile since shortcodes should return the code
-    return Timber::compile( 'youtube-short.twig', array( 'id' => $id ) );
+    return Timber::compile('youtube-short.twig', [
+        'id' => $id,
+    ]);
 }
 ```
 

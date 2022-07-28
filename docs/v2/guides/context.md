@@ -10,14 +10,12 @@ In the following example, `$data` is an associative array of values. Each of the
 **single.php**
 
 ```php
-<?php
-
-$data = array(
+$data = [
     'message' => 'This can be any variable you want',
-    'author'  => 'Tom',
-);
+    'author' => 'Tom',
+];
 
-Timber::render( 'single.twig', $data );
+Timber::render('single.twig', $data);
 ```
 
 **single.twig**
@@ -36,7 +34,7 @@ You don’t have to figure out all the variables you need in a template for your
 ```php
 $context = Timber::context();
 
-Timber::render( 'single.twig', $context );
+Timber::render('single.twig', $context);
 ```
 
 Follow this guide to get an overview of what’s in the context, or use `var_dump( $context );` in PHP or `{{ dump() }}` in Twig to display the contents of the context in your browser.
@@ -48,19 +46,19 @@ After you’ve called `Timber::context()`, you can add additional variables or o
 ```php
 $context = Timber::get_context();
 
-$context['today'] = wp_date( 'Ymd' );
+$context['today'] = wp_date('Ymd');
 
-Timber::render( 'single.twig', $context );
+Timber::render('single.twig', $context);
 ```
 
 Another way to do this is to pass your custom data to the `Timber::context()` function itself:
 
 ```php
-$context = Timber::get_context( [
-    'today' => wp_date( 'Ymd' )
-] );
+$context = Timber::get_context([
+    'today' => wp_date('Ymd'),
+]);
 
-Timber::render( 'single.twig', $context );
+Timber::render('single.twig', $context);
 ```
 
 ## Global context
@@ -88,11 +86,11 @@ Here’s an example for how you could **add a navigation menu** to your context 
 
 ```php
 // Example: Add a menu to the global context.
-add_filter( 'timber/context', function( $context ) {
-    $context['menu'] = Timber::get_menu( 'primary-menu' );
+add_filter('timber/context', function ($context) {
+    $context['menu'] = Timber::get_menu('primary-menu');
 
     return $context;
-} );
+});
 ```
 
 For menus to work, you will first need to [register them](https://codex.wordpress.org/Navigation_Menus).
@@ -107,12 +105,12 @@ Having a cached global context can be useful if you need the context in other pl
 /**
  * Shortcode for address inside a WYSIWG field.
  */
-add_shortcode( 'company_address', function() {
+add_shortcode('company_address', function () {
     return Timber::compile(
         'shortcode/company-address.twig',
         Timber::context_global()
     );
-} );
+});
 ```
 
 In this example, we've provided all the global context variables to **shortcode/company-address.twig** via `Timber::context_global()`. Whenever you only need the global context, you should use the `Timber::context_global()` function. You can call that function multiple times without losing performance.
@@ -134,7 +132,7 @@ The `post` variable will be available in singular templates (when [ `is_singular
 ```php
 $context = Timber::context();
 
-Timber::render( 'single.twig', $context );
+Timber::render('single.twig', $context);
 ```
 
 By calling `Timber::get_post()` without any arguments, Timber will use the `$post` global for the current singular template.
@@ -148,7 +146,7 @@ $context = Timber::context();
 
 $post = $context['post'];
 
-Timber::render( 'single.twig', $context );
+Timber::render('single.twig', $context);
 ```
 
 #### Using a custom post class
@@ -159,24 +157,24 @@ If you want to overwrite the existing `post` variable in the context, you can do
 
 ```php
 // Getting another post.
-$post = Timber::get_post( 12 );
+$post = Timber::get_post(12);
 $post->setup();
 
 // Get context with your post.
-$context = Timber::context( [
+$context = Timber::context([
     'post' => $post,
-] );
+]);
 ```
 
 Or even shorter:
 
 ```php
 // Getting another post.
-$post = Timber::get_post( 12 );
+$post = Timber::get_post(12);
 
-$context = Timber::context( [
+$context = Timber::context([
     'post' => $post->setup(),
-] )
+]);
 ```
 
 **Be aware!** Whenever you set up **a post in a singular template** (instead of relying on `Timber::context()` to do it for you), **you need to set up your post through `$post->setup()`**. The `setup()` function improves compatibility with third-party plugins.
@@ -202,7 +200,7 @@ The `posts` variable will contain an object that implements `Timber\PostCollecti
 ```php
 $context = Timber::context();
 
-Timber::render( 'archive.twig', $context );
+Timber::render('archive.twig', $context);
 ```
 
 #### Write your own query
@@ -212,13 +210,13 @@ When you don’t need the default query, you can pass in your own arguments to `
 **archive.php**
 
 ```php
-$context = Timber::context(
-    'posts' => Timber::get_posts( [
-        'post_type'      => 'book',
+$context = Timber::context([
+    'posts' => Timber::get_posts([
+        'post_type' => 'book',
         'posts_per_page' => -1,
-        'post_status'    => 'publish',
-    ] ),
-);
+        'post_status' => 'publish',
+    ]),
+]);
 ```
 
 #### Change arguments for default query
@@ -228,18 +226,18 @@ Sometimes you don’t want to use the default query, but build on the default qu
 **archive.php**
 
 ```php
-$context = Timber::context(
+$context = Timber::context([
     'posts' => Timber::get_posts(
         [
-            'author__in' => [ 1, 6, 14 ],
+            'author__in' => [1, 6, 14],
         ],
         [
             'merge_default' => true,
         ]
     ),
-);
+]);
 
-Timber::render( 'archive.twig', $context );
+Timber::render('archive.twig', $context);
 ```
 
 Timber will accept the parameters that can be found in WordPress’s [WP_Query class](https://codex.wordpress.org/Class_Reference/WP_Query).

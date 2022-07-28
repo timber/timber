@@ -88,7 +88,7 @@ $datetime = date_create_immutable_from_format(
 );
 
 // Note that we’re reassigning here, since PHP’s immutable functions/methods return new values.
-$datetime = $datetime->setTimezone( wp_timezone() );
+$datetime = $datetime->setTimezone(wp_timezone());
 
 $timestamp = $datetime->getTimestamp();
 ```
@@ -105,13 +105,13 @@ Here’s the same example explained with code:
 
 ```php
 // Current time is 00:30, timezone is UTC + 1
-$datetime = date_create_immutable_from_format( 'Y-m-d', '2016-10-31' );
+$datetime = date_create_immutable_from_format('Y-m-d', '2016-10-31');
 
 // 2016-10-31 23:30
-echo $datetime->format( 'Y-m-d H:i' );
+echo $datetime->format('Y-m-d H:i');
 
 // 2016-11-01 00:30
-echo wp_date( 'Y-m-d H:i', $datetime->getTimestamp() );
+echo wp_date('Y-m-d H:i', $datetime->getTimestamp());
 ```
 
 To work around that, **use `wp_timezone()`** when creating your datetime object.
@@ -127,10 +127,10 @@ $datetime = date_create_immutable_from_format(
 );
 
 // 2016-10-31 00:30
-echo $datetime->format( 'Y-m-d H:i' );
+echo $datetime->format('Y-m-d H:i');
 
 // 2016-10-31 00:30
-echo wp_date( 'Y-m-d H:i', $datetime->getTimestamp() );
+echo wp_date('Y-m-d H:i', $datetime->getTimestamp());
 ```
 
 #### strtotime()
@@ -138,18 +138,18 @@ echo wp_date( 'Y-m-d H:i', $datetime->getTimestamp() );
 If you don’t know the exact format of the date, you can try using `strtotime()` or `date_create_immutable()`. Valid formats are explained in [Supported Date and Time Formats](https://www.php.net/manual/en/datetime.formats.php).
 
 ```php
-$timestamp = strtotime( '2008-08-07 18:11:31' );
+$timestamp = strtotime('2008-08-07 18:11:31');
 
 // No timezone needed, because it’s already included in the string.
-$datetime = date_create_immutable( '2020-01-02T00:09:30+02:00' );
+$datetime = date_create_immutable('2020-01-02T00:09:30+02:00');
 
 // Either with or without a timezone, depending on how you saved your dates.
-$datetime = date_create_immutable( '2008-08-07 18:11:31', wp_timezone() );
-$datetime = date_create_immutable( '2008-08-07 18:11:31' );
+$datetime = date_create_immutable('2008-08-07 18:11:31', wp_timezone());
+$datetime = date_create_immutable('2008-08-07 18:11:31');
 
 // Either with or without a timezone, depending on how you saved your dates.
-$datetime = new DateTimeImmutable( '2008-08-07 18:11:31', wp_timezone() );
-$datetime = new DateTimeImmutable( '2008-08-07 18:11:31' );
+$datetime = new DateTimeImmutable('2008-08-07 18:11:31', wp_timezone());
+$datetime = new DateTimeImmutable('2008-08-07 18:11:31');
 ```
 
 ## Control the date display format
@@ -160,16 +160,16 @@ By default, Timber uses the date format set in *Settings* &rarr; *General*. That
 
 ```php
 // With a timestamp.
-wp_date( 'F j, Y @ g:i a', $timestamp );
+wp_date('F j, Y @ g:i a', $timestamp);
 
 // With a DateTime object.
-wp_date( 'F j, Y @ g:i a', $datetime->getTimestamp() );
+wp_date('F j, Y @ g:i a', $datetime->getTimestamp());
 ```
 
 If you want to display a date in a different timezone than the site’s timezone, use the `$timezone` parameter in [`wp_date()`](https://developer.wordpress.org/reference/functions/wp_date/).
 
 ```php
-wp_date( 'F j, Y @ g:i a', $timestamp, 'Australia/Sydney' );
+wp_date('F j, Y @ g:i a', $timestamp, 'Australia/Sydney');
 ```
 
 ### Post dates
@@ -227,12 +227,12 @@ Don’t use the `date()` function in PHP to get the current date in a custom for
 $timestamp = time();
 
 $datetime_object = current_datetime();
-$formatted_date  = $datetime_object->format( 'Ymd' );
+$formatted_date = $datetime_object->format('Ymd');
 
-$formatted_date = wp_date( 'Ymd' );
+$formatted_date = wp_date('Ymd');
 
 // Don’t do this.
-$today = date( 'Ymd' );
+$today = date('Ymd');
 ```
 
 In Twig, you’ll have more options with the `date()` function or the `now` keyword. Yes, while you shouldn’t use `date()` in PHP, you can use it in Twig.
@@ -256,7 +256,7 @@ In Timber, you can use the `Timber\DateTimeHelper::time_ago()` function. The fun
 **PHP**
 
 ```php
-DateTimeHelper::time_ago( $post->date() )
+DateTimeHelper::time_ago($post->date());
 ```
 
 **Twig**
@@ -280,11 +280,11 @@ When you want to compare dates, then compare Unix timestamps, `DateTimeInterface
 ```php
 $same = $timestamp === $timestamp;
 $same = new DateTimeImmutable() === new DateTimeImmutable();
-$same = wp_date( 'U' ) === time();
+$same = wp_date('U') === time();
 
 // Check if post publishing date is before today.
-$before_today = $post->date( 'Ymd' ) < wp_date( 'Ymd' );
-$before_today = $post->date( 'U' ) < current_datetime()->getTimestamp();
+$before_today = $post->date('Ymd') < wp_date('Ymd');
+$before_today = $post->date('U') < current_datetime()->getTimestamp();
 ```
 
 In Twig, there’s the [`date()`](https://twig.symfony.com/doc/functions/date.html) function which you can use to compare dates.

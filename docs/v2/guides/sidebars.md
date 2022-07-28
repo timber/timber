@@ -13,9 +13,7 @@ Create a **sidebar.php** file in your theme directory (so **wp-content/themes/my
 **sidebar.php**
 
 ```php
-<?php
-
-$context = array();
+$context = [];
 $context['widget'] = my_function_to_get_widget();
 $context['ad'] = my_function_to_get_an_ad();
 Timber::render('sidebar.twig', $context);
@@ -26,13 +24,11 @@ Use that php file within your main PHP file (home.php, single.php, archive.php, 
 **single.php**
 
 ```php
-<?php
+$context = Timber::context([
+    'sidebar' => Timber::get_sidebar('sidebar.php'),
+]);
 
-$context = Timber::context( [
-    'sidebar' => Timber::get_sidebar( 'sidebar.php' ),
-] );
-
-Timber::render( 'single.twig', $context );
+Timber::render('single.twig', $context);
 ```
 
 In the final twig file make sure you reserve a spot for your sidebar:
@@ -66,26 +62,26 @@ Send data to it via your main PHP file:
 **single.php**
 
 ```php
-$post     = Timber::get_post();
-$post_cat = $post->get_terms( 'category' );
+$post = Timber::get_post();
+$post_cat = $post->get_terms('category');
 
 $post_cat = $post_cat[0]->ID;
 
-$sidebar_context = array(
-	'related' => Timber::get_posts( [
-	    'cat' => $post_cat
-    ] ),
-);
+$sidebar_context = [
+    'related' => Timber::get_posts([
+        'cat' => $post_cat,
+    ]),
+];
 
-$context = Timber::context( [
-    'post'    => $post,
+$context = Timber::context([
+    'post' => $post,
     'sidebar' => Timber::get_sidebar(
         'sidebar-related.twig',
         $sidebar_context
     ),
-] );
+]);
 
-Timber::render( 'single.twig', $context );
+Timber::render('single.twig', $context);
 ```
 
 In the final twig file, make sure you have spot for your sidebar:
@@ -103,9 +99,8 @@ In the final twig file, make sure you have spot for your sidebar:
 This is using WordPress's built-in dynamic_sidebar tools (which, confusingly, are referred to as "Widgets" in the interface). Since sidebar is already used; I used widgets in the code to describe these:
 
 ```php
-<?php
 $context = [
-    'dynamic_sidebar' => Timber::get_widgets( 'dynamic_sidebar' ),
+    'dynamic_sidebar' => Timber::get_widgets('dynamic_sidebar'),
 ];
 
 Timber::render('sidebar.twig', $context);
