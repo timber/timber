@@ -13,26 +13,6 @@ Here are ways to get involved:
 7. Answer questions on [Stack Overflow posted under the «Timber» tag](https://stackoverflow.com/questions/tagged/timber). You can also [subscribe to a tag](https://stackoverflow.blog/2010/12/20/subscribe-to-tags-via-emai/) via email to get notified when someone needs help.
 8. Answer questions and join in on [GitHub Discussions](https://github.com/timber/timber/discussions).
 
-## Table of Contents
-
-<!-- TOC depthTo:3 -->
-
-- [Pull Requests](#pull-requests)
-- [Coding Standards](#coding-standards)
-    - [Use PHP_CodeSniffer to detect coding standard violations](#use-php_codesniffer-to-detect-coding-standard-violations)
-- [Inline Documentation](#inline-documentation)
-    - [Differences to the official standards](#differences-to-the-official-standards)
-    - [Ignoring Structural Elements](#ignoring-structural-elements)
-    - [Referencing class names](#referencing-class-names)
-    - [Code examples](#code-examples)
-    - [Reference linking with @see tag](#reference-linking-with-see-tag)
-    - [Documenting Hooks](#documenting-hooks)
-- [Unit tests](#unit-tests)
-    - [Install WordPress test suite](#install-wordpress-test-suite)
-    - [Run unit tests](#run-unit-tests)
-
-<!-- /TOC -->
-
 ## Pull Requests
 
 Pull requests are highly appreciated. More than [150 people](https://github.com/timber/timber/graphs/contributors) have written parts of Timber (so far). Here are some guidelines to help:
@@ -43,45 +23,67 @@ Pull requests are highly appreciated. More than [150 people](https://github.com/
 4. **Small > big** – Better to have a few small pull requests that address specific parts of the code, than one big pull request that jumps all over.
 5. **Comply with Coding Standards** – See next section.
 
+## Preparations
+
+After you’ve forked the Timber repository, you should install all Composer dependencies.
+
+```
+composer install
+```
+
 ## Coding Standards
 
-We try to follow the [WordPress Coding Standards](https://make.wordpress.org/core/handbook/coding-standards/php/) as close as we can, with the following exceptions:
+We use [EasyCodingStandard](https://github.com/symplify/easy-coding-standard) for Timber’s code, which follows the [PSR-12: Extended Coding Styles](https://www.php-fig.org/psr/psr-12/).
 
-- Class and file names are defined in `StudlyCaps`. We follow the [PSR-0 standard](http://www.php-fig.org/psr/psr-1/#namespace-and-class-names), because we use autoloading via Composer.
-- We use hook names namespaced by `/` instead of underscores (e.g. `timber/context` instead of `timber_context`).
+For code examples in the documentation as well as the inline documentation, we try to use the [WordPress Coding Standards](https://make.wordpress.org/core/handbook/coding-standards/php/).
 
-### Use PHP_CodeSniffer to detect coding standard violations
+We use tools to automatically check and apply the coding standards to our codebase (documentation not included), reducing the manual work to a minimum.
 
-To check where the code deviates from the standards, you can use [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer). Timber comes with a `phpcs.xml` in the root folder of the repository, so that the the Timber code base will be automatically checked for coding standards violations.
-
-#### Command Line Usage
-
-When you run `composer install` in Timber’s repository root, you will get all required dependencies to check the coding standards.
-
-To run PHP_CodeSniffer with the default settings on all relevant Timber files, use the following command from the root folder of the Timber repository:
+To run all checks, you can run the `qa` script.
 
 ```bash
-composer lint
+composer qa
 ```
 
-You can check a single file like this:
+### Check and apply coding standards
+
+We use EasyCodingStandard to automatically check and apply the coding standards.
 
 ```bash
-./vendor/bin/phpcs ./src/Menu.php
+composer cs
 ```
 
-Use `./vendor/bin/phpcs --help` for a list of available settings or refer to the [PHP_CodeSniffer documentation](https://github.com/squizlabs/PHP_CodeSniffer/wiki).
+You can also apply coding style fixes automatically.
 
-#### Use it in your IDE
+```bash
+composer cs:fix
+```
 
-Please refer to <https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards#using-phpcs-and-wpcs-from-within-your-ide> for different ways to use PHP_CodeSniffer directly in your IDE. In some IDEs like PHPStorm, you may have to select the `phpcs.xml` explicitly to apply the proper standards.
+### Enforcing coding standards using pre-commit hooks
 
-#### Whitelisting
+We use [GrumPHP](https://github.com/phpro/grumphp) to add pre-commit hooks which automatically check the committed code changes for any coding standard violations.
 
-If it’s not possible to adapt to certain rules, code could be whitelisted. However, this should be used sparingly.
+You can fix these issues automatically by running `composer ecs:fix`.
 
-- <https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki/Whitelisting-code-which-flags-errors>
-- <https://github.com/squizlabs/PHP_CodeSniffer/wiki/Advanced-Usage#ignoring-parts-of-a-file>
+### Other commands
+
+There are more commands that we use to ensure code quality. Usually, you won’t need them.
+
+- `composer analyze` – Runs static analysis using [PHPStan](https://phpstan.org/).
+- `composer lint-composer` – Checks for inconsistencies in **composer.json**.
+- `composer lint-composer:fix` – Ensures **composer.json** consistency.
+
+## Hooks
+
+We use hook names namespaced by `/` instead of underscores.
+
+```php
+// 🚫
+$context = apply_filters( 'timber_context', $context );
+
+// ✅
+$context = apply_filters( 'timber/context', $context );
+```
 
 ## Inline Documentation
 
@@ -107,7 +109,7 @@ This means that for Markdown files to be generated for a class at all, you’ll 
 
 ### Referencing class names
 
-When referencing a namespaced class name in a type (for example in a `@param` or `@return` tag), then use the fully qualified name. Example: `Timber\Post` instead of just `Post`.
+When referencing a namespaced class name in a type (for example in a `@param` or `@return` tag), then use the fully qualified name. Example: `\Timber\Post` instead of just `Post`.
 
 ### Code examples
 
@@ -270,34 +272,40 @@ As soon as the todo is resolved, the `@todo` tag can be removed.
 
 Run the following command to install the test suite on your local environment:
 
-```
+```bash
 bash bin/install-wp-tests.sh {db_name} {db_user} {db_password} {db_host} {wp_version}
 ```
 
 Replace variables with appropriate values.
 
-
 ### Run unit tests
 
-```
+Run PHPUnit test suite with the default settings and ensure your code does not break existing features.
+
+```bash
 composer test
 ```
 
-Will run PHPUnit test suite and ensure your code does not break existing features.
+You can also run the tests without coverage.
+
+```bash
+composer test:no-cov
+```
 
 ## Process
 
-All PRs receive a review from at least one maintainer. We’ll do our best to do that review in a week, but we’d rather go slow and get it right than merge in code with issues that just lead to trouble.
+All PRs receive a review from at least one maintainer. We’ll do our best to do that review as soon as possible, but we’d rather go slow and get it right than merge in code with issues that just lead to trouble.
 
 ### GitHub reviews & assignments
 
-You might see us assign multiple reviewers, in this case these are OR checks (i.e. either Coby or Pascal) unless we explicitly say it’s an AND type thing (i.e. can both Lukas and Maciej check this out?).
+You might see us assign multiple reviewers, in this case these are OR checks (i.e. either Jared or Nicolas) unless we explicitly say it’s an AND type thing (i.e. can both Lukas and Maciej check this out?).
 
 We use the assignee to show who’s responsible at that moment. We’ll assign back to the submitter if we need additional info/code/response, or it might be assigned to a branch maintainer if it needs more thought/revision (perhaps it’s directly related to an issue that's actively being worked on).
 
 Once approved, the lead maintainer for the branch should merge the PR into the `master` or `2.x` branch. The 1.x team will work to resolve merge conflicts on #1617 (`2.x` into `master`) so the branches stay in sync.
 
-### Branch Maintainers
+### Codeowners
 
-* 1.x: @jaredNova (lead), @palmiak
-* 2.x: @gchtr (lead), @pascalknecht, @cobytamayo
+We use a [CODEOWNERS](https://github.com/timber/timber/blob/master/.github/CODEOWNERS) file to define who gets automatic review invitations.
+
+
