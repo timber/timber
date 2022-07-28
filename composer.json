@@ -86,6 +86,8 @@
   "scripts": {
     "analyze": "phpstan",
     "cs": "ecs check",
+    "cs:docs": "ecs check-markdown docs/v2/**/*.md --fix",
+    "cs:docs:fix": "ecs check-markdown docs/v2/**/*.md",
     "cs:fix": "ecs check --fix",
     "grump": "grumphp run",
     "grump:install": "grumphp git:init",
