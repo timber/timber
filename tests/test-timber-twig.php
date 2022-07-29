@@ -7,6 +7,8 @@
     {
         public function tear_down()
         {
+            parent::tear_down();
+
             $lang_dir = get_stylesheet_directory() . '/languages';
             if (file_exists($lang_dir . '/en_US.po')) {
                 unlink($lang_dir . '/en_US.po');
@@ -14,30 +16,6 @@
             if (file_exists($lang_dir . '/en_US.mo')) {
                 unlink($lang_dir . '/en_US.mo');
             }
-        }
-
-        public function installTranlsationFiles($lang_dir)
-        {
-            if (!is_dir($lang_dir)) {
-                wp_mkdir_p($lang_dir);
-            }
-            copy(__DIR__ . '/assets/languages/en_US.po', $lang_dir . '/en_US.po');
-            copy(__DIR__ . '/assets/languages/en_US.mo', $lang_dir . '/en_US.mo');
-            return true;
-        }
-
-        public function _setupTranslationFiles()
-        {
-            $lang_dir = get_stylesheet_directory() . '/languages';
-
-            if (!file_exists($lang_dir . '/en_US.po')) {
-                $this->installTranlsationFiles($lang_dir);
-            }
-
-            $td = 'timber_test_theme';
-            load_theme_textdomain($td, $lang_dir);
-
-            return $td;
         }
 
         public function testFormat()
@@ -51,14 +29,15 @@
 
         public function testTranslate()
         {
-            $td = $this->_setupTranslationFiles();
-            $str = "I like {{ __('thingy', '$td') }}";
+            load_textdomain('timber-test', __DIR__ . '/languages/timber-test-en_US.mo');
+
+            $str = "I like {{ __('thingy', 'timber-test') }}";
             $return = Timber::compile_string($str, [
                 'foo' => 'foo',
             ]);
             $this->assertEquals('I like Cheesy Poofs', $return);
 
-            $str = "I like {{ __('doobie', '$td') }}";
+            $str = "I like {{ __('doobie', 'timber-test') }}";
             $return = Timber::compile_string($str, [
                 'foo' => 'foo',
             ]);
@@ -67,12 +46,12 @@
 
         public function testTranslateAndFormat()
         {
-            $td = $this->_setupTranslationFiles();
+            load_textdomain('timber-test', __DIR__ . '/languages/timber-test-en_US.mo');
 
-            $str = "You like {{__('%s', '$td')|format('thingy')}}";
+            $str = "You like {{__('%s', 'timber-test')|format('thingy')}}";
             $return = Timber::compile_string($str);
             $this->assertEquals('You like thingy', $return);
-            $str = "You like {{__('%s'|format('thingy'), '$td')}}";
+            $str = "You like {{__('%s'|format('thingy'), 'timber-test')}}";
             $return = Timber::compile_string($str);
             $this->assertEquals('You like Cheesy Poofs', $return);
         }
