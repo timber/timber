@@ -34,6 +34,18 @@ tests_add_filter('muplugins_loaded', '_manually_load_plugin');
 define('ICL_LANGUAGE_CODE', 'en');
 
 /**
+ * Mocked function for testing menus in WPML
+ */
+function wpml_object_id_filter($element_id, $element_type = 'post', $return_original_if_missing = false, $language_code = null)
+{
+    $locations = get_nav_menu_locations();
+    if (isset($locations['extra-menu'])) {
+        return $locations['extra-menu'];
+    }
+    return $element_id;
+}
+
+/**
  * Bootstrap the CLI dependencies.
  *
  * This is important to test the CLI classes.
