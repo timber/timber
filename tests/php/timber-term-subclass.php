@@ -1,9 +1,9 @@
 <?php
 
-    class TimberTermSubclass extends Timber\Term
+class TimberTermSubclass extends Timber\Term
+{
+    public function foo()
     {
-        public function foo()
-        {
-            return 'bar';
-        }
+        return 'bar';
     }
+}
