@@ -33,11 +33,9 @@ composer install
 
 ## Coding Standards
 
-We use [EasyCodingStandard](https://github.com/symplify/easy-coding-standard) for Timber’s code, which follows the [PSR-12: Extended Coding Styles](https://www.php-fig.org/psr/psr-12/).
+We use [EasyCodingStandard](https://github.com/symplify/easy-coding-standard) for Timber’s code and code examples in the documentation, which follows the [PSR-12: Extended Coding Styles](https://www.php-fig.org/psr/psr-12/).
 
-For code examples in the documentation as well as the inline documentation, we try to use the [WordPress Coding Standards](https://make.wordpress.org/core/handbook/coding-standards/php/).
-
-We use tools to automatically check and apply the coding standards to our codebase (documentation not included), reducing the manual work to a minimum.
+We use tools to automatically check and apply the coding standards to our codebase (including the documentation), reducing the manual work to a minimum.
 
 To run all checks, you can run the `qa` script.
 
@@ -57,6 +55,20 @@ You can also apply coding style fixes automatically.
 
 ```bash
 composer cs:fix
+```
+
+### Check and apply coding standards to the documentation
+
+We can not only check coding standards in the code, but also in the Markdown documentation.
+
+```bash
+composer cs:docs
+```
+
+To apply the fixes automatically to the documentation, run:
+
+```bash
+cs:docs:fix
 ```
 
 ### Enforcing coding standards using pre-commit hooks
