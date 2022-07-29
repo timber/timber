@@ -7,7 +7,7 @@
     {
         public function testPostTypeObject()
         {
-            $this->restore_locale();
+            restore_current_locale();
             $obj = get_post_type_object('post');
             $this->assertEquals('Posts', $obj->labels->name);
         }
