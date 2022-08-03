@@ -99,6 +99,8 @@ class TestTimberSite extends Timber_UnitTestCase
 
     public function testWPObject()
     {
+        $this->skipWithMultisite();
+
         $ts = new Timber\Site();
         $this->assertNull($ts->wp_object());
     }

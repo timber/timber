@@ -225,11 +225,7 @@ class TestTimberMultisite extends Timber_UnitTestCase
 
     public function testTimberSiteWPObject()
     {
-        if (!is_multisite()) {
-            $this->skipWithoutMultisite();
-
-            return;
-        }
+        $this->skipWithoutMultisite();
 
         $ts = new Timber\Site();
         $this->assertInstanceOf('WP_Site', $ts->wp_object());
