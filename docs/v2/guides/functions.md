@@ -62,5 +62,5 @@ The concept of Timber (and templating engines like Twig in general) is to prepar
 - If you have a function that needs to be called exactly where you use it in your template (e.g. because it depends on certain global values) you can use `FunctionWrapper`:
 
 ```php
-$context['my_custom_function'] = new FunctionWrapper( 'my_custom_function', $array_of_arguments );
+$context['my_custom_function'] = new FunctionWrapper('my_custom_function', $array_of_arguments);
 ```

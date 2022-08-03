@@ -8,7 +8,7 @@ order: "120"
 To get a term object in Timber, you use `Timber::get_term()` and pass the WordPress term ID as an argument.
 
 ```php
-$term = Timber::get_term( $term_id );
+$term = Timber::get_term($term_id);
 ```
 
 This function is similar to [`get_term()`](https://developer.wordpress.org/reference/functions/get_term/) and accepts one argument: a term ID. If you don’t pass in any argument, Timber will use `get_queried_object()` to try and work with the currently queried term.
@@ -18,7 +18,7 @@ $term = Timber::get_term();
 
 // Is the same as…
 
-$term = Timber::get_term( get_queried_object_id() );
+$term = Timber::get_term(get_queried_object_id());
 ```
 
 What you get in return is a [`Timber\Term`](https://timber.github.io/docs/v2/reference/timber-term/) object, which is similar to `WP_Term`.
@@ -29,10 +29,10 @@ If you don’t have a term ID, you can also get a term by other fields, like `sl
 
 ```php
 // Get a term by slug.
-$term = Timber::get_term_by( 'slug', 'news', 'category' );
+$term = Timber::get_term_by('slug', 'news', 'category');
 
 // Get a term by name.
-$term = Timber::get_term_by( 'name', 'News', 'category' );
+$term = Timber::get_term_by('name', 'News', 'category');
 ```
 
 ## Twig
@@ -56,10 +56,9 @@ If you have an array of terms IDs that you want to convert to `Timber\Term` obje
 If no valid term can be found with the term ID you provided, the `Timber::get_term()` function will return `null`. With this, you can always check for a valid term with a simple if statement.
 
 ```php
-$term = Timber::get_term( $term_id );
+$term = Timber::get_term($term_id);
 
-if ( $term ) {
-
+if ($term) {
 }
 ```
 
@@ -76,15 +75,15 @@ Or in Twig:
 If you need additional functionality that the `Timber\Term` class doesn’t provide or if you want to have cleaner Twig templates, you can extend the `Timber\Term` class with your own classes:
 
 ```php
-class BookGenre extends Timber\Term {
-
+class BookGenre extends Timber\Term
+{
 }
 ```
 
 To initiate your new `BookGenre` term, you also use `Timber::get_term()`.
 
 ```php
-$term = Timber::get_term( $term_id );
+$term = Timber::get_term($term_id);
 ```
 
 In the same way that you [can’t instantiate post objects directly](https://timber.github.io/docs/v2/guides/posts/#extending-timber-post), you **can’t** instantiate a `Timber\Term` object or an object that extends this class with a constructor. Timber will use the [Term Class Map](https://timber.github.io/docs/v2/guides/class-maps/#the-term-class-map) to sort out which class it should use.
@@ -103,10 +102,10 @@ You can pass the same arguments to this function that you know from using [`WP_T
 
 ```php
 // Using the WP_Term_Query argument format.
-$terms = Timber::get_terms( [
+$terms = Timber::get_terms([
     'taxonomy' => 'book_genre',
-    'count'    => true,
- ] );
+    'count' => true,
+]);
 ```
 
 Also check out the documentation for [`Timber::get_terms()`](https://timber.github.io/docs/v2/reference/timber-timber/#get_terms).
@@ -114,7 +113,7 @@ Also check out the documentation for [`Timber::get_terms()`](https://timber.gith
 You get array of terms as a return value that you can loop over.
 
 ```php
-foreach ( $terms as $term ) {
+foreach ($terms as $term) {
     echo $term->title();
 }
 ```

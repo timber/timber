@@ -23,11 +23,9 @@ The pagination for archive pages applies to template files with an active query 
 **archive.php**
 
 ```php
-<?php
-
 $context = Timber::context();
 
-Timber::render( 'archive.twig', $context );
+Timber::render('archive.twig', $context);
 ```
 
 Because we’re on an archive page, Timber already prepared a `posts` variable in the context for us. You could then markup the output like so:
@@ -74,23 +72,21 @@ If you want to overwrite the default query, you can do that by overwriting `post
 **archive-event.php**
 
 ```php
-<?php
-
 global $paged;
 
-if ( ! isset( $paged ) || ! $paged ) {
+if (!isset($paged) || !$paged) {
     $paged = 1;
 }
 
-$context = Timber::context( [
-    'posts' => Timber::get_posts( [
-        'post_type'      => 'event',
+$context = Timber::context([
+    'posts' => Timber::get_posts([
+        'post_type' => 'event',
         'posts_per_page' => 5,
-        'paged'          => $paged
-    ] ),
-] );
+        'paged' => $paged,
+    ]),
+]);
 
-Timber::render( 'archive-event.twig', $context );
+Timber::render('archive-event.twig', $context);
 ```
 
 ### Pagination with `pre_get_posts`
@@ -98,23 +94,22 @@ Timber::render( 'archive-event.twig', $context );
 Custom `query_posts` sometimes shows 404 on example.com/page/2. In that case you can also use `pre_get_posts` in your **functions.php** file:
 
 ```php
-function my_home_query( $query ) {
-    if ( $query->is_main_query() && ! is_admin() ) {
-        $query->set( 'post_type', [ 'movie', 'post' ] );
+function my_home_query($query)
+{
+    if ($query->is_main_query() && !is_admin()) {
+        $query->set('post_type', ['movie', 'post']);
     }
 }
 
-add_action( 'pre_get_posts', 'my_home_query' );
+add_action('pre_get_posts', 'my_home_query');
 ```
 
 Your **archive.php** or **home.php** template wouldn’t change:
 
 ```php
-<?php
-
 $context = Timber::context();
 
-Timber::render( 'archive.twig', $context );
+Timber::render('archive.twig', $context);
 ```
 
 ## Adjacent post pagination for singular templates

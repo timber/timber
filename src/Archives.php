@@ -187,7 +187,7 @@ class Archives extends Core
                 if ($show_year && !$nested) {
                     $text = sprintf(__('%1$s %2$d'), $wp_locale->get_month($result->month), $result->year);
                 } else {
-                    $text = sprintf(__('%1$s'), $wp_locale->get_month($result->month));
+                    $text = $wp_locale->get_month($result->month);
                 }
                 if ($nested) {
                     $output[$result->year][] = $this->get_archives_link($url, $text, $result->posts);

@@ -10,12 +10,12 @@ To use debugging, the constant `WP_DEBUG` needs to be set to `true`.
 **wp-config.php**
 
 ```php
-define( 'WP_DEBUG', true );
+define('WP_DEBUG', true);
 ```
 
 ## Using Twig’s native functions
 
-Twig includes a `dump` function that can output the properties of an object. 
+Twig includes a `dump` function that can output the properties of an object.
 
 **Twig**
 
@@ -48,8 +48,15 @@ An easier solution is to use the [Timber Dump Extension](https://github.com/nlem
 It also works in PHP. Instead of using `var_dump` or `print_r`, you will use `dump()` as well:
 
 ```php
-dump( $post );
+dump($post);
 ```
+
+If you want to dump and stop code execution, you can "dump & die" using `dd`:
+```php
+dd($post);
+```
+
+You can also make use of the [VarDumper Configurator](https://github.com/nlemoine/var-dumper-configurator) which will enhance a bit further the output by creating links on classes, objects, etc. that will open the related file in your favorite IDE/editor.
 
 ## Commented Twig includes
 
@@ -80,9 +87,9 @@ Then, you need to reference the path to the cached files in ***Settings/Preferen
 Remember that you can set the location of the cache files through the `timber/cache/location` filter:
 
 ```php
-add_filter( 'timber/cache/location', function() {
+add_filter('timber/cache/location', function () {
     return '/absolute/path/to/your/cached/twig/files';
-} );
+});
 ```
 
 ### Twig breakpoints in other IDEs
@@ -100,15 +107,15 @@ And then add it to Timber’s Twig environment:
 **functions.php**
 
 ```php
-add_filter( 'timber/twig', function( \Twig\Environment $twig ) {
-    if ( defined( 'WP_DEBUG' ) && WP_DEBUG
-        && class_exists( 'Ajgl\Twig\Extension\BreakpointExtension' )
+add_filter('timber/twig', function (\Twig\Environment $twig) {
+    if (defined('WP_DEBUG') && WP_DEBUG
+        && class_exists('Ajgl\Twig\Extension\BreakpointExtension')
     ) {
-        $twig->addExtension( new Ajgl\Twig\Extension\BreakpointExtension() );
+        $twig->addExtension(new Ajgl\Twig\Extension\BreakpointExtension());
     }
 
     return $twig;
-} );
+});
 ```
 
 Finally, you can set a breakpoint anywhere in your Twig file:
@@ -125,5 +132,5 @@ The [**Timber Debugger**](https://github.com/djboris88/timber-debugger) package 
 
 ## Using Timber Debug Bar plugin
 
-There’s a [Timber add-on](http://wordpress.org/plugins/debug-bar-timber/) for the [WordPress debug bar](https://wordpress.org/plugins/debug-bar/).  
+There’s a [Timber add-on](http://wordpress.org/plugins/debug-bar-timber/) for the [WordPress debug bar](https://wordpress.org/plugins/debug-bar/).
 **Warning:** this currently requires PHP 5.4.

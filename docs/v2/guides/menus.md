@@ -12,25 +12,25 @@ To get a menu object in Timber, you use `Timber::get_menu()`. This function is s
 You can pass the **slug of the menu** you want to use:
 
 ```php
-$menu = Timber::get_menu( 'primary-navigation' );
+$menu = Timber::get_menu('primary-navigation');
 ```
 
 Or the **ID** number of the menu:
 
 ```php
-$menu = Timber::get_menu( 3 );
+$menu = Timber::get_menu(3);
 ```
 
 Or the proper **name** from the admin:
 
 ```php
-$menu = Timber::get_menu( 'Primary Navigation' );
+$menu = Timber::get_menu('Primary Navigation');
 ```
 
 Or the **slug of the registered location**:
 
 ```php
-$menu = Timber::get_menu( 'primary' );
+$menu = Timber::get_menu('primary');
 ```
 
 What you get in return is a [`Timber\Menu`](https://timber.github.io/docs/reference/timber-menu/) object that holds a collection of [`Timber\MenuItem`](https://timber.github.io/docs/reference/timber-menuitem/) objects. If no menu can be found with the argument you provided, the function will return `null`.
@@ -42,9 +42,9 @@ In earlier versions of Timber, it was possible to pass in nothing. We’ve remov
 Optionally, you can send additional options to `Timber::get_menu()` in the second parameter.
 
 ```php
-$menu = Timber::get_menu( 'primary', [
+$menu = Timber::get_menu('primary', [
     'depth' => 2,
-] );
+]);
 ```
 
 Currently, only `depth` is supported (see [`wp_nav_menu()`](https://developer.wordpress.org/reference/functions/wp_nav_menu/) for reference).
@@ -59,13 +59,13 @@ Be aware that you first need to register your menu locations with [`register_nav
 /**
  * Register Menus
  */
-add_action( 'after_setup_theme', function() {
-    register_nav_menus( [
-        'primary'   => 'Primary Menu',
+add_action('after_setup_theme', function () {
+    register_nav_menus([
+        'primary' => 'Primary Menu',
         'secondary' => 'Secondary Menu',
-        'footer'    => 'Footer Menu',
-    ] );
-} );
+        'footer' => 'Footer Menu',
+    ]);
+});
 ```
 
 ## Extending menus
@@ -73,21 +73,21 @@ add_action( 'after_setup_theme', function() {
 If you need additional functionality that the `Timber\Menu` and `Timber\MenuItem` classes don’t provide or if you want to have cleaner Twig templates, you can extend the `Timber\Menu` or `Timber\MenuItem` class with your own classes:
 
 ```php
-class MenuPrimary extends \Timber\Menu {
-
+class MenuPrimary extends \Timber\Menu
+{
 }
 ```
 
 ```php
-class MenuItemPrimary extends \Timber\MenuItem {
-
+class MenuItemPrimary extends \Timber\MenuItem
+{
 }
 ```
 
 To initiate your new `MenuPrimary` menu that will hold `MenuItemPrimary` objects, you also use `Timber::get_menu()`.
 
 ```php
-$menu = Timber::get_menu( 'primary' );
+$menu = Timber::get_menu('primary');
 ```
 
 In the same way that you [can’t instantiate post objects directly](https://timber.github.io/docs/guides/posts/#extending-timber-post), you **can’t** instantiate `Timber\Menu` or `Timber\MenuItem` objects or an object that extends this class with a constructor. Timber will use the [Menu Class Map](https://timber.github.io/docs/guides/class-maps/#the-menu-class-map) and the [MenuItem Class Map](https://timber.github.io/docs/guides/class-maps/#the-menuitem-class-map) to sort out which class it should use.
@@ -106,8 +106,8 @@ If you want to extend a pages menu, you would do it like this:
 
 
 ```php
-class ExtendedPagesMenu extends \Timber\PagesMenu {
-
+class ExtendedPagesMenu extends \Timber\PagesMenu
+{
 }
 ```
 
@@ -120,19 +120,20 @@ Most of the time, you need the menu on every page. To achieve that, you can add 
 **functions.php**
 
 ```php
-add_filter( 'timber/context', 'add_to_context' );
+add_filter('timber/context', 'add_to_context');
 
 /**
  * Global Timber context.
  *
  * @param array $context Global context variables.
  */
-function add_to_context( $context ) {
+function add_to_context($context)
+{
     // So here you are adding data to Timber's context object, i.e...
     $context['foo'] = 'I am some other typical value set in your functions.php file, unrelated to the menu';
 
     // Now, in similar fashion, you add a Timber Menu and send it along to the context.
-    $context['menu'] = Timber::get_menu( 'primary' );
+    $context['menu'] = Timber::get_menu('primary');
 
     return $context;
 }
@@ -143,11 +144,9 @@ Now, when you call `Timber::context()`, your menu will already be set in the con
 **index.php**
 
 ```php
-<?php
-
 $context = Timber::context();
 
-Timber::render( 'index.twig', $context );
+Timber::render('index.twig', $context);
 ```
 
 ### Set up all menus globally
@@ -157,24 +156,25 @@ Here’s a small snippet that you can use to automatically set up all your regis
 **functions.php**
 
 ```php
-add_filter( 'timber/context', 'add_to_context' );
+add_filter('timber/context', 'add_to_context');
 
 /**
  * Global Timber context.
  *
  * @param array $context Global context variables.
  */
-function add_to_context( $context ) {
+function add_to_context($context)
+{
     // Set all nav menus in context.
-    foreach ( array_keys( get_registered_nav_menus() ) as $location ) {
+    foreach (array_keys(get_registered_nav_menus()) as $location) {
         // Bail out if menu has no location.
-        if ( ! has_nav_menu( $location ) ) {
+        if (!has_nav_menu($location)) {
             continue;
         }
 
-        $menu = Timber::get_menu( $location );
+        $menu = Timber::get_menu($location);
 
-        $context[ $location ] = $menu;
+        $context[$location] = $menu;
     }
 
     return $context;

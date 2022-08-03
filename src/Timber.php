@@ -129,6 +129,7 @@ class Timber
             $integrations = [
                 Integration\AcfIntegration::class,
                 Integration\CoAuthorsPlusIntegration::class,
+                Integration\WpCliIntegration::class,
                 Integration\WpmlIntegration::class,
             ];
 

@@ -108,14 +108,6 @@ class Attachment extends Post
     ];
 
     /**
-     * Caption text.
-     *
-     * @api
-     * @var string The caption that is stored as post_excerpt in the posts table in the database.
-     */
-    public $caption;
-
-    /**
      * Gets the src for an attachment.
      *
      * @api
@@ -291,6 +283,38 @@ class Attachment extends Post
         }
 
         return wp_get_attachment_url($this->ID);
+    }
+
+    /**
+     * Gets the caption of an attachment.
+     *
+     * @api
+     * @since 2.0
+     * @example
+     * ```twig
+     * <figure>
+     *     <img src="{{ post.thumbnail.src }}">
+     *
+     *     {% if post.thumbnail is not empty %}
+     *         <figcaption>{{ post.thumbnail.caption }}</figcaption
+     *     {% endif %}
+     * </figure>
+     * ```
+     *
+     * @return string
+     */
+    public function caption()
+    {
+        /**
+         * Filters the attachment caption.
+         *
+         * @since WordPress 4.6.0
+         * @since 2.0.0
+         *
+         * @param string $caption Caption for the given attachment.
+         * @param int    $post_id Attachment ID.
+         */
+        return apply_filters('wp_get_attachment_caption', $this->post_excerpt, $this->ID);
     }
 
     /**
