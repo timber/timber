@@ -25,8 +25,6 @@ You can choose yourself where in your project you want to include Timber.
 If your theme or project is not already set up to pull in Composer’s autoload file, you will need to add the following line at the top of your **functions.php** file:
 
 ```php
-<?php
-
 // Load Composer dependencies.
 require_once __DIR__ . '/vendor/autoload.php';
 

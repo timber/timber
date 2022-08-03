@@ -39,7 +39,7 @@ Consider this array with a key that has a dash in it:
 
 ```php
 $item = [
-    'id'          => 7,
+    'id' => 7,
     'has-balcony' => true,
 ];
 ```
@@ -201,9 +201,10 @@ If you want anything from the template’s context, you'll need to pass that man
 **functions.php**
 
 ```php
-add_action( 'my_action_with_args', 'my_function_with_args', 10, 2 );
+add_action('my_action_with_args', 'my_function_with_args', 10, 2);
 
-function my_function_with_args( $foo, $post ){
+function my_function_with_args($foo, $post)
+{
     echo 'I say ' . $foo . '!';
     echo 'For the post with title ' . $post->title();
 }
@@ -236,10 +237,11 @@ Or you can use a filter with the [Twig apply tag](https://twig.symfony.com/doc/3
 In **PHP**, you can get the content of the block with the first parameter and the rest of parameters like that.
 
 ```php
-add_filter( 'default_message', 'my_default_message', 10, 4 );
+add_filter('default_message', 'my_default_message', 10, 4);
 
-function my_default_message( $tag, $param1, $param2, $param3 ) {
-    var_dump( $tag, $param1, $param2, $param3 ); // 'I love pizza', 'foo', 'bar, 'baz'
+function my_default_message($tag, $param1, $param2, $param3)
+{
+    var_dump($tag, $param1, $param2, $param3); // 'I love pizza', 'foo', 'bar, 'baz'
 
     echo 'I have a message: ' . $tag; // I have a message: I love pizza
 }
@@ -253,8 +255,8 @@ Sometimes in **WooCommerce** we find very long lines of code:
 echo '<li class="woocommerce-notice woocommerce-notice--info woocommerce-info">' . apply_filters(
     'woocommerce_no_available_payment_methods_message',
     WC()->customer->get_billing_country()
-        ? esc_html__( 'Sorry, it seems that there are no available payment methods for your state. Please contact us if you require assistance or wish to make alternate arrangements.', 'woocommerce' )
-        : esc_html__( 'Please fill in your details above to see available payment methods.', 'woocommerce' )
+        ? esc_html__('Sorry, it seems that there are no available payment methods for your state. Please contact us if you require assistance or wish to make alternate arrangements.', 'woocommerce')
+        : esc_html__('Please fill in your details above to see available payment methods.', 'woocommerce')
 ) . '</li>';
 ```
 

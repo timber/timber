@@ -52,6 +52,15 @@ use WP_Post;
 class Post extends CoreEntity implements DatedInterface, Setupable
 {
     /**
+     * The underlying WordPress Core object.
+     *
+     * @since 2.0.0
+     *
+     * @var \WP_Post|null
+     */
+    protected ?WP_Post $wp_object;
+
+    /**
      * @var string What does this class represent in WordPress terms?
      */
     public $object_type = 'post';
@@ -165,7 +174,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * (i.e. Timber\Post or a subclass).
      *
      * @internal
-     * @return Timber\Post
+     * @return \Timber\Post
      */
     public static function build(WP_Post $wp_post): self
     {
@@ -173,6 +182,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
 
         $post->id = $wp_post->ID;
         $post->ID = $wp_post->ID;
+        $post->wp_object = $wp_post;
 
         $data = $post->get_info($wp_post);
 
@@ -239,6 +249,18 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     }
 
     /**
+     * Gets the underlying WordPress Core object.
+     *
+     * @since 2.0.0
+     *
+     * @return WP_Post|null
+     */
+    public function wp_object(): ?WP_Post
+    {
+        return $this->wp_object;
+    }
+
+    /**
      * Sets up a post.
      *
      * Sets up the `$post` global, and other global variables as well as variables in the
@@ -257,13 +279,10 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         global $post;
         global $wp_query;
 
-        // @todo: Load $wp_post in Post::build() and save it in a property.
-        $wp_post = get_post($this->ID);
-
         // Mimick WordPress behavior to improve compatibility with third party plugins.
         $wp_query->in_the_loop = true;
 
-        if (!$wp_post) {
+        if (!$this->wp_object) {
             return $this;
         }
 
@@ -275,11 +294,11 @@ class Post extends CoreEntity implements DatedInterface, Setupable
          */
         // phpcs:ignore WordPress.WP.GlobalVariablesOverride.OverrideProhibited
         if (!$post || isset($post->ID) && $post->ID !== $this->ID) {
-            $post = $wp_post;
+            $post = $this->wp_object;
         }
 
         // The setup_postdata() function will call the 'the_post' action.
-        $wp_query->setup_postdata($wp_post);
+        $wp_query->setup_postdata($this->wp_object);
 
         return $this;
     }

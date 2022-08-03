@@ -13,6 +13,15 @@ use WP_Term;
  */
 class Menu extends CoreEntity
 {
+    /**
+     * The underlying WordPress Core object.
+     *
+     * @since 2.0.0
+     *
+     * @var \WP_Term|null
+     */
+    protected ?WP_Term $wp_object;
+
     public $object_type = 'term';
 
     /**
@@ -251,7 +260,20 @@ class Menu extends CoreEntity
         $this->import($term);
         $this->ID = $this->term_id;
         $this->id = $this->term_id;
+        $this->wp_object = $term;
         $this->title = $this->name;
+    }
+
+    /**
+     * Gets the underlying WordPress Core object.
+     *
+     * @since 2.0.0
+     *
+     * @return WP_Term|null
+     */
+    public function wp_object(): ?WP_Term
+    {
+        return $this->wp_object;
     }
 
     /**

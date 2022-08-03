@@ -104,11 +104,9 @@ This is what a PHP template for a singular post in Timber looks like:
 **single.php**
 
 ```php
-<?php
-
 $context = Timber::context();
 
-Timber::render( 'single.twig', $context );
+Timber::render('single.twig', $context);
 ```
 
 For very basic themes, this is all you need to start working. But for more advanced functionality, you might have to add your own data. For that, you can add your data to `$context`.
@@ -116,14 +114,12 @@ For very basic themes, this is all you need to start working. But for more advan
 Here’s an example where you would call a function to calculate the reading time for a post.
 
 ```php
-<?php
-
 $context = Timber::context();
-$post    = $context['post'];
+$post = $context['post'];
 
-$context['reading_time'] = reading_time( $post );
+$context['reading_time'] = reading_time($post);
 
-Timber::render( 'single.twig', $context );
+Timber::render('single.twig', $context);
 ```
 
 Now, you can head on to the next chapter about [Post Archives](https://timber.github.io/docs/v2/getting-started/a-post-archive/).

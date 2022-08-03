@@ -547,7 +547,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase
             if (self::checkChannel('red', $test_colors, $colors_of_file, $upper_colors) &&
                 self::checkChannel('green', $test_colors, $colors_of_file, $upper_colors) &&
                 self::checkChannel('blue', $test_colors, $colors_of_file, $upper_colors)
-                ) {
+            ) {
                 return true;
             }
             return false;

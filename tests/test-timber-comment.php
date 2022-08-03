@@ -293,4 +293,12 @@ class TestTimberComment extends Timber_UnitTestCase
         ]);
         $this->assertEquals('Kramer, Elaine Benes, J. Peterman, ', $compiled);
     }
+
+    public function testWPObject()
+    {
+        $comment_id = $this->factory->comment->create();
+        $comment = Timber::get_comment($comment_id);
+
+        $this->assertInstanceOf('WP_Comment', $comment->wp_object());
+    }
 }

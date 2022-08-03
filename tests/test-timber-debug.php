@@ -1,6 +1,5 @@
 <?php
 
-
 class TestTimberDebug extends Timber_UnitTestCase
 {
     public function testCallingPHPFile()
