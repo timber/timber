@@ -13,7 +13,14 @@ use WP_Post;
  */
 class MenuItem extends CoreEntity
 {
-    protected WP_Post $wp_object;
+    /**
+     * The underlying WordPress Core object.
+     *
+     * @since 2.0.0
+     *
+     * @var \WP_Post|null
+     */
+    protected ?WP_Post $wp_object;
 
     /**
      * @var string What does this class represent in WordPress terms?
@@ -139,6 +146,18 @@ class MenuItem extends CoreEntity
         if (!isset($this->object_id)) {
             $this->object_id = (int) get_post_meta($this->ID, '_menu_item_object_id', true);
         }
+    }
+
+    /**
+     * Gets the underlying WordPress Core object.
+     *
+     * @since 2.0.0
+     *
+     * @return \WP_Post|null
+     */
+    public function wp_object(): ?WP_Post
+    {
+        return $this->wp_object;
     }
 
     /**

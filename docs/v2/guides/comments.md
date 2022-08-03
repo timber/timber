@@ -45,8 +45,10 @@ You can implement threaded comments this way (if you don't mind using WordPressâ
 **functions.php**
 ```php
 //Include the comment reply Javascript
-add_action('wp_print_scripts', function(){
-  if ( (!is_admin()) && is_singular() && comments_open() && get_option('thread_comments') ) wp_enqueue_script( 'comment-reply' );
+add_action('wp_print_scripts', function () {
+    if ((!is_admin()) && is_singular() && comments_open() && get_option('thread_comments')) {
+        wp_enqueue_script('comment-reply');
+    }
 });
 ```
 

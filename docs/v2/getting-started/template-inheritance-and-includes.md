@@ -211,20 +211,19 @@ Here’s an example from the [Twenty Twenty theme](https://github.com/WordPress/
 
 	<?php
 
-	if ( have_posts() ) {
+    if (have_posts()) {
+        while (have_posts()) {
+            the_post();
 
-		while ( have_posts() ) {
-			the_post();
+            get_template_part('template-parts/content', get_post_type());
+        }
+    }
 
-			get_template_part( 'template-parts/content', get_post_type() );
-		}
-	}
-
-	?>
+    ?>
 
 </main>
 
-<?php get_template_part( 'template-parts/footer-menus-widgets' ); ?>
+<?php get_template_part('template-parts/footer-menus-widgets'); ?>
 
 <?php get_footer(); ?>
 ```
@@ -237,19 +236,19 @@ If you wanted to introduce Timber, you could start replacing different parts of 
 <main id="site-content" role="main">
 
     <?php
-        $template = sprintf( 'content-%s.twig', get_post_type() );
-        $post     = Timber::get_post();
+        $template = sprintf('content-%s.twig', get_post_type());
+        $post = Timber::get_post();
 
         $post->setup();
 
-        Timber::render( $template, [
+        Timber::render($template, [
             'post' => $post,
-        ] );
+        ]);
     ?>
 
 </main>
 
-<?php get_template_part( 'template-parts/footer-menus-widgets' ); ?>
+<?php get_template_part('template-parts/footer-menus-widgets'); ?>
 
 <?php get_footer(); ?>
 ```

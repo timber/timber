@@ -35,6 +35,15 @@ use WP_Comment;
  */
 class Comment extends CoreEntity
 {
+    /**
+     * The underlying WordPress Core object.
+     *
+     * @since 2.0.0
+     *
+     * @var \WP_Comment|null
+     */
+    protected ?WP_Comment $wp_object;
+
     public $object_type = 'comment';
 
     public static $representation = 'comment';
@@ -129,6 +138,7 @@ class Comment extends CoreEntity
         $comment->import($wp_comment);
         $comment->ID = $wp_comment->comment_ID;
         $comment->id = $wp_comment->comment_ID;
+        $comment->wp_object = $wp_comment;
 
         return $comment;
     }
@@ -157,6 +167,18 @@ class Comment extends CoreEntity
         $this->import($comment_data);
         $this->ID = $this->comment_ID;
         $this->id = $this->comment_ID;
+    }
+
+    /**
+     * Gets the underlying WordPress Core object.
+     *
+     * @since 2.0.0
+     *
+     * @return \WP_Comment|null
+     */
+    public function wp_object(): ?WP_Comment
+    {
+        return $this->wp_object;
     }
 
     /**

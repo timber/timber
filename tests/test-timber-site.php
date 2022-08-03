@@ -12,7 +12,7 @@ class TestTimberSite extends Timber_UnitTestCase
 
     public function testLanguageAttributes()
     {
-        $this->restore_locale();
+        restore_current_locale();
         $site = new \Timber\Site();
         $lang = $site->language_attributes();
         $this->assertEquals('lang="en-US"', $lang);
@@ -95,6 +95,14 @@ class TestTimberSite extends Timber_UnitTestCase
         $ts = new Timber\Site();
         update_option('date_format', 'j. F Y');
         $this->assertEquals('j. F Y', $ts->option('date_format'));
+    }
+
+    public function testWPObject()
+    {
+        $this->skipWithMultisite();
+
+        $ts = new Timber\Site();
+        $this->assertNull($ts->wp_object());
     }
 
     public function set_up()

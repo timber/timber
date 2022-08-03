@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use WP_Site;
+
 /**
  * Class Site
  *
@@ -28,6 +30,15 @@ namespace Timber;
  */
 class Site extends Core implements CoreInterface
 {
+    /**
+     * The underlying WordPress Core object.
+     *
+     * @since 2.0.0
+     *
+     * @var \WP_Site|null Will only be filled in multisite environments. Otherwise `null`.
+     */
+    protected ?WP_Site $wp_object;
+
     /**
      * @api
      * @var string The admin email address set in the WP admin panel
@@ -163,6 +174,18 @@ class Site extends Core implements CoreInterface
     }
 
     /**
+     * Gets the underlying WordPress Core object.
+     *
+     * @since 2.0.0
+     *
+     * @return \WP_Site|null Will only return a `WP_Site` object in multisite environments. Otherwise `null`.
+     */
+    public function wp_object(): ?WP_Site
+    {
+        return $this->wp_object;
+    }
+
+    /**
      * Switches to the blog requested in the request
      *
      * @param string|integer|null $site_name_or_id
@@ -184,16 +207,18 @@ class Site extends Core implements CoreInterface
      */
     protected function init_as_multisite($site_id)
     {
-        $info = get_blog_details($site_id);
-        $this->import($info);
-        $this->ID = $info->blog_id;
+        $wp_site = get_blog_details($site_id);
+        $this->import($wp_site);
+        $this->ID = $wp_site->blog_id;
         $this->id = $this->ID;
+        // Site might be false, but $wp_object needs to be null if it can’t be set.
+        $this->wp_object = $wp_site ?: null;
         $this->name = $this->blogname;
         $this->title = $this->blogname;
-        $theme_slug = get_blog_option($info->blog_id, 'stylesheet');
+        $theme_slug = get_blog_option($wp_site->blog_id, 'stylesheet');
         $this->theme = new Theme($theme_slug);
-        $this->description = get_blog_option($info->blog_id, 'blogdescription');
-        $this->admin_email = get_blog_option($info->blog_id, 'admin_email');
+        $this->description = get_blog_option($wp_site->blog_id, 'blogdescription');
+        $this->admin_email = get_blog_option($wp_site->blog_id, 'admin_email');
         $this->multisite = true;
     }
 
@@ -203,6 +228,9 @@ class Site extends Core implements CoreInterface
      */
     protected function init_as_singlesite()
     {
+        // No WP_Site object available in single site environments.
+        $this->wp_object = null;
+
         $this->admin_email = get_bloginfo('admin_email');
         $this->name = get_bloginfo('name');
         $this->title = $this->name;

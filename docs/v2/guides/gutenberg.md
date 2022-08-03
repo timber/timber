@@ -20,24 +20,25 @@ Before you can start using ACF Blocks, you must install the Advanced Custom Fiel
 To create a content block, you first have to register it in **functions.php** or in a separate plugin:
 
 ```php
-add_action( 'acf/init', 'my_acf_init' );
+add_action('acf/init', 'my_acf_init');
 
-function my_acf_init() {
+function my_acf_init()
+{
     // Bail out if function doesn’t exist.
-    if ( ! function_exists( 'acf_register_block' ) ) {
+    if (!function_exists('acf_register_block')) {
         return;
     }
 
     // Register a new block.
-    acf_register_block( array(
-        'name'            => 'example_block',
-        'title'           => __( 'Example Block', 'your-text-domain' ),
-        'description'     => __( 'A custom example block.', 'your-text-domain' ),
+    acf_register_block([
+        'name' => 'example_block',
+        'title' => __('Example Block', 'your-text-domain'),
+        'description' => __('A custom example block.', 'your-text-domain'),
         'render_callback' => 'my_acf_block_render_callback',
-        'category'        => 'formatting',
-        'icon'            => 'admin-comments',
-        'keywords'        => array( 'example' ),
-    ) );
+        'category' => 'formatting',
+        'icon' => 'admin-comments',
+        'keywords' => ['example'],
+    ]);
 }
 ```
 
@@ -51,18 +52,19 @@ Next, you you have to create your `render_callback()` function:
  * @param   string $content    The block content (emtpy string).
  * @param   bool   $is_preview True during AJAX preview.
  */
-function my_acf_block_render_callback( $block, $content = '', $is_preview = false ) {
-    $context = Timber::context( [
+function my_acf_block_render_callback($block, $content = '', $is_preview = false)
+{
+    $context = Timber::context([
         // Store block values.
-        'block'      => $block,
+        'block' => $block,
         // Store field values.
-        'fields'     => get_fields(),
+        'fields' => get_fields(),
         // Store $is_preview value.
         'is_preview' => $is_preview,
-    ] );
+    ]);
 
     // Render the block.
-    Timber::render( 'block/example-block.twig', $context );
+    Timber::render('block/example-block.twig', $context);
 }
 ```
 
@@ -101,14 +103,15 @@ Finally, you can create the template **block/example-block.twig**:
 If you would like to use an external stylesheet both inside of the block editor and the frontend you should add:
 
 ```php
-function my_acf_block_editor_style() {
+function my_acf_block_editor_style()
+{
     wp_enqueue_style(
         'example_block_css',
         get_template_directory_uri() . '/assets/example-block.css'
     );
 }
 
-add_action( 'enqueue_block_assets', 'my_acf_block_editor_style' );
+add_action('enqueue_block_assets', 'my_acf_block_editor_style');
 ```
 
 For more details about enqueueing assets read the [Block Editor Handbook](https://developer.wordpress.org/block-editor/tutorials/block-tutorial/applying-styles-with-stylesheets/#enqueueing-editor-only-block-assets).

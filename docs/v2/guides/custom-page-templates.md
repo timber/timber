@@ -19,10 +19,10 @@ If you're using the [Timber Starter Theme](https://github.com/timber/starter-the
 In the **page.php** file you'll find this code:
 
 ```php
-Timber::render( array(
+Timber::render([
     'page-' . $post->post_name . '.twig',
-    'page.twig'
-), $context );
+    'page.twig',
+], $context);
 ```
 
 This is telling PHP to first look for a Twig file named **page-{{ slug }}.twig** and then fall back to **page.twig** if that doesn't exist. With the array notation, you can add as many fallbacks as you need.
@@ -40,7 +40,6 @@ and populate it with the necessary PHP. You can use the contents of the starter 
 Create a file with the following comment header:
 
 ```php
-<?php
 /**
  * Template Name: My Custom Page
  * Description: A Page Template with a darker design.

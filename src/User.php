@@ -42,6 +42,15 @@ use WP_User;
  */
 class User extends CoreEntity
 {
+    /**
+     * The underlying WordPress Core object.
+     *
+     * @since 2.0.0
+     *
+     * @var \WP_User|null
+     */
+    protected ?WP_User $wp_object;
+
     public $object_type = 'user';
 
     public static $representation = 'user';
@@ -143,6 +152,8 @@ class User extends CoreEntity
      */
     protected function init($wp_user)
     {
+        $this->wp_object = $wp_user;
+
         $data = get_userdata($wp_user->ID);
         if (!isset($data->data)) {
             return;
@@ -156,6 +167,18 @@ class User extends CoreEntity
         // Never leak password data
         unset($this->user_pass);
         $this->id = $this->ID = (int) $wp_user->ID;
+    }
+
+    /**
+     * Gets the underlying WordPress Core object.
+     *
+     * @since 2.0.0
+     *
+     * @return \WP_User|null
+     */
+    public function wp_object(): ?WP_User
+    {
+        return $this->wp_object;
     }
 
     /**
