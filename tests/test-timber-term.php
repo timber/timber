@@ -623,6 +623,14 @@ class TestTimberTerm extends Timber_UnitTestCase
         $links[] = 'http://example.org/wp-admin/term.php?taxonomy=category&term_id=' . $tid . '&post_type=post';
         $this->assertContains($term->edit_link(), $links);
     }
+
+    public function testWPObject()
+    {
+        $term_id = $this->factory->term->create();
+        $term = Timber::get_term($term_id);
+
+        $this->assertInstanceOf('WP_Term', $term->wp_object());
+    }
 }
 
 class Arts extends Timber\Term

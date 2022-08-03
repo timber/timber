@@ -1213,4 +1213,12 @@ class TestTimberPost extends Timber_UnitTestCase
 
         $this->assertEquals($attachment_id, $post->_thumbnail_id);
     }
+
+    public function testWPObject()
+    {
+        $post_id = $this->factory->post->create();
+        $post = Timber::get_post($post_id);
+
+        $this->assertInstanceOf('WP_Post', $post->wp_object());
+    }
 }

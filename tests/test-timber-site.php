@@ -97,6 +97,14 @@ class TestTimberSite extends Timber_UnitTestCase
         $this->assertEquals('j. F Y', $ts->option('date_format'));
     }
 
+    public function testWPObject()
+    {
+        $this->skipWithMultisite();
+
+        $ts = new Timber\Site();
+        $this->assertNull($ts->wp_object());
+    }
+
     public function set_up()
     {
         global $wp_theme_directories;
