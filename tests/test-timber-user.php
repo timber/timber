@@ -162,4 +162,12 @@ class TestTimberUser extends Timber_UnitTestCase
             'size' => 120,
         ]));
     }
+
+    public function testWPObject()
+    {
+        $user_id = $this->factory()->user->create();
+        $user = Timber::get_user($user_id);
+
+        $this->assertInstanceOf('WP_User', $user->wp_object());
+    }
 }

@@ -223,6 +223,18 @@ class TestTimberMultisite extends Timber_UnitTestCase
         $this->assertStringStartsWith($site_2_upload_dir['baseurl'], $img_resized_src);
     }
 
+    public function testTimberSiteWPObject()
+    {
+        if (!is_multisite()) {
+            $this->skipWithoutMultisite();
+
+            return;
+        }
+
+        $ts = new Timber\Site();
+        $this->assertInstanceOf('WP_Site', $ts->wp_object());
+    }
+
     public static function createSubDomainSite($domain = 'test.example.org', $title = 'Multisite Test')
     {
         $_SERVER['REMOTE_ADDR'] = '127.0.0.1';

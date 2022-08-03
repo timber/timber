@@ -1077,4 +1077,21 @@ class TestTimberMenu extends Timber_UnitTestCase
         $this->assertStringContainsString('class="my-unique-container-class"', $nav_menu_timber);
         $this->assertStringContainsString('id="my-unique-container-id"', $nav_menu_timber);
     }
+
+    public function testWPObject()
+    {
+        $menu_id = self::_createTestMenu()['term_id'];
+        $menu = Timber::get_menu($menu_id);
+
+        $this->assertInstanceOf('WP_Term', $menu->wp_object());
+    }
+
+    public function testWPObjectMenuItem()
+    {
+        $menu_id = self::_createTestMenu()['term_id'];
+        $menu = Timber::get_menu($menu_id);
+        $item = $menu->get_items()[0];
+
+        $this->assertInstanceOf('WP_Post', $item->wp_object());
+    }
 }
