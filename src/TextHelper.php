@@ -68,8 +68,12 @@ class TextHelper
         $allowed_tag_string = '<' . implode('><', $allowed_tags_array) . '>';
 
         $text = strip_tags($text, $allowed_tag_string);
-        /* translators: If your word count is based on single characters (East Asian characters), enter 'characters'. Otherwise, enter 'words'. Do not translate into your own language. */
-        if ('characters' == _x('words', 'word count: words or characters?') && preg_match('/^utf\-?8$/i', get_option('blog_charset'))) {
+        /*
+        * translators: If your word count is based on single characters (e.g. East Asian characters),
+        * enter 'characters_excluding_spaces' or 'characters_including_spaces'. Otherwise, enter 'words'.
+        * Do not translate into your own language.
+        */
+        if ('characters' == _x('words', 'Word count type. Do not translate!') && preg_match('/^utf\-?8$/i', get_option('blog_charset'))) {
             $text = trim(preg_replace("/[\n\r\t ]+/", ' ', $text), ' ');
             preg_match_all('/./u', $text, $words_array);
             $words_array = array_slice($words_array[0], 0, $num_words + 1);

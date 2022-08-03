@@ -114,17 +114,17 @@ class TestTimberWPFunctions extends Timber_UnitTestCase
     }
 }
 
-    function do_jared_action()
-    {
-        do_action('jared_action');
-    }
+function do_jared_action()
+{
+    do_action('jared_action');
+}
 
-    function echo_junk()
-    {
-        echo 'foo';
-    }
+function echo_junk()
+{
+    echo 'foo';
+}
 
-    function my_test_function()
-    {
-        return 'jared sez hi';
-    }
+function my_test_function()
+{
+    return 'jared sez hi';
+}

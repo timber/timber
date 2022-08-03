@@ -45,7 +45,7 @@
     "wp-coding-standards/wpcs": "^2.0",
     "wpackagist-plugin/advanced-custom-fields": "^5.0",
     "wpackagist-plugin/co-authors-plus": "^3.3",
-    "yoast/phpunit-polyfills": "^1.0.1"
+    "yoast/wp-test-utils": "^1.0"
   },
   "suggest": {
     "php-coveralls/php-coveralls": "^2.0 for code coverage",
@@ -86,6 +86,8 @@
   "scripts": {
     "analyze": "phpstan",
     "cs": "ecs check",
+    "cs:docs": "ecs check-markdown docs/v2/**/*.md --fix",
+    "cs:docs:fix": "ecs check-markdown docs/v2/**/*.md",
     "cs:fix": "ecs check --fix",
     "grump": "grumphp run",
     "grump:install": "grumphp git:init",
@@ -100,6 +102,7 @@
     ],
     "test": "phpunit",
     "test:codecov": "phpunit --coverage-clover ./build/logs/clover.xml",
+    "test:make-pot": "wp i18n make-pot src tests/languages/timber.pot --domain= && wp i18n make-pot ./tests/assets/translations ./tests/languages/timber-test.pot --domain=timber-test",
     "test:no-cov": "phpunit --no-coverage"
   }
 }

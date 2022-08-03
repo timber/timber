@@ -6,7 +6,7 @@ order: "110"
 To get a post object in Timber, you use `Timber::get_post()` and pass the WordPress post ID as an argument.
 
 ```php
-$post = Timber::get_post( $post_id );
+$post = Timber::get_post($post_id);
 ```
 
 This function is similar to [`get_post()`](https://developer.wordpress.org/reference/functions/get_post/) and accepts one argument: a post ID. If you don’t pass in any argument, Timber will use `get_queried_object()` to try and work with the currently queried post.
@@ -15,8 +15,7 @@ This function is similar to [`get_post()`](https://developer.wordpress.org/refer
 $post = Timber::get_post();
 
 // Is the same as…
-
-$post = Timber::get_post( get_queried_object_id() );
+$post = Timber::get_post(get_queried_object_id());
 ```
 
 What you get in return is a [`Timber\Post`](https://timber.github.io/docs/v2/reference/timber-post/) object, which is similar to `WP_Post`. This object provides you with functions and properties for pretty much everything you need for developing theme templates.
@@ -65,9 +64,9 @@ It also works if you have an array of post IDs that you want to convert to `Timb
 If no valid post can be found with the post ID you provided, the `Timber::get_post()` function will return `null`. With this, you can always check for valid posts with a simple if statement.
 
 ```php
-$post = Timber::get_post( $post_id );
+$post = Timber::get_post($post_id);
 
-if ( $post ) {
+if ($post) {
     // Handle post.
 }
 ```
@@ -85,15 +84,15 @@ Or in Twig:
 If you need additional functionality that the `Timber\Post` class doesn’t provide or if you want to have cleaner Twig templates, you can [extend the `Timber\Post` class](/docs/v2/guides/extending-timber/) with your own classes:
 
 ```php
-class Book extends Timber\Post {
-
+class Book extends Timber\Post
+{
 }
 ```
 
 To initiate your new `Book` post, you also use `Timber::get_post()`.
 
 ```php
-$book = Timber::get_post( $post_id );
+$book = Timber::get_post($post_id);
 ```
 
 You **can’t** instantiate a `Timber\Post` object or an object that extends this class with a constructor – you can’t use `$post = new Book( $post_id )`. In Timber, we’ve chosen to go a different way to prevent a lot of problems that would come with direct instantiation.
@@ -105,7 +104,7 @@ So, how does Timber know about your `Book` class? Timber will use the [Post Clas
 If you want to get a collection of posts, you can use `Timber::get_posts()`.
 
 ```php
-$posts = Timber::get_posts( $query );
+$posts = Timber::get_posts($query);
 ```
 
 You can use this function similarly to how you use [`WP_Query`](https://developer.wordpress.org/reference/classes/wp_query/). If you don’t pass in any argument, Timber will use the global query.
@@ -115,16 +114,16 @@ You can use this function similarly to how you use [`WP_Query`](https://develope
 $posts = Timber::get_posts();
 
 // Using the WP_Query argument format.
-$posts = Timber::get_posts( [
-    'post_type'     => 'article',
+$posts = Timber::get_posts([
+    'post_type' => 'article',
     'category_name' => 'sports',
-] );
+]);
 ```
 
 The `Timber::get_posts()` function accepts a second parameter with options for the query. For example, with the `merge_default` option you can tell Timber that it should merge your query parameters with the default query parameters of the current template. You can check out `merge_default` and all the other options in the documentation for [`Timber::get_posts()`](https://timber.github.io/docs/v2/reference/timber/#get-posts).
 
 ```php
-$posts = Timber::get_posts( $query, $options );
+$posts = Timber::get_posts($query, $options);
 ```
 
 ### The default query
@@ -142,9 +141,9 @@ The analogous `Timber` methods for getting Users, Terms, and Comments (`Timber::
 What you get as a **return value** when running `Timber::get_posts()` is not a pure array of posts, but an instance of `Timber\PostCollectionInterface`, an [`ArrayObject`](https://www.php.net/manual/en/class.arrayobject.php) that is very similar to an array as you know it. That means you can still loop over a `PostCollectionInterface` directly:
 
 ```php
-$posts = Timber::get_posts( /* optional args */ );
+$posts = Timber::get_posts( /* optional args */);
 
-foreach ( $posts as $post ) {
+foreach ($posts as $post) {
     echo $post->title();
 }
 ```
@@ -166,9 +165,9 @@ In Twig, you can also loop over the collection.
 What **doesn’t work** with objects that implement `Timber\PostCollectionInterface` are PHP’s [Array functions](https://www.php.net/manual/en/ref.array.php) like `array_filter()` or WordPress helper functions like [`wp_list_filter()`](https://developer.wordpress.org/reference/functions/wp_list_filter/). If you want to work with those, you can turn a `Timber\PostCollectionInterface` instance into a pure array with `to_array()`. But be aware that when you do that, you lose the pagination functionality and compatibility optimizations with The Loop.
 
 ```php
-$filtered = wp_list_filter( $posts->to_array(), [
-    'comment_status' => 'open'
-] );
+$filtered = wp_list_filter($posts->to_array(), [
+    'comment_status' => 'open',
+]);
 ```
 
 ### Types of Post Collections
@@ -201,29 +200,28 @@ $wp_posts = fancy_plugin_get_custom_posts(); // -> an array of WP_Posts
 In this scenario, you can still easily map each of these posts to instances of `Timber\Post` or the appropriate subclass, according to the [Class Map](/docs/v2/guides/class-maps/#the-post-class-map) you’ve defined:
 
 ```php
-$timber_posts = Timber::get_posts( $wp_posts ); // -> Timber\PostArrayObject
+$timber_posts = Timber::get_posts($wp_posts); // -> Timber\PostArrayObject
 ```
 
 Here’s an example:
 
 ```php
-use MyProject\MyPage;
-use MyProject\CustomPost;
-
 // Define your Post Class Map.
-add_filter( 'timber/post/classmap', function( $classmap ) {
-    return array_merge( [
-        'page'   => MyPage,
+add_filter('timber/post/classmap', function ($classmap) {
+    return array_merge([
+        'page' => MyPage,
         'custom' => CustomPost,
-      	// Omitting an entry for "post" here means it defaults to Timber\Post.
-    ] );
+        // Omitting an entry for "post" here means it defaults to Timber\Post.
+    ]);
 });
 
-$timber_posts = Timber::get_posts( $wp_posts );
+$timber_posts = Timber::get_posts($wp_posts);
 
-array_map( function( $p ) { return $p->post_type; }, $wp_posts );
+array_map(function ($p) {
+    return $p->post_type;
+}, $wp_posts);
 // -> ["post", "page", "custom"]
-array_map( 'get_class', $timber_posts );
+array_map('get_class', $timber_posts);
 // -> ["\Timber\Post", "\MyProject\MyPage", "\MyProject\MyCustom"]
 ```
 
@@ -238,7 +236,7 @@ $posts = Timber::get_posts(); // -> PostQuery containing only raw WP_Post instan
 
 $first = $posts[0]; // -> Timber\Post (or subclass) instance ON DEMAND!
 
-foreach ( $posts as $post ) {
+foreach ($posts as $post) {
     // $post is a Timber\Post instance, again created ON DEMAND.
 }
 ```
@@ -259,10 +257,10 @@ $posts = Timber::get_posts();
  * Before PHP 7.4, will dump a bunch of PostQuery internals,
  * but no Timber\Post instances!
  */
-var_dump( $posts );
+var_dump($posts);
 
 // Do this instead:
-var_dump( $posts->realize() );
+var_dump($posts->realize());
 ```
 
 See [Laziness and Caching](#laziness-and-caching) for details about how this interacts with caching.
@@ -272,11 +270,11 @@ See [Laziness and Caching](#laziness-and-caching) for details about how this int
 It might seem like `Timber::get_posts()` is the same as [`get_posts()`](https://developer.wordpress.org/reference/functions/get_posts/) in WordPress. But it isn’t. It’s more similar to using [`WP_Query`](https://developer.wordpress.org/reference/classes/wp_query/). WP core’s `get_posts()` function applies different default parameters and performs the same database query as it would when calling `Timber::get_posts()` like this:
 
 ```php
-$posts = Timber::get_posts( [
+$posts = Timber::get_posts([
     'ignore_sticky_posts' => true,
-    'suppress_filters'    => true,
-    'no_found_rows'       => true,
-] );
+    'suppress_filters' => true,
+    'no_found_rows' => true,
+]);
 ```
 
 If you’re used to using `get_posts()` instead of `WP_Query`, you will have to set these parameters separately in your queries.
@@ -296,8 +294,8 @@ $permalink = $post->link();
 Now let’s say you need to access that link in JavaScript, so you would convert your post data to JSON:
 
 ```php
-$post = Timber::get_post( 84 );
-$json = wp_json_encode( $post );
+$post = Timber::get_post(84);
+$json = wp_json_encode($post);
 ```
 
 Because `link` is a method of your post object, you wouldn’t have access to it in JavaScript, because when you JSON-encode a post, you will only get its properties.
@@ -311,8 +309,6 @@ Luckily, support for serialization is baked into Timber queries when you impleme
 Say you create a `Book` class that [extends](/docs/v2/guides/extending-timber/) `Timber\Post`. You define a `jsonSerialize()` method for that class. This method returns an array with all the data you want to use in JavaScript.
 
 ```php
-<?php
-
 use Timber\Post;
 
 /**
@@ -320,31 +316,33 @@ use Timber\Post;
  *
  * Implements custom JSON serialization.
  */
-class Book extends Post implements JsonSerializable {
+class Book extends Post implements JsonSerializable
+{
     /**
      * Defines data that is used when post is converted to JSON.
      *
      * @return array
      */
-	public function jsonSerialize() {
-		return [
-            'title'     => $this->title(),
-            'link'      => $this->link(),
-            'thumbnail' => $this->thumbnail()->src( 'thumbnail' ),
-            'price'     => $this->meta( 'price' ),
-		];
-	}
+    public function jsonSerialize()
+    {
+        return [
+            'title' => $this->title(),
+            'link' => $this->link(),
+            'thumbnail' => $this->thumbnail()->src('thumbnail'),
+            'price' => $this->meta('price'),
+        ];
+    }
 }
 ```
 
 Once you define with [Class Maps](/docs/v2/guides/class-maps/#the-post-class-map) that all `book` post types should be instantiated with your `Book` class, you can directly convert your posts query to JSON:
 
 ```php
-$posts = Timber::get_posts( [
+$posts = Timber::get_posts([
     'post_type' => 'book',
-] );
+]);
 
-$posts_json = wp_json_encode( $posts_json );
+$posts_json = wp_json_encode($posts_json);
 ```
 
 Now, when you access your posts in JavaScript, you will have all the data you defined in your `Book::jsonSerialize()` method as object properties of your post.
@@ -383,9 +381,9 @@ If you care about performance and want to change the query that WordPress runs b
 Whenever you query for a collection of posts, but you don’t need pagination for them, you should set `no_found_rows` to `true`.
 
 ```php
-$posts = Timber::get_posts( array(
+$posts = Timber::get_posts([
     'no_found_rows' => true,
-) );
+]);
 ```
 
 In the back, the query will not count the number of found rows. This can result in [better performance](https://kinsta.com/blog/wp-query/) if you have a large number of posts.
@@ -405,21 +403,21 @@ Here is a timeline of what normally happens when you call `Timber::get_posts()`:
 This is usually what you want. But sometimes, you may want to force Timber to realize a collection up front, such as if you are caching an expensive post query:
 
 ```php
-$eager_posts = \Timber\Helper::transient( 'my_posts', function() {
-    $query = \Timber\Timber::get_posts( [
+$eager_posts = \Timber\Helper::transient('my_posts', function () {
+    $query = \Timber\Timber::get_posts([
         'post_type' => 'some_post_type',
-    ] );
+    ]);
 
     // Run Post::setup() up front.
     return $query->realize();
-}, HOUR_IN_SECONDS );
+}, HOUR_IN_SECONDS);
 
-foreach ( $eager_posts as $post ) {
+foreach ($eager_posts as $post) {
     // No additional overhead here.
 }
 
 // Later...
-foreach ( get_transient( 'my_posts' ) as $post ) {
+foreach (get_transient('my_posts') as $post) {
     /**
      * Same deal!
      *
@@ -439,15 +437,13 @@ It’s recommended to use the [`post_password_required()`](https://developer.wor
 **single.php**
 
 ```php
-<?php
-
 $context = Timber::context();
 
-if ( post_password_required( $post->ID ) ) {
-    Timber::render( 'single-password.twig', $context );
+if (post_password_required($post->ID)) {
+    Timber::render('single-password.twig', $context);
 } else {
     Timber::render(
-        array( 'single-' . $post->ID . '.twig', 'single-' . $post->post_type . '.twig', 'single.twig' ),
+        ['single-' . $post->ID . '.twig', 'single-' . $post->post_type . '.twig', 'single.twig'],
         $context
     );
 }
@@ -476,16 +472,17 @@ Alternatively, with a WordPress filter, you can use a specific PHP template for 
  * By default, this will use the **password-protected.php** template file. If you want password
  * templates specific to a post type, use **password-protected-$posttype.php**.
  */
-add_filter( 'template_include', 'get_password_protected_template', 99 );
+add_filter('template_include', 'get_password_protected_template', 99);
 
-function get_password_protected_template( $template ) {
+function get_password_protected_template($template)
+{
     global $post;
 
-    if ( ! empty( $post ) && post_password_required( $post->ID ) ) {
-        $template = locate_template( [
+    if (!empty($post) && post_password_required($post->ID)) {
+        $template = locate_template([
             'password-protected.php',
             "password-protected-{$post->post_type}.php",
-        ] ) ?: $template;
+        ]) ?: $template;
     }
 
     return $template;
@@ -495,12 +492,12 @@ function get_password_protected_template( $template ) {
 With this filter, you can use a **password-protected.php** template file with the following contents:
 
 ```php
-$context = Timber::context( [
-    'post'          => Timber::get_post(),
+$context = Timber::context([
+    'post' => Timber::get_post(),
     'password_form' => get_the_password_form(),
-] );
+]);
 
-Timber::render( 'password-protected.twig', $context );
+Timber::render('password-protected.twig', $context);
 ```
 
 To display the password on the page, you could then use `{{ password_form }}` in your Twig file.

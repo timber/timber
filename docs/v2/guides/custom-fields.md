@@ -29,7 +29,7 @@ This method is the **recommended way to access meta values**. You’ll get value
 **PHP**
 
 ```php
-$my_custom_field = $post->meta( 'my_custom_field' );
+$my_custom_field = $post->meta('my_custom_field');
 ```
 
 ### The `raw_meta()` method
@@ -55,15 +55,17 @@ Sometimes you need to modify a meta value before it is returned. You can do that
 **PHP**
 
 ```php
-class CustomPost extends Timber\Post {
+class CustomPost extends Timber\Post
+{
     /**
      * Gets formatted price.
      */
-    public function price() {
-        $price = $this->meta( 'price' );
+    public function price()
+    {
+        $price = $this->meta('price');
 
         // Remove decimal digits.
-        return number_format( $price, 0, '', '' );
+        return number_format($price, 0, '', '');
     }
 }
 ```
@@ -172,12 +174,12 @@ Please be aware that using this might conflict with existing Timber methods on t
 This example that uses a [WP_Query](http://codex.wordpress.org/Class_Reference/WP_Query) array shows the arguments to find all posts where a custom field called `color` has a value of `red`.
 
 ```php
-$args = array(
+$args = [
     'numberposts' => -1,
-    'post_type'   => 'post',
-    'meta_key'    => 'color',
-    'meta_value'  => 'red',
-);
+    'post_type' => 'post',
+    'meta_key' => 'color',
+    'meta_value' => 'red',
+];
 
-$context['posts'] = Timber::get_posts( $args );
+$context['posts'] = Timber::get_posts($args);
 ```

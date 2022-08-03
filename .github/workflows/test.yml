@@ -88,7 +88,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -140,7 +140,7 @@ jobs:
 
       - name: Downgrade PHPUnit to ^7.5 when WP < 5.9
         if: ${{ matrix.wp < '5.9' }}
-        run: composer req phpunit/phpunit:^7.5 -W --dev
+        run: composer req phpunit/phpunit:^7.5 yoast/wp-test-utils:^1.0 -W --dev
 
       - name: Install tests
         run: bash bin/install-wp-tests.sh wordpress_test root '' 127.0.0.1:${{ job.services.mysql.ports['3306'] }} ${{ matrix.wp }} true
