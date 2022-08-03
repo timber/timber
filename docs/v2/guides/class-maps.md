@@ -236,14 +236,14 @@ The Menu Class Map is used:
 Here’s an example for a basic filter where we select different menu objects based on the `primary` and `secondary` nav menu locations.
 
 ```php
-add_filter( 'timber/menuitem/classmap', function( $classmap ) {
+add_filter('timber/menuitem/classmap', function ($classmap) {
     $custom_classmap = [
-        'primary'   => MenuItemFooter::class,
+        'primary' => MenuItemFooter::class,
         'secondary' => MenuItemHeader::class,
     ];
 
-    return array_merge( $classmap, $custom_classmap );
-} );
+    return array_merge($classmap, $custom_classmap);
+});
 ```
 
 Menu locations that you don’t list in the class map will use `Timber\MenuItem` as a default class. You can further customize the class that is being used with the `timber/menuitem/class` filter.
