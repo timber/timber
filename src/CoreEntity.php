@@ -110,6 +110,8 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
             /**
              * Filters object meta data before it is fetched from the database.
              *
+             * @since 2.0.0
+             *
              * @example
              * ```php
              * // Disable fetching meta values.
@@ -126,15 +128,13 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
              * }, 10, 3 );
              * ```
              *
-             * @since 2.0.0
-             *
-             * @param string       $object_meta  The field value. Default null. Passing a non-null
+             * @param string|null $object_meta The field value. Default null. Passing a non-null
              *                                 value will skip fetching the value from the database
              *                                 and will use the value from the filter instead.
-             * @param int          $post_id    The post ID.
-             * @param string       $field_name The name of the meta field to get the value for.
-             * @param object $object           The Timber object.
-             * @param array        $args       An array of arguments.
+             * @param int         $post_id     The post ID.
+             * @param string      $field_name  The name of the meta field to get the value for.
+             * @param object      $object      The Timber object.
+             * @param array       $args        An array of arguments.
              */
             $object_meta = apply_filters(
                 "timber/{$object_type}/pre_meta",
@@ -200,6 +200,9 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
              *
              * This filter is used by the ACF Integration.
              *
+             * @see   \Timber\Post::meta()
+             * @since 2.0.0
+             *
              * @example
              * ```php
              * add_filter( 'timber/post/meta', function( $post_meta, $post_id, $field_name, $post ) {
@@ -212,14 +215,11 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
              * }, 10, 4 );
              * ```
              *
-             * @see   \Timber\Post::meta()
-             * @since 2.0.0
-             *
-             * @param string       $post_meta  The field value.
-             * @param int          $post_id    The post ID.
-             * @param string       $field_name The name of the meta field to get the value for.
-             * @param \Timber\Post $post       The post object.
-             * @param array        $args       An array of arguments.
+             * @param string             $post_meta  The field value.
+             * @param int                $post_id    The post ID.
+             * @param string             $field_name The name of the meta field to get the value for.
+             * @param \Timber\CoreEntity $post       The post object.
+             * @param array              $args       An array of arguments.
              */
             $object_meta = apply_filters(
                 "timber/{$object_type}/meta",
@@ -282,8 +282,7 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
      * Finds any WP_Post objects and converts them to Timber\Posts
      *
      * @api
-     * @param array|WP_Post $data
-     * @param string $class
+     * @param array|\Timber\CoreEntity $data
      */
     public function convert($data)
     {

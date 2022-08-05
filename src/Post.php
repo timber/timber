@@ -331,9 +331,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     protected static function is_previewing()
     {
         global $wp_query;
-        if (isset($_GET['preview']) && isset($_GET['preview_nonce']) && wp_verify_nonce($_GET['preview_nonce'], 'post_preview_' . $wp_query->queried_object_id)) {
-            return true;
-        }
+        return isset($_GET['preview']) && isset($_GET['preview_nonce']) && wp_verify_nonce($_GET['preview_nonce'], 'post_preview_' . $wp_query->queried_object_id);
     }
 
     /**
@@ -705,10 +703,11 @@ class Post extends CoreEntity implements DatedInterface, Setupable
          * @see   \Timber\Post::field_object()
          * @since 1.6.0
          *
-         * @param array        $value      The field object array.
-         * @param int          $post_id    The post ID.
+         * @param mixed        $value      The value.
+         * @param int|null     $post_id    The post ID.
          * @param string       $field_name The ACF field name.
          * @param \Timber\Post $post       The post object.
+         * @param array        $value      The field object array.
          */
         $value = apply_filters('timber/post/meta_object_field', null, $this->ID, $field_name, $this);
         $value = $this->convert($value);

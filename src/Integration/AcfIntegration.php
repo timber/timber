@@ -224,10 +224,10 @@ class AcfIntegration implements IntegrationInterface
     /**
      * Gets meta value through ACF’s API.
      *
-     * @param string $value
-     * @param int $id
-     * @param string $field_name
-     * @param array $args
+     * @param string     $value
+     * @param int|string $id
+     * @param string     $field_name
+     * @param array      $args
      * @return mixed|false
      */
     private static function get_meta($value, $id, $field_name, $args)
