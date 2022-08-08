@@ -118,6 +118,9 @@ class Letterbox extends ImageOperation {
 			} else if ( $ext == 'webp' ) {
 				$func = 'imagecreatefromwebp';
 				$save_func = 'imagewebp';
+			} else if ( $ext == 'avif' ) {
+				$func = 'imagecreatefromavif';
+				$save_func = 'imageavif';
 			}
 			$image = $func($save_filename);
 			imagecopy($bg, $image, $x, $y, 0, 0, $owt, $oht);
