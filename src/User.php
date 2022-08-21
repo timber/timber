@@ -374,6 +374,7 @@ class User extends CoreEntity
      * @since 1.8.5
      *
      * @param string $capability The capability to check.
+     * @param mixed ...$args Additional arguments to pass to the user_can function
      *
      * @example
      * Give moderation users another CSS class to style them differently.
@@ -384,11 +385,20 @@ class User extends CoreEntity
      * </span>
      * ```
      *
+     * @example
+     * Show edit link for posts that a user can edit
+     *
+     * ```twig
+     * {% if user.can('edit_post', post.id) %}
+     *     <a href="{{post.edit_link}}">Edit Post</a>
+     * {% endif %}
+     * ```
+     *
      * @return bool Whether the user has the capability.
      */
-    public function can($capability)
+    public function can($capability, ...$args)
     {
-        return user_can($this->ID, $capability);
+        return user_can($this->ID, $capability, ...$args);
     }
 
     /**
