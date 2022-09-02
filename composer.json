@@ -68,5 +68,13 @@
   ],
   "scripts": {
     "lint": "phpcs --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1"
+  },
+  "config": {
+    "allow-plugins": {
+      "composer/installers": true,
+      "ergebnis/composer-normalize": true,
+      "phpro/grumphp": true,
+      "phpstan/extension-installer": true
+    }
   }
 }
