@@ -3,7 +3,7 @@
 class TestTimberPostGetter extends Timber_UnitTestCase {
 
 
-	function setUp() {
+	function set_up() {
 		delete_option('sticky_posts');
 		parent::setUp();
 	}

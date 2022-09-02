@@ -4,7 +4,7 @@
 
 		private $mockUploadDir = false;
 
-        function setUp() {
+        function set_up() {
             $_SERVER['SERVER_PORT'] = 80;
         }
 
@@ -181,7 +181,7 @@
             $url = Timber\URLHelper::remove_double_slashes($url);
             $this->assertEquals($expected_url, $url);
         }
-		
+
 	function testDoubleSlashesWithGS() {
             $url = 'gs://bucket/folder//thing.html';
             $expected_url = 'gs://bucket/folder/thing.html';

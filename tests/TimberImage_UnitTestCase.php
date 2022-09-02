@@ -8,11 +8,11 @@
 			$this->_files[] = $file;
 		}
 
-		function setUp(){
+		function set_up(){
 			$this->_files = array();
 		}
 
-		function tearDown() {
+		function tear_down() {
 			parent::tearDown();
 			if (isset($this->_files) && is_array($this->_files)) {
 				foreach($this->_files as $file) {

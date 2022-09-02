@@ -2,7 +2,7 @@
 
 class TestTimberMultisite extends Timber_UnitTestCase {
 
-	function setUp() {
+	function set_up() {
 		self::clear();
 		parent::setUp();
 	}
@@ -221,7 +221,7 @@ class TestTimberMultisite extends Timber_UnitTestCase {
 		$blog_ids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs ORDER BY blog_id ASC");
 	}
 
-	function tearDown() {
+	function tear_down() {
 		self::clear();
 		parent::tearDown();
 	}

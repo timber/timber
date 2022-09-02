@@ -70,7 +70,7 @@ class TestTimberSite extends Timber_UnitTestCase {
 		$this->assertEquals('magoo', $ts->meta('foo'));
 	}
 
-	function setUp() {
+	function set_up() {
 		global $wp_theme_directories;
 
 		parent::setUp();
@@ -83,7 +83,7 @@ class TestTimberSite extends Timber_UnitTestCase {
 
 	}
 
-	function tearDown() {
+	function tear_down() {
 		global $wp_theme_directories;
 
 		$wp_theme_directories = $this->backup_wp_theme_directories;

@@ -175,10 +175,10 @@ class TestTimberImage extends TimberImage_UnitTestCase {
         $post = $this->get_post_with_image();
         $img = $post->thumbnail();
         $mine = $img->srcset();
-        
+
         $native = wp_get_attachment_image_srcset($img->ID, 'full');
         $this->assertEquals($native, $mine);
-        
+
         $native = wp_get_attachment_image_srcset($img->ID, 'medium');
         $this->assertNotEquals($native, $mine);
     }
@@ -187,10 +187,10 @@ class TestTimberImage extends TimberImage_UnitTestCase {
         $post = $this->get_post_with_image();
         $img = $post->thumbnail();
         $mine = $img->img_sizes();
-        
+
         $native = wp_get_attachment_image_sizes($img->ID, 'full');
         $this->assertEquals($native, $mine);
-        
+
         $native = wp_get_attachment_image_sizes($img->ID, 'medium');
         $this->assertNotEquals($native, $mine);
     }
@@ -754,7 +754,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		}
 	}
 
-	function tearDown() {
+	function tear_down() {
 		$theme_url = get_theme_root_uri().'/'.get_stylesheet();
 		$img_dir = get_stylesheet_directory_uri().'/images';
 		if ( file_exists($img_dir) ) {
@@ -1118,8 +1118,8 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	 * Unlike raster (JPEG, PNG, etc.) SVG is vector-type file so resizing
 	 * shouldn't affect the file. Why is this necessary? B/C a user could have
 	 * uploaded an SVG or JPEG to a particular field and we need to handle
-	 * for either case. 
-	 */	
+	 * for either case.
+	 */
 	function testSVGResize() {
 		$image = self::copyTestImage('icon-twitter.svg');
 		$data = [];

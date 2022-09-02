@@ -2,7 +2,7 @@
 
 	class TestTimberTwig extends Timber_UnitTestCase {
 
-		function tearDown() {
+		function tear_down() {
 			$lang_dir = get_stylesheet_directory().'/languages';
 			if (file_exists($lang_dir.'/en_US.po' )) {
 				unlink($lang_dir.'/en_US.po');

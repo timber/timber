@@ -60,7 +60,7 @@
 			$this->assertEquals($class_name, get_class($terms[0]));
 		}
 
-		function setUp() {
+		function set_up() {
 			global $wpdb;
 			$query = "truncate $wpdb->term_relationships";
 			$wpdb->query($query);

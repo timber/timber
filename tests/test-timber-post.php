@@ -454,7 +454,7 @@
 			$this->assertEquals('Bernstein', $post->modified_author()->name());
 		}
 
-		function tearDown() {
+		function tear_down() {
 			global $wpdb;
 			$query = "DELETE from $wpdb->users WHERE ID > 1";
 			$wpdb->query($query);

@@ -89,7 +89,7 @@
 			switch_theme('default');
 		}
 
-		function setUp() {
+		function set_up() {
 			global $wp_theme_directories;
 
 			parent::setUp();
@@ -107,7 +107,7 @@
 
 		}
 
-		function tearDown() {
+		function tear_down() {
 			global $wp_theme_directories;
 
 			$wp_theme_directories = $this->backup_wp_theme_directories;
