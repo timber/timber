@@ -21,6 +21,22 @@ class FileSize
      */
     public $file_loc;
 
+    /**
+     * Pre-calculated human-friendly file size.
+     *
+     * @api
+     * @var string The precalculed file size
+     */
+    private $file_size;
+
+    /**
+     * Pre-calculated file size.
+     *
+     * @api
+     * @var string The precalculed file size
+     */
+    private $file_size_raw;
+
     public function __construct($file_loc)
     {
         $this->file_loc = $file_loc;
