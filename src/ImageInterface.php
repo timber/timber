@@ -3,8 +3,6 @@
 namespace Timber;
 
 
-use WP_Post;
-
 /**
  * Class Image
  *

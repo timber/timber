@@ -353,7 +353,6 @@ class Timber
         return ($post instanceof Image) ? $post : null;
     }
 
-
     /**
      * Gets an external image.
      *
@@ -367,15 +366,10 @@ class Timber
      *
      * @return ExternalImage|null
      */
-    public static function get_external_image($url = fals)
+    public static function get_external_image($url = false, $alt = '')
     {
-        $post = static::get_post($query, $options);
-
-        // @todo make this determination at the Factory level.
-        // No need to instantiate a Post we're not going to use.
-        return ($post instanceof Image) ? $post : null;
+        return ExternalImage::build($url, $alt);
     }
-
 
     /**
      * Gets a collection of posts.

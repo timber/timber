@@ -2,6 +2,14 @@
 
 namespace Timber;
 
+/**
+ * Class FileSize
+ *
+ * Helper class to deal with Image Dimensions
+ *
+ * @api
+ * @since 2.0.0
+ */
 class ImageDimensions
 {
     /**
@@ -22,17 +30,15 @@ class ImageDimensions
      */
     public $file_loc;
 
-
     public function __construct($file_loc)
     {
         $this->file_loc = $file_loc;
     }
 
-
     /**
      * Gets the width of the image in pixels.
      *
-     * @api
+     * @return int The width of the image in pixels.
      * @example
      * ```twig
      * <img src="{{ image.src }}" width="{{ image.width }}" />
@@ -41,7 +47,7 @@ class ImageDimensions
      * <img src="http://example.org/wp-content/uploads/2015/08/pic.jpg" width="1600" />
      * ```
      *
-     * @return int The width of the image in pixels.
+     * @api
      */
     public function width()
     {
@@ -51,7 +57,7 @@ class ImageDimensions
     /**
      * Gets the height of the image in pixels.
      *
-     * @api
+     * @return int The height of the image in pixels.
      * @example
      * ```twig
      * <img src="{{ image.src }}" height="{{ image.height }}" />
@@ -60,7 +66,7 @@ class ImageDimensions
      * <img src="http://example.org/wp-content/uploads/2015/08/pic.jpg" height="900" />
      * ```
      *
-     * @return int The height of the image in pixels.
+     * @api
      */
     public function height()
     {
@@ -70,7 +76,7 @@ class ImageDimensions
     /**
      * Gets the aspect ratio of the image.
      *
-     * @api
+     * @return float The aspect ratio of the image.
      * @example
      * ```twig
      * {% if post.thumbnail.aspect < 1 %}
@@ -81,7 +87,7 @@ class ImageDimensions
      * {% endif %}
      * ```
      *
-     * @return float The aspect ratio of the image.
+     * @api
      */
     public function aspect()
     {
@@ -143,7 +149,6 @@ class ImageDimensions
         return $this->dimensions[0];
     }
 
-
     /**
      * Retrieve dimensions from SVG file
      *
@@ -164,12 +169,12 @@ class ImageDimensions
                 $width = $viewbox[2];
                 $height = $viewbox[3];
             } elseif ($attributes->width && $attributes->height) {
-                $width = (string)$attributes->width;
-                $height = (string)$attributes->height;
+                $width = (string) $attributes->width;
+                $height = (string) $attributes->height;
             }
         }
 
-        return (object)[
+        return [
             'width' => $width,
             'height' => $height,
         ];

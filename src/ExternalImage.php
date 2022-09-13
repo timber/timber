@@ -61,7 +61,6 @@ class ExternalImage implements ImageInterface
         $this->alt_text = $alt;
     }
 
-
     /**
      * File.
      *
@@ -78,7 +77,6 @@ class ExternalImage implements ImageInterface
      *             (Example: `/var/www/htdocs/wp-content/uploads/2015/08/my-pic.jpg`)
      */
     public $file_loc;
-
 
     /**
      * Absolute URL.
@@ -133,10 +131,10 @@ class ExternalImage implements ImageInterface
     /**
      * Inits the ExternalImage object.
      *
-     * @internal
-     *
      * @param $url string URL to load the image from.
      * @param $alt string ALT text for the image.
+     * @internal
+     *
      */
     public static function build($url, $alt)
     {
@@ -168,10 +166,12 @@ class ExternalImage implements ImageInterface
         return null;
     }
 
-
     /**
      * Gets the source URL for the image.
      *
+     * @param string $size Ignored. For compatibility with Timber\Image.
+     *
+     * @return string The src URL for the image.
      * @api
      * @example
      * ```twig
@@ -183,9 +183,6 @@ class ExternalImage implements ImageInterface
      * <img src="http://example.org/wp-content/uploads/2015/08/pic-800-600.jpg">
      * ```
      *
-     * @param string $size Ignored. For compatibility with Timber\Image.
-     *
-     * @return string The src URL for the image.
      */
     public function src($size = 'full')
     {
@@ -195,7 +192,7 @@ class ExternalImage implements ImageInterface
     /**
      * Gets the relative path to an attachment.
      *
-     * @api
+     * @return string The relative path to an attachment.
      * @example
      * ```twig
      * <img src="{{ image.path }}" />
@@ -204,7 +201,7 @@ class ExternalImage implements ImageInterface
      * <img src="/wp-content/uploads/2015/08/pic.jpg" />
      * ```
      *
-     * @return string The relative path to an attachment.
+     * @api
      */
     public function path()
     {
@@ -217,7 +214,7 @@ class ExternalImage implements ImageInterface
      * This can be useful if you want to display the human readable filesize for a file. It’s
      * easier to read «16 KB» than «16555 bytes» or «1 MB» than «1048576 bytes».
      *
-     * @api
+     * @return mixed|null The filesize string in a human readable format.
      * @since 2.0.0
      * @example
      *
@@ -230,7 +227,7 @@ class ExternalImage implements ImageInterface
      * </a>
      * ```
      *
-     * @return mixed|null The filesize string in a human readable format.
+     * @api
      */
     public function size()
     {
@@ -244,7 +241,7 @@ class ExternalImage implements ImageInterface
     /**
      * Gets filesize in bytes.
      *
-     * @api
+     * @return mixed|null The filesize string in bytes, or false if the filesize can’t be read.
      * @since 2.0.0
      * @example
      *
@@ -260,7 +257,7 @@ class ExternalImage implements ImageInterface
      * </table>
      * ```
      *
-     * @return mixed|null The filesize string in bytes, or false if the filesize can’t be read.
+     * @api
      */
     public function size_raw()
     {
@@ -283,11 +280,10 @@ class ExternalImage implements ImageInterface
         return $this->src();
     }
 
-
     /**
      * Gets the extension of the attached file.
      *
-     * @api
+     * @return null|string An uppercase extension string.
      * @since 2.0.0
      * @example
      *
@@ -302,7 +298,7 @@ class ExternalImage implements ImageInterface
      * </a>
      * ```
      *
-     * @return null|string An uppercase extension string.
+     * @api
      */
     public function extension()
     {
@@ -320,7 +316,7 @@ class ExternalImage implements ImageInterface
     /**
      * Gets the width of the image in pixels.
      *
-     * @api
+     * @return int The width of the image in pixels.
      * @example
      * ```twig
      * <img src="{{ image.src }}" width="{{ image.width }}" />
@@ -329,7 +325,7 @@ class ExternalImage implements ImageInterface
      * <img src="http://example.org/wp-content/uploads/2015/08/pic.jpg" width="1600" />
      * ```
      *
-     * @return int The width of the image in pixels.
+     * @api
      */
     public function width()
     {
@@ -339,7 +335,7 @@ class ExternalImage implements ImageInterface
     /**
      * Gets the height of the image in pixels.
      *
-     * @api
+     * @return int The height of the image in pixels.
      * @example
      * ```twig
      * <img src="{{ image.src }}" height="{{ image.height }}" />
@@ -348,7 +344,7 @@ class ExternalImage implements ImageInterface
      * <img src="http://example.org/wp-content/uploads/2015/08/pic.jpg" height="900" />
      * ```
      *
-     * @return int The height of the image in pixels.
+     * @api
      */
     public function height()
     {
@@ -358,7 +354,7 @@ class ExternalImage implements ImageInterface
     /**
      * Gets the aspect ratio of the image.
      *
-     * @api
+     * @return float The aspect ratio of the image.
      * @example
      * ```twig
      * {% if post.thumbnail.aspect < 1 %}
@@ -369,7 +365,7 @@ class ExternalImage implements ImageInterface
      * {% endif %}
      * ```
      *
-     * @return float The aspect ratio of the image.
+     * @api
      */
     public function aspect()
     {
@@ -393,7 +389,6 @@ class ExternalImage implements ImageInterface
         $this->imageDimensions = new ImageDimensions($file_path);
         $this->file_size = new FileSize($file_path);
     }
-
 
     /**
      * Inits the object with a relative path.
@@ -444,7 +439,7 @@ class ExternalImage implements ImageInterface
      * For better accessibility, you should always add an alt attribute to your images, even if it’s
      * empty.
      *
-     * @api
+     * @return string Alt text stored in WordPress.
      * @example
      * ```twig
      * <img src="{{ image.src }}" alt="{{ image.alt }}" />
@@ -454,7 +449,7 @@ class ExternalImage implements ImageInterface
      *     alt="You should always add alt texts to your images for better accessibility" />
      * ```
      *
-     * @return string Alt text stored in WordPress.
+     * @api
      */
     public function alt()
     {
@@ -473,12 +468,12 @@ class ExternalImage implements ImageInterface
 
     public function srcset($size = "full")
     {
-        $source = array(
-            'url'        => $this->src(),
+        $source = [
+            'url' => $this->src(),
             'descriptor' => 'w',
-            'value'      => $size,
-        );
+            'value' => $size,
+        ];
 
-        return str_replace( ' ', '%20', $source['url'] ) . ' ' . $source['value'] . $source['descriptor'] ;
+        return str_replace(' ', '%20', $source['url']) . ' ' . $source['value'] . $source['descriptor'];
     }
 }

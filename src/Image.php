@@ -74,7 +74,6 @@ class Image extends Attachment implements ImageInterface
      */
     protected ImageDimensions $imageDimensions;
 
-
     /**
      * @return string the src of the file
      */

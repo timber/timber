@@ -568,7 +568,6 @@ class URLHelper
         return $params[$i] ?? false;
     }
 
-
     /**
      * Secures an URL based on the current environment.
      *

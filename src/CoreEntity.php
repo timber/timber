@@ -81,7 +81,6 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
      */
     protected function fetch_meta($field_name = '', $args = [], $apply_filters = true)
     {
-
         /**
          * Filters whether to transform a meta value.
          *

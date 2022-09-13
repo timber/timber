@@ -2,6 +2,14 @@
 
 namespace Timber;
 
+/**
+ * Class FileSize
+ *
+ * Helper class to deal with File sizes logic
+ *
+ * @api
+ * @since 2.0.0
+ */
 class FileSize
 {
     /**
@@ -26,7 +34,7 @@ class FileSize
      * This can be useful if you want to display the human readable filesize for a file. It’s
      * easier to read «16 KB» than «16555 bytes» or «1 MB» than «1048576 bytes».
      *
-     * @api
+     * @return mixed|null The filesize string in a human readable format.
      * @since 2.0.0
      * @example
      *
@@ -39,7 +47,7 @@ class FileSize
      * </a>
      * ```
      *
-     * @return mixed|null The filesize string in a human readable format.
+     * @api
      */
     public function size()
     {
@@ -54,7 +62,7 @@ class FileSize
     /**
      * Gets filesize in bytes.
      *
-     * @api
+     * @return mixed|null The filesize string in bytes, or false if the filesize can’t be read.
      * @since 2.0.0
      * @example
      *
@@ -70,7 +78,7 @@ class FileSize
      * </table>
      * ```
      *
-     * @return mixed|null The filesize string in bytes, or false if the filesize can’t be read.
+     * @api
      */
     public function size_raw()
     {
