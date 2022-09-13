@@ -174,7 +174,7 @@ class ImageDimensions
             }
         }
 
-        return [
+        return (object) [
             'width' => $width,
             'height' => $height,
         ];

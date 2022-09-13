@@ -48,7 +48,7 @@ class Attachment extends Post
      * @since 2.0.0
      * @var FileSize File size string.
      */
-    private $file_size = null;
+    public $file_size = null;
 
     /**
      * File extension.
