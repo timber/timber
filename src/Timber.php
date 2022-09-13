@@ -353,6 +353,30 @@ class Timber
         return ($post instanceof Image) ? $post : null;
     }
 
+
+    /**
+     * Gets an external image.
+     *
+     * Behaves just like Timber::get_image(), except that it uses a URL to load an image
+     *
+     * @api
+     * @since 2.0.0
+     * @see Timber::get_image()
+     *
+     * @param string $url   Url where to load an image from
+     *
+     * @return ExternalImage|null
+     */
+    public static function get_external_image($url = fals)
+    {
+        $post = static::get_post($query, $options);
+
+        // @todo make this determination at the Factory level.
+        // No need to instantiate a Post we're not going to use.
+        return ($post instanceof Image) ? $post : null;
+    }
+
+
     /**
      * Gets a collection of posts.
      *
