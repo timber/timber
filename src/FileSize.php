@@ -21,12 +21,10 @@ class FileSize
      */
     public $file_loc;
 
-
     public function __construct($file_loc)
     {
         $this->file_loc = $file_loc;
     }
-
 
     /**
      * Gets filesize in a human readable format.
