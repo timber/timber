@@ -97,7 +97,7 @@ class Image extends Attachment implements ImageInterface
      */
     protected function get_info(WP_Post $wp_post)
     {
-        $data = get_object_vars(parent::get_info($wp_post));
+        $data = parent::get_info($wp_post);
 
         if (isset($data['file_loc'])) {
             $data['imageDimensions'] = new ImageDimensions($data['file_loc']);
