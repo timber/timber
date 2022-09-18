@@ -113,12 +113,12 @@ class ImageDimensions
         }
 
         // Load dimensions.
-        if (file_exists($this->image->file_loc) && filesize($this->image->file_loc)) {
-            if (ImageHelper::is_svg($this->image->file_loc)) {
-                $svg_size = $this->get_dimensions_svg($this->image->file_loc);
+        if (file_exists($this->file_loc) && filesize($this->file_loc)) {
+            if (ImageHelper::is_svg($this->file_loc)) {
+                $svg_size = $this->get_dimensions_svg($this->file_loc);
                 $this->dimensions = [$svg_size->width, $svg_size->height];
             } else {
-                list($width, $height) = getimagesize($this->image->file_loc);
+                list($width, $height) = getimagesize($this->file_loc);
 
                 $this->dimensions = [];
                 $this->dimensions[0] = $width;
