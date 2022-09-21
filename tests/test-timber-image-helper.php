@@ -2,6 +2,7 @@
 
 /**
  * @group called-post-constructor
+ * @group image
  */
 class TestTimberImageHelper extends TimberAttachment_UnitTestCase
 {
