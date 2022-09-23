@@ -5,7 +5,9 @@ namespace Timber;
 /**
  * Class ExternalImage
  *
- * The `Timber\ExternalImage` class represents an external image loaded via http.
+ * The `Timber\ExternalImage` class represents an image that is not part of the WordPress content (Attachment).
+ * Instead, it's an image that can be either a path (relative/absolute) on the same server, or any arbitrary HTTP
+ * resource (either from the same or from a different website).
  *
  * @api
  * @example
@@ -49,17 +51,20 @@ namespace Timber;
 class ExternalImage implements ImageInterface
 {
     /**
-     * File.
+     * Alt text.
      *
      * @api
      * @var string
      */
     private $alt_text;
 
-    protected function __construct($alt)
-    {
-        $this->alt_text = $alt;
-    }
+    /**
+     * Caption.
+     *
+     * @api
+     * @var string
+     */
+    private $_caption;
 
     /**
      * File.
@@ -136,10 +141,19 @@ class ExternalImage implements ImageInterface
      * @internal
      *
      */
-    public static function build($url, $alt)
+    public static function build($url, array $args = [])
     {
+        $args = wp_parse_args($args, [
+            'alt' => '',
+        ]);
+
         if (!is_numeric($url) && is_string($url)) {
-            $external_image = new ExternalImage($alt);
+            $external_image = new static();
+
+            if ($args['alt'] != '') {
+                $external_image->set_alt_text($args['alt']);
+            }
+
             if (strstr($url, '://')) {
                 // Assume URL.
                 $external_image->init_with_url($url);
@@ -373,6 +387,26 @@ class ExternalImage implements ImageInterface
     }
 
     /**
+     * Sets the relative alt text of the image.
+     *
+     * @param string $alt Alt text for the image
+     */
+    public function set_alt_text($alt)
+    {
+        $this->alt_text = $alt;
+    }
+
+    /**
+     * Sets the relative alt text of the image.
+     *
+     * @param string $alt Alt text for the image
+     */
+    public function set_caption($caption)
+    {
+        $this->_caption = $caption;
+    }
+
+    /**
      * Inits the object with an absolute path.
      *
      * @param string $file_path An absolute path to a file.
@@ -419,6 +453,10 @@ class ExternalImage implements ImageInterface
     {
         $this->abs_url = $url;
 
+        if (!URLHelper::is_local($url)) {
+            $url = ImageHelper::sideload_image($url);
+        }
+
         if (URLHelper::is_local($url)) {
             $this->file = URLHelper::remove_double_slashes(
                 ABSPATH . URLHelper::get_rel_url($url)
@@ -458,7 +496,7 @@ class ExternalImage implements ImageInterface
 
     public function caption()
     {
-        return "";
+        return $this->_caption;
     }
 
     public function img_sizes($size = "full")

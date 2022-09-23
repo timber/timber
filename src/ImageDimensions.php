@@ -30,7 +30,7 @@ class ImageDimensions
      */
     public $file_loc;
 
-    public function __construct($file_loc)
+    public function __construct($file_loc = '')
     {
         $this->file_loc = $file_loc;
     }
