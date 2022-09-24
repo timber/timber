@@ -328,7 +328,6 @@ class TestTimberHelper extends Timber_UnitTestCase
 
     public function testConvertWPObject()
     {
-
         // Test WP_Post -> \Timber\Post
         $post_id = $this->factory->post->create();
         $wp_post = get_post($post_id);

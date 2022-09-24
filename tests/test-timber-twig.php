@@ -206,7 +206,6 @@ class TestTimberTwig extends Timber_UnitTestCase
 
     public function testEscHtml()
     {
-
         // Simple string
         $html = "The quick brown fox.";
 
