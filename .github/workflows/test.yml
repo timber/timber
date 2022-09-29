@@ -159,7 +159,7 @@ jobs:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           composer global require php-coveralls/php-coveralls
-          php-coveralls --coverage_clover=${{ $env.GITHUB_PATH }}/build/logs/clover.xml -v
+          php-coveralls --coverage_clover=${GITHUB_PATH}/build/logs/clover.xml -v
 
       - name: Run webp tests
         if: ${{ matrix.webp }}
