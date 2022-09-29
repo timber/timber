@@ -1,7 +1,7 @@
 <?php
 
 	class TestTimberTerm extends Timber_UnitTestCase {
-		
+
 		function testTermFrom() {
 			register_taxonomy('baseball', array('post'));
 			register_taxonomy('hockey', array('post'));
@@ -124,8 +124,8 @@
 		function testTermLink() {
 			$term_id = $this->factory->term->create();
 			$term = new TimberTerm($term_id);
-			$this->assertContains('http://', $term->link());
-			$this->assertContains('http://', $term->get_link());
+			$this->assertStringContainsString('http://', $term->link());
+			$this->assertStringContainsString('http://', $term->get_link());
 		}
 
 		function testTermPath() {

@@ -182,7 +182,7 @@
         	if (is_dir($cache_dir)){
         		TimberLoader::rrmdir($cache_dir);
         	}
-        	$this->assertFileNotExists($cache_dir);
+        	$this->assertFileDoesNotExist($cache_dir);
         	Timber::$cache = true;
         	$pid = $this->factory->post->create();
         	$post = new TimberPost($pid);
@@ -192,7 +192,7 @@
         	Timber::$cache = false;
         	$loader = new TimberLoader();
         	$loader->clear_cache_twig();
-        	$this->assertFileNotExists($cache_dir);
+        	$this->assertFileDoesNotExist($cache_dir);
         }
 
         function testTimberLoaderCache(){
@@ -240,7 +240,7 @@
             global $wpdb;
             $query = "DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
             $wpdb->query($query);
-            parent::tearDown();
+            parent::tear_down();
         }
 
         function testTimberLoaderCacheTransients() {

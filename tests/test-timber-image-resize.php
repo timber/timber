@@ -3,7 +3,7 @@
 class TestTimberImageResize extends Timber_UnitTestCase {
 
 	function set_up() {
-		parent::setUp();
+		parent::set_up();
 		if ( ! extension_loaded( 'gd' ) ) {
 			self::markTestSkipped( 'Image resizing tests requires GD extension' );
 		}

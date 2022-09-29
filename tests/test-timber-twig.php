@@ -241,10 +241,8 @@
 
 		}
 
-		/**
-     	* @expectedException Twig_Error_Syntax
-     	*/
 		function testSetObject() {
+			$this->expectException(Twig\Error\SyntaxError::class);
 			$pid = $this->factory->post->create(array('post_title' => 'Spaceballs'));
 			$post = new TimberPost( $pid );
 			$result = Timber::compile('assets/set-object.twig', array('post' => $post));

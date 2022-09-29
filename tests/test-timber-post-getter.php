@@ -5,7 +5,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 
 	function set_up() {
 		delete_option('sticky_posts');
-		parent::setUp();
+		parent::set_up();
 	}
 	/**
 	 * @group wp_query_hacks

@@ -25,10 +25,10 @@
 		function testPreviewWithStyleTags() {
 			global $wpdb;
 			$style = '<style>body { background-color: red; }</style><b>Yo.</b> ';
-			$id = $wpdb->insert( 
-				$wpdb->posts, 
-				array( 
-					'post_author' => '1', 
+			$id = $wpdb->insert(
+				$wpdb->posts,
+				array(
+					'post_author' => '1',
 					'post_content' => $style.$this->gettysburg,
 					'post_title' => 'Thing',
 					'post_date' => '2017-03-01 00:21:40',
@@ -47,7 +47,7 @@
 			$post = new TimberPost($post_id);
 			$template = '{{post.preview.length(3).read_more(false).strip(false)}}';
 			$str = Timber::compile_string($template, array('post' => $post));
-			$this->assertNotContains('</p>', $str);
+			$this->assertStringNotContainsString('</p>', $str);
 		}
 
 		function testPostPreviewObjectWithCharAndWordLengthWordsWin() {

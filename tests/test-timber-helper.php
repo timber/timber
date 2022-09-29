@@ -141,10 +141,8 @@
 			$this->assertFalse(\Timber\Helper::get_object_index_by_property('butts', 'skill', 'cooking'));
 		}
 
-		/**
-     	 * @expectedException InvalidArgumentException
-     	 */
 		function testGetObjectByPropertyButNo() {
+			$this->expectException(InvalidArgumentException::class);
 			$obj1 = new stdClass();
 			$obj1->name = 'mark';
 			$obj1->skill = 'acro yoga';
@@ -155,7 +153,7 @@
 			$start = TimberHelper::start_timer();
 			sleep(1);
 			$end = TimberHelper::stop_timer($start);
-			$this->assertContains(' seconds.', $end);
+			$this->assertStringContainsString(' seconds.', $end);
 			$time = str_replace(' seconds.', '', $end);
 			$this->assertGreaterThan(1, $time);
 		}
@@ -233,10 +231,8 @@
 			$this->assertEquals("40, 42", $str);
 		}
 
-		/**
- 		 * @expectedException Twig\Error\RuntimeError
-		 */
 		function testArrayFilterKeyValueUsingPostQuery() {
+			$this->expectException(Twig\Error\RuntimeError::class);
 			$posts = [];
 			$posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
 			$posts[] = $this->factory->post->create(array('post_title' => 'Snoop', 'post_content' => 'Felicia Pearson'));
@@ -248,10 +244,8 @@
 			$this->assertEquals('Cheese', trim($str));
 		}
 
-		/**
- 		 * @expectedException Twig\Error\RuntimeError
-		 */
 		function testArrayFilterMulti() {
+			$this->expectException(Twig\Error\RuntimeError::class);
 			$posts = [];
 			$posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
 			$posts[] = $this->factory->post->create(array('post_title' => 'Snoop', 'post_content' => 'Felicia Pearson'));
@@ -262,10 +256,8 @@
 			$this->assertEquals('Stringer Bell Snoop', trim($str));
 		}
 
-		/**
- 		 * @expectedException Twig\Error\RuntimeError
-		 */
 		function testArrayFilterWithBogusArray() {
+			$this->expectException(Twig\Error\RuntimeError::class);
 			$template = '{% for post in posts | filter({slug:"snoop", post_content:"Idris Elba"}, "OR")%}{{ post.title }} {% endfor %}';
 			$str = Timber::compile_string($template, array('posts' => 'foobar'));
 			$this->assertEquals('', $str);

@@ -33,7 +33,7 @@ class TestTimberImageRetina extends Timber_UnitTestCase {
 		$data['post'] = $post;
 		$str = '{{post.thumbnail.src|retina}}';
 		$compiled = Timber::compile_string($str, $data);
-		$this->assertContains('@2x', $compiled);
+		$this->assertStringContainsString('@2x', $compiled);
 		$img = new TimberImage($compiled);
 		$this->assertEquals(500, $img->width());
 	}
@@ -55,7 +55,7 @@ class TestTimberImageRetina extends Timber_UnitTestCase {
 		$data['post'] = $post;
 		$str = '{{post.thumbnail.src|retina(1.5)}}';
 		$compiled = Timber::compile_string($str, $data);
-		$this->assertContains('@1.5x', $compiled);
+		$this->assertStringContainsString('@1.5x', $compiled);
 		$img = new TimberImage($compiled);
 		$this->assertEquals(375, $img->width());
 	}
@@ -77,7 +77,7 @@ class TestTimberImageRetina extends Timber_UnitTestCase {
 		$str = '{{post.thumbnail.src|resize(100, 50)|retina(3)}}';
 		$compiled = Timber::compile_string($str, $data);
 		$img = new TimberImage($compiled);
-		$this->assertContains('@3x', $compiled);
+		$this->assertStringContainsString('@3x', $compiled);
 		$this->assertEquals(300, $img->width());
 	}
 

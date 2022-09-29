@@ -594,7 +594,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		TimberImageHelper::delete_generated_files( $file );
 		//The child of the regular arch image should be like
 		//poof-be-gone
-		$this->assertFileNotExists( $arch_regular );
+		$this->assertFileDoesNotExist( $arch_regular );
 		//...but the night image remains!
 		$this->assertFileExists( $arch_2night );
 
@@ -619,8 +619,8 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		//Now delete the "parent" image
 		TimberImageHelper::delete_generated_files( $file );
 		//Have the children been deleted as well?
-		$this->assertFileNotExists( $resized_520_file );
-		$this->assertFileNotExists( $resized_500_file );
+		$this->assertFileDoesNotExist( $resized_520_file );
+		$this->assertFileDoesNotExist( $resized_500_file );
 	}
 
 	function testImageDeletionByURL() {
@@ -651,8 +651,8 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		//Now delete the "parent" image
 		TimberImageHelper::delete_generated_files( $data['test_image'] );
 		//Have the children been deleted as well?
-		$this->assertFileNotExists( $resized_520_file );
-		$this->assertFileNotExists( $resized_500_file );
+		$this->assertFileDoesNotExist( $resized_520_file );
+		$this->assertFileDoesNotExist( $resized_500_file );
 	}
 
 	function testImageDeletionByDeletingAttachment() {
@@ -683,8 +683,8 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		//Now delete the "parent" image
 		wp_delete_attachment( $attach_id );
 		//Have the children been deleted as well?
-		$this->assertFileNotExists( $resized_520_file );
-		$this->assertFileNotExists( $resized_500_file );
+		$this->assertFileDoesNotExist( $resized_520_file );
+		$this->assertFileDoesNotExist( $resized_500_file );
 	}
 
 	function testImageDeletionByAttachmentLocation() {
@@ -716,8 +716,8 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$post = new TimberImage( $attach_id );
 		TimberImageHelper::delete_generated_files( $post->file_loc );
 		//Have the children been deleted as well?
-		$this->assertFileNotExists( $resized_520_file );
-		$this->assertFileNotExists( $resized_500_file );
+		$this->assertFileDoesNotExist( $resized_520_file );
+		$this->assertFileDoesNotExist( $resized_500_file );
 	}
 
 	/**
@@ -738,7 +738,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		//Now delete the "parent" image
 		TimberImageHelper::delete_generated_files( $file );
 		//Have the children been deleted as well?
-		$this->assertFileNotExists( $letterboxed_file );
+		$this->assertFileDoesNotExist( $letterboxed_file );
 	}
 
 	function _makeThemeImageDirectory() {
@@ -767,7 +767,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 				unlink($file);
 			}
 		}
-		parent::tearDown();
+		parent::tear_down();
 	}
 
 	function testThemeImageResize() {
@@ -1096,10 +1096,8 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		return $data;
 	}
 
-	/**
-     * @expectedException Twig_Error_Runtime
-     */
 	function testAnimagedGifResizeWithoutImagick() {
+		$this->expectException(Twig\Error\RuntimeError::class);
 		define('TEST_NO_IMAGICK', true);
 		$image = self::copyTestImage('robocop.gif');
 		$data = array('crop' => 'default');

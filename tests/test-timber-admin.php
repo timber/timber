@@ -8,7 +8,7 @@ class TestTimberAdmin extends Timber_UnitTestCase {
         $links = apply_filters( 'plugin_row_meta', array(), 'timber/timber.php' );
 
         $links = implode( ' ', $links );
-        $this->assertContains( 'Documentation', $links );
+        $this->assertStringContainsString( 'Documentation', $links );
 
         $links = apply_filters( 'plugin_row_meta', array(), 'foo/bar.php' );
         if ( isset( $links ) ) {
@@ -39,7 +39,7 @@ class TestTimberAdmin extends Timber_UnitTestCase {
     }
 
     function testUpgradeMessage() {
-        
+
     }
 
 }

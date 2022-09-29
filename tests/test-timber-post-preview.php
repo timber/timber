@@ -17,14 +17,14 @@
 			$post_id = $this->factory->post->create(array('post_excerpt' => 'It turned out that just about anyone in authority — cops, judges, city leaders — was in on the game.'));
 			$post = new TimberPost($post_id);
 			$text = $post->get_preview(10);
-			$this->assertContains('and-foo', $text);
+			$this->assertStringContainsString('and-foo', $text);
 		}
 
 		function testPreviewTags() {
 			$post_id = $this->factory->post->create(array('post_excerpt' => 'It turned out that just about anyone in authority — cops, judges, city leaders — was in on the game.'));
 			$post = new TimberPost($post_id);
 			$text = $post->get_preview(20, false, '', false);
-			$this->assertNotContains('</p>', $text);
+			$this->assertStringNotContainsString('</p>', $text);
 		}
 
 		function testGetPreview() {
@@ -38,7 +38,7 @@
 			// no excerpt
 			$post->post_excerpt = '';
 			$preview = $post->get_preview(3);
-			$this->assertRegExp('/this is super&hellip; <a href="http:\/\/example.org\/\?p=\d+" class="read-more">Read More<\/a>/', $preview);
+			$this->assertMatchesRegularExpression('/this is super&hellip; <a href="http:\/\/example.org\/\?p=\d+" class="read-more">Read More<\/a>/', $preview);
 
 			// excerpt set, force is false, no read more
 			$post->post_excerpt = 'this is excerpt longer than three words';
@@ -48,7 +48,7 @@
 			// custom read more set
 			$post->post_excerpt = '';
 			$preview = $post->get_preview(3, false, 'Custom more');
-			$this->assertRegExp('/this is super&hellip; <a href="http:\/\/example.org\/\?p=\d+" class="read-more">Custom more<\/a>/', $preview);
+			$this->assertMatchesRegularExpression('/this is super&hellip; <a href="http:\/\/example.org\/\?p=\d+" class="read-more">Custom more<\/a>/', $preview);
 
 			// content with <!--more--> tag, force false
 			$post->post_content = 'this is super dooper<!--more--> trooper long words';

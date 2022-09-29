@@ -4,7 +4,7 @@ class TestTimberMultisite extends Timber_UnitTestCase {
 
 	function set_up() {
 		self::clear();
-		parent::setUp();
+		parent::set_up();
 	}
 
 	function testGetSubDomainSites() {
@@ -223,7 +223,7 @@ class TestTimberMultisite extends Timber_UnitTestCase {
 
 	function tear_down() {
 		self::clear();
-		parent::tearDown();
+		parent::tear_down();
 	}
 
 }

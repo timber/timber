@@ -411,10 +411,10 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$context['menu'] = new TimberMenu();
 		$str = Timber::compile( 'assets/menu-classes.twig', $context );
 		$str = trim( $str );
-		$this->assertContains( 'current_page_item', $str );
-		$this->assertContains( 'current-menu-item', $str );
-		$this->assertContains( 'menu-item-object-page', $str );
-		$this->assertNotContains( 'foobar', $str );
+		$this->assertStringContainsString( 'current_page_item', $str );
+		$this->assertStringContainsString( 'current-menu-item', $str );
+		$this->assertStringContainsString( 'menu-item-object-page', $str );
+		$this->assertStringNotContainsString( 'foobar', $str );
 	}
 
 	function testMenuItemLink() {
@@ -486,10 +486,10 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 		// With no options set.
 		$menu = new TimberMenu();
-		$this->assertInternalType("int", $menu->depth);
+		$this->assertIsInt($menu->depth);
 		$this->assertEquals( 0, $menu->depth );
-		$this->assertInternalType("array", $menu->raw_options);
-		$this->assertInternalType('array', $menu->options);
+		$this->assertIsArray($menu->raw_options);
+		$this->assertIsArray($menu->options);
 		$this->assertEquals(array( 'depth' => 0 ), $menu->options);
 
 		// With Valid options set.
@@ -497,11 +497,11 @@ class TestTimberMenu extends Timber_UnitTestCase {
 			'depth' => 1,
 		);
 		$menu = new TimberMenu(self::MENU_NAME, $arguments);
-		$this->assertInternalType("int", $menu->depth);
+		$this->assertIsInt($menu->depth);
 		$this->assertEquals( 1, $menu->depth );
-		$this->assertInternalType("array", $menu->raw_options);
+		$this->assertIsArray($menu->raw_options);
 		$this->assertEquals( $arguments, $menu->raw_options );
-		$this->assertInternalType('array', $menu->options);
+		$this->assertIsArray($menu->options);
 		$this->assertEquals(array( 'depth' => 1 ), $menu->options);
 
 		// With invalid option set.
@@ -509,7 +509,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 			'depth' => 'boogie',
 		);
 		$menu = new TimberMenu(self::MENU_NAME, $arguments);
-		$this->assertInternalType("int", $menu->depth);
+		$this->assertIsInt($menu->depth);
 		$this->assertEquals( 0, $menu->depth );
 	}
 

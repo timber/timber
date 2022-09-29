@@ -106,8 +106,8 @@
             $file = TimberURLHelper::url_to_file_system($url);
             $this->assertStringStartsWith(ABSPATH, $file);
             $this->assertStringEndsWith('/2012/06/mypic.jpg', $file);
-            $this->assertNotContains($file, 'http://example.org');
-            $this->assertNotContains($file, '//');
+            $this->assertStringNotContainsString($file, 'http://example.org');
+            $this->assertStringNotContainsString($file, '//');
         }
 
         function testGetHost() {

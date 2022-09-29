@@ -978,7 +978,7 @@
 				$video = array_shift( $video );
 			}
 			$expected = '/<iframe [^>]+ src="https:\/\/www\.youtube\.com\/embed\/Jf37RalsnEs\?feature=oembed" [^>]+>/i';
- 			$this->assertRegExp( $expected, $video );;
+ 			$this->assertMatchesRegularExpression( $expected, $video );;
 		}
 
 		function testPostWithVideoCustomField() {

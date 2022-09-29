@@ -119,7 +119,7 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
     	if (is_dir($cache_dir)){
     		TimberLoader::rrmdir($cache_dir);
     	}
-    	$this->assertFileNotExists($cache_dir);
+    	$this->assertFileDoesNotExist($cache_dir);
     	Timber::$cache = true;
     	$pid = $this->factory->post->create();
     	$post = new TimberPost($pid);
@@ -136,7 +136,7 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
     	if (is_dir($cache_dir)){
     		TimberLoader::rrmdir($cache_dir);
     	}
-    	$this->assertFileNotExists($cache_dir);
+    	$this->assertFileDoesNotExist($cache_dir);
     	Timber::$cache = true;
     	$pid = $this->factory->post->create();
     	$post = new TimberPost($pid);
@@ -154,7 +154,7 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
     	if (is_dir($cache_dir)){
     		TimberLoader::rrmdir($cache_dir);
     	}
-    	$this->assertFileNotExists($cache_dir);
+    	$this->assertFileDoesNotExist($cache_dir);
     	Timber::$cache = true;
     	$pid = $this->factory->post->create();
     	$post = new TimberPost($pid);

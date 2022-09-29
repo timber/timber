@@ -6,7 +6,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 		global $wpdb;
 		$wpdb->query("TRUNCATE TABLE $wpdb->posts");
 		$wpdb->query("ALTER TABLE $wpdb->posts AUTO_INCREMENT = 1");
-		parent::setUp();
+		parent::set_up();
 	}
 
 	function testBackwards() {
