@@ -944,11 +944,10 @@
 
 			$pid = $this->factory->post->create(array('post_content' => $quote));
 			$post = new TimberPost($pid);
-			$expected = array(
-				'<audio class="wp-audio-shortcode" id="audio-1-1" preload="none" style="width: 100%;" controls="controls"><source type="audio/mpeg" src="http://www.noiseaddicts.com/samples_1w72b820/280.mp3?_=1" /><a href="http://www.noiseaddicts.com/samples_1w72b820/280.mp3">http://www.noiseaddicts.com/samples_1w72b820/280.mp3</a></audio>',
-			);
+			$expected = 'http://www.noiseaddicts.com/samples_1w72b820/280.mp3';
 
-			$this->assertEquals($expected, $post->audio());
+			$this->assertStringContainsString($expected, $post->audio()[0]);
+			$this->assertStringStartsWith('<audio', $post->audio()[0]);
 		}
 
 		function testPostWithAudioCustomField() {
