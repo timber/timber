@@ -75,7 +75,7 @@ class Resize extends ImageOperation {
 		$image = $image->coalesceImages();
 		$crop  = self::get_target_sizes($editor);
 		foreach ( $image as $frame ) {
-			$frame->cropImage($crop['src_w'], $crop['src_h'], $crop['x'], $crop['y']);
+			$frame->cropImage($crop['src_w'], $crop['src_h'], round($crop['x']), round($crop['y']));
 			$frame->thumbnailImage($w, $h);
 			$frame->setImagePage($w, $h, 0, 0);
 		}

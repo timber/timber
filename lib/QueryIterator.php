@@ -151,6 +151,7 @@ class QueryIterator implements \Iterator, \Countable {
 	#[\ReturnTypeWillChange]
 	final public function next() {}
 
+	#[\ReturnTypeWillChange]
 	public function rewind() {
 		$this->_query->rewind_posts();
 	}
