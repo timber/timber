@@ -3,8 +3,8 @@
 	class TestTimberCommentThread extends Timber_UnitTestCase {
 
 		function testCommentThreadWithArgs() {
-			$post_id = $this->factory->post->create(array('post_title' => 'Gobbles'));
-			$comment_id_array = $this->factory->comment->create_many( 5, array('comment_post_ID' => $post_id) );
+			$post_id = self::factory()->post->create(array('post_title' => 'Gobbles'));
+			$comment_id_array = self::factory()->comment->create_many( 5, array('comment_post_ID' => $post_id) );
 			$args = array();
 			$ct = new Timber\CommentThread($post_id, $args);
 			$this->assertEquals( 5, count($ct) );
@@ -12,10 +12,10 @@
 
 		function testShowUnmoderatedCommentIfByAnon() {
 			global $wp_version;
-			$post_id = $this->factory->post->create();
+			$post_id = self::factory()->post->create();
 
 			$quote = "And in that moment, I was a marine biologist";
-			$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => $quote,'comment_approved' => 0, 'comment_author_email' => 'jarednova@upstatement.com'));
+			$comment_id = self::factory()->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => $quote,'comment_approved' => 0, 'comment_author_email' => 'jarednova@upstatement.com'));
 
 			$comment = get_comment($comment_id);
 

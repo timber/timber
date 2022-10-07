@@ -3,9 +3,9 @@
 class TestTimberProperty extends Timber_UnitTestCase {
 
 	function testPropertyID() {
-		$post_id = $this->factory->post->create();
-		$user_id = $this->factory->user->create();
-		$comment_id = $this->factory->comment->create( array( 'comment_post_ID' => $post_id ) );
+		$post_id = self::factory()->post->create();
+		$user_id = self::factory()->user->create();
+		$comment_id = self::factory()->comment->create( array( 'comment_post_ID' => $post_id ) );
 		$term_id = wp_insert_term( 'baseball', 'post_tag' );
 		$term_id = $term_id['term_id'];
 		$post = new TimberPost( $post_id );
@@ -24,9 +24,9 @@ class TestTimberProperty extends Timber_UnitTestCase {
 
 
 	function _initObjects() {
-		$post_id = $this->factory->post->create();
-		$user_id = $this->factory->user->create();
-		$comment_id = $this->factory->comment->create( array( 'comment_post_ID' => $post_id ) );
+		$post_id = self::factory()->post->create();
+		$user_id = self::factory()->user->create();
+		$comment_id = self::factory()->comment->create( array( 'comment_post_ID' => $post_id ) );
 		$term_id = wp_insert_term( 'baseball', 'post_tag' );
 		$term_id = $term_id['term_id'];
 		$post = new TimberPost( $post_id );

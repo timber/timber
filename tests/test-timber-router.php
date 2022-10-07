@@ -50,7 +50,7 @@ class TestTimberRouter extends Timber_UnitTestCase {
 
 	function testRouteAgainstPostName(){
 		$post_name = 'jared';
-		$post = $this->factory->post->create(array('post_title' => 'Jared', 'post_name' => $post_name));
+		$post = self::factory()->post->create(array('post_title' => 'Jared', 'post_name' => $post_name));
 		global $matches;
 		$matches = array();
 		$phpunit = $this;
@@ -80,7 +80,7 @@ class TestTimberRouter extends Timber_UnitTestCase {
 
 	function testRouteWithVariable() {
 		$post_name = 'ziggy';
-		$post = $this->factory->post->create(array('post_title' => 'Ziggy', 'post_name' => $post_name));
+		$post = self::factory()->post->create(array('post_title' => 'Ziggy', 'post_name' => $post_name));
 		global $matches;
 		$matches = array();
 		$phpunit = $this;
@@ -98,7 +98,7 @@ class TestTimberRouter extends Timber_UnitTestCase {
 
 	function testRouteWithAltoVariable() {
 		$post_name = 'ziggy';
-		$post = $this->factory->post->create(array('post_title' => 'Ziggy', 'post_name' => $post_name));
+		$post = self::factory()->post->create(array('post_title' => 'Ziggy', 'post_name' => $post_name));
 		global $matches;
 		$matches = array();
 		$phpunit = $this;

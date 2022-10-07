@@ -5,7 +5,7 @@
 
 	function testContent(){
 		$quote = 'The way to do well is to do well.';
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$post = new TimberPost($post_id);
 		$post->post_content = $quote;
 		wp_update_post($post);
@@ -18,7 +18,7 @@
 		$quote .= '<!--nextpage-->';
 		$quote .= $page2 = "And do not let your tongue get ahead of your mind.";
 
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$post = new TimberPost($post_id);
 		$post->post_content = $quote;
 		wp_update_post($post);
@@ -34,7 +34,7 @@
 		$quote .= '<!--nextpage-->';
 		$quote .= $page2 = "No, try not. Do or do not. There is no try.";
 
-		$post_id = $this->factory->post->create(array('post_content' => $quote));
+		$post_id = self::factory()->post->create(array('post_content' => $quote));
 
 		$this->go_to( get_permalink( $post_id ) );
 
@@ -73,9 +73,9 @@
 <!-- wp:paragraph -->
 <p>Heres the read more stuff that we shant see!</p>
 <!-- /wp:paragraph -->';
-		$post_id = $this->factory->post->create(['post_content' => $content_1 ]);
+		$post_id = self::factory()->post->create(['post_content' => $content_1 ]);
 		$post = new \Timber\Post($post_id);
-		
+
 		$this->assertEquals('<p>Heres the read more stuff that we shant see!</p>', trim($post->content()));
 	}
 

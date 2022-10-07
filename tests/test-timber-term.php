@@ -1,13 +1,13 @@
 <?php
 
 	class TestTimberTerm extends Timber_UnitTestCase {
-		
+
 		function testTermFrom() {
 			register_taxonomy('baseball', array('post'));
 			register_taxonomy('hockey', array('post'));
-			$term_id = $this->factory->term->create(array('name' => 'Rangers', 'taxonomy' => 'baseball'));
-			$term_id = $this->factory->term->create(array('name' => 'Cardinals', 'taxonomy' => 'baseball'));
-			$term_id = $this->factory->term->create(array('name' => 'Rangers', 'taxonomy' => 'hockey'));
+			$term_id = self::factory()->term->create(array('name' => 'Rangers', 'taxonomy' => 'baseball'));
+			$term_id = self::factory()->term->create(array('name' => 'Cardinals', 'taxonomy' => 'baseball'));
+			$term_id = self::factory()->term->create(array('name' => 'Rangers', 'taxonomy' => 'hockey'));
 			$baseball_teams = Timber\Term::from(get_terms(array('taxonomy' => 'baseball', 'hide_empty' => false)), 'baseball');
 			$this->assertEquals(2, count($baseball_teams));
 			$this->assertEquals('Cardinals', $baseball_teams[0]->name());
@@ -17,9 +17,9 @@
 		 * @ticket #2362
 		 */
 		function testMultiTermsWithSameSlug() {
-			$post_tag_id = $this->factory->term->create(array('name' => 'Security', 'taxonomy' => 'post_tag'));
-			$category_id = $this->factory->term->create(array('name' => 'Security', 'taxonomy' => 'category'));
-			$post_id     = $this->factory->post->create();
+			$post_tag_id = self::factory()->term->create(array('name' => 'Security', 'taxonomy' => 'post_tag'));
+			$category_id = self::factory()->term->create(array('name' => 'Security', 'taxonomy' => 'category'));
+			$post_id     = self::factory()->post->create();
 			wp_set_object_terms($post_id, $post_tag_id, 'post_tag', true);
 			wp_set_object_terms($post_id, $category_id, 'category', true);
 
@@ -35,7 +35,7 @@
 		function testConstructorWithClass() {
 			register_taxonomy('arts', array('post'));
 
-			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'post_tag'));
+			$term_id = self::factory()->term->create(array('name' => 'Zong', 'taxonomy' => 'post_tag'));
 			$term = new \Timber\Term($term_id);
 
 			$template = '{% set zp_term = Term("'.$term_id.'", "Arts") %}{{ zp_term.name }} {{ zp_term.taxonomy }}';
@@ -50,7 +50,7 @@
 		function testConstructorWithClassAndTaxonomy() {
 			register_taxonomy('arts', array('post'));
 
-			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
+			$term_id = self::factory()->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
 			$term = new \Timber\Term($term_id);
 
 			$template = '{% set zp_term = Term("'.$term_id.'", "arts", "Arts") %}{{ zp_term.name }} {{ zp_term.taxonomy }}';
@@ -65,7 +65,7 @@
 		function testConstructor() {
 			register_taxonomy('arts', array('post'));
 
-			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
+			$term_id = self::factory()->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
 			$term = new TimberTerm($term_id, 'arts');
 			$this->assertEquals('Zong', $term->name());
 			$template = '{% set zp_term = TimberTerm("'.$term->ID.'", "arts") %}{{ zp_term.name }}';
@@ -74,13 +74,13 @@
 		}
 
 		function testTerm() {
-			$term_id = $this->factory->term->create();
+			$term_id = self::factory()->term->create();
 			$term = new TimberTerm($term_id);
 			$this->assertEquals('Timber\Term', get_class($term));
 		}
 
 		function testGetTermWithObject() {
-			$term_id = $this->factory->term->create(array('name' => 'Famous Commissioners'));
+			$term_id = self::factory()->term->create(array('name' => 'Famous Commissioners'));
 			$term_data = get_term($term_id, 'post_tag');
 			$this->assertTrue( in_array( get_class($term_data), array('WP_Term', 'stdClass') ) );
 			$term = new TimberTerm($term_id);
@@ -89,13 +89,13 @@
 		}
 
 		function testTermConstructWithSlug() {
-			$term_id = $this->factory->term->create(array('name' => 'New England Patriots'));
+			$term_id = self::factory()->term->create(array('name' => 'New England Patriots'));
 			$term = new TimberTerm('new-england-patriots');
 			$this->assertEquals($term->ID, $term_id);
 		}
 
 		function testTermToString() {
-			$term_id = $this->factory->term->create(array('name' => 'New England Patriots'));
+			$term_id = self::factory()->term->create(array('name' => 'New England Patriots'));
 			$term = new TimberTerm('new-england-patriots');
 			$str = Timber::compile_string('{{term}}', array('term' => $term));
 			$this->assertEquals('New England Patriots', $str);
@@ -103,33 +103,33 @@
 
 		function testTermDescription() {
 			$desc = 'An honest football team';
-			$term_id = $this->factory->term->create(array('name' => 'New England Patriots', 'description' => $desc));
+			$term_id = self::factory()->term->create(array('name' => 'New England Patriots', 'description' => $desc));
 			$term = new TimberTerm($term_id, 'post_tag');
 			$this->assertEquals($desc, $term->description());
 		}
 
 		function testTermConstructWithName() {
-			$term_id = $this->factory->term->create(array('name' => 'St. Louis Cardinals'));
+			$term_id = self::factory()->term->create(array('name' => 'St. Louis Cardinals'));
 			$term = new TimberTerm('St. Louis Cardinals');
 			$this->assertNull($term->ID);
 		}
 
 		function testTermInitObject() {
-			$term_id = $this->factory->term->create();
+			$term_id = self::factory()->term->create();
 			$term = get_term($term_id, 'post_tag');
 			$term = new TimberTerm($term);
 			$this->assertEquals($term->ID, $term_id);
 		}
 
 		function testTermLink() {
-			$term_id = $this->factory->term->create();
+			$term_id = self::factory()->term->create();
 			$term = new TimberTerm($term_id);
-			$this->assertContains('http://', $term->link());
-			$this->assertContains('http://', $term->get_link());
+			$this->assertStringContainsString('http://', $term->link());
+			$this->assertStringContainsString('http://', $term->get_link());
 		}
 
 		function testTermPath() {
-			$term_id = $this->factory->term->create();
+			$term_id = self::factory()->term->create();
 			$term = new TimberTerm($term_id);
 			$this->assertFalse(strstr($term->path(), 'http://'));
 			$this->assertFalse(strstr($term->get_path(), 'http://'));
@@ -137,9 +137,9 @@
 
 		function testGetPostsWithPostTypesString() {
 			register_post_type('portfolio', array('taxonomies' => array('post_tag'), 'public' => true));
-			$term_id = $this->factory->term->create(array('name' => 'Zong'));
-			$posts = $this->factory->post->create_many(3, array('post_type' => 'post', 'tags_input' => 'zong') );
-			$posts = $this->factory->post->create_many(5, array('post_type' => 'portfolio', 'tags_input' => 'zong') );
+			$term_id = self::factory()->term->create(array('name' => 'Zong'));
+			$posts = self::factory()->post->create_many(3, array('post_type' => 'post', 'tags_input' => 'zong') );
+			$posts = self::factory()->post->create_many(5, array('post_type' => 'portfolio', 'tags_input' => 'zong') );
 			$term = new TimberTerm($term_id);
 			$posts_gotten = $term->posts('posts_per_page=4');
 			$this->assertEquals(4, count($posts_gotten));
@@ -152,8 +152,8 @@
 			register_post_type('portfolio', array('taxonomies' => array('arts'), 'public' => true));
 			register_taxonomy('arts', array('portfolio'));
 
-			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
-			$posts = $this->factory->post->create_many(5, array('post_type' => 'portfolio' ));
+			$term_id = self::factory()->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
+			$posts = self::factory()->post->create_many(5, array('post_type' => 'portfolio' ));
 			$term = new TimberTerm($term_id);
 			foreach($posts as $post_id) {
 				wp_set_object_terms($post_id, $term_id, 'arts', true);
@@ -166,11 +166,11 @@
 		}
 
 		function testGetPostsOld() {
-			$term_id = $this->factory->term->create();
+			$term_id = self::factory()->term->create();
 			$posts = array();
-			$posts[] = $this->factory->post->create();
-			$posts[] = $this->factory->post->create();
-			$posts[] = $this->factory->post->create();
+			$posts[] = self::factory()->post->create();
+			$posts[] = self::factory()->post->create();
+			$posts[] = self::factory()->post->create();
 			foreach($posts as $post_id){
 				wp_set_object_terms($post_id, $term_id, 'post_tag', true);
 			}
@@ -180,11 +180,11 @@
 		}
 
 		function testGetPostsAsPageOld() {
-			$term_id = $this->factory->term->create();
+			$term_id = self::factory()->term->create();
 			$posts = array();
-			$posts[] = $this->factory->post->create();
-			$posts[] = $this->factory->post->create();
-			$posts[] = $this->factory->post->create();
+			$posts[] = self::factory()->post->create();
+			$posts[] = self::factory()->post->create();
+			$posts[] = self::factory()->post->create();
 			foreach($posts as $post_id){
 				set_post_type($post_id, 'page');
 				wp_set_object_terms($post_id, $term_id, 'post_tag', true);
@@ -200,11 +200,11 @@
 
 		function testGetPostsNew() {
 			require_once('php/timber-post-subclass.php');
-			$term_id = $this->factory->term->create();
+			$term_id = self::factory()->term->create();
 			$posts = array();
-			$posts[] = $this->factory->post->create();
-			$posts[] = $this->factory->post->create();
-			$posts[] = $this->factory->post->create();
+			$posts[] = self::factory()->post->create();
+			$posts[] = self::factory()->post->create();
+			$posts[] = self::factory()->post->create();
 			foreach($posts as $post_id){
 				set_post_type($post_id, 'page');
 				wp_set_object_terms($post_id, $term_id, 'post_tag', true);
@@ -225,11 +225,11 @@
 		}
 
 		function testPostsWithCustomPostType() {
-			$term_id = $this->factory->term->create();
+			$term_id = self::factory()->term->create();
 			$posts   = array();
-			$posts[] = $this->factory->post->create();
-			$posts[] = $this->factory->post->create();
-			$posts[] = $this->factory->post->create();
+			$posts[] = self::factory()->post->create();
+			$posts[] = self::factory()->post->create();
+			$posts[] = self::factory()->post->create();
 
 			foreach ( $posts as $post_id ) {
 				set_post_type( $post_id, 'page' );
@@ -251,11 +251,11 @@
 		function testPostsWithCustomPostTypeAndCustomClass() {
 			require_once 'php/timber-post-subclass.php';
 
-			$term_id = $this->factory->term->create();
+			$term_id = self::factory()->term->create();
 			$posts   = array();
-			$posts[] = $this->factory->post->create();
-			$posts[] = $this->factory->post->create();
-			$posts[] = $this->factory->post->create();
+			$posts[] = self::factory()->post->create();
+			$posts[] = self::factory()->post->create();
+			$posts[] = self::factory()->post->create();
 
 			foreach ( $posts as $post_id ) {
 				set_post_type( $post_id, 'page' );
@@ -281,11 +281,11 @@
 			require_once 'php/timber-post-subclass.php';
 			require_once 'php/timber-post-subclass-page.php';
 
-			$term_id = $this->factory->term->create();
+			$term_id = self::factory()->term->create();
 			$posts   = array();
-			$posts[] = $this->factory->post->create();
-			$posts[] = $this->factory->post->create();
-			$posts[] = $this->factory->post->create();
+			$posts[] = self::factory()->post->create();
+			$posts[] = self::factory()->post->create();
+			$posts[] = self::factory()->post->create();
 
 			foreach ( $posts as $post_id ) {
 				set_post_type( $post_id, 'page' );
@@ -305,9 +305,9 @@
 		}
 
 		function testTermChildren() {
-			$parent_id = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
-			$local = $this->factory->term->create(array('name' => 'Local', 'parent' => $parent_id, 'taxonomy' => 'category'));
-			$int = $this->factory->term->create(array('name' => 'International', 'parent' => $parent_id, 'taxonomy' => 'category'));
+			$parent_id = self::factory()->term->create(array('name' => 'News', 'taxonomy' => 'category'));
+			$local = self::factory()->term->create(array('name' => 'Local', 'parent' => $parent_id, 'taxonomy' => 'category'));
+			$int = self::factory()->term->create(array('name' => 'International', 'parent' => $parent_id, 'taxonomy' => 'category'));
 
 			$term = new TimberTerm($parent_id);
 			$children = $term->children();
@@ -319,7 +319,7 @@
 		 @issue #824
 		 */
 		function testTermWithNativeMeta() {
-			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
+			$tid = self::factory()->term->create(array('name' => 'News', 'taxonomy' => 'category'));
 			add_term_meta($tid, 'foo', 'bar');
 			$term = new TimberTerm($tid);
 			$template = '{{term.foo}}';
@@ -331,7 +331,7 @@
 		 @issue #824
 		 */
 		function testTermWithNativeMetaFalse() {
-			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
+			$tid = self::factory()->term->create(array('name' => 'News', 'taxonomy' => 'category'));
 			add_term_meta($tid, 'foo', false);
 			$term = new TimberTerm($tid);
 			$this->assertEquals('', $term->meta('foo'));
@@ -341,7 +341,7 @@
 		 @issue #824
 		 */
 		function testTermWithNativeMetaNotExisting() {
-			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
+			$tid = self::factory()->term->create(array('name' => 'News', 'taxonomy' => 'category'));
 			add_term_meta($tid, 'bar', 'qux');;
 			$wp_native_value = get_term_meta($tid, 'foo', true);
 			$acf_native_value = get_field('foo', 'category_'.$tid);
@@ -365,7 +365,7 @@
 
 		function testTermEditLink() {
 			wp_set_current_user(1);
-			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
+			$tid = self::factory()->term->create(array('name' => 'News', 'taxonomy' => 'category'));
 			$term = new TimberTerm($tid);
 			$links = array();
 

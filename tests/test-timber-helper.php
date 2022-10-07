@@ -44,7 +44,7 @@
 		}
 
 		function testCommentFormPHP() {
-			$post_id = $this->factory->post->create();
+			$post_id = self::factory()->post->create();
 			$form = TimberHelper::get_comment_form($post_id);
 			$form = trim($form);
 			$this->assertStringStartsWith('<div id="respond"', $form);
@@ -63,7 +63,7 @@
 		}
 
 		function testCommentForm() {
-			$post_id = $this->factory->post->create();
+			$post_id = self::factory()->post->create();
 			global $post;
 			$post = get_post($post_id);
 			$form = TimberHelper::ob_function( 'comment_form', array( array(), $post_id ) );
@@ -81,7 +81,7 @@
         function testWPTitleSingle(){
         	//since we're testing with twentyfourteen -- need to remove its filters on wp_title
         	remove_all_filters('wp_title');
-        	$post_id = $this->factory->post->create(array('post_title' => 'My New Post'));
+        	$post_id = self::factory()->post->create(array('post_title' => 'My New Post'));
         	$post = get_post($post_id);
             $this->go_to( site_url( '?p='.$post_id ) );
         	$this->assertEquals('My New Post', TimberHelper::get_wp_title());
@@ -141,10 +141,8 @@
 			$this->assertFalse(\Timber\Helper::get_object_index_by_property('butts', 'skill', 'cooking'));
 		}
 
-		/**
-     	 * @expectedException InvalidArgumentException
-     	 */
 		function testGetObjectByPropertyButNo() {
+			$this->expectException(InvalidArgumentException::class);
 			$obj1 = new stdClass();
 			$obj1->name = 'mark';
 			$obj1->skill = 'acro yoga';
@@ -155,7 +153,7 @@
 			$start = TimberHelper::start_timer();
 			sleep(1);
 			$end = TimberHelper::stop_timer($start);
-			$this->assertContains(' seconds.', $end);
+			$this->assertStringContainsString(' seconds.', $end);
 			$time = str_replace(' seconds.', '', $end);
 			$this->assertGreaterThan(1, $time);
 		}
@@ -218,9 +216,9 @@
 		 */
 		function testNewArrayFilter() {
 			$posts = [];
-			$posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
-			$posts[] = $this->factory->post->create(array('post_title' => 'Snoop', 'post_content' => 'Felicia Pearson'));
-			$posts[] = $this->factory->post->create(array('post_title' => 'Cheese', 'post_content' => 'Method Man'));
+			$posts[] = self::factory()->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
+			$posts[] = self::factory()->post->create(array('post_title' => 'Snoop', 'post_content' => 'Felicia Pearson'));
+			$posts[] = self::factory()->post->create(array('post_title' => 'Cheese', 'post_content' => 'Method Man'));
 			$posts = Timber::get_posts($posts);
 			$template = '{% for post in posts | wp_list_filter("snoop")%}{{ post.content|striptags }}{% endfor %}';
 			$str = Timber::compile_string($template, array('posts' => $posts));
@@ -233,14 +231,12 @@
 			$this->assertEquals("40, 42", $str);
 		}
 
-		/**
- 		 * @expectedException Twig\Error\RuntimeError
-		 */
 		function testArrayFilterKeyValueUsingPostQuery() {
+			$this->expectException(Twig\Error\RuntimeError::class);
 			$posts = [];
-			$posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
-			$posts[] = $this->factory->post->create(array('post_title' => 'Snoop', 'post_content' => 'Felicia Pearson'));
-			$posts[] = $this->factory->post->create(array('post_title' => 'Cheese', 'post_content' => 'Method Man'));
+			$posts[] = self::factory()->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
+			$posts[] = self::factory()->post->create(array('post_title' => 'Snoop', 'post_content' => 'Felicia Pearson'));
+			$posts[] = self::factory()->post->create(array('post_title' => 'Cheese', 'post_content' => 'Method Man'));
 			$posts = new Timber\PostQuery($posts);
 			$template = '{% for post in posts | filter({post_content: "Method Man"
 		})%}{{ post.title }}{% endfor %}';
@@ -248,24 +244,20 @@
 			$this->assertEquals('Cheese', trim($str));
 		}
 
-		/**
- 		 * @expectedException Twig\Error\RuntimeError
-		 */
 		function testArrayFilterMulti() {
+			$this->expectException(Twig\Error\RuntimeError::class);
 			$posts = [];
-			$posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
-			$posts[] = $this->factory->post->create(array('post_title' => 'Snoop', 'post_content' => 'Felicia Pearson'));
-			$posts[] = $this->factory->post->create(array('post_title' => 'Cheese', 'post_content' => 'Method Man'));
+			$posts[] = self::factory()->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
+			$posts[] = self::factory()->post->create(array('post_title' => 'Snoop', 'post_content' => 'Felicia Pearson'));
+			$posts[] = self::factory()->post->create(array('post_title' => 'Cheese', 'post_content' => 'Method Man'));
 			$posts = Timber::get_posts($posts);
 			$template = '{% for post in posts | filter({slug:"snoop", post_content:"Idris Elba"}, "OR")%}{{ post.title }} {% endfor %}';
 			$str = Timber::compile_string($template, array('posts' => $posts));
 			$this->assertEquals('Stringer Bell Snoop', trim($str));
 		}
 
-		/**
- 		 * @expectedException Twig\Error\RuntimeError
-		 */
 		function testArrayFilterWithBogusArray() {
+			$this->expectException(Twig\Error\RuntimeError::class);
 			$template = '{% for post in posts | filter({slug:"snoop", post_content:"Idris Elba"}, "OR")%}{{ post.title }} {% endfor %}';
 			$str = Timber::compile_string($template, array('posts' => 'foobar'));
 			$this->assertEquals('', $str);
@@ -274,19 +266,19 @@
 		function testConvertWPObject() {
 
 			// Test WP_Post -> \Timber\Post
-			$post_id = $this->factory->post->create();
+			$post_id = self::factory()->post->create();
 			$wp_post = get_post( $post_id );
 			$timber_post = \Timber\Helper::convert_wp_object($wp_post);
 			$this->assertTrue($timber_post instanceof \Timber\Post);
 
 			// Test WP_Term -> \Timber\Term
-			$term_id = $this->factory->term->create();
+			$term_id = self::factory()->term->create();
 			$wp_term = get_term( $term_id );
 			$timber_term = \Timber\Helper::convert_wp_object($wp_term);
 			$this->assertTrue($timber_term instanceof \Timber\Term);
 
 			// Test WP_User -> \Timber\User
-			$user_id = $this->factory->user->create();
+			$user_id = self::factory()->user->create();
 			$wp_user = get_user_by('id', $user_id);
 			$timber_user = \Timber\Helper::convert_wp_object($wp_user);
 			$this->assertTrue($timber_user instanceof \Timber\User);
@@ -309,7 +301,7 @@
 				$post_classes['sport'] = 'Sport';
 				return $post_classes;
 			});
- 			$sport_id = $this->factory->post->create(array('post_type' => 'sport', 'post_title' => 'Basketball Player'));
+ 			$sport_id = self::factory()->post->create(array('post_type' => 'sport', 'post_title' => 'Basketball Player'));
 			$wp_post = get_post($sport_id);
 			$sport_post = \Timber\Helper::convert_wp_object($wp_post);
 			$this->assertEquals('Sport', get_class($sport_post));

@@ -46,7 +46,7 @@
 			$this->setupCustomWPDirectoryStructure();
 
 			$upload_dir = wp_upload_dir();
-			$post_id = $this->factory->post->create();
+			$post_id = self::factory()->post->create();
 			$filename = TestTimberImage::copyTestImage( 'flag.png' );
 			$destination_url = str_replace( ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $filename );
 			$wp_filetype = wp_check_filetype( basename( $filename ), null );

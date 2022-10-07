@@ -23,7 +23,7 @@ class ClassB {
 class TestTimberCore extends Timber_UnitTestCase {
 
 	function testCoreImport() {
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$tc = new TimberCoreTester($post_id);
 		$object = new stdClass();
 		$object->frank = 'Drebin';
@@ -37,7 +37,7 @@ class TestTimberCore extends Timber_UnitTestCase {
 	}
 
 	function testCoreImportWithPropertyTypes() {
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$tc = new TimberCoreTester($post_id);
 		$object = new ClassB();
 		$tc->import((object) (array) $object);
