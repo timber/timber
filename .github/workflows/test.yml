@@ -151,7 +151,7 @@ jobs:
       - name: Run tests with coverage
         if: ${{ matrix.coverage == true }}
         run: |
-          vendor/bin/phpunit -c phpunit.xml --verbose --colors=always
+          XDEBUG_MODE=coverage vendor/bin/phpunit -c phpunit.xml --verbose --colors=always --coverage-clover ./build/logs/clover.xml
 
       - name: Upload coverage results to Coveralls
         if: ${{ matrix.coverage == true }}
