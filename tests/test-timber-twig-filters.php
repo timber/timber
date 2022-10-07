@@ -79,8 +79,8 @@
 
 		function testTwigFilterDateWordPressOption(){
 			$format = get_option('date_format');
-			$str = Timber::compile_string("{{now|date('".$format."')}}");
-			$empty = Timber::compile_string("{{now|date}}");
+			$str = Timber::compile_string("{{'now'|date('".$format."')}}");
+			$empty = Timber::compile_string("{{'now'|date}}");
 			$this->assertSame($str, $empty);
 		}
 
