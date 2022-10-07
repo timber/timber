@@ -44,10 +44,10 @@ class TestTimberMultisite extends Timber_UnitTestCase {
 		$site_ids[] = self::createSubDomainSite('duck.example.org', "More Ducks R Us");
 
 		$post_titles = ["I don't like zebras", "Zebra and a half", "Have a zebra of a time"];
-		//$others = $this->factory->post->create_many(8);
+		//$others = self::factory()->post->create_many(8);
 		foreach($site_ids as $site_id) {
 			switch_to_blog($site_id);
-			$this->factory->post->create(array('post_title' => array_pop($post_titles)));
+			self::factory()->post->create(array('post_title' => array_pop($post_titles)));
 
 		}
 
@@ -94,7 +94,7 @@ class TestTimberMultisite extends Timber_UnitTestCase {
 		$post_titles = ["I don't like zebras", "Zebra and a half", "Have a zebra of a time"];
 		foreach($site_ids as $site_id) {
 			switch_to_blog($site_id);
-			$this->factory->post->create(['post_title' => 'Zebras are good on site ID = '.$site_id]);
+			self::factory()->post->create(['post_title' => 'Zebras are good on site ID = '.$site_id]);
 
 		}
 		$this->go_to('/');
@@ -135,10 +135,10 @@ class TestTimberMultisite extends Timber_UnitTestCase {
 		$site_ids[] = self::createSubDomainSite('duck.example.org', "More Ducks R Us");
 
 		$post_titles = ["I don't like zebras", "Zebra and a half", "Have a zebra of a time"];
-		$others = $this->factory->post->create_many(8);
+		$others = self::factory()->post->create_many(8);
 		foreach($site_ids as $site_id) {
 			switch_to_blog($site_id);
-			$this->factory->post->create(array('post_title' => array_pop($post_titles)));
+			self::factory()->post->create(array('post_title' => array_pop($post_titles)));
 
 		}
 

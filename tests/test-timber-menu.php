@@ -328,7 +328,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	function testMenuWithImage() {
 		add_theme_support('thumbnails');
 		self::setPermalinkStructure();
-		$pid = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
+		$pid = self::factory()->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
 		$iid = TestTimberImage::get_image_attachment($pid);
 		add_post_meta( $pid, '_thumbnail_id', $iid, true );
 		$post = new \Timber\Post($pid);
@@ -340,8 +340,8 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 
 	function testPagesMenu() {
-		$pg_1 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
-		$pg_2 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
+		$pg_1 = self::factory()->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
+		$pg_2 = self::factory()->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
 		$page_menu = new TimberMenu();
 		$this->assertEquals( 2, count( $page_menu->items ) );
 		$this->assertEquals( 'Bar Page', $page_menu->items[0]->title() );
@@ -352,16 +352,16 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	}
 
 	function testJSONEncodedMenu() {
-		$pg_1 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
-		$pg_2 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
+		$pg_1 = self::factory()->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
+		$pg_2 = self::factory()->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
 		$page_menu = new Timber\Menu();
 		$text = json_encode($page_menu->get_items());
 		$this->assertGreaterThan(1, strlen($text));
 	}
 
 	function testMenuItemMenuProperty() {
-		$pg_1 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
-		$pg_2 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
+		$pg_1 = self::factory()->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
+		$pg_2 = self::factory()->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
 		$page_menu = new Timber\Menu();
 		$items = $page_menu->get_items();
 		$menu = $items[0]->menu;
@@ -370,8 +370,8 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 
 	function testPagesMenuWithFalse() {
-		$pg_1 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
-		$pg_2 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
+		$pg_1 = self::factory()->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
+		$pg_2 = self::factory()->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
 		$page_menu = new TimberMenu();
 		$this->assertEquals( 2, count( $page_menu->items ) );
 		$this->assertEquals( 'Bar Page', $page_menu->items[0]->title() );
@@ -385,8 +385,8 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	 * Make sure we still get back nothing even though we have a fallback present
 	 */
 	function testMissingMenu() {
-		$pg_1 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
-		$pg_2 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
+		$pg_1 = self::factory()->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
+		$pg_2 = self::factory()->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
 		$missing_menu = new TimberMenu( 14 );
 		$this->assertTrue( empty( $missing_menu->items ) );
 	}

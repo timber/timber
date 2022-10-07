@@ -3,7 +3,7 @@
 	class TestTimberDates extends Timber_UnitTestCase {
 
 		function testDate(){
-			$pid = $this->factory->post->create();
+			$pid = self::factory()->post->create();
 			$post = new TimberPost($pid);
 			$twig = 'I am from {{post.date}}';
 			$str = Timber::compile_string($twig, array('post' => $post));
@@ -51,7 +51,7 @@
 		}
 
 		function testTime(){
-			$pid = $this->factory->post->create(array('post_date' => '2016-07-07 20:03:00'));
+			$pid = self::factory()->post->create(array('post_date' => '2016-07-07 20:03:00'));
 			$post = new TimberPost($pid);
 			$twig = 'Posted at {{post.time}}';
 			$str = Timber::compile_string($twig, array('post' => $post));
@@ -59,7 +59,7 @@
 		}
 
 		function testPostDisplayDate(){
-			$pid = $this->factory->post->create();
+			$pid = self::factory()->post->create();
 			$post = new TimberPost($pid);
 			$twig = 'I am from {{post.date}}';
 			$str = Timber::compile_string($twig, array('post' => $post));
@@ -67,7 +67,7 @@
 		}
 
 		function testPostDate(){
-			$pid = $this->factory->post->create();
+			$pid = self::factory()->post->create();
 			$post = new TimberPost($pid);
 			$twig = 'I am from {{post.post_date}}';
 			$str = Timber::compile_string($twig, array('post' => $post));
@@ -75,7 +75,7 @@
 		}
 
 		function testPostDateWithFilter(){
-			$pid = $this->factory->post->create();
+			$pid = self::factory()->post->create();
 			$post = new TimberPost($pid);
 			$twig = 'I am from {{post.post_date|date}}';
 			$str = Timber::compile_string($twig, array('post' => $post));
@@ -84,7 +84,7 @@
 
 		function testModifiedDate(){
 			$date = date('F j, Y @ g:i a');
-			$pid = $this->factory->post->create();
+			$pid = self::factory()->post->create();
 			$post = new TimberPost($pid);
 			$twig = "I was modified {{post.modified_date('F j, Y @ g:i a')}}";
 			$str = Timber::compile_string($twig, array('post' => $post));
@@ -92,7 +92,7 @@
 		}
 
 		function testModifiedDateFilter() {
-			$pid = $this->factory->post->create();
+			$pid = self::factory()->post->create();
 			$post = new TimberPost($pid);
 			add_filter('get_the_modified_date', function($the_date) {
 				return 'foobar';
@@ -104,7 +104,7 @@
 
 		function testModifiedTime(){
 			$date = date('F j, Y @ g:i a');
-			$pid = $this->factory->post->create();
+			$pid = self::factory()->post->create();
 			$post = new TimberPost($pid);
 			$twig = "I was modified {{post.modified_time('F j, Y @ g:i a')}}";
 			$str = Timber::compile_string($twig, array('post' => $post));
@@ -119,7 +119,7 @@
 		}
 
 		function testModifiedTimeFilter() {
-			$pid = $this->factory->post->create();
+			$pid = self::factory()->post->create();
 			$post = new TimberPost($pid);
 			add_filter('get_the_modified_time', function($the_date) {
 				return 'foobar';

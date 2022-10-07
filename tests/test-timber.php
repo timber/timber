@@ -10,25 +10,25 @@ class TestTimber extends Timber_UnitTestCase {
 	}
 
 	function testGetPostNumeric(){
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$post = Timber::get_post($post_id);
 		$this->assertEquals('Timber\Post', get_class($post));
 	}
 
 	function testGetPostString(){
-		$this->factory->post->create();
+		self::factory()->post->create();
 		$post = Timber::get_post('post_type=post');
 		$this->assertEquals('Timber\Post', get_class($post));
 	}
 
 	function testGetPostBySlug(){
-		$this->factory->post->create(array('post_name' => 'kill-bill'));
+		self::factory()->post->create(array('post_name' => 'kill-bill'));
 		$post = Timber::get_post('kill-bill');
 		$this->assertEquals('kill-bill', $post->post_name);
 	}
 
 	function testGetPostByPostObject() {
-		$pid = $this->factory->post->create();
+		$pid = self::factory()->post->create();
 		$wp_post = get_post($pid);
 		$post = Timber::get_post($wp_post, 'TimberAlert');
 		$this->assertEquals('TimberAlert', get_class($post));
@@ -36,7 +36,7 @@ class TestTimber extends Timber_UnitTestCase {
 	}
 
 	function testGetPostByQueryArray() {
-		$pid = $this->factory->post->create();
+		$pid = self::factory()->post->create();
 		$post = Timber::get_post(array('post_type' => 'post'), 'TimberAlert');
 		$this->assertEquals('TimberAlert', get_class($post));
 		$this->assertEquals($pid, $post->ID);
@@ -44,7 +44,7 @@ class TestTimber extends Timber_UnitTestCase {
 
 	function testGetPostWithCustomPostType() {
 		register_post_type('event', array('public' => true));
-		$pid = $this->factory->post->create(array('post_type' => 'event'));
+		$pid = self::factory()->post->create(array('post_type' => 'event'));
 		$post = Timber::get_post($pid, 'TimberAlert');
 		$this->assertEquals('TimberAlert', get_class($post));
 		$this->assertEquals($pid, $post->ID);
@@ -52,28 +52,28 @@ class TestTimber extends Timber_UnitTestCase {
 
 	function testGetPostWithCustomPostTypeNotPublic() {
 		register_post_type('event', array('public' => false));
-		$pid = $this->factory->post->create(array('post_type' => 'event'));
+		$pid = self::factory()->post->create(array('post_type' => 'event'));
 		$post = Timber::get_post($pid, 'TimberAlert');
 		$this->assertEquals('TimberAlert', get_class($post));
 		$this->assertEquals($pid, $post->ID);
 	}
 
 	function testGetPostsQueryString(){
-		$this->factory->post->create();
-		$this->factory->post->create();
+		self::factory()->post->create();
+		self::factory()->post->create();
 		$posts = Timber::get_posts('post_type=post');
 		$this->assertGreaterThan(1, count($posts));
 	}
 
 	function testGetPostsQueryArray(){
-		$this->factory->post->create();
+		self::factory()->post->create();
 		$query = array('post_type' => 'post');
 		$posts = Timber::get_posts($query);
 		$this->assertEquals('Timber\Post', get_class($posts[0]));
 	}
 
 	function testGetPostsFromSlugWithHash(){
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$post = Timber::get_post($post_id);
 		$str = '#'.$post->post_name;
 		$post = Timber::get_post($str);
@@ -81,7 +81,7 @@ class TestTimber extends Timber_UnitTestCase {
 	}
 
 	function testGetPostsFromSlugWithHashAndPostType(){
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$post = Timber::get_post($post_id);
 		$str = $post->post_type.'#'.$post->post_name;
 		$post = Timber::get_post($str);
@@ -89,7 +89,7 @@ class TestTimber extends Timber_UnitTestCase {
 	}
 
 	function testGetPostsFromSlug(){
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$post = Timber::get_post($post_id);
 		$str = $post->post_name;
 		$post = Timber::get_post($str);
@@ -97,8 +97,8 @@ class TestTimber extends Timber_UnitTestCase {
 	}
 
 	function testGetPostsQueryStringClassName(){
-		$this->factory->post->create();
-		$this->factory->post->create();
+		self::factory()->post->create();
+		self::factory()->post->create();
 		$posts = Timber::get_posts('post_type=post');
 		$post = $posts[0];
 		$this->assertEquals('Timber\Post', get_class($post));
@@ -106,27 +106,27 @@ class TestTimber extends Timber_UnitTestCase {
 
 	function testGetPostsFromArrayOfIds(){
 		$pids = array();
-		$pids[] = $this->factory->post->create();
-		$pids[] = $this->factory->post->create();
-		$pids[] = $this->factory->post->create();
+		$pids[] = self::factory()->post->create();
+		$pids[] = self::factory()->post->create();
+		$pids[] = self::factory()->post->create();
 		$posts = Timber::get_posts($pids);
 		$this->assertEquals('Timber\Post', get_class($posts[0]));
 	}
 
 	function testGetPostsArrayCount(){
 		$pids = array();
-		$pids[] = $this->factory->post->create();
-		$pids[] = $this->factory->post->create();
-		$pids[] = $this->factory->post->create();
+		$pids[] = self::factory()->post->create();
+		$pids[] = self::factory()->post->create();
+		$pids[] = self::factory()->post->create();
 		$posts = Timber::get_posts($pids);
 		$this->assertEquals(3, count($posts));
 	}
 
 	function testGetPostsCollection() {
 		$pids = array();
-		$pids[] = $this->factory->post->create();
-		$pids[] = $this->factory->post->create();
-		$pids[] = $this->factory->post->create();
+		$pids[] = self::factory()->post->create();
+		$pids[] = self::factory()->post->create();
+		$pids[] = self::factory()->post->create();
 		$posts = new Timber\PostCollection($pids);
 		$this->assertEquals(3, count($posts));
 		$this->assertEquals('Timber\PostCollection', get_class($posts));
@@ -139,7 +139,7 @@ class TestTimber extends Timber_UnitTestCase {
 	}
 
 	function testUserInContextLoggedIn() {
-		$uid = $this->factory->user->create(array(
+		$uid = self::factory()->user->create(array(
 			'user_login' => 'timber',
 			'user_pass' => 'timber',
 		));
@@ -158,7 +158,7 @@ class TestTimber extends Timber_UnitTestCase {
 
 	/* Terms */
 	function testGetTerms(){
-		$posts = $this->factory->post->create_many(15, array( 'post_type' => 'post' ) );
+		$posts = self::factory()->post->create_many(15, array( 'post_type' => 'post' ) );
 		$tags = array();
 		foreach($posts as $post){
 			$tag = rand_str();
@@ -181,10 +181,10 @@ class TestTimber extends Timber_UnitTestCase {
 
     /* Previews */
     function testGetPostPreview(){
-        $editor_user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
+        $editor_user_id = self::factory()->user->create( array( 'role' => 'editor' ) );
         wp_set_current_user( $editor_user_id );
 
-        $post_id = $this->factory->post->create( array( 'post_author' => $editor_user_id ) );
+        $post_id = self::factory()->post->create( array( 'post_author' => $editor_user_id ) );
         _wp_put_post_revision( array( 'ID' => $post_id, 'post_content' => 'New Stuff Goes here'), true );
 
         $_GET['preview'] = true;
@@ -195,7 +195,7 @@ class TestTimber extends Timber_UnitTestCase {
     }
 
     function testTimberRenderString() {
-    	$pid = $this->factory->post->create(array('post_title' => 'Zoogats'));
+    	$pid = self::factory()->post->create(array('post_title' => 'Zoogats'));
         $post = new TimberPost($pid);
         ob_start();
         Timber::render_string('<h2>{{post.title}}</h2>', array('post' => $post));
@@ -205,7 +205,7 @@ class TestTimber extends Timber_UnitTestCase {
     }
 
     function testTimberRender() {
-    	$pid = $this->factory->post->create(array('post_title' => 'Foobar'));
+    	$pid = self::factory()->post->create(array('post_title' => 'Foobar'));
         $post = new TimberPost($pid);
         ob_start();
         Timber::render('assets/single-post.twig', array('post' => $post));
@@ -229,7 +229,7 @@ class TestTimber extends Timber_UnitTestCase {
 	 * @ticket 1660
 	 */
 	function testDoubleInstantiationOfSubclass() {
-		$post_id = $this->factory->post->create( array( 'post_type' => 'person' ) );
+		$post_id = self::factory()->post->create( array( 'post_type' => 'person' ) );
 		$post = Timber::get_post($post_id, 'Person');
 		$this->assertEquals('Person', get_class($post));
 	}
@@ -238,7 +238,7 @@ class TestTimber extends Timber_UnitTestCase {
 	 * @ticket 1660
 	 */
 	function testDoubleInstantiationOfTimberPostClass() {
-		$post_id = $this->factory->post->create( array( 'post_type' => 'post' ) );
+		$post_id = self::factory()->post->create( array( 'post_type' => 'post' ) );
 		$post = Timber::get_post($post_id);
 		$this->assertEquals('Timber\Post', get_class($post));
 	}

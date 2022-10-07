@@ -65,7 +65,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	public function get_post_with_image() {
-		$pid = $this->factory->post->create();
+		$pid = self::factory()->post->create();
 		$iid = self::get_image_attachment( $pid );
 		add_post_meta( $pid, '_thumbnail_id', $iid, true );
         add_post_meta( $iid, '_wp_attachment_metadata', wp_generate_attachment_metadata($iid, get_attached_file($iid)), true );
@@ -83,7 +83,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
  ---------------- */
 
  	function testInitFromID() {
-		$pid = $this->factory->post->create();
+		$pid = self::factory()->post->create();
 		$filename = self::copyTestImage( 'arch.jpg' );
 		$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
 		$iid = wp_insert_attachment( $attachment, $filename, $pid );
@@ -104,7 +104,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
  	function testReplacedImage() {
- 		$pid = $this->factory->post->create(array('post_type' => 'post'));
+ 		$pid = self::factory()->post->create(array('post_type' => 'post'));
  		$attach_id = self::get_image_attachment($pid, 'arch.jpg');
  		$template = '{{Image(img).src|resize(200, 200)}}';
  		$str = Timber::compile_string($template, array('img' => $attach_id));
@@ -126,7 +126,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
  	}
 
  	function testResizedReplacedImage() {
- 		$pid = $this->factory->post->create(array('post_type' => 'post'));
+ 		$pid = self::factory()->post->create(array('post_type' => 'post'));
  		$attach_id = self::get_image_attachment($pid, 'arch.jpg');
  		$template = '{{Image(img).src|resize(200, 200)}}';
  		$str = Timber::compile_string($template, array('img' => $attach_id));
@@ -313,7 +313,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	function testImageArray() {
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$filename = self::copyTestImage('arch.jpg');
 		$wp_filetype = wp_check_filetype( basename( $filename ), null );
 		$attachment = array(
@@ -387,7 +387,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 	function testPostThumbnails() {
 		$upload_dir = wp_upload_dir();
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$filename = self::copyTestImage( 'flag.png' );
 		$destination_url = str_replace( ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $filename );
 		$wp_filetype = wp_check_filetype( basename( $filename ), null );
@@ -416,7 +416,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$thumb_alt = 'Thumb alt';
 		$filename = self::copyTestImage( 'flag.png' );
 		$wp_filetype = wp_check_filetype( basename( $filename ), null );
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$attachment = array(
 			'post_mime_type' => $wp_filetype['type'],
 			'post_title' => preg_replace( '/\.[^.]+$/', '', basename( $filename ) ),
@@ -624,7 +624,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	function testImageDeletionByURL() {
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$filename = self::copyTestImage( 'flag.png' );
 		$wp_filetype = wp_check_filetype( basename( $filename ), null );
 		$attachment = array(
@@ -656,7 +656,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	function testImageDeletionByDeletingAttachment() {
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$filename = self::copyTestImage( 'flag.png' );
 		$wp_filetype = wp_check_filetype( basename( $filename ), null );
 		$attachment = array(
@@ -688,7 +688,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	function testImageDeletionByAttachmentLocation() {
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$filename = self::copyTestImage( 'flag.png' );
 		$wp_filetype = wp_check_filetype( basename( $filename ), null );
 		$attachment = array(
@@ -821,7 +821,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	function testImageWidthWithFilter() {
-		$pid = $this->factory->post->create();
+		$pid = self::factory()->post->create();
 		$photo = $this->copyTestImage();
 		$photo = TimberURLHelper::get_rel_path($photo);
 		update_post_meta($pid, 'custom_photo', '/'.$photo);
@@ -866,7 +866,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	function testPostThumbnailsNamed() {
 		add_image_size('timber-testPostThumbnailsNamed', $width = 100, $height = 50, $crop = true);
 		$upload_dir = wp_upload_dir();
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$filename = self::copyTestImage('flag.png');
 		$destination_url = str_replace(ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $filename);
 		$wp_filetype = wp_check_filetype(basename($filename), null);
@@ -888,7 +888,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 	function testPostThumbnailsWithWPName() {
 		$upload_dir = wp_upload_dir();
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$filename = self::copyTestImage('flag.png');
 		$destination_url = str_replace(ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $filename);
 		$wp_filetype = wp_check_filetype(basename($filename), null);
@@ -1049,7 +1049,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 	// Test document like pdf, docx
 	function testTimberImageFromDocument() {
-		$pid = $this->factory->post->create();
+		$pid = self::factory()->post->create();
 		$iid = self::get_image_attachment($pid, 'dummy-pdf.pdf');
 		$attachment = new TimberImage($iid);
 		$str = '{{ TimberImage(post).src }}';
@@ -1058,7 +1058,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	function testNoThumbnail() {
-		$pid = $this->factory->post->create();
+		$pid = self::factory()->post->create();
 		$post = new TimberPost($pid);
 		$str = Timber::compile_string('Image?{{post.thumbnail.src}}', array('post' => $post));
 		$this->assertEquals('Image?', $str);
@@ -1158,7 +1158,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 
  	function testSVGDimensions() {
-		$pid = $this->factory->post->create();
+		$pid = self::factory()->post->create();
 		$filename = self::copyTestImage( 'icon-twitter.svg' );
 		$attachment = array( 'post_title' => 'Twitter Icon', 'post_content' => '' );
 		$iid = wp_insert_attachment( $attachment, $filename, $pid );

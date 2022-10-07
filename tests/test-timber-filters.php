@@ -3,7 +3,7 @@
 class TestTimberFilters extends Timber_UnitTestCase {
 
 	function testPostMetaFieldFilter() {
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		update_post_meta( $post_id, 'Frank', 'Drebin' );
 		$tp = new TimberPost( $post_id );
 		add_filter( 'timber_post_get_meta_field', array( $this, 'filter_timber_post_get_meta_field' ), 10, 4 );
@@ -19,8 +19,8 @@ class TestTimberFilters extends Timber_UnitTestCase {
 	}
 
 	function testCommentMetaFilter() {
-		$post_id = $this->factory->post->create();
-		$comment_id = $this->factory->comment->create( array( 'comment_post_ID' => $post_id ) );
+		$post_id = self::factory()->post->create();
+		$comment_id = self::factory()->comment->create( array( 'comment_post_ID' => $post_id ) );
 		$comment = new TimberComment( $comment_id );
 		$comment->update( 'ghost', 'busters' );
 		add_filter( 'timber_comment_get_meta_field', array( $this, 'filter_timber_comment_get_meta_field' ), 10, 4 );
@@ -36,7 +36,7 @@ class TestTimberFilters extends Timber_UnitTestCase {
 	}
 
 	function testUserMetaFilter() {
-		$uid = $this->factory->user->create();
+		$uid = self::factory()->user->create();
 		$user = new TimberUser( $uid );
 		$user->update( 'jared', 'novack' );
 		add_filter( 'timber_user_get_meta_field', array( $this, 'filter_timber_user_get_meta_field' ), 10, 4 );
@@ -52,7 +52,7 @@ class TestTimberFilters extends Timber_UnitTestCase {
 	}
 
 	function testTermMetaFilter() {
-		$tid = $this->factory->term->create();
+		$tid = self::factory()->term->create();
 		$term = new TimberTerm( $tid );
 		add_filter( 'timber_term_get_meta_field', array( $this, 'filter_timber_term_get_meta_field' ), 10, 4 );
 		$term->meta( 'panic', 'oh yeah' );
