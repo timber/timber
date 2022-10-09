@@ -1,22 +1,27 @@
 !/src/Cache
-*.swp
-*~
-.DS_Store
-.idea
-.phpunit.result.cache
-.sass-cache
 .tmp
+*~
+
+# OS
+.DS_Store
+
+# IDE and local environment
+.idea
 .vscode
-/Timber.php
-/cache
-bin/deploy-to-wp-org.sh
-bin/timber.php
-build
+*.swp
+
+# Packages
 composer.lock
 node_modules
-readme.txt
-timber-starter-theme
-twig-cache/*
 vendor
-wordpress
+
+# Application
+build
+/cache
+twig-cache/*
+
+# Tests
+.phpunit.result.cache
+timber-starter-theme
 wp-content
+wordpress
