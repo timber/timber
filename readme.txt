@@ -38,6 +38,12 @@ _Twig is the template language powering Timber; if you need a little background 
 
 **Fixes and improvements**
 
+= 1.21.0 =
+
+* Updated minimum required PHP version to 7.2 to make the included Twig version support PHP 8.0 and 8.1, by @gchtr in #2640.
+* Updated minimum Twig version to 1.44.0 to support PHP 8.0 and 8.1, by @gchtr in #2640.
+* Fixed support for PHP 8.0 and PHP 8.1, by @nlemoine and @gchtr in #2638, #2640.
+
 = 1.20.0 =
 
 * Use newest version of Upstatement/routes for WordPress 6.0 by @jarednova in #2595
