@@ -386,11 +386,22 @@ class User extends CoreEntity
      * ```
      *
      * @example
-     * Show edit link for posts that a user can edit
-     *
      * ```twig
+     * {# Show edit link for posts that a user can edit. #}
      * {% if user.can('edit_post', post.id) %}
      *     <a href="{{post.edit_link}}">Edit Post</a>
+     * {% endif %}
+     *
+     * {% if user.can('edit_term', term.id) %}
+     *     {# do something with privileges #}
+     * {% endif %}
+     *
+     * {% if user.can('edit_user', user.id) %}
+     *     {# do something with privileges #}
+     * {% endif %}
+     *
+     * {% if user.can('edit_comment', comment.id) %}
+     *     {# do something with privileges #}
      * {% endif %}
      * ```
      *
