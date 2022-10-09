@@ -409,7 +409,7 @@ class User extends CoreEntity
      */
     public function can($capability, ...$args)
     {
-        return user_can($this->ID, $capability, ...$args);
+        return user_can($this->wp_object, $capability, ...$args);
     }
 
     /**
