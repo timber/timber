@@ -32,7 +32,6 @@ class TestTimberIntegrationWPML extends Timber_UnitTestCase
 
     public function testWPMLurlRemote()
     {
-
         // this test replicates the url issue caused by the WPML language identifier in the url
         // However, WPML can't be installed with composer so this test mocks the WPML plugin
 
