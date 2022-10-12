@@ -37,27 +37,27 @@
 			global $current_user;
 			global $wp_query;
 
-			$uid = $this->factory->user->create(array(
+			$uid = self::factory()->user->create(array(
 				'user_login' => 'timber',
 				'user_pass' => 'timber',
 			));
 			$user = wp_set_current_user($uid);
 			$user->add_role('administrator');
 
-			$parent_id = $this->factory->post->create(array(
+			$parent_id = self::factory()->post->create(array(
 				'post_content' => 'I am parent',
 				'post_type' => 'box',
 				'post_author' => $uid
 			));
 
-			$post_id = $this->factory->post->create(array(
+			$post_id = self::factory()->post->create(array(
 				'post_content' => 'I am child',
 				'post_type' => 'box',
 				'post_author' => $uid,
 				'post_parent' => $parent_id
  			));
 
- 			$revision_id = $this->factory->post->create(array(
+ 			$revision_id = self::factory()->post->create(array(
 				'post_type' => 'revision',
 				'post_status' => 'inherit',
 				'post_parent' => $post_id,
@@ -86,18 +86,18 @@
 			global $wp_query;
 
 			$quote = 'The way to do well is to do well.';
-			$post_id = $this->factory->post->create(array(
+			$post_id = self::factory()->post->create(array(
 				'post_content' => $quote,
 				'post_author' => 5
 			));
-			$revision_id = $this->factory->post->create(array(
+			$revision_id = self::factory()->post->create(array(
 				'post_type' => 'revision',
 				'post_status' => 'inherit',
 				'post_parent' => $post_id,
 				'post_content' => $quote . 'Yes'
 			));
 
-			$uid = $this->factory->user->create(array(
+			$uid = self::factory()->user->create(array(
 				'user_login' => 'timber',
 				'user_pass' => 'timber',
 			));
@@ -118,18 +118,18 @@
 			global $current_user;
 			global $wp_query;
 
-			$post_id = $this->factory->post->create(array(
+			$post_id = self::factory()->post->create(array(
 				'post_title' => 'I call it banana bread',
 				'post_author' => 5
 			));
-			$revision_id = $this->factory->post->create(array(
+			$revision_id = self::factory()->post->create(array(
 				'post_type' => 'revision',
 				'post_status' => 'inherit',
 				'post_parent' => $post_id,
 				'post_title' => 'I call it fromage'
 			));
 
-			$uid = $this->factory->user->create(array(
+			$uid = self::factory()->user->create(array(
 				'user_login' => 'timber',
 				'user_pass' => 'timber',
 			));
@@ -149,18 +149,18 @@
 			global $wp_query;
 
 			$quote = 'The way to do well is to do well.';
-			$post_id = $this->factory->post->create(array(
+			$post_id = self::factory()->post->create(array(
 				'post_content' => $quote,
 				'post_author' => 5
 			));
-			$revision_id = $this->factory->post->create(array(
+			$revision_id = self::factory()->post->create(array(
 				'post_type' => 'revision',
 				'post_status' => 'inherit',
 				'post_parent' => $post_id,
 				'post_content' => $quote . 'Yes'
 			));
 
-			$uid = $this->factory->user->create(array(
+			$uid = self::factory()->user->create(array(
 				'user_login' => 'timber',
 				'user_pass' => 'timber',
 			));
@@ -180,18 +180,18 @@
 			global $wp_query;
 
 			$quote = 'The way to do well is to do well.';
-			$post_id = $this->factory->post->create(array(
+			$post_id = self::factory()->post->create(array(
 				'post_content' => $quote,
 				'post_author' => 5
 			));
-			$revision_id = $this->factory->post->create(array(
+			$revision_id = self::factory()->post->create(array(
 				'post_type' => 'revision',
 				'post_status' => 'inherit',
 				'post_parent' => $post_id,
 				'post_content' => $quote . 'Yes'
 			));
 
-			$uid = $this->factory->user->create(array(
+			$uid = self::factory()->user->create(array(
 				'user_login' => 'timber',
 				'user_pass' => 'timber',
 			));
@@ -211,25 +211,25 @@
 			global $wp_query;
 
 			$quote = 'The way to do well is to do well.';
-			$post_id = $this->factory->post->create(array(
+			$post_id = self::factory()->post->create(array(
 				'post_content' => $quote,
 				'post_author' => 5
 			));
-			$old_revision_id = $this->factory->post->create(array(
+			$old_revision_id = self::factory()->post->create(array(
 				'post_type' => 'revision',
 				'post_status' => 'inherit',
 				'post_parent' => $post_id,
 				'post_content' => $quote . 'Yes'
 			));
 
-			$revision_id = $this->factory->post->create(array(
+			$revision_id = self::factory()->post->create(array(
 				'post_type' => 'revision',
 				'post_status' => 'inherit',
 				'post_parent' => $post_id,
 				'post_content' => 'I am the one'
 			));
 
-			$uid = $this->factory->user->create(array(
+			$uid = self::factory()->user->create(array(
 				'user_login' => 'timber',
 				'user_pass' => 'timber',
 			));
@@ -248,20 +248,20 @@
 			global $current_user;
 			global $wp_query;
 
-			$post_id = $this->factory->post->create(array(
+			$post_id = self::factory()->post->create(array(
 				'post_author' => 5,
 			));
 			update_field('test_field', 'The custom field content', $post_id);
 
 			$assertCustomFieldVal = 'This has been revised';
-			$revision_id = $this->factory->post->create(array(
+			$revision_id = self::factory()->post->create(array(
 				'post_type' => 'revision',
 				'post_status' => 'inherit',
 				'post_parent' => $post_id,
 			));
 			update_field('test_field', $assertCustomFieldVal, $revision_id);
 
-			$uid = $this->factory->user->create(array(
+			$uid = self::factory()->user->create(array(
 				'user_login' => 'timber',
 				'user_pass' => 'timber',
 			));
@@ -281,20 +281,20 @@
 			global $current_user;
 			global $wp_query;
 
-			$post_id = $this->factory->post->create(array(
+			$post_id = self::factory()->post->create(array(
 				'post_author' => 5,
 			));
 			update_field('test_field', 'The custom field content', $post_id);
 
 			$assertCustomFieldVal = 'This has been revised';
-			$revision_id = $this->factory->post->create(array(
+			$revision_id = self::factory()->post->create(array(
 				'post_type' => 'revision',
 				'post_status' => 'inherit',
 				'post_parent' => $post_id,
 			));
 			update_field('test_field', $assertCustomFieldVal, $revision_id);
 
-			$uid = $this->factory->user->create(array(
+			$uid = self::factory()->user->create(array(
 				'user_login' => 'timber',
 				'user_pass' => 'timber',
 			));
@@ -315,20 +315,20 @@
 			global $wp_query;
 			$original_content = 'The custom field content';
 
-			$post_id = $this->factory->post->create(array(
+			$post_id = self::factory()->post->create(array(
 				'post_author' => 5,
 			));
 			update_field('test_field', $original_content, $post_id);
 
 			$assertCustomFieldVal = 'This has been revised';
-			$revision_id = $this->factory->post->create(array(
+			$revision_id = self::factory()->post->create(array(
 				'post_type' => 'revision',
 				'post_status' => 'inherit',
 				'post_parent' => $post_id,
 			));
 			update_field('test_field', $assertCustomFieldVal, $revision_id);
 
-			$uid = $this->factory->user->create(array(
+			$uid = self::factory()->user->create(array(
 				'user_login' => 'timber',
 				'user_pass' => 'timber',
 			));

@@ -3,9 +3,9 @@
 	class TestTimberPostConvert extends Timber_UnitTestCase {
 
 		function testConvertWP_Post() {
-			$post_id = $this->factory->post->create();
+			$post_id = self::factory()->post->create();
 			$post = new TimberPost($post_id);
-			$post_id = $this->factory->post->create(array('post_title' => 'Maybe Child Post'));
+			$post_id = self::factory()->post->create(array('post_title' => 'Maybe Child Post'));
 			$posts = get_posts(array('post__in' => array($post_id)));
 			$converted = $post->convert($posts[0]);
 			$this->assertEquals($post_id, $converted->id);
@@ -13,9 +13,9 @@
 		}
 
 		function testConvertSingleItemArray() {
-			$post_id = $this->factory->post->create();
+			$post_id = self::factory()->post->create();
 			$post = new TimberPost($post_id);
-			$post_id = $this->factory->post->create(array('post_title' => 'Maybe Child Post'));
+			$post_id = self::factory()->post->create(array('post_title' => 'Maybe Child Post'));
 			$posts = get_posts(array('post__in' => array($post_id)));
 			$converted = $post->convert($posts);
 			$this->assertEquals($post_id, $converted[0]->id);
@@ -23,9 +23,9 @@
 		}
 
 		function testConvertArray() {
-			$post_ids = $this->factory->post->create_many(8, array('post_title' => 'Sample Post '.rand(1, 999)));
+			$post_ids = self::factory()->post->create_many(8, array('post_title' => 'Sample Post '.rand(1, 999)));
 
-			$post_id = $this->factory->post->create();
+			$post_id = self::factory()->post->create();
 			$post = new TimberPost($post_id);
 			$posts = get_posts(array('post__in' => $post_ids, 'orderby' => 'post__in'));
 			$converted = $post->convert($posts);
@@ -34,9 +34,9 @@
 		}
 
 		function testNestedArray() {
-			$post_ids = $this->factory->post->create_many(8, array('post_title' => 'Sample Post '.rand(1, 999)));
+			$post_ids = self::factory()->post->create_many(8, array('post_title' => 'Sample Post '.rand(1, 999)));
 
-			$post_id = $this->factory->post->create();
+			$post_id = self::factory()->post->create();
 			$post = new TimberPost($post_id);
 			$posts = get_posts(array('post__in' => $post_ids, 'orderby' => 'post__in'));
 			$arr = array($post, $posts);

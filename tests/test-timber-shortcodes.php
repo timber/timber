@@ -18,7 +18,7 @@
 				return 'barfoo';
 			} );
 
-			$post_id = $this->factory->post->create();
+			$post_id = self::factory()->post->create();
 			update_post_meta( $post_id, 'customfield', '[foobar]' );
 			$template = '{{ post.customfield | shortcodes }}';
 

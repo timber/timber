@@ -19,7 +19,7 @@ class TestTimberImageRetina extends Timber_UnitTestCase {
 	function testImageRetinaFilter() {
 		$filename = TestTimberImage::copyTestImage( 'eastern.jpg' );
 		$wp_filetype = wp_check_filetype( basename( $filename ), null );
-		$post_id = $this->factory->post->create( array( 'post_title' => 'Thing One' ) );
+		$post_id = self::factory()->post->create( array( 'post_title' => 'Thing One' ) );
 		$attachment = array(
 			'post_mime_type' => $wp_filetype['type'],
 			'post_title' => preg_replace( '/\.[^.]+$/', '', basename( $filename ) ),
@@ -33,7 +33,7 @@ class TestTimberImageRetina extends Timber_UnitTestCase {
 		$data['post'] = $post;
 		$str = '{{post.thumbnail.src|retina}}';
 		$compiled = Timber::compile_string($str, $data);
-		$this->assertContains('@2x', $compiled);
+		$this->assertStringContainsString('@2x', $compiled);
 		$img = new TimberImage($compiled);
 		$this->assertEquals(500, $img->width());
 	}
@@ -41,7 +41,7 @@ class TestTimberImageRetina extends Timber_UnitTestCase {
 	function testImageRetinaFloatFilter() {
 		$filename = TestTimberImage::copyTestImage( 'eastern.jpg' );
 		$wp_filetype = wp_check_filetype( basename( $filename ), null );
-		$post_id = $this->factory->post->create( array( 'post_title' => 'Thing One' ) );
+		$post_id = self::factory()->post->create( array( 'post_title' => 'Thing One' ) );
 		$attachment = array(
 			'post_mime_type' => $wp_filetype['type'],
 			'post_title' => preg_replace( '/\.[^.]+$/', '', basename( $filename ) ),
@@ -55,7 +55,7 @@ class TestTimberImageRetina extends Timber_UnitTestCase {
 		$data['post'] = $post;
 		$str = '{{post.thumbnail.src|retina(1.5)}}';
 		$compiled = Timber::compile_string($str, $data);
-		$this->assertContains('@1.5x', $compiled);
+		$this->assertStringContainsString('@1.5x', $compiled);
 		$img = new TimberImage($compiled);
 		$this->assertEquals(375, $img->width());
 	}
@@ -63,7 +63,7 @@ class TestTimberImageRetina extends Timber_UnitTestCase {
 	function testImageResizeRetinaFilter() {
 		$filename = TestTimberImage::copyTestImage( 'eastern.jpg' );
 		$wp_filetype = wp_check_filetype( basename( $filename ), null );
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$attachment = array(
 			'post_mime_type' => $wp_filetype['type'],
 			'post_title' => preg_replace( '/\.[^.]+$/', '', basename( $filename ) ),
@@ -77,7 +77,7 @@ class TestTimberImageRetina extends Timber_UnitTestCase {
 		$str = '{{post.thumbnail.src|resize(100, 50)|retina(3)}}';
 		$compiled = Timber::compile_string($str, $data);
 		$img = new TimberImage($compiled);
-		$this->assertContains('@3x', $compiled);
+		$this->assertStringContainsString('@3x', $compiled);
 		$this->assertEquals(300, $img->width());
 	}
 

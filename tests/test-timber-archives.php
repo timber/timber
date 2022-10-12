@@ -17,7 +17,7 @@
 		function testArchiveMonthly(){
 			$dates = array('2013-11-08', '2013-12-08', '2013-11-09', '2013-06-08');
 			foreach( $dates as $date ) {
-				$this->factory->post->create(array('post_date' => $date.' 19:46:41'));
+				self::factory()->post->create(array('post_date' => $date.' 19:46:41'));
 			}
 			$this->go_to('/');
 			$archives = new TimberArchives(array('type' => 'monthly', 'show_year' => false));
@@ -31,7 +31,7 @@
 		function testArchiveYearly(){
 			$dates = array('2011-11-08', '2011-12-08', '2013-11-09', '2014-07-04');
 			foreach( $dates as $date ) {
-				$this->factory->post->create(array('post_date' => $date.' 19:46:41'));
+				self::factory()->post->create(array('post_date' => $date.' 19:46:41'));
 			}
 			$this->go_to('/');
 			$archives = new TimberArchives(array('type' => 'yearly', 'show_year' => false));
@@ -43,7 +43,7 @@
 			$dates = array('2013-11-08', '2013-12-08', '2013-11-09', '2013-11-09', '2013-06-08', '2014-01-08'
 				);
 			foreach( $dates as $date ) {
-				$this->factory->post->create(array('post_date' => $date.' 19:46:41'));
+				self::factory()->post->create(array('post_date' => $date.' 19:46:41'));
 			}
 			$this->go_to('/');
 			$archives = new TimberArchives(array('type' => 'daily'));
@@ -55,7 +55,7 @@
 			$dates = array('2013-11-08', '2013-12-08', '2013-11-09', '2013-06-08', '2014-01-08'
 				);
 			foreach( $dates as $date ) {
-				$this->factory->post->create(array('post_date' => $date.' 19:46:41'));
+				self::factory()->post->create(array('post_date' => $date.' 19:46:41'));
 			}
 			$this->go_to('/');
 			$archives = new TimberArchives(array('type' => 'monthly-nested'));
@@ -72,7 +72,7 @@
 			$dates = array('2015-03-02', '2015-03-09', '2015-03-16', '2015-03-21', '2015-03-22'
 				);
 			foreach( $dates as $date ) {
-				$this->factory->post->create(array('post_date' => $date.' 19:46:41'));
+				self::factory()->post->create(array('post_date' => $date.' 19:46:41'));
 			}
 			$this->go_to('/');
 			$archives = new TimberArchives(array('type' => 'weekly'));
@@ -88,7 +88,7 @@
 				array('date' => '2015-03-02', 'post_title' => 'Quack Quack'),
 			);
 			foreach( $posts as $post ) {
-				$this->factory->post->create(array('post_date' => $post['date'].' 19:46:41', 'post_title' => $post['post_title']));
+				self::factory()->post->create(array('post_date' => $post['date'].' 19:46:41', 'post_title' => $post['post_title']));
 			}
 			$this->go_to('/');
 			$archives = new TimberArchives(array('type' => 'alpha'));
@@ -101,12 +101,12 @@
 			$dates = array('2013-11-08', '2013-12-08', '2013-11-09', '2013-06-08', '2014-01-08'
 				);
 			foreach($dates as $date) {
-				$this->factory->post->create(array('post_date' => $date. ' 19:46:41'));
+				self::factory()->post->create(array('post_date' => $date. ' 19:46:41'));
 			}
 			$dates = array('2014-11-08', '2014-12-08', '2014-11-09', '2014-06-08', '2015-01-08', '2015-02-14'
 				);
 			foreach($dates as $date) {
-				$this->factory->post->create(array('post_date' => $date. ' 19:46:41', 'post_type' => 'book'));
+				self::factory()->post->create(array('post_date' => $date. ' 19:46:41', 'post_type' => 'book'));
 			}
 			$this->go_to('/');
 			$archives = new TimberArchives();

@@ -2,8 +2,8 @@
 
 class TestTimberImageResize extends Timber_UnitTestCase {
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 		if ( ! extension_loaded( 'gd' ) ) {
 			self::markTestSkipped( 'Image resizing tests requires GD extension' );
 		}
@@ -130,7 +130,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 		// make sure the image has been resized
 		$resized = TimberUrlHelper::url_to_file_system( $resized );
 		$this->assertTrue( TestTimberImage::checkSize($resized, 50, 50), 'image should be resized' );
-		
+
 	}
 
 	function testWPMLurlLocal() {
@@ -144,7 +144,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 		// test with a local and external file
 		$img = 'arch.jpg';
 		$img = TestTimberImage::copyTestImage($img);
-			
+
 		$resized = TimberImageHelper::resize($img, 50, 50);
 
 		// make sure the base url has not been duplicated (https://github.com/timber/timber/issues/405)
@@ -152,7 +152,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 		// make sure the image has been resized
 		$resized = TimberUrlHelper::url_to_file_system( $resized );
 		$this->assertTrue( TestTimberImage::checkSize($resized, 50, 50), 'image should be resized' );
-		
+
 	}
 
 	function testJPEGQualityDefault() {

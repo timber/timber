@@ -3,14 +3,14 @@
 class TestTimberCustomFields extends Timber_UnitTestCase {
 
 	function testPostCustomField(){
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		update_post_meta($post_id, 'gameshow', 'numberwang');
 		$post = new TimberPost($post_id);
 		$this->assertEquals('numberwang', $post->gameshow);
 	}
 
 	function testPostCustomFieldMethodConflict(){
-		$post_id = $this->factory->post->create(array('post_title' => 'foo'));
+		$post_id = self::factory()->post->create(array('post_title' => 'foo'));
 		update_post_meta($post_id, 'title', 'bar');
 		$post = new TimberPost($post_id);
 		$str = '{{post.title}}';
@@ -28,7 +28,7 @@ class TestTimberCustomFields extends Timber_UnitTestCase {
 	}
 
 	function testPostCustomFieldPropertyConflict(){
-		$post_id = $this->factory->post->create(array('post_title' => 'foo'));
+		$post_id = self::factory()->post->create(array('post_title' => 'foo'));
 		update_post_meta($post_id, 'post_title', 'bar');
 		$post = new TimberPost($post_id);
 		$str = '{{post.title}}';

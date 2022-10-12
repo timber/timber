@@ -3,7 +3,7 @@
 	class TestTimberPostTerms extends Timber_UnitTestCase {
 
 		function testPostTerms() {
-			$pid = $this->factory->post->create();
+			$pid = self::factory()->post->create();
 			$post = new TimberPost($pid);
 
 			// create a new tag and associate it with the post
@@ -20,16 +20,16 @@
 
 		/**
 		 * @ticket #2163
-		 * This test confirms that term ordering works when sent through the query parameter of 
+		 * This test confirms that term ordering works when sent through the query parameter of
 		 * arguments.
 		 */
 		function testPostTermOrder() {
-			$pid = $this->factory->post->create();
+			$pid = self::factory()->post->create();
 			register_taxonomy('cars', 'post');
-			$cars[] = $this->factory->term->create( array('name' => 'Honda Civic', 'taxonomy' => 'cars') );
-			$cars[] = $this->factory->term->create( array('name' => 'Toyota Corolla', 'taxonomy' => 'cars') );
-			$cars[] = $this->factory->term->create( array('name' => 'Toyota Camry', 'taxonomy' => 'cars') );
-			$cars[] = $this->factory->term->create( array('name' => 'Dodge Intrepid', 'taxonomy' => 'cars') );
+			$cars[] = self::factory()->term->create( array('name' => 'Honda Civic', 'taxonomy' => 'cars') );
+			$cars[] = self::factory()->term->create( array('name' => 'Toyota Corolla', 'taxonomy' => 'cars') );
+			$cars[] = self::factory()->term->create( array('name' => 'Toyota Camry', 'taxonomy' => 'cars') );
+			$cars[] = self::factory()->term->create( array('name' => 'Dodge Intrepid', 'taxonomy' => 'cars') );
 			foreach($cars as $tid) {
 				$car = new Timber\Term($tid);
 			}
@@ -45,7 +45,7 @@
 		 */
 		function testTermExceptions() {
 			self::enable_error_log(false);
-			$pid = $this->factory->post->create();
+			$pid = self::factory()->post->create();
 			$post = new TimberPost($pid);
 			$terms = $post->terms('dfasdf');
 			$this->assertInstanceOf('WP_Error', $terms);
@@ -58,7 +58,7 @@
 		function testTermFromNonExistentTaxonomy() {
 			self::enable_error_log(false);
 			register_taxonomy('foobar', 'post');
-			$pid = $this->factory->post->create();
+			$pid = self::factory()->post->create();
 			$post = new TimberPost($pid);
 			$terms = $post->terms('foobar');
 			$this->assertEquals(array(), $terms);
@@ -66,7 +66,7 @@
 		}
 
 		function testTermNotMerged() {
-			$pid = $this->factory->post->create();
+			$pid = self::factory()->post->create();
 			// create a new tag and associate it with the post
 			$dummy_tag = wp_insert_term('whatever', 'post_tag');
 			wp_set_object_terms($pid, $dummy_tag['term_id'], 'post_tag', true);

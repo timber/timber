@@ -89,10 +89,10 @@
 			switch_theme('default');
 		}
 
-		function setUp() {
+		function set_up() {
 			global $wp_theme_directories;
 
-			parent::setUp();
+			parent::set_up();
 
 			$this->backup_wp_theme_directories = $wp_theme_directories;
 			$wp_theme_directories = array( WP_CONTENT_DIR . '/themes' );
@@ -107,13 +107,13 @@
 
 		}
 
-		function tearDown() {
+		function tear_down() {
 			global $wp_theme_directories;
 
 			$wp_theme_directories = $this->backup_wp_theme_directories;
 
 			wp_clean_themes_cache();
 			unset( $GLOBALS['wp_themes'] );
-			parent::tearDown();
+			parent::tear_down();
 		}
 	}

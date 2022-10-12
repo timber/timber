@@ -437,7 +437,7 @@ class Image extends Post implements CoreInterface {
 	 * ```
 	 */
 	public function link() {
-		if ( strlen($this->abs_url) ) {
+		if (!empty($this->abs_url)) {
 			return $this->abs_url;
 		}
 		return get_permalink($this->ID);
@@ -483,7 +483,7 @@ class Image extends Post implements CoreInterface {
 	 * @return bool|string
 	 */
 	public function src( $size = 'full' ) {
-		if ( isset($this->abs_url) ) {
+		if (!empty($this->abs_url)) {
 			return $this->_maybe_secure_url($this->abs_url);
 		}
 

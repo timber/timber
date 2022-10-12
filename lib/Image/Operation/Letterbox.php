@@ -63,7 +63,7 @@ class Letterbox extends ImageOperation {
 		if ( ImageHelper::is_svg($load_filename) ) {
 			return false;
 		}
-		
+
 		$w = $this->w;
 		$h = $this->h;
 
@@ -92,14 +92,14 @@ class Letterbox extends ImageOperation {
 				$y = 0;
 				$x = $w / 2 - $owt / 2;
 				$oht = $h;
-				$image->crop(0, 0, $ow, $oh, $owt, $oht);
+				$image->crop(0, 0, round($ow), round($oh), round($owt), round($oht));
 			} else {
 				$w_scale = $w / $ow;
 				$oht = $oh * $w_scale;
 				$x = 0;
 				$y = $h / 2 - $oht / 2;
 				$owt = $w;
-				$image->crop(0, 0, $ow, $oh, $owt, $oht);
+				$image->crop(0, 0, round($ow), round($oh), round($owt), round($oht));
 			}
 			$result = $image->save($save_filename);
 			$func = 'imagecreatefromjpeg';
@@ -120,7 +120,7 @@ class Letterbox extends ImageOperation {
 				$save_func = 'imagewebp';
 			}
 			$image = $func($save_filename);
-			imagecopy($bg, $image, $x, $y, 0, 0, $owt, $oht);
+			imagecopy($bg, $image, round($x), round($y), 0, 0, round($owt), round($oht));
 			if ( $save_func === 'imagegif' ) {
 				return $save_func($bg, $save_filename);
 			}

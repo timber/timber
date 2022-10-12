@@ -4,7 +4,7 @@
 
 		function testTwigSidebar(){
 			$context = Timber::context();
-			$sidebar_post = $this->factory->post->create(array('post_title' => 'Sidebar post content'));
+			$sidebar_post = self::factory()->post->create(array('post_title' => 'Sidebar post content'));
 			$sidebar_context = array();
 			$sidebar_context['post'] = new TimberPost($sidebar_post);
 			$context['sidebar'] = Timber::get_sidebar('assets/sidebar.twig', $sidebar_context);

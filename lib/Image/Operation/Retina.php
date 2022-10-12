@@ -62,8 +62,8 @@ class Retina extends ImageOperation {
 			$src_w = $current_size['width'];
 			$src_h = $current_size['height'];
 			// Get ratios
-			$w = $src_w * $this->factor;
-			$h = $src_h * $this->factor;
+			$w = round( $src_w * $this->factor );
+			$h = round( $src_h * $this->factor );
 			$image->crop(0, 0, $src_w, $src_h, $w, $h);
 			$result = $image->save($save_filename);
 			if ( is_wp_error($result) ) {

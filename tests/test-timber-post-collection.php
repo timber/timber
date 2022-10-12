@@ -2,11 +2,11 @@
 
 class TestTimberPostQuery extends Timber_UnitTestCase {
 
-	function setUp() {
+	function set_up() {
 		global $wpdb;
 		$wpdb->query("TRUNCATE TABLE $wpdb->posts");
 		$wpdb->query("ALTER TABLE $wpdb->posts AUTO_INCREMENT = 1");
-		parent::setUp();
+		parent::set_up();
 	}
 
 	function testBackwards() {
@@ -15,14 +15,14 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 	}
 
 	function testBasicCollection() {
-		$pids = $this->factory->post->create_many(10);
+		$pids = self::factory()->post->create_many(10);
 		$pc = new Timber\PostQuery('post_type=post&numberposts=6');
 		$this->assertEquals(6, count($pc));
 	}
 
 	function testCollectionWithWP_PostArray() {
-		$cat = $this->factory->term->create(array('name' => 'Things', 'taxonomy' => 'category'));
-		$pids = $this->factory->post->create_many(4, array('category' => $cat));
+		$cat = self::factory()->term->create(array('name' => 'Things', 'taxonomy' => 'category'));
+		$pids = self::factory()->post->create_many(4, array('category' => $cat));
 		$posts = get_posts( array('post_category' => array($cat), 'posts_per_page' => 3) );
 		$pc = new Timber\PostQuery($posts);
 		$pagination = $pc->pagination();
@@ -32,7 +32,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 	function testPaginationOnLaterPage() {
 		$this->setPermalinkStructure('/%postname%/');
 		register_post_type( 'portfolio' );
-		$pids = $this->factory->post->create_many( 55, array( 'post_type' => 'portfolio' ) );
+		$pids = self::factory()->post->create_many( 55, array( 'post_type' => 'portfolio' ) );
 		$this->go_to( home_url( '/portfolio/page/3' ) );
 		query_posts('post_type=portfolio&paged=3');
 		$posts = new Timber\PostQuery();
@@ -41,8 +41,8 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 	}
 
 	function testBasicCollectionWithPagination() {
-		$pids = $this->factory->post->create_many(130);
-		$page = $this->factory->post->create(array('post_title' => 'Test', 'post_type' => 'page'));
+		$pids = self::factory()->post->create_many(130);
+		$page = self::factory()->post->create(array('post_title' => 'Test', 'post_type' => 'page'));
 		$this->go_to('/');
 		query_posts(array('post_type=post'));
 		$pc = new Timber\PostQuery('post_type=post');
@@ -53,7 +53,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 
 	function IgnoretestBasicCollectionWithPaginationAndBlankQuery() {
 
-		$pids = $this->factory->post->create_many(130);
+		$pids = self::factory()->post->create_many(130);
 		$this->go_to('/');
 		$pc = new Timber\PostQuery();
 		$str = Timber::compile('assets/collection-pagination.twig', array('posts' => $pc));
@@ -62,7 +62,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 	}
 
 	function testFoundPostsInQuery() {
-		$this->factory->post->create_many( 20 );
+		self::factory()->post->create_many( 20 );
 
 		$query = new Timber\PostQuery( [
 			'post_type' => 'post',
@@ -73,7 +73,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 	}
 
 	function testFoundPostsInQueryWithNoFoundRows() {
-		$this->factory->post->create_many( 20 );
+		self::factory()->post->create_many( 20 );
 
 		$query = new Timber\PostQuery( [
 			'post_type'     => 'post',
@@ -85,7 +85,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 	}
 
 	function testFoundPostsInCollection() {
-		$this->factory->post->create_many( 20 );
+		self::factory()->post->create_many( 20 );
 
 		$posts = ( new Timber\PostQuery( [
 			'post_type' => 'post',
@@ -98,7 +98,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 	}
 
 	function testFoundPostsInCollectionWithNoFoundRows() {
-		$this->factory->post->create_many( 20 );
+		self::factory()->post->create_many( 20 );
 
 		$posts = ( new Timber\PostQuery( [
 			'post_type'     => 'post',

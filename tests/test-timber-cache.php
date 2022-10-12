@@ -129,7 +129,7 @@
 
         function testKeyGenerator(){
         	$kg = new Timber\Cache\KeyGenerator();
-        	$post_id = $this->factory->post->create(array('post_title' => 'My Test Post'));
+        	$post_id = self::factory()->post->create(array('post_title' => 'My Test Post'));
         	$post = new TimberPost($post_id);
         	$key = $kg->generateKey($post);
         	$this->assertStringStartsWith('Timber\Post|', $key);
@@ -182,9 +182,9 @@
         	if (is_dir($cache_dir)){
         		TimberLoader::rrmdir($cache_dir);
         	}
-        	$this->assertFileNotExists($cache_dir);
+        	$this->assertFileDoesNotExist($cache_dir);
         	Timber::$cache = true;
-        	$pid = $this->factory->post->create();
+        	$pid = self::factory()->post->create();
         	$post = new TimberPost($pid);
         	Timber::compile('assets/single-post.twig', array('post' => $post));
         	//sleep(1);
@@ -192,11 +192,11 @@
         	Timber::$cache = false;
         	$loader = new TimberLoader();
         	$loader->clear_cache_twig();
-        	$this->assertFileNotExists($cache_dir);
+        	$this->assertFileDoesNotExist($cache_dir);
         }
 
         function testTimberLoaderCache(){
-            $pid = $this->factory->post->create();
+            $pid = self::factory()->post->create();
             $post = new TimberPost($pid);
             $str_old = Timber::compile('assets/single-post.twig', array('post' => $post), 600);
             $str_another = Timber::compile('assets/single-parent.twig', array('post' => $post, 'rand' => rand(0, 99)), 500);
@@ -217,7 +217,7 @@
             global $_wp_using_ext_object_cache;
             global $wp_object_cache;
             $_wp_using_ext_object_cache = true;
-            $pid = $this->factory->post->create();
+            $pid = self::factory()->post->create();
             $post = new TimberPost($pid);
             $str_old = Timber::compile('assets/single-post.twig', array('post' => $post), 600, \Timber\Loader::CACHE_OBJECT);
             //sleep(1);
@@ -227,25 +227,25 @@
             $clear = $loader->clear_cache_timber(\Timber\Loader::CACHE_OBJECT);
             $this->assertTrue($clear);
             $works = true;
-            if ( isset($wp_object_cache->cache[\Timber\Loader::CACHEGROUP]) 
+            if ( isset($wp_object_cache->cache[\Timber\Loader::CACHEGROUP])
                 && !empty($wp_object_cache->cache[\Timber\Loader::CACHEGROUP]) ) {
                 $works = false;
             }
             $this->assertTrue($works);
         }
 
-        function tearDown() {
+        function tear_down() {
             global $_wp_using_ext_object_cache;
             $_wp_using_ext_object_cache = false;
             global $wpdb;
             $query = "DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
             $wpdb->query($query);
-            parent::tearDown();
+            parent::tear_down();
         }
 
         function testTimberLoaderCacheTransients() {
             $time = 1;
-            $pid = $this->factory->post->create();
+            $pid = self::factory()->post->create();
             $post = new TimberPost($pid);
             $str_old = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => rand(0, 99999)), $time);
             sleep(2);
@@ -260,7 +260,7 @@
         function testTimberLoaderCacheTransientsAdminLoggedIn() {
             wp_set_current_user(1);
             $time = 1;
-            $pid = $this->factory->post->create();
+            $pid = self::factory()->post->create();
             $post = new TimberPost($pid);
             $r1 = rand(0, 999999);
             $r2 = rand(0, 999999);
@@ -269,7 +269,7 @@
             $str_new = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r2), array(600, false));
             $this->assertNotEquals($str_old, $str_new);
             self::_unswapFiles();
-            
+
         }
 
         function _swapFiles() {
@@ -284,7 +284,7 @@
 
         function testTimberLoaderCacheTransientsAdminLoggedOut() {
             $time = 1;
-            $pid = $this->factory->post->create();
+            $pid = self::factory()->post->create();
             $post = new TimberPost($pid);
             $r1 = rand(0, 999999);
             $str_old = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r1), array(600, false));
@@ -296,7 +296,7 @@
 
         function testTimberLoaderCacheTransientsAdminLoggedOutWithSiteCache() {
             $time = 1;
-            $pid = $this->factory->post->create();
+            $pid = self::factory()->post->create();
             $post = new TimberPost($pid);
             $r1 = rand(0, 999999);
             $str_old = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r1), array(600, false), \Timber\Loader::CACHE_SITE_TRANSIENT);
@@ -310,7 +310,7 @@
             global $_wp_using_ext_object_cache;
             $_wp_using_ext_object_cache = true;
             $time = 1;
-            $pid = $this->factory->post->create();
+            $pid = self::factory()->post->create();
             $post = new TimberPost($pid);
             $r1 = rand(0, 999999);
             $str_old = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r1), array(600, false), \Timber\Loader::CACHE_OBJECT);
@@ -325,7 +325,7 @@
             global $_wp_using_ext_object_cache;
             $_wp_using_ext_object_cache = true;
             $time = 1;
-            $pid = $this->factory->post->create();
+            $pid = self::factory()->post->create();
             $post = new TimberPost($pid);
             $r1 = rand(0, 999999);
             $r2 = rand(0, 999999);
@@ -341,7 +341,7 @@
 
         function testTimberLoaderCacheTransientsButKeepOtherTransients() {
             $time = 1;
-            $pid = $this->factory->post->create();
+            $pid = self::factory()->post->create();
             $post = new TimberPost($pid);
             set_transient( 'random_600', 'foo', 600 );
             $random_post = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => rand(0, 99999)), 600);
@@ -362,7 +362,7 @@
         public function _get_cache_key() {
             return 'iamakey';
         }
-    } 
+    }
 
 	function my_test_callback(){
 		return "lbj";

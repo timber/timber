@@ -205,9 +205,10 @@ class Loader {
 		}
 		$cache_mode = $this->_get_cache_mode($cache_mode);
 		if ( self::CACHE_TRANSIENT === $cache_mode || self::CACHE_SITE_TRANSIENT === $cache_mode ) {
-			return self::clear_cache_timber_database();
+			// $wpdb->query() might return 0 affected rows, but that means it’s still successful.
+			return false !== self::clear_cache_timber_database();
 		} else if ( self::CACHE_OBJECT === $cache_mode && $object_cache ) {
-			return self::clear_cache_timber_object();
+			return false !== self::clear_cache_timber_object();
 		}
 		return false;
 	}

@@ -4,7 +4,7 @@
 
 		function testPasswordedContentDefault(){
 			$quote = 'The way to do well is to do well.';
-			$post_id = $this->factory->post->create();
+			$post_id = self::factory()->post->create();
 			$post = new TimberPost($post_id);
 			$post->post_content = $quote;
 			$post->post_password = 'burrito';
@@ -19,7 +19,7 @@
 				return true;
 			});
 			$quote = 'The way to do well is to do well.';
-			$post_id = $this->factory->post->create();
+			$post_id = self::factory()->post->create();
 			$post = new TimberPost($post_id);
 			$post->post_content = $quote;
 			$post->post_password = 'burrito';
@@ -37,7 +37,7 @@
 				return Timber::compile('assets/password-form.twig', array('post' => $post));
 			}, 10, 2);
 			$quote = 'The way to do well is to do well.';
-			$post_id = $this->factory->post->create(array('post_title' => 'Secrets!'));
+			$post_id = self::factory()->post->create(array('post_title' => 'Secrets!'));
 			$post = new TimberPost($post_id);
 			$post->post_content = $quote;
 			$post->post_password = 'burrito';

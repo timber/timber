@@ -4,7 +4,7 @@
 
 		private $mockUploadDir = false;
 
-        function setUp() {
+        function set_up() {
             $_SERVER['SERVER_PORT'] = 80;
         }
 
@@ -106,8 +106,8 @@
             $file = TimberURLHelper::url_to_file_system($url);
             $this->assertStringStartsWith(ABSPATH, $file);
             $this->assertStringEndsWith('/2012/06/mypic.jpg', $file);
-            $this->assertNotContains($file, 'http://example.org');
-            $this->assertNotContains($file, '//');
+            $this->assertStringNotContainsString($file, 'http://example.org');
+            $this->assertStringNotContainsString($file, '//');
         }
 
         function testGetHost() {
@@ -181,7 +181,7 @@
             $url = Timber\URLHelper::remove_double_slashes($url);
             $this->assertEquals($expected_url, $url);
         }
-		
+
 	function testDoubleSlashesWithGS() {
             $url = 'gs://bucket/folder//thing.html';
             $expected_url = 'gs://bucket/folder/thing.html';

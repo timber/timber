@@ -6,8 +6,8 @@
 			if ( !TestTimberImage::is_connected() ) {
 				$this->markTestSkipped('Cannot test avatar images when not connected to internet');
 			}
-			$post_id = $this->factory->post->create();
-			$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id));
+			$post_id = self::factory()->post->create();
+			$comment_id = self::factory()->comment->create(array('comment_post_ID' => $post_id));
 			$comment = new TimberComment($comment_id);
 
 			# test default gravatr holding image
@@ -18,8 +18,8 @@
 
 		function testAvatarFalse() {
 			update_option('show_avatars', false);
-			$post_id = $this->factory->post->create();
-			$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id));
+			$post_id = self::factory()->post->create();
+			$comment_id = self::factory()->comment->create(array('comment_post_ID' => $post_id));
 			$comment = new TimberComment($comment_id);
 
 			# test default gravatr holding image
@@ -32,8 +32,8 @@
 			if ( !TestTimberImage::is_connected() ) {
 				$this->markTestSkipped('Cannot test avatar images when not connected to internet');
 			}
-			$post_id = $this->factory->post->create();
-			$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id));
+			$post_id = self::factory()->post->create();
+			$comment_id = self::factory()->comment->create(array('comment_post_ID' => $post_id));
 			$comment = new TimberComment($comment_id);
 
 			# test default gravatr holding image
@@ -46,8 +46,8 @@
 			if ( !TestTimberImage::is_connected() ) {
 				$this->markTestSkipped('Cannot test avatar images when not connected to internet');
 			}
-			$post_id = $this->factory->post->create();
-			$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id));
+			$post_id = self::factory()->post->create();
+			$comment_id = self::factory()->comment->create(array('comment_post_ID' => $post_id));
 			$comment = new TimberComment($comment_id);
 
 			# test default gravatr holding image
@@ -60,14 +60,14 @@
 			if (!TestTimberImage::is_connected()){
 				$this->markTestSkipped('Cannot test avatar images when not connected to internet');
 			}
-			$post_id = $this->factory->post->create();
-			$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_author' => 'jarednova', 'comment_author_email' => 'jarednova@upstatement.com'));
+			$post_id = self::factory()->post->create();
+			$comment_id = self::factory()->comment->create(array('comment_post_ID' => $post_id, 'comment_author' => 'jarednova', 'comment_author_email' => 'jarednova@upstatement.com'));
 			$comment = new TimberComment($comment_id);
 			$gravatar = md5(file_get_contents($comment->avatar()));
 			/* this keeps changing b/c of compression tweaks on WP.org, disabling the test */
 			//$this->assertEquals($gravatar, md5(file_get_contents(dirname(__FILE__).'/assets/jarednova.jpeg')));
 
-			$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_author' => 'jarednova', 'comment_author_email' => 'notjared@upstatement.com'));
+			$comment_id = self::factory()->comment->create(array('comment_post_ID' => $post_id, 'comment_author' => 'jarednova', 'comment_author_email' => 'notjared@upstatement.com'));
 			$comment = new TimberComment($comment_id);
 			$not_gravatar = md5(file_get_contents($comment->avatar()));
 			$this->assertNotEquals($not_gravatar, md5(file_get_contents(dirname(__FILE__).'/assets/jarednova.jpeg')));
@@ -78,8 +78,8 @@
 				$this->markTestSkipped('Cannot test avatar images when not connected to internet');
 			}
 			$theme_url = get_theme_root_uri().'/'.get_stylesheet();
-			$post_id = $this->factory->post->create();
-			$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id));
+			$post_id = self::factory()->post->create();
+			$comment_id = self::factory()->comment->create(array('comment_post_ID' => $post_id));
 			$comment = new TimberComment($comment_id);
 
 			# test default gravatr holding image

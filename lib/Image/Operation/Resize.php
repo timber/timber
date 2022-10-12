@@ -75,7 +75,12 @@ class Resize extends ImageOperation {
 		$image = $image->coalesceImages();
 		$crop  = self::get_target_sizes($editor);
 		foreach ( $image as $frame ) {
-			$frame->cropImage($crop['src_w'], $crop['src_h'], $crop['x'], $crop['y']);
+			$frame->cropImage(
+				round($crop['src_w']),
+				round($crop['src_h']),
+				round($crop['x']),
+				round($crop['y'])
+			);
 			$frame->thumbnailImage($w, $h);
 			$frame->setImagePage($w, $h, 0, 0);
 		}
@@ -188,12 +193,13 @@ class Resize extends ImageOperation {
 			}
 
 			$crop = self::get_target_sizes($image);
-			$image->crop( 	$crop['x'],
-							$crop['y'],
-							$crop['src_w'],
-							$crop['src_h'],
-							$crop['target_w'],
-							$crop['target_h']
+			$image->crop(
+				round( $crop['x'] ),
+				round( $crop['y'] ),
+				round( $crop['src_w'] ),
+				round( $crop['src_h'] ),
+				round( $crop['target_w'] ),
+				round( $crop['target_h'] )
 			);
 			$quality = apply_filters( 'wp_editor_set_quality', 82, 'image/jpeg');
 			$image->set_quality($quality);

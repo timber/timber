@@ -28,21 +28,16 @@
     "docs": "https://timber.github.io/docs/"
   },
   "require": {
-    "php": ">=5.3.0 || 7.*",
-    "twig/twig": "^1.41 || ^2.10",
-    "upstatement/routes": "0.9.*",
+    "php": ">=7.2.5 || ^8.0",
+    "twig/twig": "^1.44 || ^2.10",
+    "upstatement/routes": "^0.9",
     "composer/installers": "^1.0 || ^2.0",
     "twig/cache-extension": "^1.5"
   },
   "require-dev": {
-    "johnpbloch/wordpress": "*",
-    "phpunit/phpunit": "5.7.21 || 6.*",
-    "squizlabs/php_codesniffer": "3.*",
-    "wp-coding-standards/wpcs": "^2.0",
-    "wpackagist-plugin/advanced-custom-fields": "5.*",
-    "wpackagist-plugin/co-authors-plus": "3.2.* || 3.4.*",
-    "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
-    "yoast/phpunit-polyfills": "^1.0"
+    "wpackagist-plugin/advanced-custom-fields": "^5.0",
+    "wpackagist-plugin/co-authors-plus": "^3.2 || ^3.4",
+    "yoast/wp-test-utils": "^1.0"
   },
   "suggest": {
     "satooshi/php-coveralls": "1.0.* for code coverage"
@@ -68,5 +63,14 @@
   ],
   "scripts": {
     "lint": "phpcs --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1"
+  },
+  "config": {
+    "allow-plugins": {
+      "composer/installers": true,
+      "ergebnis/composer-normalize": true,
+      "phpro/grumphp": true,
+      "phpstan/extension-installer": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
   }
 }

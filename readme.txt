@@ -2,9 +2,9 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 4.9.8
-Tested up to: 5.9.3
-Stable tag: 1.20.0
-Requires PHP: 5.6
+Tested up to: 6.0.0
+Stable tag: 1.21.0
+Requires PHP: 7.2.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -37,6 +37,12 @@ _Twig is the template language powering Timber; if you need a little background 
 **Changes for Theme Developers**
 
 **Fixes and improvements**
+
+= 1.21.0 =
+
+* Updated minimum required PHP version to 7.2 to make the included Twig version support PHP 8.0 and 8.1, by @gchtr in #2640.
+* Updated minimum Twig version to 1.44.0 to support PHP 8.0 and 8.1, by @gchtr in #2640.
+* Fixed support for PHP 8.0 and PHP 8.1, by @nlemoine and @gchtr in #2638, #2640.
 
 = 1.20.0 =
 

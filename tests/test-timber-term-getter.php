@@ -3,13 +3,13 @@
 	class TestTimberTermGetter extends Timber_UnitTestCase {
 
 		function testGetSingleTerm() {
-			$term_id = $this->factory->term->create( array('name' => 'Toyota') );
+			$term_id = self::factory()->term->create( array('name' => 'Toyota') );
 			$term = Timber::get_term($term_id);
 			$this->assertEquals($term_id, $term->ID);
 		}
 
 		function testIDDataType() {
-			$term_id = $this->factory->term->create( array('name' => 'Honda') );
+			$term_id = self::factory()->term->create( array('name' => 'Honda') );
 			$term = new Timber\Term($term_id);
 			$this->assertEquals('integer', gettype($term->id));
 			$this->assertEquals('integer', gettype($term->ID));
@@ -17,23 +17,23 @@
 
 		function testGetSingleTermInTaxonomy() {
 			register_taxonomy('cars', 'post');
-			$term_id = $this->factory->term->create( array('name' => 'Toyota', 'taxonomy' => 'cars') );
+			$term_id = self::factory()->term->create( array('name' => 'Toyota', 'taxonomy' => 'cars') );
 			$term = Timber::get_term($term_id, 'cars');
 			$this->assertEquals($term_id, $term->ID);
 		}
 
 		function testGetArrayOfTerms(){
 			$term_ids = array();
-			$term_ids[] = $this->factory->term->create();
-			$term_ids[] = $this->factory->term->create();
-			$term_ids[] = $this->factory->term->create();
-			$term_ids[] = $this->factory->term->create();
+			$term_ids[] = self::factory()->term->create();
+			$term_ids[] = self::factory()->term->create();
+			$term_ids[] = self::factory()->term->create();
+			$term_ids[] = self::factory()->term->create();
 			$terms = Timber::get_terms($term_ids);
 			$this->assertEquals(count($term_ids), count($terms));
 		}
 
 		function testGetTermsByString() {
-			$term_ids = $this->factory->term->create_many(17);
+			$term_ids = self::factory()->term->create_many(17);
 			$terms = Timber::get_terms('tag');
 			$this->assertEquals(17, count($terms));
 			$terms = Timber::get_terms(array('taxonomies' => 'tag'));
@@ -46,10 +46,10 @@
 			$term_ids = array();
 			$class_name = 'TimberTermSubclass';
 			require_once('php/timber-term-subclass.php');
-			$term_ids[] = $this->factory->term->create();
-			$term_ids[] = $this->factory->term->create();
-			$term_ids[] = $this->factory->term->create();
-			$term_ids[] = $this->factory->term->create();
+			$term_ids[] = self::factory()->term->create();
+			$term_ids[] = self::factory()->term->create();
+			$term_ids[] = self::factory()->term->create();
+			$term_ids[] = self::factory()->term->create();
 			$terms = Timber::get_terms($term_ids, $class_name);
 			$this->assertEquals($class_name, get_class($terms[0]));
 			$terms = false;
@@ -60,7 +60,7 @@
 			$this->assertEquals($class_name, get_class($terms[0]));
 		}
 
-		function setUp() {
+		function set_up() {
 			global $wpdb;
 			$query = "truncate $wpdb->term_relationships";
 			$wpdb->query($query);
@@ -73,9 +73,9 @@
 		}
 
 		function testGetWithQueryString(){
-			$category = $this->factory->term->create(array('name' => 'Uncategorized', 'taxonomy' => 'category'));
-			$other_term = $this->factory->term->create(array('name' => 'Bogus Term'));
-			$term_id = $this->factory->term->create(array('name' => 'My Term'));
+			$category = self::factory()->term->create(array('name' => 'Uncategorized', 'taxonomy' => 'category'));
+			$other_term = self::factory()->term->create(array('name' => 'Bogus Term'));
+			$term_id = self::factory()->term->create(array('name' => 'My Term'));
 			$terms = Timber::get_terms('term_id='.$term_id);
 			$this->assertEquals($term_id, $terms[0]->ID);
 			$terms = Timber::get_terms('post_tag');
@@ -102,7 +102,7 @@
 			$terms = Timber::get_terms($query);
 			$this->assertEquals('Uncategorized', $terms[0]->name);
 
-			$next_term = $this->factory->term->create(array('name' => 'Another Term'));
+			$next_term = self::factory()->term->create(array('name' => 'Another Term'));
 			$terms = Timber::get_terms('post_tag', 'term_id='.$next_term);
 			$this->assertEquals('Another Term', $terms[0]->name);
 
