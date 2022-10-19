@@ -139,8 +139,8 @@ jobs:
         if: ${{ matrix.wp < '5.9' }}
         run: composer req phpunit/phpunit:^7.5 yoast/wp-test-utils:^1.0 -W --dev
 
-      - name: Upgrade PHPUnit to ^9.0 when prefer lowest
-        if: ${{ matrix.dependency-version == 'prefer-lowest' }}
+      - name: Upgrade PHPUnit to ^9.0 when prefer lowest and PHP 8.0+
+        if: ${{ matrix.dependency-version == 'prefer-lowest' && matrix.php >= '8.0' }}
         run: composer req phpunit/phpunit:^9.0 yoast/wp-test-utils:^1.0 -W --dev
 
       - name: Install tests
