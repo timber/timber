@@ -37,8 +37,7 @@
   "require-dev": {
     "wpackagist-plugin/advanced-custom-fields": "^5.0",
     "wpackagist-plugin/co-authors-plus": "^3.2 || ^3.4",
-    "yoast/wp-test-utils": "^1.0",
-    "phpunit/phpunit": "^9.0"
+    "yoast/wp-test-utils": "^1.0"
   },
   "suggest": {
     "satooshi/php-coveralls": "1.0.* for code coverage"
