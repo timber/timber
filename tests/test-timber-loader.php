@@ -1,5 +1,7 @@
 <?php
 
+use Twig_LoaderInterface;
+
 	class TestTimberLoader extends Timber_UnitTestCase {
 
 		function testTwigLoaderFilter() {
