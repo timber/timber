@@ -1,13 +1,13 @@
 <?php
 
-use Twig_LoaderInterface;
+use Twig\Loader\LoaderInterface;
 
 	class TestTimberLoader extends Timber_UnitTestCase {
 
 		function testTwigLoaderFilter() {
 		    $php_unit = $this;
 		    add_filter('timber/loader/loader', function ($loader) use ($php_unit) {
-		        $php_unit->assertInstanceOf(Twig_LoaderInterface::class, $loader);
+		        $php_unit->assertInstanceOf(LoaderInterface::class, $loader);
 		        return $loader;
 		    });
 		    $str = Timber::compile('assets/single.twig', array());
