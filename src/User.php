@@ -115,7 +115,7 @@ class User extends CoreEntity
      *
      * @internal
      */
-    protected function __construct()
+    final protected function __construct()
     {
     }
 

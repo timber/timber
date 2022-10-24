@@ -107,7 +107,10 @@ class PagesMenu extends Menu
 
         $args['hierarchical'] = 0;
 
-        $pages_menu = new static($args);
+        $pages_menu = new static(null);
+
+        $pages_menu->args = (object) $args;
+        $pages_menu->depth = (int) $args['depth'];
 
         // Query pages.
         $menu_items = get_pages($pages_menu->args);
@@ -183,15 +186,6 @@ class PagesMenu extends Menu
         apply_filters('wp_nav_menu', serialize($pages_menu), $args);
 
         return $pages_menu;
-    }
-
-    /**
-     * @internal
-     */
-    protected function __construct($args)
-    {
-        $this->args = (object) $args;
-        $this->depth = (int) $this->args->depth;
     }
 
     /**
