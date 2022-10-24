@@ -38,6 +38,12 @@ _Twig is the template language powering Timber; if you need a little background 
 
 **Fixes and improvements**
 
+= 1.22.0 =
+
+* Fixed included Twig version. In the plugin version 1.21.0 of Timber, Twig version 2.15.3 was accidentally included instead of Twig version 1.44.7.
+* Removed official support for PHP 8.1 in the plugin version. If you need to support PHP 8.1 in the future, please install [Timber through Composer](https://timber.github.io/docs/getting-started/setup/#via-github-for-developers) instead of installing Timber as a plugin. This will the only supported way of installing Timber when Timber version 2 will be released.
+* Updated minimum required WordPress version to 5.3.
+
 = 1.21.0 =
 
 * Updated minimum required PHP version to 7.2 to make the included Twig version support PHP 8.0 and 8.1, by @gchtr in #2640.
