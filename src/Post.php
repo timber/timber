@@ -476,9 +476,11 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     }
 
     /**
+     * Gets the link to a page number.
+     *
      * @internal
      * @param int $i
-     * @return string
+     * @return string|null Link to page number or `null` if link could not be read.
      */
     protected static function get_wp_link_page($i)
     {
@@ -487,6 +489,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         if (isset($link['href'])) {
             return $link['href'];
         }
+
+        return null;
     }
 
     /**
