@@ -707,7 +707,6 @@ class Post extends CoreEntity implements DatedInterface, Setupable
          * @param int|null     $post_id    The post ID.
          * @param string       $field_name The ACF field name.
          * @param \Timber\Post $post       The post object.
-         * @param array        $value      The field object array.
          */
         $value = apply_filters('timber/post/meta_object_field', null, $this->ID, $field_name, $this);
         $value = $this->convert($value);
