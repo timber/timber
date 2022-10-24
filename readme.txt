@@ -1,10 +1,10 @@
 === Timber ===
 Contributors: jarednova
 Tags: template engine, templates, twig
-Requires at least: 4.9.8
 Tested up to: 6.0.0
 Stable tag: 1.21.0
 Requires PHP: 7.2.5
+Requires at least: 5.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
