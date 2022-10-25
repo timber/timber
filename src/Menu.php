@@ -247,7 +247,7 @@ class Menu extends CoreEntity
         $this->args = (object) $args;
 
         if (isset($this->args->depth)) {
-            $this->depth = (int)$this->args->depth;
+            $this->depth = (int) $this->args->depth;
         }
 
         if (!$term) {
