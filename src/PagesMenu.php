@@ -107,10 +107,7 @@ class PagesMenu extends Menu
 
         $args['hierarchical'] = 0;
 
-        $pages_menu = new static(null);
-
-        $pages_menu->args = (object) $args;
-        $pages_menu->depth = (int) $args['depth'];
+        $pages_menu = new static(null, $args);
 
         // Query pages.
         $menu_items = get_pages($pages_menu->args);
