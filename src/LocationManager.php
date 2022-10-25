@@ -102,7 +102,7 @@ class LocationManager
     /**
      * Get calling script dir.
      * @api
-     * @return string|false
+     * @return string|null
      */
     public static function get_calling_script_dir($offset = 0)
     {
@@ -113,7 +113,7 @@ class LocationManager
             return $dir;
         }
 
-        return false;
+        return null;
     }
 
     /**
