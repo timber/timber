@@ -133,6 +133,14 @@ class Timber_UnitTestCase extends TestCase
         };
     }
 
+    protected function remove_filter_temporarily(string $filter, callable $callback, int $pri = 10, int $count = 1)
+    {
+        remove_filter($filter, $callback, $pri);
+        $this->temporary_hook_removals[] = function () use ($filter, $callback, $pri, $count) {
+            remove_filter($filter, $callback, $pri, $count);
+        };
+    }
+
     /**
          * Exactly the same as add_action, but automatically calls remove_action with the same
          * arguments during tear_down().

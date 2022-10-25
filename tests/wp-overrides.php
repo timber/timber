@@ -78,9 +78,8 @@ class WP_Overrides
             if (!empty($meta['genre'])) {
                 $content .= ' ' . sprintf(__('Genre: %s.'), $meta['genre']);
             }
-
-        // use image exif/iptc data for title and caption defaults if possible
         } elseif ($image_meta = @wp_read_image_metadata($file)) {
+            // use image exif/iptc data for title and caption defaults if possible
             if (trim($image_meta['title']) && !is_numeric(sanitize_title($image_meta['title']))) {
                 $title = $image_meta['title'];
             }
