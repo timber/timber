@@ -10,7 +10,7 @@ function deploy () {
 	rm composer.lock
 
 	# Download dependencies for the maximum compatible PHP version.
-	composer config platform.php 8.0
+	composer config platform.php 7.2.5
 	composer install --no-dev --optimize-autoloader
 
 	# Install the lowest compatible version of Twig.
