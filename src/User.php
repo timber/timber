@@ -100,6 +100,14 @@ class User extends CoreEntity
     public $user_nicename;
 
     /**
+     * User email address.
+     *
+     * @api
+     * @var string
+     */
+    public $user_email;
+
+    /**
      * The roles the user is part of.
      *
      * @api
