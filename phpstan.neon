@@ -16,3 +16,8 @@ parameters:
         - '#Access to an undefined property ACF::\$fields\.#'
     #     # TODO Do not create a static instance of a non-final class.
     #     - '#^Unsafe usage of new static\(\)\.$#'
+services:
+    -
+        class: TimberPHPStan\WPNavMenuItemPost
+        tags:
+            - phpstan.broker.propertiesClassReflectionExtension
