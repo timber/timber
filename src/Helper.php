@@ -180,7 +180,7 @@ class Helper
     {
         $time = microtime();
         $time = explode(' ', $time);
-        $time = $time[1] + $time[0];
+        $time = (float) $time[1] + (float) $time[0];
         return $time;
     }
 
@@ -202,7 +202,7 @@ class Helper
     {
         $time = microtime();
         $time = explode(' ', $time);
-        $time = $time[1] + $time[0];
+        $time = (float) $time[1] + (float) $time[0];
         $finish = $time;
         $total_time = round(($finish - $start), 4);
         return $total_time . ' seconds.';
@@ -253,7 +253,7 @@ class Helper
      * Output a value (string, array, object, etc.) to the error log
      *
      * @api
-     * @param mixed $arg that you want to error_log
+     * @param mixed $error The error that you want to error_log().
      * @return void
      */
     public static function error_log($error)

@@ -177,8 +177,7 @@ class Attachment extends Post
      *
      * @internal
      *
-     * @param int $attachment_id The ID number of the image in the WP database.
-     * @return array Attachment info as an array or ID
+     * @param WP_Post $wp_post WordPress post instance.
      */
     protected function get_info(WP_Post $wp_post)
     {

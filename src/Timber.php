@@ -822,9 +822,9 @@ class Timber
      *                       parameter exists to prevent future breaking changes. Default empty
      *                       array `[]`.
      *
-     * @return \Iterable An array of users objects. Will be empty if no users were found.
+     * @return array An array of users objects. Will be empty if no users were found.
      */
-    public static function get_users(array $query = [], array $options = []): Iterable
+    public static function get_users(array $query = [], array $options = []): array
     {
         $factory = new UserFactory();
         // TODO return a Collection type?
@@ -1031,11 +1031,11 @@ class Timber
      * @api
      * @since 2.0.0
      *
-     * @param array   $query
-     * @param array   $options optional; none are currently supported
-     * @return mixed
+     * @param array|\WP_Comment_Query $query
+     * @param array                   $options Optional. None are currently supported.
+     * @return array
      */
-    public static function get_comments(array $query = [], array $options = []): Iterable
+    public static function get_comments($query = [], array $options = []): array
     {
         $factory = new CommentFactory();
         // TODO return a Collection type?

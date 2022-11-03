@@ -200,9 +200,9 @@ class PagesMenu extends Menu
      * We need to set some properties so that we can use `wp_setup_nav_menu_item()` on the menu
      * items and a proper menu item hierarchy can be built.
      *
-     * @param \WP_Post $pages A post object.
+     * @param \WP_Post $post A post object.
      *
-     * @return array Updated post object.
+     * @return \WP_Post Updated post object.
      */
     protected function pre_setup_nav_menu_item($post)
     {

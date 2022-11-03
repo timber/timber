@@ -238,5 +238,7 @@ class Resize extends ImageOperation
             }
             // @codeCoverageIgnoreEnd
         }
+
+        return false;
     }
 }

@@ -202,11 +202,11 @@ class ImageHelper
      *
      * @api
      *
-     * @param string  $src
-     * @param int     $w
-     * @param int     $h
-     * @param string  $color
-     * @param bool    $force
+     * @param string      $src
+     * @param int         $w
+     * @param int         $h
+     * @param string|bool $color
+     * @param bool        $force
      * @return string
      */
     public static function letterbox($src, $w, $h, $color = false, $force = false)
@@ -302,6 +302,7 @@ class ImageHelper
     {
         if (wp_attachment_is_image($post_id)) {
             $attachment = Timber::get_post($post_id);
+            /** @var \Timber\Attachment $attachment */
             if ($attachment->file_loc) {
                 ImageHelper::delete_generated_files($attachment->file_loc);
             }

@@ -336,6 +336,8 @@ class Site extends Core implements CoreInterface
         if ($iid) {
             return Timber::get_post($iid);
         }
+
+        return null;
     }
 
     protected function icon_multisite($site_id)

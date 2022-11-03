@@ -13,7 +13,7 @@ class CoAuthorsPlusUser extends User
      */
     protected $thumbnail;
 
-    public static function from_guest_author(\stdclass $coauthor)
+    public static function from_guest_author(\stdClass $coauthor)
     {
         $user = new static();
         $user->init($coauthor);
@@ -27,16 +27,16 @@ class CoAuthorsPlusUser extends User
      */
     protected function init($coauthor = false)
     {
+        /**
+         * @var \stdClass $coauthor
+         */
         parent::init($coauthor);
+
         $this->id = $this->ID = (int) $coauthor->ID;
         $this->first_name = $coauthor->first_name;
         $this->last_name = $coauthor->last_name;
         $this->user_nicename = $coauthor->user_nicename;
         $this->description = $coauthor->description;
-
-        /**
-         * @property string name
-         */
         $this->display_name = $coauthor->display_name;
         $this->_link = get_author_posts_url(null, $coauthor->user_nicename);
     }

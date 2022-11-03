@@ -497,10 +497,10 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * Used internally by init, etc. to build Timber\Post object.
      *
      * @internal
-     * @param  int|null|boolean $pid The ID to generate info from.
-     * @return WP_Post
+     * @param  \WP_Post $post The WordPress post object to get properties from.
+     * @return \WP_Post
      */
-    protected function get_info(WP_Post $post)
+    protected function get_info(\WP_Post $post)
     {
         $post->status = $post->post_status;
         $post->id = $post->ID;
@@ -939,9 +939,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     }
 
     /**
-     * Returns a category attached to a post
+     * Gets a category attached to a post.
      *
-     * If multiple categories are set, it will return just the first one
+     * If multiple categories are set, it will return just the first one.
      *
      * @api
      * @return \Timber\Term|null
@@ -952,6 +952,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         if (count($cats) && isset($cats[0])) {
             return $cats[0];
         }
+
+        return null;
     }
 
     /**
@@ -1657,11 +1659,10 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     }
 
     /**
-     * Finds any WP_Post objects and converts them to Timber\Posts
+     * Finds any WP_Post objects and converts them to Timber\Post objects.
      *
      * @api
-     * @param array|WP_Post $data
-     * @param string $class
+     * @param array|\WP_Post $data
      */
     public function convert($data)
     {
@@ -1786,6 +1787,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         if ($tid) {
             return $this->factory()->from($tid);
         }
+
+        return null;
     }
 
     /**

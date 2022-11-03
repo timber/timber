@@ -8,8 +8,11 @@ parameters:
     ignoreErrors:
         - '#Instantiated class Twig\\CacheExtension\\CacheStrategy\\GenerationalCacheStrategy not found.#'
         - '#Instantiated class Twig\\CacheExtension\\Extension not found.#'
+        - '#Method Timber\\Loader::_get_cache_extension\(\) has invalid return type Twig\\CacheExtension\\Extension.#'
         # Uses func_get_args()
         - '#^Function remove_filter invoked with [3456] parameters, 2-3 required\.$#'
         - '#^Function apply_filters invoked with [3456] parameters, 2 required\.$#'
+        # ACF
+        - '#Access to an undefined property ACF::\$fields\.#'
     #     # TODO Do not create a static instance of a non-final class.
     #     - '#^Unsafe usage of new static\(\)\.$#'
