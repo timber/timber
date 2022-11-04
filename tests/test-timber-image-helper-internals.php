@@ -7,7 +7,7 @@ class TestTimberImageHelperInternals extends TimberAttachment_UnitTestCase
         $src = 'http://' . $_SERVER['HTTP_HOST'] . '/wp-content/uploads/myimage.jpg';
         $parts = Timber\ImageHelper::analyze_url($src);
         $this->assertEquals('http://' . $_SERVER['HTTP_HOST'] . '/wp-content/uploads/myimage.jpg', $parts['url']);
-        $this->assertSame(1, $parts['absolute']);
+        $this->assertSame(true, $parts['absolute']);
         $this->assertSame(1, $parts['base']);
         $this->assertSame('', $parts['subdir']);
         $this->assertEquals('myimage', $parts['filename']);
@@ -20,7 +20,7 @@ class TestTimberImageHelperInternals extends TimberAttachment_UnitTestCase
         $src = 'http://' . $_SERVER['HTTP_HOST'] . '/wp-content/uploads/2017/02/myimage.jpg';
         $parts = Timber\ImageHelper::analyze_url($src);
         $this->assertEquals('http://' . $_SERVER['HTTP_HOST'] . '/wp-content/uploads/2017/02/myimage.jpg', $parts['url']);
-        $this->assertSame(1, $parts['absolute']);
+        $this->assertSame(true, $parts['absolute']);
         $this->assertSame(1, $parts['base']);
         $this->assertEquals('/2017/02', $parts['subdir']);
         $this->assertEquals('myimage', $parts['filename']);
