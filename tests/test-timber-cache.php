@@ -308,7 +308,7 @@ class TestTimberCache extends Timber_UnitTestCase
         global $wpdb;
         $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
         $wpdb->query($query);
-        $this->assertEquals(0, $wpdb->num_rows);
+        $this->assertSame(0, $wpdb->num_rows);
     }
 
     public function testTimberLoaderCacheObject()
@@ -482,7 +482,7 @@ class TestTimberCache extends Timber_UnitTestCase
         global $wpdb;
         $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
         $data = $wpdb->get_results($query);
-        $this->assertEquals(0, $wpdb->num_rows);
+        $this->assertSame(0, $wpdb->num_rows);
         $_wp_using_ext_object_cache = false;
     }
 

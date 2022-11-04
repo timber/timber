@@ -42,7 +42,7 @@ class TestTimberPostComments extends Timber_UnitTestCase
             'post_content' => $quote,
         ]);
         $post = Timber::get_post($post_id);
-        $this->assertEquals(0, $post->get_comment_count());
+        $this->assertSame(0, $post->get_comment_count());
     }
 
     public function testShowUnmoderatedCommentIfByLoggedInUser()
@@ -61,7 +61,7 @@ class TestTimberPostComments extends Timber_UnitTestCase
         $this->assertEquals(1, count($post->comments()));
         wp_set_current_user(0);
         $post = Timber::get_post($post_id);
-        $this->assertEquals(0, count($post->comments()));
+        $this->assertSame(0, count($post->comments()));
     }
 
     public function testPostWithCustomCommentClass()

@@ -116,7 +116,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase
         ]));
 
         $this->assertCount(10, $query);
-        $this->assertEquals(0, $query->found_posts);
+        $this->assertSame(0, $query->found_posts);
     }
 
     /**
@@ -133,7 +133,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase
             'post__in' => [$post_ids[0]],
         ]);
 
-        $this->assertEquals(true, $posts->query()->query_vars['has_password']);
+        $this->assertSame(true, $posts->query()->query_vars['has_password']);
         $this->assertEquals([$post_ids[0]], $posts->query()->query_vars['post__in']);
     }
 

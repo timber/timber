@@ -455,8 +455,8 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
         $file = $post->meta($field_file_name, [
             'transform_value' => true,
         ]);
-        $this->assertEquals(false, $image);
-        $this->assertEquals(false, $file);
+        $this->assertSame(false, $image);
+        $this->assertSame(false, $file);
     }
 
     private function register_field($field_name, $field_type, $field_args = [])

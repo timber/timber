@@ -380,7 +380,7 @@ class TestTimberMenu extends Timber_UnitTestCase
         $menu = Timber::get_menu($menu_arr['term_id']);
         $defaults['menu'] = $menu_arr['term_id'];
         $this->assertIsInt($menu->depth);
-        $this->assertEquals(0, $menu->depth);
+        $this->assertSame(0, $menu->depth);
         $this->assertIsArray($menu->raw_args);
         $this->assertIsObject($menu->args);
         $this->assertEquals((object) $defaults, $menu->args);
@@ -404,7 +404,7 @@ class TestTimberMenu extends Timber_UnitTestCase
         ];
         $menu = Timber::get_menu('Menu One', $args);
         $this->assertIsInt($menu->depth);
-        $this->assertEquals(0, $menu->depth);
+        $this->assertSame(0, $menu->depth);
     }
 
     public function testMenuOptions_Depth()
@@ -418,7 +418,7 @@ class TestTimberMenu extends Timber_UnitTestCase
         // Confirm that none of them have "children" set.
         $items = $menu->get_items();
         foreach ($items as $item) {
-            $this->assertEquals(null, $item->children);
+            $this->assertSame(null, $item->children);
         }
 
         // Confirm two levels deep
@@ -429,7 +429,7 @@ class TestTimberMenu extends Timber_UnitTestCase
         foreach ($items as $item) {
             if ($item->children) {
                 foreach ($item->children as $child) {
-                    $this->assertEquals(null, $child->children);
+                    $this->assertSame(null, $child->children);
                 }
             }
         }
@@ -661,7 +661,7 @@ class TestTimberMenu extends Timber_UnitTestCase
         $menu_arr = self::_createTestMenu();
         $menu = Timber::get_menu($menu_arr['term_id']);
         $parent = $menu->items[0];
-        $this->assertEquals(0, $parent->level);
+        $this->assertSame(0, $parent->level);
         $child = $parent->children[0];
         $this->assertEquals(1, $child->level);
         $olderGrandchild = $child->children[0];
@@ -677,7 +677,7 @@ class TestTimberMenu extends Timber_UnitTestCase
         $menu_arr = self::_createTestMenu();
         $menu = Timber::get_menu($menu_arr['term_id']);
         $parent = $menu->items[0];
-        $this->assertEquals(0, $parent->level);
+        $this->assertSame(0, $parent->level);
         $children = $parent->children();
         $this->assertEquals(1, count($children));
         $this->assertEquals('Child Page', $children[0]->title());

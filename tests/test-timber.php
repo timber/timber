@@ -95,7 +95,7 @@ class TestTimberMainClass extends Timber_UnitTestCase
 
         $post = Timber\Timber::get_post_by('slug', 'kill-bill-2');
 
-        $this->assertEquals(null, $post);
+        $this->assertSame(null, $post);
     }
 
     public function testGetPostByTitle()
@@ -178,7 +178,7 @@ class TestTimberMainClass extends Timber_UnitTestCase
 
         $post = Timber\Timber::get_post_by('title', 'Just a nonexistent post');
 
-        $this->assertEquals(null, $post);
+        $this->assertSame(null, $post);
     }
 
     public function testGetPostFromPostObject()

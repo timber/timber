@@ -149,7 +149,7 @@ class TestTimberURLHelper extends Timber_UnitTestCase
         $_SERVER['HTTP_HOST'] = '';
         $_SERVER['SERVER_NAME'] = '';
         $host = Timber\URLHelper::get_host();
-        $this->assertEquals('', $host);
+        $this->assertSame('', $host);
         $_SERVER['HTTP_HOST'] = $http_host;
         $_SERVER['SERVER_NAME'] = $server_name;
     }

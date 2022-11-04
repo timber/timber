@@ -244,10 +244,10 @@ class TestTimberComment extends Timber_UnitTestCase
         $this->assertEquals(3, count($comments));
         $this->assertEquals(1, count($children));
 
-        $this->assertEquals(0, $comments[1]->depth());
+        $this->assertSame(0, $comments[1]->depth());
         $this->assertEquals(1, $children[0]->depth());
         $this->assertEquals(2, $grand_children[0]->depth());
-        $this->assertEquals(0, $comments[2]->depth());
+        $this->assertSame(0, $comments[2]->depth());
 
         $comment_id = $this->factory->comment->create([
             'comment_post_ID' => $post_id,

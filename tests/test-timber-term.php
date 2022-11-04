@@ -570,7 +570,7 @@ class TestTimberTerm extends Timber_UnitTestCase
         add_term_meta($tid, 'foo', false);
         // @todo #2087 get this to work w/o $taxonomy param
         $term = Timber::get_term($tid, '');
-        $this->assertEquals('', $term->meta('foo'));
+        $this->assertSame('', $term->meta('foo'));
     }
 
     /**

@@ -39,7 +39,7 @@ class TestTimberImageLetterbox extends TimberAttachment_UnitTestCase
         $image = imagecreatefromjpeg($location_of_image);
         $pixel_rgb = imagecolorat($image, 1, 1);
         $colors = imagecolorsforindex($image, $pixel_rgb);
-        $this->assertEquals(0, $colors['red']);
+        $this->assertSame(0, $colors['red']);
         $this->assertEquals(255, $colors['green']);
     }
 

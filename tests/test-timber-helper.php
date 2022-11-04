@@ -106,7 +106,7 @@ class TestTimberHelper extends Timber_UnitTestCase
         //since we're testing with twentyfourteen -- need to remove its filters on wp_title
         remove_all_filters('wp_title');
         remove_theme_support('title-tag');
-        $this->assertEquals('', Timber\Helper::get_wp_title());
+        $this->assertSame('', Timber\Helper::get_wp_title());
     }
 
     public function testWPTitleSingle()
@@ -323,7 +323,7 @@ class TestTimberHelper extends Timber_UnitTestCase
         $str = Timber::compile_string($template, [
             'posts' => 'foobar',
         ]);
-        $this->assertEquals('', $str);
+        $this->assertSame('', $str);
     }
 
     public function testConvertWPObject()

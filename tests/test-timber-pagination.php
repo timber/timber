@@ -523,7 +523,7 @@ class TestTimberPagination extends Timber_UnitTestCase
             'mid_size' => 1,
             'end_size' => 2,
         ]);
-        $this->assertEquals(0, count($pagination->pages));
+        $this->assertSame(0, count($pagination->pages));
     }
 
     /**

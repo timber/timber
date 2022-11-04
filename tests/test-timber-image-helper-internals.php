@@ -9,7 +9,7 @@ class TestTimberImageHelperInternals extends TimberAttachment_UnitTestCase
         $this->assertEquals('http://' . $_SERVER['HTTP_HOST'] . '/wp-content/uploads/myimage.jpg', $parts['url']);
         $this->assertEquals(1, $parts['absolute']);
         $this->assertEquals(1, $parts['base']);
-        $this->assertEquals('', $parts['subdir']);
+        $this->assertSame('', $parts['subdir']);
         $this->assertEquals('myimage', $parts['filename']);
         $this->assertEquals('jpg', $parts['extension']);
         $this->assertEquals('myimage.jpg', $parts['basename']);

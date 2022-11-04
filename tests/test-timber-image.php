@@ -594,7 +594,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase
         $colors = imagecolorsforindex($image, $pixel_rgb);
         $this->assertEquals(255, $colors['red']);
         $this->assertEquals(255, $colors['green']);
-        $this->assertEquals(0, $colors['blue']);
+        $this->assertSame(0, $colors['blue']);
     }
 
     public function testImageDeletionSimilarNames()

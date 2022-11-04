@@ -143,8 +143,7 @@ class TestTimberPost extends Timber_UnitTestCase
         $str = Timber::compile_string($template, [
             'post' => $post,
         ]);
-        $this->assertEquals('', $str);
-        //$this->assertFalse( $post->donkey() );
+        $this->assertSame('', $str);
     }
 
     public function testNext()
@@ -1061,7 +1060,7 @@ class TestTimberPost extends Timber_UnitTestCase
         $pid = $this->factory->post->create();
         $post = Timber::get_post($pid);
 
-        $this->assertEquals(null, $post->gallery());
+        $this->assertSame(null, $post->gallery());
     }
 
     public function testPostWithoutAudio()
