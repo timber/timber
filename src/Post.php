@@ -673,7 +673,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      */
     public function comment_count()
     {
-        return get_comments_number($this->ID);
+        return (int) get_comments_number($this->ID);
     }
 
     /**

@@ -366,16 +366,16 @@ class TestTimberMeta extends Timber_UnitTestCase
         );
 
         $this->assertSame(null, $post->raw_meta('my_custom_property_inexistent'));
-        $this->assertSame(null, $post_string);
+        $this->assertSame('', $post_string);
 
         $this->assertSame(null, $term->raw_meta('my_custom_property_inexistent'));
-        $this->assertSame(null, $term_string);
+        $this->assertSame('', $term_string);
 
         $this->assertSame(null, $user->raw_meta('my_custom_property_inexistent'));
-        $this->assertSame(null, $user_string);
+        $this->assertSame('', $user_string);
 
         $this->assertSame(null, $comment->raw_meta('my_custom_property_inexistent'));
-        $this->assertSame(null, $comment_string);
+        $this->assertSame('', $comment_string);
     }
 
     /**

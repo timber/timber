@@ -418,7 +418,7 @@ class TestTimberMenu extends Timber_UnitTestCase
         // Confirm that none of them have "children" set.
         $items = $menu->get_items();
         foreach ($items as $item) {
-            $this->assertSame(null, $item->children);
+            $this->assertSame(false, $item->children);
         }
 
         // Confirm two levels deep

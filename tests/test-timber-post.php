@@ -1060,7 +1060,7 @@ class TestTimberPost extends Timber_UnitTestCase
         $pid = $this->factory->post->create();
         $post = Timber::get_post($pid);
 
-        $this->assertSame(null, $post->gallery());
+        $this->assertSame(false, $post->gallery());
     }
 
     public function testPostWithoutAudio()
