@@ -582,7 +582,7 @@ class TestTimberMainClass extends Timber_UnitTestCase
             'post_type' => 'post',
             'numberposts' => 17,
         ]);
-        $this->assertEquals(17, count($posts));
+        $this->assertSame(17, count($posts));
     }
 
     public function testPostsPerPage()
@@ -767,7 +767,7 @@ class TestTimberMainClass extends Timber_UnitTestCase
             'cat' => $cat,
         ]);
 
-        $this->assertEquals(2, count($posts));
+        $this->assertSame(2, count($posts));
     }
 
     /**
@@ -968,7 +968,7 @@ class TestTimberMainClass extends Timber_UnitTestCase
             // whatever
         }
 
-        $this->assertEquals(3, $the_post_count);
+        $this->assertSame(3, $the_post_count);
     }
 
     public function testGetAttachment()

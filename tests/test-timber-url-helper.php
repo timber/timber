@@ -409,7 +409,7 @@ class TestTimberURLHelper extends Timber_UnitTestCase
     {
         $_SERVER['REQUEST_URI'] = 'http://example.org/blog/post/news/2014/whatever';
         $params = Timber\URLHelper::get_params();
-        $this->assertEquals(7, count($params));
+        $this->assertSame(7, count($params));
         $whatever = Timber\URLHelper::get_params(-1);
         $blog = Timber\URLHelper::get_params(2);
         $this->assertEquals('whatever', $whatever);

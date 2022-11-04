@@ -80,7 +80,7 @@ class TestTimberPagination extends Timber_UnitTestCase
         $this->go_to(home_url('/portfolio/page/3'));
         query_posts('post_type=portfolio&paged=3');
         $pagination = Timber::get_pagination();
-        $this->assertEquals(6, count($pagination['pages']));
+        $this->assertSame(6, count($pagination['pages']));
     }
 
     /**
@@ -173,7 +173,7 @@ class TestTimberPagination extends Timber_UnitTestCase
         ]);
         query_posts('post_type=portfolio');
         $pagination = Timber::get_pagination(4);
-        $this->assertEquals(5, count($pagination['pages']));
+        $this->assertSame(5, count($pagination['pages']));
     }
 
     /**
@@ -347,7 +347,7 @@ class TestTimberPagination extends Timber_UnitTestCase
         $this->go_to(home_url('/portfolio/page/3'));
         $posts = new PostQuery(new WP_Query('post_type=portfolio&paged=3'));
         $pagination = $posts->pagination();
-        $this->assertEquals(6, count($pagination->pages));
+        $this->assertSame(6, count($pagination->pages));
     }
 
     public function testCollectionPaginationWithSize()
@@ -358,7 +358,7 @@ class TestTimberPagination extends Timber_UnitTestCase
         ]);
         $posts = new PostQuery(new WP_Query('post_type=portfolio&posts_per_page=20'));
         $pagination = $posts->pagination();
-        $this->assertEquals(5, count($pagination->pages));
+        $this->assertSame(5, count($pagination->pages));
     }
 
     public function testCollectionPaginationSearchPrettyWithPostname()
@@ -481,12 +481,12 @@ class TestTimberPagination extends Timber_UnitTestCase
         ]);
         $recipes = new PostQuery(new WP_Query('post_type=recipe'));
         $pagination = $recipes->pagination();
-        $this->assertEquals(5, count($pagination->pages));
+        $this->assertSame(5, count($pagination->pages));
         $pids = $this->factory->post->create_many(13);
 
         $posts = new PostQuery(new WP_Query('post_type=post'));
         $pagination = $posts->pagination();
-        $this->assertEquals(2, count($pagination->pages));
+        $this->assertSame(2, count($pagination->pages));
 
         // clean up
         unregister_post_type('recipe');
@@ -569,7 +569,7 @@ class TestTimberPagination extends Timber_UnitTestCase
         $pagination = $posts->pagination([
             'show_all' => false,
         ]);
-        $this->assertEquals(11, count($pagination->pages));
+        $this->assertSame(11, count($pagination->pages));
         // Test mid_size
         $posts = Timber::get_posts([
             'post_type' => 'post',
@@ -580,7 +580,7 @@ class TestTimberPagination extends Timber_UnitTestCase
             'show_all' => false,
             'mid_size' => 1,
         ]);
-        $this->assertEquals(7, count($pagination->pages));
+        $this->assertSame(7, count($pagination->pages));
         // Test mid_size = 0
         $posts = Timber::get_posts([
             'post_type' => 'post',
@@ -591,7 +591,7 @@ class TestTimberPagination extends Timber_UnitTestCase
             'show_all' => false,
             'mid_size' => 0,
         ]);
-        $this->assertEquals(5, count($pagination->pages));
+        $this->assertSame(5, count($pagination->pages));
         // Test end_size
         $posts = Timber::get_posts([
             'post_type' => 'post',
@@ -602,7 +602,7 @@ class TestTimberPagination extends Timber_UnitTestCase
             'show_all' => false,
             'end_size' => 2,
         ]);
-        $this->assertEquals(13, count($pagination->pages));
+        $this->assertSame(13, count($pagination->pages));
         // Test end_size = 0
         $posts = Timber::get_posts([
             'post_type' => 'post',
@@ -613,7 +613,7 @@ class TestTimberPagination extends Timber_UnitTestCase
             'show_all' => false,
             'end_size' => 0,
         ]);
-        $this->assertEquals(9, count($pagination->pages));
+        $this->assertSame(9, count($pagination->pages));
         // Test start_size
         $posts = Timber::get_posts([
             'post_type' => 'post',
@@ -624,7 +624,7 @@ class TestTimberPagination extends Timber_UnitTestCase
             'show_all' => false,
             'start_size' => 2,
         ]);
-        $this->assertEquals(12, count($pagination->pages));
+        $this->assertSame(12, count($pagination->pages));
         // Test start_size = 0
         $posts = Timber::get_posts([
             'post_type' => 'post',
@@ -635,7 +635,7 @@ class TestTimberPagination extends Timber_UnitTestCase
             'show_all' => false,
             'start_size' => 0,
         ]);
-        $this->assertEquals(10, count($pagination->pages));
+        $this->assertSame(10, count($pagination->pages));
         // Test start_size, end_size
         $posts = Timber::get_posts([
             'post_type' => 'post',
@@ -647,7 +647,7 @@ class TestTimberPagination extends Timber_UnitTestCase
             'start_size' => 2,
             'end_size' => 3,
         ]);
-        $this->assertEquals(14, count($pagination->pages));
+        $this->assertSame(14, count($pagination->pages));
         // Test start_size, end_size  = 0
         $posts = Timber::get_posts([
             'post_type' => 'post',
@@ -659,6 +659,6 @@ class TestTimberPagination extends Timber_UnitTestCase
             'start_size' => 2,
             'end_size' => 0,
         ]);
-        $this->assertEquals(11, count($pagination->pages));
+        $this->assertSame(11, count($pagination->pages));
     }
 }

@@ -161,7 +161,7 @@ class TestTimberHelper extends Timber_UnitTestCase
         $obj2->skill = 'cooking';
         $arr = [$obj1, $obj2];
         $index = Timber\Helper::get_object_index_by_property($arr, 'skill', 'cooking');
-        $this->assertEquals(1, $index);
+        $this->assertSame(1, $index);
         $obj = Timber\Helper::get_object_by_property($arr, 'skill', 'cooking');
         $this->assertEquals('austin', $obj->name);
     }
@@ -186,7 +186,7 @@ class TestTimberHelper extends Timber_UnitTestCase
         $obj2['skill'] = 'cooking';
         $arr = [$obj1, $obj2];
         $index = \Timber\Helper::get_object_index_by_property($arr, 'skill', 'cooking');
-        $this->assertEquals(1, $index);
+        $this->assertSame(1, $index);
         $this->assertFalse(\Timber\Helper::get_object_index_by_property('butts', 'skill', 'cooking'));
     }
 
@@ -214,7 +214,7 @@ class TestTimberHelper extends Timber_UnitTestCase
         $arr = ['Buster', 'GOB', 'Michael', 'Lindsay'];
         $arr = Timber\Helper::array_truncate($arr, 2);
         $this->assertContains('Buster', $arr);
-        $this->assertEquals(2, count($arr));
+        $this->assertSame(2, count($arr));
         $this->assertFalse(in_array('Lindsay', $arr));
     }
 
@@ -264,7 +264,7 @@ class TestTimberHelper extends Timber_UnitTestCase
         $this->assertEquals('Michael', $people[0]->name);
         $this->assertEquals('Lauren', $people[1]->name);
         $this->assertEquals('Robbie', $people[2]->name);
-        $this->assertEquals(1984, $people[1]->year);
+        $this->assertSame(1984, $people[1]->year);
     }
 
     /**

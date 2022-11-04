@@ -103,7 +103,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase
         $query = new PostQuery(new WP_Query('post_type=post'));
 
         $this->assertCount(10, $query);
-        $this->assertEquals(20, $query->found_posts);
+        $this->assertSame(20, $query->found_posts);
     }
 
     public function testFoundPostsInQueryWithNoFoundRows()
@@ -230,7 +230,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase
         $query = new PostQuery(new WP_Query('post_type=post&posts_per_page=3'));
 
         $this->assertCount(3, $query);
-        $this->assertEquals(10, $query->found_posts);
+        $this->assertSame(10, $query->found_posts);
     }
 
     public function testArrayAccess()

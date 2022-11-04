@@ -16,7 +16,7 @@ class TestTimberCommentThread extends Timber_UnitTestCase
         ]);
         $args = [];
         $ct = new Timber\CommentThread($post_id, $args);
-        $this->assertEquals(5, count($ct));
+        $this->assertSame(5, count($ct));
     }
 
     public function testCommentThreadCountMethod()
@@ -29,7 +29,7 @@ class TestTimberCommentThread extends Timber_UnitTestCase
         ]);
         $args = [];
         $ct = new Timber\CommentThread($post_id, $args);
-        $this->assertEquals(5, $ct->count());
+        $this->assertSame(5, $ct->count());
     }
 
     public function testShowUnmoderatedCommentIfByAnon()

@@ -79,7 +79,7 @@ class TestTimberTermFactories extends Timber_UnitTestCase
             'taxonomy' => 'baseball',
             'hide_empty' => false,
         ]), 'baseball');
-        $this->assertEquals(2, count($baseball_teams));
+        $this->assertSame(2, count($baseball_teams));
         $this->assertEquals('Cardinals', $baseball_teams[0]->name);
     }
 
