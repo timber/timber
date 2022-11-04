@@ -201,10 +201,6 @@ class Image extends Attachment
             return $this->maybe_secure_url($this->abs_url);
         }
 
-        if (!$this->is_image()) {
-            return wp_get_attachment_url($this->ID);
-        }
-
         $src = wp_get_attachment_image_src($this->ID, $size);
         $src = $src[0];
 
@@ -387,11 +383,7 @@ class Image extends Attachment
      */
     public function srcset($size = "full")
     {
-        if ($this->is_image()) {
-            return wp_get_attachment_image_srcset($this->ID, $size);
-        }
-
-        return false;
+        return wp_get_attachment_image_srcset($this->ID, $size);
     }
 
     /**
@@ -409,32 +401,6 @@ class Image extends Attachment
      */
     public function img_sizes($size = "full")
     {
-        if ($this->is_image()) {
-            return wp_get_attachment_image_sizes($this->ID, $size);
-        }
-
-        return false;
-    }
-
-    /**
-     * Checks whether the image is really an image.
-     *
-     * @internal
-     * @return bool Whether the attachment is really an image.
-     */
-    protected function is_image()
-    {
-        $src = wp_get_attachment_url($this->ID);
-        $check = wp_check_filetype(PathHelper::basename($src), null);
-        $image_exts = apply_filters('timber/post/image_extensions', [
-            'jpg',
-            'jpeg',
-            'jpe',
-            'gif',
-            'png',
-            'webp',
-        ]);
-
-        return in_array($check['ext'], $image_exts);
+        return wp_get_attachment_image_sizes($this->ID, $size);
     }
 }
