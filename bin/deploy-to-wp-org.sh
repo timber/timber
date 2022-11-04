@@ -8,8 +8,14 @@ function deploy () {
 	git clone git@github.com:Upstatement/timber-starter-theme.git
 	rm -rf ~/Sites/timber/timber-starter-theme/.git
 	rm composer.lock
-	composer config platform.php 5.6.20
+
+	# Download dependencies for the maximum compatible PHP version.
+	composer config platform.php 7.2.5
 	composer install --no-dev --optimize-autoloader
+
+	# Install the lowest compatible version of Twig.
+	composer update twig/twig:1.44.7 --no-dev
+
 	rm -rf ~/Sites/timber/vendor/upstatement/routes/.git
 	cd ~/Sites/timber-wp
 	mkdir tags/$1

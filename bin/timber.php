@@ -7,6 +7,7 @@ Author: Jared Novack + Upstatement
 Version: 1.21.0
 Author URI: http://upstatement.com/
 Requires PHP: 7.2.5
+Requires at least: 5.3.0
 */
 // we look for Composer files first in the plugins dir.
 // then in the wp-content dir (site install).
