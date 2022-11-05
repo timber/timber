@@ -177,12 +177,12 @@ class Attachment extends Post
      *
      * @internal
      *
-     * @param int $attachment_id The ID number of the image in the WP database.
-     * @return array Attachment info as an array or ID
+     * @param \WP_Post $wp_post The WordPress post object to generate info from.
+     * @return array Attachment info as an array.
      */
     protected function get_info(WP_Post $wp_post)
     {
-        $post_data = get_object_vars(parent::get_info($wp_post));
+        $post_data = parent::get_info($wp_post);
         $image_info = wp_get_attachment_metadata($wp_post->ID) ?: [];
         $meta_values = $this->raw_meta();
 
