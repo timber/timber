@@ -4,8 +4,6 @@ namespace Timber;
 
 use Timber\Factory\PostFactory;
 
-use WP_Post;
-
 /**
  * Class Attachment
  *
@@ -177,13 +175,13 @@ class Attachment extends Post
      *
      * @internal
      *
-     * @param \WP_Post $wp_post The WordPress post object to generate info from.
+     * @param array $data Data to update.
      * @return array Attachment info as an array.
      */
-    protected function get_info(WP_Post $wp_post)
+    protected function get_info(array $data): array
     {
-        $post_data = parent::get_info($wp_post);
-        $image_info = wp_get_attachment_metadata($wp_post->ID) ?: [];
+        $post_data = parent::get_info($data);
+        $image_info = wp_get_attachment_metadata($this->wp_object->ID) ?: [];
         $meta_values = $this->raw_meta();
 
         $data = array_merge($post_data, $image_info, $meta_values);

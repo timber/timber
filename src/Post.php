@@ -184,7 +184,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         $post->ID = $wp_post->ID;
         $post->wp_object = $wp_post;
 
-        $data = $post->get_info($wp_post);
+        $data = get_object_vars($wp_post);
+        $data = $post->get_info($data);
 
         /**
          * Filters the imported post data.
@@ -508,16 +509,16 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * Used internally by init, etc. to build Timber\Post object.
      *
      * @internal
-     * @param  \WP_Post $post The WordPress post object to generate info from.
+     *
+     * @param array    $data Data to update.
      * @return array
      */
-    protected function get_info(WP_Post $post)
+    protected function get_info(array $data): array
     {
-        $data = [
-            'status' => $post->post_status,
-            'id' => $post->ID,
-            'slug' => $post->post_name,
-        ];
+        $data = array_merge($data, [
+            'slug' => $this->wp_object->post_name,
+            'status' => $this->wp_object->post_status,
+        ]);
 
         return $data;
     }
