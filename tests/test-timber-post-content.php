@@ -88,9 +88,13 @@ class TestTimberPostContent extends Timber_UnitTestCase
         $post = Timber::get_post();
         $post->setup();
 
-        $paged_content = '<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+        $paged_content = trim(do_blocks(/** @lang text */
+            '<!-- wp:group -->
+<div class="wp-block-group"><!-- wp:paragraph -->
 <p>Paged Content</p>
-</div></div>';
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->'
+        ));
 
         $this->assertEquals($paged_content, trim($post->paged_content()));
 
@@ -141,9 +145,13 @@ class TestTimberPostContent extends Timber_UnitTestCase
         $post = Timber::get_post();
         $post->setup();
 
-        $paged_content = '<div class="is-layout-flow wp-block-group"><div class="wp-block-group__inner-container">
+        $paged_content = trim(do_blocks(/** @lang text */
+            '<!-- wp:group -->
+<div class="wp-block-group"><!-- wp:paragraph -->
 <p>Paged Content</p>
-</div></div>';
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->'
+        ));
 
         $this->assertEquals($paged_content, trim($post->paged_content()));
 
