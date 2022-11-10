@@ -124,18 +124,18 @@ class TestTimberTheme extends Timber_UnitTestCase
         $decoded = json_decode($encoded, true);
 
         $this->assertEquals([
-            'name' => 'Twenty Thirteen Child',
+            'name' => 'Twenty Nineteen Child',
             'parent' => [
-                'name' => 'Twenty Fifteen',
+                'name' => 'Twenty Nineteen',
                 'parent' => null,
                 'parent_slug' => null,
-                'slug' => 'twentyfifteen',
-                'uri' => 'http://example.org/wp-content/themes/twentyfifteen',
-                'version' => '3.3',
+                'slug' => 'twentynineteen',
+                'uri' => 'http://example.org/wp-content/themes/twentynineteen',
+                'version' => '1.4',
             ],
-            'parent_slug' => 'twentyfifteen',
+            'parent_slug' => 'twentynineteen',
             'slug' => 'fake-child-theme',
-            'uri' => 'http://example.org/wp-content/themes/twentyfifteen',
+            'uri' => 'http://example.org/wp-content/themes/twentynineteen',
             'version' => '1.0.0',
         ], $decoded);
     }
