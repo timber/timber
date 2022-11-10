@@ -316,9 +316,26 @@ class Term extends CoreEntity
     {
         return current_user_can('edit_term', $this->ID);
     }
+
+    /**
+     * Gets the edit link for a term if the current user has the correct rights.
+     *
+     * @api
+     * @example
+     * ```twig
+     * {% if term.can_edit %}
+     * <a href="{{ term.edit_link }}">Edit</a>
+     * {% endif %}
+     * ```
+     * @return string|null The edit URL of a term in the WordPress admin or null if the current user can’t edit the
+     *                     term.
      */
     public function edit_link()
     {
+        if (!$this->can_edit()) {
+            return null;
+        }
+
         return get_edit_term_link($this->ID, $this->taxonomy);
     }
 

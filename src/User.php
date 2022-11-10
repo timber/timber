@@ -430,6 +430,29 @@ class User extends CoreEntity
     }
 
     /**
+     * Gets the edit link for a user if the current user has the correct rights.
+     *
+     * @api
+     * @example
+     * ```twig
+     * {% if user.can_edit %}
+     * <a href="{{ user.edit_link }}">Edit</a>
+     * {% endif %}
+     * ```
+     * @since 2.0.0
+     * @return string|null The edit URL of a user in the WordPress admin or null if the current user can’t edit the
+     *                     post.
+     */
+    public function edit_link()
+    {
+        if (!$this->can_edit()) {
+            return null;
+        }
+
+        return get_edit_user_link($this->ID);
+    }
+
+    /**
      * Gets a user’s avatar URL.
      *
      * @api
