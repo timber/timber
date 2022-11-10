@@ -131,7 +131,7 @@ class TestTimberTheme extends Timber_UnitTestCase
                 'parent_slug' => null,
                 'slug' => 'twentynineteen',
                 'uri' => 'http://example.org/wp-content/themes/twentynineteen',
-                'version' => '1.4',
+                'version' => '2.4',
             ],
             'parent_slug' => 'twentynineteen',
             'slug' => 'fake-child-theme',

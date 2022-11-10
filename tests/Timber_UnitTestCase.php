@@ -229,13 +229,14 @@ class Timber_UnitTestCase extends TestCase
         if (!file_exists($dest_dir . '/views')) {
             mkdir($dest_dir . '/views', 0777, true);
         }
-        copy(__DIR__ . '/assets/style.css', $dest_dir . '/style.css');
+        copy(__DIR__ . '/assets/fake-child-theme-style.css', $dest_dir . '/style.css');
         copy(__DIR__ . '/assets/single.twig', $dest_dir . '/views/single.twig');
     }
 
     public static function _setupParentTheme()
     {
-        $dest_dir = WP_CONTENT_DIR . '/themes/twentynineteen';
+
+        $dest_dir = WP_CONTENT_DIR . '/themes/fake-parent-theme';
         if (!file_exists($dest_dir . '/views')) {
             mkdir($dest_dir . '/views', 0777, true);
         }
