@@ -412,6 +412,12 @@ class TestTimberCache extends Timber_UnitTestCase
         $result = trim(ob_get_clean());
 
         $this->assertEquals($post_ids[1], $result);
+
+        // Check if two transients exists.
+        global $wpdb;
+        $query = "SELECT * FROM {$wpdb->options} WHERE option_name LIKE '_transient_timberloader_%'";
+        $wpdb->get_results($query);
+        $this->assertSame(2, $wpdb->num_rows);
     }
 
     public function _swapFiles()
