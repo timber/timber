@@ -235,7 +235,7 @@ class Timber_UnitTestCase extends TestCase
 
     public static function _setupParentTheme()
     {
-        $dest_dir = WP_CONTENT_DIR . '/themes/twentyfifteen';
+        $dest_dir = WP_CONTENT_DIR . '/themes/twentynineteen';
         if (!file_exists($dest_dir . '/views')) {
             mkdir($dest_dir . '/views', 0777, true);
         }

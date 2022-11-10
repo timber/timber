@@ -4,10 +4,10 @@ class TestTimberSite extends Timber_UnitTestCase
 {
     public function testStandardThemeLocation()
     {
-        switch_theme('twentyfifteen');
+        switch_theme('twentynineteen');
         $site = new \Timber\Site();
         $content_subdir = Timber\URLHelper::get_content_subdir();
-        $this->assertEquals($content_subdir . '/themes/twentyfifteen', $site->theme->path);
+        $this->assertEquals($content_subdir . '/themes/twentynineteen', $site->theme->path);
     }
 
     public function testLanguageAttributes()
@@ -26,21 +26,21 @@ class TestTimberSite extends Timber_UnitTestCase
         switch_theme('fake-child-theme');
         $site = new Timber\Site();
         $this->assertEquals($content_subdir . '/themes/fake-child-theme', $site->theme->path);
-        $this->assertEquals($content_subdir . '/themes/twentyfifteen', $site->theme->parent->path);
+        $this->assertEquals($content_subdir . '/themes/twentynineteen', $site->theme->parent->path);
     }
 
     public function testThemeFromContext()
     {
-        switch_theme('twentyfifteen');
+        switch_theme('twentynineteen');
         $context = Timber::context();
-        $this->assertEquals('twentyfifteen', $context['theme']->slug);
+        $this->assertEquals('twentynineteen', $context['theme']->slug);
     }
 
     public function testThemeFromSiteContext()
     {
-        switch_theme('twentyfifteen');
+        switch_theme('twentynineteen');
         $context = Timber::context();
-        $this->assertEquals('twentyfifteen', $context['site']->theme->slug);
+        $this->assertEquals('twentynineteen', $context['site']->theme->slug);
     }
 
     public function testSiteURL()
