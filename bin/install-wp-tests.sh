@@ -191,6 +191,5 @@ install_wp_cli
 
 # Install twentynineteen theme.
 download https://downloads.wordpress.org/theme/twentynineteen.2.4.zip $WP_CORE_DIR/wp-content/themes/twentynineteen.zip
-# cp -f ./tests/assets/twentynineteen.zip $WP_CORE_DIR/wp-content/themes
-unzip -qu $WP_CORE_DIR/wp-content/themes/twentynineteen.zip -d $WP_CORE_DIR/wp-content/themes/
+unzip -oq $WP_CORE_DIR/wp-content/themes/twentynineteen.zip -d $WP_CORE_DIR/wp-content/themes/
 rm $WP_CORE_DIR/wp-content/themes/twentynineteen.zip
