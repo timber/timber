@@ -1477,10 +1477,21 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     }
 
     /**
-     * Returns the edit URL of a post if the user has access to it
+     * Checks whether the current user can edit the post.
      *
      * @api
-     * @return bool|string the edit URL of a post in the WordPress admin
+     * @example
+     * ```twig
+     * {% if post.can_edit %}
+     * <a href="{{ post.edit_link }}">Edit</a>
+     * {% endif %}
+     * ```
+     * @return bool
+     */
+    public function can_edit(): bool
+    {
+        return current_user_can('edit_post', $this->ID);
+    }
      */
     public function edit_link()
     {

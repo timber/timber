@@ -301,8 +301,21 @@ class Term extends CoreEntity
     }
 
     /**
+     * Checks whether the current user can edit the term.
+     *
      * @api
-     * @return string
+     * @example
+     * ```twig
+     * {% if term.can_edit %}
+     * <a href="{{ term.edit_link }}">Edit</a>
+     * {% endif %}
+     * ```
+     * @return bool
+     */
+    public function can_edit(): bool
+    {
+        return current_user_can('edit_term', $this->ID);
+    }
      */
     public function edit_link()
     {

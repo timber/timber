@@ -484,6 +484,23 @@ class Comment extends CoreEntity
         return get_comment_reply_link($args, $this->ID, $this->post_id);
     }
 
+    /**
+     * Checks whether the current user can edit the comment.
+     *
+     * @api
+     * @example
+     * ```twig
+     * {% if comment.can_edit %}
+     * <a href="{{ comment.edit_link }}">Edit</a>
+     * {% endif %}
+     * ```
+     * @return bool
+     */
+    public function can_edit(): bool
+    {
+        return current_user_can('edit_comment', $this->ID);
+    }
+
     /* AVATAR Stuff
     ======================= */
 

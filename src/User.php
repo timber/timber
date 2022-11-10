@@ -413,6 +413,23 @@ class User extends CoreEntity
     }
 
     /**
+     * Checks whether the current user can edit the post.
+     *
+     * @api
+     * @example
+     * ```twig
+     * {% if user.can_edit %}
+     * <a href="{{ user.edit_link }}">Edit</a>
+     * {% endif %}
+     * ```
+     * @return bool
+     */
+    public function can_edit(): bool
+    {
+        return current_user_can('edit_user', $this->ID);
+    }
+
+    /**
      * Gets a user’s avatar URL.
      *
      * @api
