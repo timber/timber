@@ -25,7 +25,7 @@ namespace Timber;
  * <script src="http://example.org/wp-content/themes/my-theme/static/js/all.js"></script>
  * ```
  */
-class Theme extends Core
+class Theme extends Core implements \JsonSerializable
 {
     /**
      * The human-friendly name of the theme (ex: `My Timber Starter Theme`)
@@ -208,5 +208,33 @@ class Theme extends Core
     public function display($header)
     {
         return $this->theme->display($header);
+    }
+
+    /**
+     * Returns serialized theme data.
+     *
+     * This data will e.g. be used when a `Timber\Theme` object is used to generate a key. We need to serialize the data
+     * because the $parent property is a reference to itself. This recursion would cause json_encode() to fail.
+     *
+     * @internal
+     * @return array
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            'name' => $this->name,
+            'parent' => [
+                'name' => $this->parent->name,
+                'parent' => null,
+                'parent_slug' => null,
+                'slug' => $this->parent->slug,
+                'uri' => $this->parent->uri,
+                'version' => $this->parent->version,
+            ],
+            'parent_slug' => $this->parent_slug,
+            'slug' => $this->slug,
+            'uri' => $this->uri,
+            'version' => $this->version,
+        ];
     }
 }
