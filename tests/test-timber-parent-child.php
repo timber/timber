@@ -7,8 +7,8 @@ class TestTimberParentChild extends Timber_UnitTestCase
 {
     public function testParentChildGeneral()
     {
-        self::_setupParentTheme();
-        self::_setupChildTheme();
+        $this->_setupParentTheme();
+        $this->_setupChildTheme();
         switch_theme('fake-child-theme');
         register_post_type('course');
 
@@ -21,6 +21,9 @@ class TestTimberParentChild extends Timber_UnitTestCase
         $str = Timber::compile(['single-course.twig', 'single.twig'], [
             'post' => $post,
         ]);
+
         $this->assertEquals('I am single course', $str);
+
+        unlink($dest_dir . '/views/single-course.twig');
     }
 }

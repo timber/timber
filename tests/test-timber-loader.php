@@ -97,8 +97,8 @@ class TestTimberLoader extends Timber_UnitTestCase
 
     public function testTwigLoadsFromChildTheme()
     {
-        parent::_setupParentTheme();
-        parent::_setupChildTheme();
+        $this->_setupParentTheme();
+        $this->_setupChildTheme();
         $this->assertFileExists(WP_CONTENT_DIR . '/themes/fake-child-theme/style.css');
         switch_theme('fake-child-theme');
         $child_theme = get_stylesheet_directory_uri();
@@ -110,8 +110,8 @@ class TestTimberLoader extends Timber_UnitTestCase
 
     public function testTwigLoadsFromParentTheme()
     {
-        parent::_setupParentTheme();
-        parent::_setupChildTheme();
+        $this->_setupParentTheme();
+        $this->_setupChildTheme();
         switch_theme('fake-child-theme');
         $templates = ['single-parent.twig'];
         $str = Timber::compile($templates, []);

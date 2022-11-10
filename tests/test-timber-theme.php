@@ -111,8 +111,8 @@ class TestTimberTheme extends Timber_UnitTestCase
 
     public function testTimberThemeJsonSerialize()
     {
-        self::_setupParentTheme();
-        self::_setupChildTheme();
+        $this->_setupParentTheme();
+        $this->_setupChildTheme();
         switch_theme('fake-child-theme');
 
         $theme = new Theme('fake-child-theme');

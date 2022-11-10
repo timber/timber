@@ -20,7 +20,9 @@ class TestTimberSite extends Timber_UnitTestCase
 
     public function testChildParentThemeLocation()
     {
-        TestTimberLoader::_setupChildTheme();
+        $this->_setupParentTheme();
+        $this->_setupChildTheme();
+
         $content_subdir = Timber\URLHelper::get_content_subdir();
         $this->assertFileExists(WP_CONTENT_DIR . '/themes/fake-child-theme/style.css');
         $this->assertFileExists(WP_CONTENT_DIR . '/themes/fake-parent-theme/style.css');
@@ -108,25 +110,13 @@ class TestTimberSite extends Timber_UnitTestCase
 
     public function set_up()
     {
-        global $wp_theme_directories;
-
         parent::set_up();
-
-        $this->backup_wp_theme_directories = $wp_theme_directories;
-        $wp_theme_directories = [WP_CONTENT_DIR . '/themes'];
-
-        wp_clean_themes_cache();
-        unset($GLOBALS['wp_themes']);
+        $this->clean_themes_cache();
     }
 
     public function tear_down()
     {
-        global $wp_theme_directories;
-
-        $wp_theme_directories = $this->backup_wp_theme_directories;
-
-        wp_clean_themes_cache();
-        unset($GLOBALS['wp_themes']);
+        $this->restore_themes();
         parent::tear_down();
     }
 }
