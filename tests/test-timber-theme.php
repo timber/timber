@@ -6,7 +6,7 @@ class TestTimberTheme extends Timber_UnitTestCase
 {
     protected $backup_wp_theme_directories;
 
-    public $theme_slug = 'twentythirty';
+    public $theme_slug = 'twentynineteen';
 
     public function testThemeVersion()
     {
