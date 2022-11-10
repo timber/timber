@@ -7,8 +7,8 @@ class TestTimberParentChild extends Timber_UnitTestCase
 {
     public function testParentChildGeneral()
     {
-        TestTimberLoader::_setupParentTheme();
-        TestTimberLoader::_setupChildTheme();
+        self::_setupParentTheme();
+        self::_setupChildTheme();
         switch_theme('fake-child-theme');
         register_post_type('course');
         //copy a specific file to the PARENT directory

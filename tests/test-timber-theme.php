@@ -1,5 +1,7 @@
 <?php
 
+use Timber\Theme;
+
 class TestTimberTheme extends Timber_UnitTestCase
 {
     protected $backup_wp_theme_directories;
@@ -105,6 +107,37 @@ class TestTimberTheme extends Timber_UnitTestCase
         $output = Timber::compile_string('{{site.theme.display("Description")}}', $context);
         $this->assertEquals("Our 2019 default theme is designed to show off the power of the block editor. It features custom styles for all the default blocks, and is built so that what you see in the editor looks like what you&#8217;ll see on your website. Twenty Nineteen is designed to be adaptable to a wide range of websites, whether you’re running a photo blog, launching a new business, or supporting a non-profit. Featuring ample whitespace and modern sans-serif headlines paired with classic serif body text, it&#8217;s built to be beautiful on all screen sizes.", $output);
         switch_theme('default');
+    }
+
+    public function testTimberThemeJsonSerialize()
+    {
+        self::_setupParentTheme();
+        self::_setupChildTheme();
+        switch_theme('fake-child-theme');
+
+        $theme = new Theme('fake-child-theme');
+
+        $encoded = json_encode($theme);
+
+        $this->assertNotFalse($encoded);
+
+        $decoded = json_decode($encoded, true);
+
+        $this->assertEquals([
+            'name' => 'Twenty Thirteen Child',
+            'parent' => [
+                'name' => 'Twenty Fifteen',
+                'parent' => null,
+                'parent_slug' => null,
+                'slug' => 'twentyfifteen',
+                'uri' => 'http://example.org/wp-content/themes/twentyfifteen',
+                'version' => '3.3',
+            ],
+            'parent_slug' => 'twentyfifteen',
+            'slug' => 'fake-child-theme',
+            'uri' => 'http://example.org/wp-content/themes/twentyfifteen',
+            'version' => '1.0.0',
+        ], $decoded);
     }
 
     public function set_up()
