@@ -588,15 +588,10 @@ class MenuItem extends CoreEntity
      *
      * @api
      * @since 2.0.0
-     * @example
-     * ```twig
-     * {% if post.can_edit %}
-     * {% endif %}
-     * ```
      * @return bool
      */
     public function can_edit(): bool
     {
-        return current_user_can('edit_post', $this->ID);
+        return current_user_can('edit_theme_options');
     }
 }
