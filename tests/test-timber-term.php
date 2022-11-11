@@ -626,7 +626,7 @@ class TestTimberTerm extends Timber_UnitTestCase
         $this->assertNotTrue($term->meta('foo'));
     }
 
-    public function testTermEditLink()
+    public function testEditLink()
     {
         wp_set_current_user(1);
         $tid = $this->factory->term->create([

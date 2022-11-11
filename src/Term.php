@@ -307,7 +307,7 @@ class Term extends CoreEntity
      * @example
      * ```twig
      * {% if term.can_edit %}
-     * <a href="{{ term.edit_link }}">Edit</a>
+     *     <a href="{{ term.edit_link }}">Edit</a>
      * {% endif %}
      * ```
      * @return bool
@@ -324,7 +324,7 @@ class Term extends CoreEntity
      * @example
      * ```twig
      * {% if term.can_edit %}
-     * <a href="{{ term.edit_link }}">Edit</a>
+     *    <a href="{{ term.edit_link }}">Edit</a>
      * {% endif %}
      * ```
      * @return string|null The edit URL of a term in the WordPress admin or null if the current user can’t edit the

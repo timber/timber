@@ -419,7 +419,7 @@ class User extends CoreEntity
      * @example
      * ```twig
      * {% if user.can_edit %}
-     * <a href="{{ user.edit_link }}">Edit</a>
+     *     <a href="{{ user.edit_link }}">Edit</a>
      * {% endif %}
      * ```
      * @return bool
@@ -430,18 +430,28 @@ class User extends CoreEntity
     }
 
     /**
-     * Gets the edit link for a user if the current user has the correct rights.
+     * Gets the edit link for a user if the current user has the correct rights or the profile link for the current
+     * user.
      *
      * @api
+     * @since 2.0.0
      * @example
      * ```twig
      * {% if user.can_edit %}
-     * <a href="{{ user.edit_link }}">Edit</a>
+     *     <a href="{{ user.edit_link }}">Edit</a>
      * {% endif %}
      * ```
-     * @since 2.0.0
-     * @return string|null The edit URL of a user in the WordPress admin or null if the current user can’t edit the
-     *                     post.
+     *
+     * Get the profile URL for the current user:
+     *
+     * ```twig
+     * {# Assuming user is the current user. #}
+     * {% if user %}
+     *     <a href="{{ user.edit_link }}">My profile</a>
+     * {% endif %}
+     * ```
+     * @return string|null The edit URL of a user in the WordPress admin or the profile link if the user object is for
+     *                     the current user. Null if the current user can’t edit the user.
      */
     public function edit_link()
     {

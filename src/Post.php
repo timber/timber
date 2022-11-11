@@ -1483,7 +1483,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * @example
      * ```twig
      * {% if post.can_edit %}
-     * <a href="{{ post.edit_link }}">Edit</a>
+     *     <a href="{{ post.edit_link }}">Edit</a>
      * {% endif %}
      * ```
      * @return bool
@@ -1500,7 +1500,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * @example
      * ```twig
      * {% if post.can_edit %}
-     * <a href="{{ post.edit_link }}">Edit</a>
+     *     <a href="{{ post.edit_link }}">Edit</a>
      * {% endif %}
      * ```
      * @return string|null The edit URL of a post in the WordPress admin or null if the current user can’t edit the

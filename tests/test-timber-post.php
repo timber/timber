@@ -1170,10 +1170,7 @@ class TestTimberPost extends Timber_UnitTestCase
         update_option('home', 'http://example.org', true);
     }
 
-    /**
-     * @group failing
-     */
-    public function testEditUrl()
+    public function testEditLink()
     {
         ini_set("log_errors", 1);
         ini_set("error_log", "/tmp/php-error.log");

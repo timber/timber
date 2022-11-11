@@ -491,7 +491,7 @@ class Comment extends CoreEntity
      * @example
      * ```twig
      * {% if comment.can_edit %}
-     * <a href="{{ comment.edit_link }}">Edit</a>
+     *     <a href="{{ comment.edit_link }}">Edit</a>
      * {% endif %}
      * ```
      * @return bool
@@ -509,7 +509,7 @@ class Comment extends CoreEntity
      * @example
      * ```twig
      * {% if comment.can_edit %}
-     * <a href="{{ comment.edit_link }}">Edit</a>
+     *     <a href="{{ comment.edit_link }}">Edit</a>
      * {% endif %}
      * ```
      * @return string|null The edit URL of a comment in the WordPress admin or null if the current user can’t edit the

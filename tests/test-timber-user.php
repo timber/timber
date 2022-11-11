@@ -183,6 +183,42 @@ class TestTimberUser extends Timber_UnitTestCase
         ]));
     }
 
+    public function testEditLink()
+    {
+        $subscriber_id = $this->factory->user->create([
+            'display_name' => 'Subscriber Sam',
+            'user_login' => 'subsam',
+            'role' => 'subscriber',
+        ]);
+
+        $editor_id = $this->factory->user->create([
+            'display_name' => 'Emilia Editore',
+            'user_login' => 'eeditore',
+            'role' => 'editor',
+        ]);
+
+        $subscriber = Timber::get_user($subscriber_id);
+        $editor = Timber::get_user($editor_id);
+        $admin = Timber::get_user(1);
+
+        // Test admin role.
+        wp_set_current_user(1);
+        $this->assertEquals(
+            'http://example.org/wp-admin/user-edit.php?user_id=' . $subscriber_id,
+            $subscriber->edit_link()
+        );
+        $this->assertEquals('http://example.org/wp-admin/user-edit.php?user_id=' . $editor_id, $editor->edit_link());
+        $this->assertEquals('http://example.org/wp-admin/profile.php', $admin->edit_link());
+
+        // Test subscriber role.
+        wp_set_current_user($subscriber_id);
+        $this->assertEquals('http://example.org/wp-admin/profile.php', $subscriber->edit_link());
+        $this->assertNull($editor->edit_link());
+        $this->assertNull($admin->edit_link());
+
+        wp_set_current_user(0);
+    }
+
     public function testWPObject()
     {
         $user_id = $this->factory()->user->create();
