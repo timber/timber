@@ -68,13 +68,13 @@ class TestTimberUser extends Timber_UnitTestCase
 
     public function testUserCapability()
     {
-        $uid = $this->factory->user->create([
+        $this->factory->user->create([
             'display_name' => 'Tito Bottitta',
             'user_login' => 'mbottitta',
             'role' => 'editor',
         ]);
 
-        $subscriber_uid = $this->factory->user->create([
+        $this->factory->user->create([
             'display_name' => 'Baberaham Lincoln',
             'user_login' => 'blincoln',
             'role' => 'subscriber',

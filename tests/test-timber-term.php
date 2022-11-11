@@ -162,6 +162,26 @@ class TestTimberTerm extends Timber_UnitTestCase
         $this->assertFalse(strstr($term->path(), 'http://'));
     }
 
+    public function testCanEdit()
+    {
+        $subscriber_id = $this->factory->user->create([
+            'display_name' => 'Subscriber Sam',
+            'user_login' => 'subsam',
+            'role' => 'subscriber',
+        ]);
+
+        // Test admin role.
+        wp_set_current_user(1);
+        $term_id = $this->factory->term->create();
+        $term = Timber::get_term($term_id);
+        $this->assertTrue($term->can_edit());
+
+        // Test subscriber role.
+        wp_set_current_user($subscriber_id);
+        $this->assertFalse($term->can_edit());
+
+        wp_set_current_user(0);
+    }
 
     /*
      * Term::posts() tests
