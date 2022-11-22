@@ -136,7 +136,9 @@ class MenuItem extends CoreEntity
         $this->wp_object = $data;
         $this->menu = $menu;
 
-        $data = (object) $data;
+        /**
+         * @property string $title The nav menu item title.
+         */
         $this->title = $data->title;
 
         $this->import($data);
