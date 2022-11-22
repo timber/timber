@@ -192,10 +192,10 @@ class Post extends CoreEntity implements DatedInterface, Setupable
          *
          * Used internally for previews.
          *
-         * @see   Timber::init()
          * @since 2.0.0
-         * @param array $data An array of post data to import.
-         * @param \Timber\Post The Timber post instance.
+         * @see   Timber::init()
+         * @param array        $data An array of post data to import.
+         * @param \Timber\Post $post The Timber post instance.
          */
         $data = apply_filters('timber/post/import_data', $data, $post);
 
