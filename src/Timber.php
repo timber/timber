@@ -149,7 +149,7 @@ class Timber
         });
 
         // @todo find a more permanent home for this stuff, maybe in a QueryHelper class?
-        add_filter('pre_get_posts', function (WP_Query $query) {
+        add_action('pre_get_posts', function (WP_Query $query) {
             $cat = $query->query['category'] ?? null;
             if ($cat && !isset($query->query['cat'])) {
                 unset($query->query['category']);
@@ -157,7 +157,7 @@ class Timber
             }
         });
 
-        add_filter('pre_get_posts', function (WP_Query $query) {
+        add_action('pre_get_posts', function (WP_Query $query) {
             $count = $query->query['numberposts'] ?? null;
             if ($count && !isset($query->query['posts_per_page'])) {
                 $query->set('posts_per_page', $count);
