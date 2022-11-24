@@ -1189,7 +1189,6 @@ class Timber
     {
         if (empty(self::$context_cache)) {
             self::$context_cache['site'] = new Site();
-            self::$context_cache['request'] = new Request();
             self::$context_cache['theme'] = self::$context_cache['site']->theme;
             self::$context_cache['user'] = is_user_logged_in() ? static::get_user() : false;
 
