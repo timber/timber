@@ -81,7 +81,6 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
      */
     protected function fetch_meta($field_name = '', $args = [], $apply_filters = true)
     {
-
         /**
          * Filters whether to transform a meta value.
          *
@@ -176,12 +175,18 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
 
         if (null === $object_meta) {
             // Fetch values. Auto-fetches all values if $field_name is empty.
-            $object_meta = call_user_func_array("get_{$object_type}_meta", [$this->ID, $field_name, true]);
+            $object_meta = get_metadata($object_type, $this->ID, $field_name, true);
 
             // Mimick $single argument when fetching all meta values.
             if (empty($field_name) && is_array($object_meta) && !empty($object_meta)) {
                 $object_meta = array_map(function ($meta) {
-                    if (1 === count($meta) && isset($meta[0])) {
+                    /**
+                     * We use array_key_exists() instead of isset(), because when the meta value is null, isset() would
+                     * return false, even though null is a valid value to return.
+                     *
+                     * @ticket #2519
+                     */
+                    if (1 === count($meta) && array_key_exists(0, $meta)) {
                         return $meta[0];
                     }
 

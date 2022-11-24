@@ -73,7 +73,6 @@ class Helper
     protected static function handle_transient_locking($slug, $callback, $transient_time, $lock_timeout, $force, $enable_transients)
     {
         if ($enable_transients && self::_is_transient_locked($slug)) {
-
             /**
              * Filters …
              *

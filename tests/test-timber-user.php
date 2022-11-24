@@ -73,9 +73,29 @@ class TestTimberUser extends Timber_UnitTestCase
             'user_login' => 'mbottitta',
             'role' => 'editor',
         ]);
+
+        $subscriber_uid = $this->factory->user->create([
+            'display_name' => 'Baberaham Lincoln',
+            'user_login' => 'blincoln',
+            'role' => 'subscriber',
+        ]);
+
+        $post_id = wp_insert_post(
+            [
+                'post_title' => 'Baseball',
+                'post_content' => 'is fine, I guess',
+                'post_status' => 'publish',
+            ]
+        );
+
         $user = Timber::get_user_by('login', 'mbottitta');
+        $subscriber = Timber::get_user_by('login', 'blincoln');
+
         $this->assertTrue($user->can('edit_posts'));
+        $this->assertTrue($user->can('edit_post', $post_id));
         $this->assertFalse($user->can('activate_plugins'));
+        $this->assertFalse($subscriber->can('edit_posts'));
+        $this->assertFalse($subscriber->can('edit_post', $post_id));
     }
 
     public function testUserRole()

@@ -1,5 +1,6 @@
 <?php
 
+
 require_once(__DIR__ . '/php/timber-post-subclass.php');
 
 /**
@@ -319,6 +320,7 @@ class TestTimberHelper extends Timber_UnitTestCase
     public function testArrayFilterWithBogusArray()
     {
         $this->expectException(Twig\Error\RuntimeError::class);
+
         $template = '{% for post in posts | filter({slug:"snoop", post_content:"Idris Elba"}, "OR")%}{{ post.title }} {% endfor %}';
         $str = Timber::compile_string($template, [
             'posts' => 'foobar',
@@ -328,7 +330,6 @@ class TestTimberHelper extends Timber_UnitTestCase
 
     public function testConvertWPObject()
     {
-
         // Test WP_Post -> \Timber\Post
         $post_id = $this->factory->post->create();
         $wp_post = get_post($post_id);
