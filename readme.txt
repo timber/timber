@@ -38,6 +38,10 @@ _Twig is the template language powering Timber; if you need a little background 
 
 **Fixes and improvements**
 
+= 1.22.1 =
+
+* Fixed a bug when Twig version 3 was accidentally installed when installing Timber through Composer, by @rmens in https://github.com/timber/timber/pull/2679.
+
 = 1.22.0 =
 
 * Fixed included Twig version. In the plugin version 1.21.0 of Timber, Twig version 2.15.3 was accidentally included instead of Twig version 1.44.7.
