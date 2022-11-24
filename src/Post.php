@@ -1506,7 +1506,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * @return string|null The edit URL of a post in the WordPress admin or null if the current user can’t edit the
      *                     post.
      */
-    public function edit_link()
+    public function edit_link(): ?string
     {
         if (!$this->can_edit()) {
             return null;

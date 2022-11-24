@@ -515,7 +515,7 @@ class Comment extends CoreEntity
      * @return string|null The edit URL of a comment in the WordPress admin or null if the current user can’t edit the
      *                     comment.
      */
-    public function edit_link()
+    public function edit_link(): ?string
     {
         if (!$this->can_edit()) {
             return null;

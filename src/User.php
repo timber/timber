@@ -453,7 +453,7 @@ class User extends CoreEntity
      * @return string|null The edit URL of a user in the WordPress admin or the profile link if the user object is for
      *                     the current user. Null if the current user can’t edit the user.
      */
-    public function edit_link()
+    public function edit_link(): ?string
     {
         if (!$this->can_edit()) {
             return null;
