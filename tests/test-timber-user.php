@@ -123,7 +123,7 @@ class TestTimberUser extends Timber_UnitTestCase
             'post_author' => $uid,
         ]);
         $post = Timber::get_post($pid);
-        $str = Timber::compile_string("{{post.author.meta('description')}}", [
+        $str = Timber::compile_string("{{post.author.description}}", [
             'post' => $post,
         ]);
         $this->assertEquals('Sixteenth President', $str);
