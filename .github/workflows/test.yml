@@ -62,6 +62,11 @@ jobs:
             dependency-version: 'highest'
             multisite: '0'
             experimental: true
+          - php: '8.2'
+            wp: 'trunk'
+            dependency-version: 'highest'
+            multisite: '0'
+            experimental: true
           # PHP with Imagick
           - php: '7.4'
             wp: 'latest'
