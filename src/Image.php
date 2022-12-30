@@ -74,7 +74,7 @@ class Image extends Attachment implements ImageInterface
      * @internal
      * @var ImageDimensions stores Image Dimensions in a structured way.
      */
-    protected ImageDimensions $imageDimensions;
+    protected ImageDimensions $image_dimensions;
 
     /**
      * @return string the src of the file
@@ -100,7 +100,7 @@ class Image extends Attachment implements ImageInterface
         $data = parent::get_info($wp_post);
 
         if (isset($data['file_loc'])) {
-            $data['imageDimensions'] = new ImageDimensions($data['file_loc']);
+            $data['image_dimensions'] = new ImageDimensions($data['file_loc']);
         }
 
         return $data;
@@ -120,7 +120,7 @@ class Image extends Attachment implements ImageInterface
             'Image::get_width | Image::get_height',
             '2.0.0'
         );
-        return [$this->imageDimensions->width(), $this->imageDimensions->height()];
+        return [$this->image_dimensions->width(), $this->image_dimensions->height()];
     }
 
     /**
@@ -136,7 +136,7 @@ class Image extends Attachment implements ImageInterface
             'Image::get_width | Image::get_height',
             '2.0.0'
         );
-        return $this->imageDimensions->get_dimension($dim);
+        return $this->image_dimensions->get_dimension($dim);
     }
 
     /**
@@ -235,7 +235,7 @@ class Image extends Attachment implements ImageInterface
      */
     public function width()
     {
-        return $this->imageDimensions->width();
+        return $this->image_dimensions->width();
     }
 
     /**
@@ -254,7 +254,7 @@ class Image extends Attachment implements ImageInterface
      */
     public function height()
     {
-        return $this->imageDimensions->height();
+        return $this->image_dimensions->height();
     }
 
     /**
@@ -275,7 +275,7 @@ class Image extends Attachment implements ImageInterface
      */
     public function aspect()
     {
-        return $this->imageDimensions->aspect();
+        return $this->image_dimensions->aspect();
     }
 
     /**
@@ -317,7 +317,7 @@ class Image extends Attachment implements ImageInterface
             'Image::get_width | Image::get_height',
             '2.0.0'
         );
-        return $this->imageDimensions->get_dimension($dimension);
+        return $this->image_dimensions->get_dimension($dimension);
     }
 
     /**
@@ -330,7 +330,7 @@ class Image extends Attachment implements ImageInterface
      */
     protected function get_dimension_loaded($dim = null)
     {
-        return $this->imageDimensions->get_dimension($dim);
+        return $this->image_dimensions->get_dimension($dim);
     }
 
     /**

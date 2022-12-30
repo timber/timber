@@ -64,7 +64,7 @@ class ExternalImage implements ImageInterface
      * @api
      * @var string
      */
-    private $_caption;
+    private $caption = '';
 
     /**
      * File.
@@ -131,7 +131,7 @@ class ExternalImage implements ImageInterface
      * @internal
      * @var ImageDimensions stores Image Dimensions in a structured way.
      */
-    protected ImageDimensions $imageDimensions;
+    protected ImageDimensions $image_dimensions;
 
     /**
      * Inits the ExternalImage object.
@@ -343,7 +343,7 @@ class ExternalImage implements ImageInterface
      */
     public function width()
     {
-        return $this->imageDimensions->width();
+        return $this->image_dimensions->width();
     }
 
     /**
@@ -362,7 +362,7 @@ class ExternalImage implements ImageInterface
      */
     public function height()
     {
-        return $this->imageDimensions->height();
+        return $this->image_dimensions->height();
     }
 
     /**
@@ -383,7 +383,7 @@ class ExternalImage implements ImageInterface
      */
     public function aspect()
     {
-        return $this->imageDimensions->aspect();
+        return $this->image_dimensions->aspect();
     }
 
     /**
@@ -403,7 +403,7 @@ class ExternalImage implements ImageInterface
      */
     public function set_caption($caption)
     {
-        $this->_caption = $caption;
+        $this->caption = $caption;
     }
 
     /**
@@ -420,7 +420,7 @@ class ExternalImage implements ImageInterface
         $this->abs_url = $url;
         $this->file_loc = $file_path;
         $this->file = $file_path;
-        $this->imageDimensions = new ImageDimensions($file_path);
+        $this->image_dimensions = new ImageDimensions($file_path);
         $this->file_size = new FileSize($file_path);
     }
 
@@ -438,7 +438,7 @@ class ExternalImage implements ImageInterface
         $this->abs_url = home_url($relative_path);
         $this->file_loc = $file_path;
         $this->file = $file_path;
-        $this->imageDimensions = new ImageDimensions($file_path);
+        $this->image_dimensions = new ImageDimensions($file_path);
         $this->file_size = new FileSize($file_path);
     }
 
@@ -464,10 +464,10 @@ class ExternalImage implements ImageInterface
             $this->file_loc = URLHelper::remove_double_slashes(
                 ABSPATH . URLHelper::get_rel_url($url)
             );
-            $this->imageDimensions = new ImageDimensions($this->file_loc);
+            $this->image_dimensions = new ImageDimensions($this->file_loc);
             $this->file_size = new FileSize($this->file_loc);
         } else {
-            $this->imageDimensions = new ImageDimensions();
+            $this->image_dimensions = new ImageDimensions();
         }
     }
 
@@ -496,7 +496,7 @@ class ExternalImage implements ImageInterface
 
     public function caption()
     {
-        return $this->_caption;
+        return $this->caption;
     }
 
     public function img_sizes($size = "full")
