@@ -65,30 +65,6 @@ class User extends CoreEntity
 
     /**
      * @api
-     * @var string The description from WordPress
-     */
-    public $description;
-
-    /**
-     * @api
-     * @var string
-     */
-    public $display_name = '';
-
-    /**
-     * @api
-     * @var string The first name of the user
-     */
-    public $first_name;
-
-    /**
-     * @api
-     * @var string The last name of the user
-     */
-    public $last_name;
-
-    /**
-     * @api
      * @var int The ID from WordPress
      */
     public $id;

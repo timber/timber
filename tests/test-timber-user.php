@@ -123,10 +123,42 @@ class TestTimberUser extends Timber_UnitTestCase
             'post_author' => $uid,
         ]);
         $post = Timber::get_post($pid);
-        $str = Timber::compile_string("{{post.author.meta('description')}}", [
+        $str = Timber::compile_string("{{ post.author.description }}", [
             'post' => $post,
         ]);
         $this->assertEquals('Sixteenth President', $str);
+    }
+
+    public function testUserData()
+    {
+        $user_id = $this->factory->user->create([
+            'display_name' => 'Baberaham Lincoln',
+            'user_login' => 'blincoln',
+            'user_email' => 'babe@exmample.org',
+        ]);
+        $user = Timber::get_user($user_id);
+
+        update_user_meta($user_id, 'first_name', 'Baberaham');
+        update_user_meta($user_id, 'last_name', 'Lincoln');
+        update_user_meta($user_id, 'description', 'Sixteenth President');
+
+        $result = Timber::compile_string(
+            '{{ user.first_name }}, {{ user.last_name }}, {{ user.user_nicename }}, {{ user.display_name }}, {{ user.user_email }}, {{ user.description }}',
+            [
+                'user' => $user,
+            ]
+        );
+
+        $this->assertEquals('Baberaham, Lincoln, blincoln, Baberaham Lincoln, babe@exmample.org, Sixteenth President', $result);
+
+        $result = Timber::compile_string(
+            "{{ user.meta('first_name') }}, {{ user.meta('last_name') }}, {{ user.user_nicename }}, {{ user.display_name }}, {{ user.user_email }}, {{ user.meta('description') }}",
+            [
+                'user' => $user,
+            ]
+        );
+
+        $this->assertEquals('Baberaham, Lincoln, blincoln, Baberaham Lincoln, babe@exmample.org, Sixteenth President', $result);
     }
 
     public function testInitShouldUnsetPassword()
