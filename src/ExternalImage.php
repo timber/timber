@@ -23,10 +23,10 @@ namespace Timber;
  *
  * ```twig
  * <article>
- *   <img src="{{cover_image.src}}" class="cover-image" />
- *   <h1 class="headline">{{post.title}}</h1>
+ *   <img src="{{ cover_image.src }}" class="cover-image" />
+ *   <h1 class="headline">{{ post.title }}</h1>
  *   <div class="body">
- *     {{post.content}}
+ *     {{ post.content }}
  *   </div>
  * </article>
  * ```
