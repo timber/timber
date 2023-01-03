@@ -6,7 +6,7 @@ namespace Timber;
  * Class ExternalImage
  *
  * The `Timber\ExternalImage` class represents an image that is not part of the WordPress content (Attachment).
- * Instead, it's an image that can be either a path (relative/absolute) on the same server, or any arbitrary HTTP
+ * Instead, it’s an image that can be either a path (relative/absolute) on the same server, or any arbitrary HTTP
  * resource (either from the same or from a different website).
  *
  * @api
@@ -28,10 +28,6 @@ namespace Timber;
  *   <div class="body">
  *     {{post.content}}
  *   </div>
- *
- *  <img
- *    src="{{ get_image(post.custom_field_with_image_id).src }}"
- *    alt="Another way to initialize images as Timber\Image objects, but within Twig" />
  * </article>
  * ```
  *
@@ -42,9 +38,6 @@ namespace Timber;
  *   <div class="body">
  *     Whatever whatever
  *   </div>
- *   <img
- *     src="http://example.org/wp-content/uploads/2015/06/kurt.jpg"
- *     alt="Another way to initialize images as Timber\Image objects, but within Twig" />
  * </article>
  * ```
  */
@@ -139,7 +132,6 @@ class ExternalImage implements ImageInterface
      * @param $url string URL to load the image from.
      * @param $alt string ALT text for the image.
      * @internal
-     *
      */
     public static function build($url, array $args = [])
     {
@@ -389,7 +381,7 @@ class ExternalImage implements ImageInterface
     /**
      * Sets the relative alt text of the image.
      *
-     * @param string $alt Alt text for the image
+     * @param string $alt Alt text for the image.
      */
     public function set_alt_text($alt)
     {
@@ -399,7 +391,7 @@ class ExternalImage implements ImageInterface
     /**
      * Sets the relative alt text of the image.
      *
-     * @param string $alt Alt text for the image
+     * @param string $caption Caption text for the image
      */
     public function set_caption($caption)
     {

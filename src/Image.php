@@ -116,8 +116,8 @@ class Image extends Attachment implements ImageInterface
     protected function get_dimensions($dim)
     {
         Helper::deprecated(
-            'Image::get_dimensions',
-            'Image::get_width | Image::get_height',
+            'Image::get_dimensions()',
+            'Image::get_width() | Image::get_height()',
             '2.0.0'
         );
         return [$this->image_dimensions->width(), $this->image_dimensions->height()];
@@ -132,8 +132,8 @@ class Image extends Attachment implements ImageInterface
     protected function get_dimensions_loaded($dim)
     {
         Helper::deprecated(
-            'Image::get_dimensions',
-            'Image::get_width | Image::get_height',
+            'Image::get_dimensions()',
+            'Image::get_width() or Image::get_height()',
             '2.0.0'
         );
         return $this->image_dimensions->get_dimension($dim);
@@ -313,8 +313,8 @@ class Image extends Attachment implements ImageInterface
     protected function get_dimension($dimension)
     {
         Helper::deprecated(
-            'Image::get_dimension',
-            'Image::get_width | Image::get_height',
+            'Image::get_dimension()',
+            'Image::get_width() or Image::get_height()',
             '2.0.0'
         );
         return $this->image_dimensions->get_dimension($dimension);
