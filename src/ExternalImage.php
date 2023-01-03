@@ -383,7 +383,7 @@ class ExternalImage implements ImageInterface
      *
      * @param string $alt Alt text for the image.
      */
-    public function set_alt_text($alt)
+    public function set_alt_text(string $alt)
     {
         $this->alt_text = $alt;
     }
@@ -393,7 +393,7 @@ class ExternalImage implements ImageInterface
      *
      * @param string $caption Caption text for the image
      */
-    public function set_caption($caption)
+    public function set_caption(string $caption)
     {
         $this->caption = $caption;
     }
@@ -481,12 +481,12 @@ class ExternalImage implements ImageInterface
      *
      * @api
      */
-    public function alt()
+    public function alt(): string
     {
         return $this->alt_text;
     }
 
-    public function caption()
+    public function caption(): string
     {
         return $this->caption;
     }

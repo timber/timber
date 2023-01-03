@@ -366,7 +366,7 @@ class Timber
      *
      * @return ExternalImage|null
      */
-    public static function get_external_image($url = false, array $args = [])
+    public static function get_external_image($url = false, array $args = []): ?ExternalImage
     {
         $args = wp_parse_args($args, [
             'alt' => '',

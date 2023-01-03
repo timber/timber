@@ -49,7 +49,7 @@ class ImageDimensions
      *
      * @api
      */
-    public function width()
+    public function width(): int
     {
         return $this->get_dimension('width');
     }
@@ -68,7 +68,7 @@ class ImageDimensions
      *
      * @api
      */
-    public function height()
+    public function height(): int
     {
         return $this->get_dimension('height');
     }
@@ -89,7 +89,7 @@ class ImageDimensions
      *
      * @api
      */
-    public function aspect()
+    public function aspect(): float
     {
         $w = intval($this->width());
         $h = intval($this->height());
@@ -105,7 +105,7 @@ class ImageDimensions
      * @internal
      *
      */
-    public function get_dimension($dimension)
+    public function get_dimension($dimension): ?int
     {
         // Load from internal cache.
         if (isset($this->dimensions)) {
@@ -138,7 +138,7 @@ class ImageDimensions
      * @internal
      *
      */
-    protected function get_dimension_loaded($dim = null)
+    protected function get_dimension_loaded($dim = null): int
     {
         $dim = strtolower($dim);
 
