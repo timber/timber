@@ -354,6 +354,28 @@ class Timber
     }
 
     /**
+     * Gets an external image.
+     *
+     * Behaves just like Timber::get_image(), except that it uses a URL to load an image
+     *
+     * @api
+     * @since 2.0.0
+     * @see Timber::get_image()
+     *
+     * @param string $url   Url where to load an image from
+     *
+     * @return ExternalImage|null
+     */
+    public static function get_external_image($url = false, array $args = [])
+    {
+        $args = wp_parse_args($args, [
+            'alt' => '',
+        ]);
+
+        return ExternalImage::build($url, $args);
+    }
+
+    /**
      * Gets a collection of posts.
      *
      * Refer to the official documentation for
@@ -1260,10 +1282,10 @@ class Timber
     }
 
     /**
-     * Compile a Twig file.
+     * Compiles a Twig file.
      *
-     * Passes data to a Twig file and returns the output.
-     * If the template file doesn't exist it will throw a warning when WP_DEBUG is enabled.
+     * Passes data to a Twig file and returns the output. If the template file doesn't exist it will throw a warning
+     * when WP_DEBUG is enabled.
      *
      * @api
      * @example
@@ -1276,8 +1298,8 @@ class Timber
      *
      * $team_member = Timber::compile( 'team-member.twig', $data );
      * ```
-     * @param array|string $filenames  Name of the Twig file to render. If this is an array of files, Timber will
-     *                                 render the first file that exists.
+     * @param array|string $filenames  Name or full path of the Twig file to compile. If this is an array of file
+     *                                 names or paths, Timber will compile the first file that exists.
      * @param array        $data       Optional. An array of data to use in Twig template.
      * @param bool|int     $expires    Optional. In seconds. Use false to disable cache altogether. When passed an
      *                                 array, the first value is used for non-logged in visitors, the second for users.
@@ -1523,7 +1545,7 @@ class Timber
     }
 
     /**
-     * Render function.
+     * Renders a Twig file.
      *
      * Passes data to a Twig file and echoes the output.
      *
@@ -1534,8 +1556,8 @@ class Timber
      *
      * Timber::render( 'index.twig', $context );
      * ```
-     * @param array|string $filenames  Name of the Twig file to render. If this is an array of files, Timber will
-     *                                 render the first file that exists.
+     * @param array|string $filenames  Name or full path of the Twig file to render. If this is an array of file
+     *                                 names or paths, Timber will render the first file that exists.
      * @param array        $data       Optional. An array of data to use in Twig template.
      * @param bool|int     $expires    Optional. In seconds. Use false to disable cache altogether. When passed an
      *                                 array, the first value is used for non-logged in visitors, the second for users.

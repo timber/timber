@@ -49,7 +49,12 @@ class TestTimberMeta extends Timber_UnitTestCase
         $comment_id = $this->factory->comment->create();
 
         update_post_meta($post_id, 'meta1', 'Meta 1');
+        add_post_meta($post_id, 'meta_array', 'Meta 1');
+        add_post_meta($post_id, 'meta_array', 'Meta 2');
         update_post_meta($post_id, 'meta2', 'Meta 2');
+        update_post_meta($post_id, 'meta_null', null);
+        add_post_meta($post_id, 'meta_array_null', null);
+        add_post_meta($post_id, 'meta_array_null', null);
         update_term_meta($term_id, 'meta1', 'Meta 1');
         update_term_meta($term_id, 'meta2', 'Meta 2');
         update_user_meta($user_id, 'meta1', 'Meta 1');
@@ -64,6 +69,9 @@ class TestTimberMeta extends Timber_UnitTestCase
 
         $this->assertEquals('Meta 1', $post->meta()['meta1']);
         $this->assertEquals('Meta 2', $post->meta()['meta2']);
+        $this->assertNull($post->meta()['meta_null']);
+        $this->assertEquals([null, null], $post->meta()['meta_array_null']);
+        $this->assertEquals(['Meta 1', 'Meta 2'], $post->meta()['meta_array']);
 
         $this->assertEquals('Meta 1', $term->meta()['meta1']);
         $this->assertEquals('Meta 2', $term->meta()['meta2']);

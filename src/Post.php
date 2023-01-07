@@ -1170,22 +1170,47 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         if ($len == -1 && $page == 0 && $this->___content) {
             return $this->___content;
         }
+
         $content = $this->post_content;
+
         if ($len > 0) {
             $content = wp_trim_words($content, $len);
         }
-        if ($page) {
-            $contents = explode('<!--nextpage-->', $content);
+
+        /**
+         * Page content split by <!--nextpage-->.
+         *
+         * @see WP_Query::generate_postdata()
+         */
+        if ($page && false !== strpos($content, '<!--nextpage-->')) {
+            $content = str_replace("\n<!--nextpage-->\n", '<!--nextpage-->', $content);
+            $content = str_replace("\n<!--nextpage-->", '<!--nextpage-->', $content);
+            $content = str_replace("<!--nextpage-->\n", '<!--nextpage-->', $content);
+
+            // Remove the nextpage block delimiters, to avoid invalid block structures in the split content.
+            $content = str_replace('<!-- wp:nextpage -->', '', $content);
+            $content = str_replace('<!-- /wp:nextpage -->', '', $content);
+
+            // Ignore nextpage at the beginning of the content.
+            if (0 === strpos($content, '<!--nextpage-->')) {
+                $content = substr($content, 15);
+            }
+
+            $pages = explode('<!--nextpage-->', $content);
             $page--;
-            if (count($contents) > $page) {
-                $content = $contents[$page];
+
+            if (count($pages) > $page) {
+                $content = $pages[$page];
             }
         }
+
         $content = $this->content_handle_no_teaser_block($content);
         $content = apply_filters('the_content', ($content));
+
         if ($len == -1 && $page == 0) {
             $this->___content = $content;
         }
+
         return $content;
     }
 

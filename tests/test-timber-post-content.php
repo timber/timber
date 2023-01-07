@@ -56,6 +56,116 @@ class TestTimberPostContent extends Timber_UnitTestCase
         $this->assertEquals($page2, trim(strip_tags($post->paged_content())));
     }
 
+    public function testPagedContentWithBlocks()
+    {
+        $paged_content = /** @lang text */
+'<!-- wp:group -->
+<div class="wp-block-group"><!-- wp:paragraph -->
+<p>Paged Content</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:nextpage -->
+<!--nextpage-->
+<!-- /wp:nextpage -->
+
+<!-- wp:group -->
+<div class="wp-block-group"><!-- wp:paragraph -->
+<p>Paged Content</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->'
+        ;
+
+        $post_id = $this->factory->post->create([
+            'post_title' => 'Paged content',
+            'post_content' => $paged_content,
+            'post_type' => 'post',
+        ]);
+
+        $this->go_to(get_permalink($post_id));
+        setup_postdata(get_post($post_id));
+
+        $post = Timber::get_post();
+        $post->setup();
+
+        $paged_content = trim(do_blocks(/** @lang text */
+            '<!-- wp:group -->
+<div class="wp-block-group"><!-- wp:paragraph -->
+<p>Paged Content</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->'
+        ));
+
+        $this->assertEquals($paged_content, trim($post->paged_content()));
+
+        // Go to next page.
+        $pagination = $post->pagination();
+        $this->go_to($pagination['pages'][1]['link']);
+        setup_postdata(get_post($post_id));
+
+        $post = Timber::get_post();
+        $post->setup();
+
+        $this->assertEquals($paged_content, trim($post->paged_content()));
+    }
+
+    public function testPagedContentWithBlocksAndNextPageAtBeginning()
+    {
+        $paged_content = /** @lang text */
+'<!-- wp:nextpage -->
+<!--nextpage-->
+<!-- /wp:nextpage -->
+
+<!-- wp:group -->
+<div class="wp-block-group"><!-- wp:paragraph -->
+<p>Paged Content</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:nextpage -->
+<!--nextpage-->
+<!-- /wp:nextpage -->
+
+<!-- wp:group -->
+<div class="wp-block-group"><!-- wp:paragraph -->
+<p>Paged Content</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->'
+        ;
+
+        $post_id = $this->factory->post->create([
+            'post_title' => 'Paged content',
+            'post_content' => $paged_content,
+            'post_type' => 'post',
+        ]);
+
+        $this->go_to(get_permalink($post_id));
+        setup_postdata(get_post($post_id));
+
+        $post = Timber::get_post();
+        $post->setup();
+
+        $paged_content = trim(do_blocks(/** @lang text */
+            '<!-- wp:group -->
+<div class="wp-block-group"><!-- wp:paragraph -->
+<p>Paged Content</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->'
+        ));
+
+        $this->assertEquals($paged_content, trim($post->paged_content()));
+
+        // Go to next page.
+        $pagination = $post->pagination();
+        $this->go_to($pagination['pages'][1]['link']);
+        setup_postdata(get_post($post_id));
+
+        $post = Timber::get_post();
+        $post->setup();
+
+        $this->assertEquals($paged_content, trim($post->paged_content()));
+    }
+
     /**
      * @ticket 2218
      */

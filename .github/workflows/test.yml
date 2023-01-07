@@ -36,25 +36,30 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['7.4']
-        wp: ['5.3', 'latest']
+        php: ['7.4', '8.0', '8.1']
+        wp: ['latest', '5.3']
         multisite: ['0', '1']
-        dependency-version: [prefer-stable] # prefer-lowest
+        dependency-version: ['highest', 'lowest']
         webp: [false]
         coverage: [false]
         extensions: ['gd']
         experimental: [false]
+        exclude:
+            - wp: '5.3'
+              php: '8.0'
+            - wp: '5.3'
+              php: '8.1'
         include:
           # WP Trunk
           - php: '7.4'
             wp: 'trunk'
-            dependency-version: 'prefer-stable'
+            dependency-version: 'highest'
             multisite: '0'
             experimental: true
           # PHP 8.1 / expiremntal
           - php: '8.1'
             wp: 'trunk'
-            dependency-version: 'prefer-stable'
+            dependency-version: 'highest'
             multisite: '0'
             experimental: true
           # PHP 8.0
@@ -84,14 +89,14 @@ jobs:
           # PHP with Imagick
           - php: '7.4'
             wp: 'latest'
-            dependency-version: 'prefer-stable'
+            dependency-version: 'highest'
             multisite: '0'
             extensions: 'imagick'
             experimental: false
           # Coverage
           - php: '7.4'
             wp: 'latest'
-            dependency-version: 'prefer-stable'
+            dependency-version: 'highest'
             multisite: '0'
             coverage: true
             experimental: false
@@ -132,14 +137,16 @@ jobs:
 
       - name: Cache composer dependencies
         uses: actions/cache@v2
+        
+      - uses: ramsey/composer-install@v2
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-${{ matrix.dependency-version }}-${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.dependency-version }}-${{ matrix.php }}-composer-
+            dependency-versions: ${{ matrix.dependency-version }}
 
-      - name: Install composer dependencies
-        run: composer update --${{ matrix.dependency-version }} --prefer-dist --no-progress --no-interaction
+      - name: Upgrade dev dependencies when lowest
+        if: matrix.dependency-version == 'lowest'
+        run: |
+            composer update yoast/wp-test-utils -W --dev
+            composer update composer/installers -W
 
       - name: Lint composer.json
         run: composer run lint-composer
@@ -151,7 +158,7 @@ jobs:
         run: composer run cs
 
       - name: Downgrade PHPUnit to ^7.5 when WP < 5.9
-        if: ${{ matrix.wp < '5.9' }}
+        if: matrix.wp < '5.9'
         run: composer req phpunit/phpunit:^7.5 yoast/wp-test-utils:^1.0 -W --dev
 
       - name: Upgrade PHPUnit to ^9.0 when prefer lowest and PHP 8.0+
@@ -174,12 +181,12 @@ jobs:
           WP_MULTISITE: ${{ matrix.multisite }}
 
       - name: Run tests with coverage
-        if: ${{ matrix.coverage == true }}
+        if: matrix.coverage == true
         run: |
           composer run test:codecov
 
       - name: Upload coverage results to Coveralls
-        if: ${{ matrix.coverage == true }}
+        if: matrix.coverage == true
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -187,5 +194,5 @@ jobs:
           php-coveralls --coverage_clover=${GITHUB_WORKSPACE}/build/logs/clover.xml -v
 
       - name: Run webp tests
-        if: ${{ matrix.webp }}
+        if: matrix.webp
         run: vendor/phpunit/phpunit/phpunit -c phpunit.xml --verbose --filter 'TestTimberImageToWEBP'

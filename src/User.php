@@ -65,30 +65,6 @@ class User extends CoreEntity
 
     /**
      * @api
-     * @var string The description from WordPress
-     */
-    public $description;
-
-    /**
-     * @api
-     * @var string
-     */
-    public $display_name = '';
-
-    /**
-     * @api
-     * @var string The first name of the user
-     */
-    public $first_name;
-
-    /**
-     * @api
-     * @var string The last name of the user
-     */
-    public $last_name;
-
-    /**
-     * @api
      * @var int The ID from WordPress
      */
     public $id;
@@ -374,6 +350,7 @@ class User extends CoreEntity
      * @since 1.8.5
      *
      * @param string $capability The capability to check.
+     * @param mixed ...$args Additional arguments to pass to the user_can function
      *
      * @example
      * Give moderation users another CSS class to style them differently.
@@ -384,11 +361,31 @@ class User extends CoreEntity
      * </span>
      * ```
      *
+     * @example
+     * ```twig
+     * {# Show edit link for posts that a user can edit. #}
+     * {% if user.can('edit_post', post.id) %}
+     *     <a href="{{post.edit_link}}">Edit Post</a>
+     * {% endif %}
+     *
+     * {% if user.can('edit_term', term.id) %}
+     *     {# do something with privileges #}
+     * {% endif %}
+     *
+     * {% if user.can('edit_user', user.id) %}
+     *     {# do something with privileges #}
+     * {% endif %}
+     *
+     * {% if user.can('edit_comment', comment.id) %}
+     *     {# do something with privileges #}
+     * {% endif %}
+     * ```
+     *
      * @return bool Whether the user has the capability.
      */
-    public function can($capability)
+    public function can($capability, ...$args)
     {
-        return user_can($this->ID, $capability);
+        return user_can($this->wp_object, $capability, ...$args);
     }
 
     /**
