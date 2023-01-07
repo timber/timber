@@ -53,7 +53,6 @@ interface ImageInterface
     /**
      * Gets the relative path to an attachment.
      *
-     * @return string The relative path to an attachment.
      * @example
      * ```twig
      * <img src="{{ image.path }}" />
@@ -63,14 +62,13 @@ interface ImageInterface
      * ```
      *
      * @api
+     * @return string The relative path to an attachment.
      */
-    public function path();
+    public function path(): string;
 
     /**
      * Gets the caption of an attachment.
      *
-     * @return string
-     * @since 2.0
      * @example
      * ```twig
      * <figure>
@@ -83,8 +81,10 @@ interface ImageInterface
      * ```
      *
      * @api
+     * @since 2.0
+     * @return string
      */
-    public function caption();
+    public function caption(): string;
 
     /**
      * Gets filesize in a human readable format.
@@ -92,8 +92,6 @@ interface ImageInterface
      * This can be useful if you want to display the human readable filesize for a file. It’s
      * easier to read «16 KB» than «16555 bytes» or «1 MB» than «1048576 bytes».
      *
-     * @return mixed|null The filesize string in a human readable format.
-     * @since 2.0.0
      * @example
      *
      * Use filesize information in a link that downloads a file:
@@ -106,14 +104,15 @@ interface ImageInterface
      * ```
      *
      * @api
+     * @since 2.0.0
+     * @return string|null The filesize string in a human-readable format or null if the
+     *                    filesize can’t be read.
      */
-    public function size();
+    public function size(): ?string;
 
     /**
      * Gets filesize in bytes.
      *
-     * @return mixed|null The filesize string in bytes, or false if the filesize can’t be read.
-     * @since 2.0.0
      * @example
      *
      * ```twig
@@ -129,14 +128,14 @@ interface ImageInterface
      * ```
      *
      * @api
+     * @since 2.0.0
+     * @return int|false The filesize string in bytes, or false if the filesize can’t be read.
      */
     public function size_raw();
 
     /**
      * Gets the extension of the attached file.
      *
-     * @return null|string An uppercase extension string.
-     * @since 2.0.0
      * @example
      *
      * Use extension information in a link that downloads a file:
@@ -151,11 +150,13 @@ interface ImageInterface
      * ```
      *
      * @api
+     * @since 2.0.0
+     * @return string|null An uppercase extension string.
      */
-    public function extension();
+    public function extension(): ?string;
 
     /**
-     * @return string the src of the file
+     * @return string The src of the file.
      */
     public function __toString();
 
@@ -166,11 +167,10 @@ interface ImageInterface
      * plugin) by passing the name of the size to this function (like `medium` or `large`). If the
      * WordPress size has not been generated, it will return an empty string.
      *
+     * @api
      * @param string $size Optional. The requested image size. This can be a size that was in
      *                     WordPress. Example: `medium` or `large`. Default `full`.
      *
-     * @return bool|string The src URL for the image.
-     * @api
      * @example
      * ```twig
      * <img src="{{ post.thumbnail.src }}">
@@ -180,14 +180,13 @@ interface ImageInterface
      * <img src="http://example.org/wp-content/uploads/2015/08/pic.jpg" />
      * <img src="http://example.org/wp-content/uploads/2015/08/pic-800-600.jpg">
      * ```
-     *
+     * @return string|bool The src URL for the image.
      */
     public function src($size = 'full');
 
     /**
      * Gets the width of the image in pixels.
      *
-     * @return int The width of the image in pixels.
      * @example
      * ```twig
      * <img src="{{ image.src }}" width="{{ image.width }}" />
@@ -197,13 +196,13 @@ interface ImageInterface
      * ```
      *
      * @api
+     * @return int The width of the image in pixels.
      */
     public function width();
 
     /**
      * Gets the height of the image in pixels.
      *
-     * @return int The height of the image in pixels.
      * @example
      * ```twig
      * <img src="{{ image.src }}" height="{{ image.height }}" />
@@ -213,13 +212,13 @@ interface ImageInterface
      * ```
      *
      * @api
+     * @return int The height of the image in pixels.
      */
     public function height();
 
     /**
      * Gets the aspect ratio of the image.
      *
-     * @return float The aspect ratio of the image.
      * @example
      * ```twig
      * {% if post.thumbnail.aspect < 1 %}
@@ -231,6 +230,7 @@ interface ImageInterface
      * ```
      *
      * @api
+     * @return float The aspect ratio of the image.
      */
     public function aspect();
 
@@ -240,7 +240,6 @@ interface ImageInterface
      * For better accessibility, you should always add an alt attribute to your images, even if it’s
      * empty.
      *
-     * @return string Alt text stored in WordPress.
      * @example
      * ```twig
      * <img src="{{ image.src }}" alt="{{ image.alt }}" />
@@ -251,12 +250,11 @@ interface ImageInterface
      * ```
      *
      * @api
+     * @return string Alt text stored in WordPress.
      */
-    public function alt();
+    public function alt(): string;
 
     /**
-     * @param string $size a size known to WordPress (like "medium")
-     * @return bool|string
      * @example
      * ```twig
      * <h1>{{ post.title }}</h1>
@@ -266,12 +264,12 @@ interface ImageInterface
      * <img src="http://example.org/wp-content/uploads/2018/10/pic.jpg" srcset="http://example.org/wp-content/uploads/2018/10/pic.jpg 1024w, http://example.org/wp-content/uploads/2018/10/pic-600x338.jpg 600w, http://example.org/wp-content/uploads/2018/10/pic-300x169.jpg 300w" />
      * ```
      * @api
+     * @param string $size An image size known to WordPress (like "medium").
+     * @return string
      */
-    public function srcset($size = "full");
+    public function srcset(string $size = 'full'): ?string;
 
     /**
-     * @param string $size a size known to WordPress (like "medium")
-     * @return bool|string
      * @example
      * ```twig
      * <h1>{{ post.title }}</h1>
@@ -281,6 +279,8 @@ interface ImageInterface
      * <img src="http://example.org/wp-content/uploads/2018/10/pic.jpg" srcset="http://example.org/wp-content/uploads/2018/10/pic.jpg 1024w, http://example.org/wp-content/uploads/2018/10/pic-600x338.jpg 600w, http://example.org/wp-content/uploads/2018/10/pic-300x169.jpg 300w sizes="(max-width: 1024px) 100vw, 102" />
      * ```
      * @api
+     * @param string $size An image size known to WordPress (like "medium").
+     * @return string|null
      */
-    public function img_sizes($size = "full");
+    public function img_sizes(string $size = 'full'): ?string;
 }

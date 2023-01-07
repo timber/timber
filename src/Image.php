@@ -178,7 +178,7 @@ class Image extends Attachment implements ImageInterface
      * @param string $size Optional. The requested image size. This can be a size that was in
      *                     WordPress. Example: `medium` or `large`. Default `full`.
      *
-     * @return bool|string The src URL for the image.
+     * @return string|bool The src URL for the image.
      */
     public function src($size = 'full')
     {
@@ -296,7 +296,7 @@ class Image extends Attachment implements ImageInterface
      *
      * @return string Alt text stored in WordPress.
      */
-    public function alt()
+    public function alt(): string
     {
         $alt = $this->meta('_wp_attachment_image_alt');
         return trim(wp_strip_all_tags($alt));
@@ -334,7 +334,6 @@ class Image extends Attachment implements ImageInterface
     }
 
     /**
-     * @param string $size a size known to WordPress (like "medium")
      * @api
      * @example
      * ```twig
@@ -344,17 +343,20 @@ class Image extends Attachment implements ImageInterface
      * ```html
      * <img src="http://example.org/wp-content/uploads/2018/10/pic.jpg" srcset="http://example.org/wp-content/uploads/2018/10/pic.jpg 1024w, http://example.org/wp-content/uploads/2018/10/pic-600x338.jpg 600w, http://example.org/wp-content/uploads/2018/10/pic-300x169.jpg 300w" />
      * ```
-     *	@return bool|string
+     * @param string $size An image size known to WordPress (like "medium").
+     *
+     * @return string|null
      */
-    public function srcset($size = "full")
+    public function srcset(string $size = 'full'): ?string
     {
         if ($this->is_image()) {
-            return wp_get_attachment_image_srcset($this->ID, $size);
+            return wp_get_attachment_image_srcset($this->ID, $size) ?: null;
         }
+
+        return null;
     }
 
     /**
-     * @param string $size a size known to WordPress (like "medium")
      * @api
      * @example
      * ```twig
@@ -364,13 +366,16 @@ class Image extends Attachment implements ImageInterface
      * ```html
      * <img src="http://example.org/wp-content/uploads/2018/10/pic.jpg" srcset="http://example.org/wp-content/uploads/2018/10/pic.jpg 1024w, http://example.org/wp-content/uploads/2018/10/pic-600x338.jpg 600w, http://example.org/wp-content/uploads/2018/10/pic-300x169.jpg 300w sizes="(max-width: 1024px) 100vw, 102" />
      * ```
-     *	@return bool|string
+     *	@param string $size An image size known to WordPress (like "medium").
+     * @return string|null
      */
-    public function img_sizes($size = "full")
+    public function img_sizes(string $size = 'full'): ?string
     {
         if ($this->is_image()) {
-            return wp_get_attachment_image_sizes($this->ID, $size);
+            return wp_get_attachment_image_sizes($this->ID, $size) ?: null;
         }
+
+        return null;
     }
 
     /**
