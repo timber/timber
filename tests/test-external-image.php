@@ -34,7 +34,7 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
         parent::tear_down();
     }
 
-    protected function copy_image_to_stylesheet($target_dir = '', $filename = 'cardinals.jpg')
+    public static function copy_image_to_stylesheet($target_dir = '', $filename = 'cardinals.jpg')
     {
         if (!empty($target_dir)) {
             $target_dir = trailingslashit($target_dir);
@@ -50,8 +50,6 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
         //$dest = self::maybe_realpath($dest);
         copy($source, $dest);
 
-        $this->addFile($dest);
-
         return $dest;
     }
 
@@ -64,7 +62,8 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
 
     public function testExternalImageWithAbsolutePath()
     {
-        $dest = $this->copy_image_to_stylesheet('assets/images');
+        $dest = self::copy_image_to_stylesheet('assets/images');
+        $this->addFile($dest);
         $this->assertFileExists($dest);
 
         $image = Timber::get_external_image($dest);
@@ -82,7 +81,8 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
 
     public function testExternalImageWithRelativePath()
     {
-        $dest = $this->copy_image_to_stylesheet('assets/images');
+        $dest = self::copy_image_to_stylesheet('assets/images');
+        $this->addFile($dest);
         $this->assertFileExists($dest);
 
         $image = Timber::get_external_image('/wp-content/themes/twentytwentyone/assets/images/cardinals.jpg');
@@ -100,7 +100,8 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
 
     public function testExternalImageWithUrl()
     {
-        $dest = $this->copy_image_to_stylesheet('assets/images');
+        $dest = self::copy_image_to_stylesheet('assets/images');
+        $this->addFile($dest);
         $this->assertFileExists($dest);
 
         $image = Timber::get_external_image(
@@ -145,7 +146,8 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
 
     public function testExternalImagePath()
     {
-        $dest = $this->copy_image_to_stylesheet('assets/images');
+        $dest = self::copy_image_to_stylesheet('assets/images');
+        $this->addFile($dest);
         $this->assertFileExists($dest);
 
         $image = Timber::get_external_image($dest);
@@ -158,7 +160,8 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
 
     public function testExternalImageToString()
     {
-        $dest = $this->copy_image_to_stylesheet('assets/images');
+        $dest = self::copy_image_to_stylesheet('assets/images');
+        $this->addFile($dest);
         $this->assertFileExists($dest);
 
         $image = Timber::get_external_image($dest);
@@ -171,7 +174,7 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
 
     public function testExternalImageSrcset()
     {
-        $dest = $this->copy_image_to_stylesheet('assets/images');
+        $dest = self::copy_image_to_stylesheet('assets/images');
         $this->assertFileExists($dest);
 
         $image = Timber::get_external_image($dest);
@@ -181,7 +184,8 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
 
     public function testExternalImageSize()
     {
-        $dest = $this->copy_image_to_stylesheet('assets/images');
+        $dest = self::copy_image_to_stylesheet('assets/images');
+        $this->addFile($dest);
         $this->assertFileExists($dest);
 
         $image = Timber::get_external_image($dest);
@@ -192,7 +196,8 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
 
     public function testExternalImageExtension()
     {
-        $dest = $this->copy_image_to_stylesheet('assets/images');
+        $dest = self::copy_image_to_stylesheet('assets/images');
+        $this->addFile($dest);
         $this->assertFileExists($dest);
 
         $image = Timber::get_external_image($dest);
@@ -202,7 +207,8 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
 
     public function testExternalImageDimensions()
     {
-        $dest = $this->copy_image_to_stylesheet('assets/images');
+        $dest = self::copy_image_to_stylesheet('assets/images');
+        $this->addFile($dest);
         $this->assertFileExists($dest);
 
         $image = Timber::get_external_image($dest);
@@ -214,7 +220,8 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
 
     public function testExternalImageDimensionsSvg()
     {
-        $dest = $this->copy_image_to_stylesheet('assets/images', 'icon-twitter.svg');
+        $dest = self::copy_image_to_stylesheet('assets/images', 'icon-twitter.svg');
+        $this->addFile($dest);
         $this->assertFileExists($dest);
 
         $image = Timber::get_external_image($dest);
@@ -226,7 +233,8 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
 
     public function testExternalImageDimensionsSvgViewbox()
     {
-        $dest = $this->copy_image_to_stylesheet('assets/images', 'timber-logo.svg');
+        $dest = self::copy_image_to_stylesheet('assets/images', 'timber-logo.svg');
+        $this->addFile($dest);
         $this->assertFileExists($dest);
 
         $image = Timber::get_external_image($dest);
@@ -238,7 +246,8 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
 
     public function testExternalImageAlt()
     {
-        $dest = $this->copy_image_to_stylesheet('assets/images');
+        $dest = self::copy_image_to_stylesheet('assets/images');
+        $this->addFile($dest);
         $this->assertFileExists($dest);
 
         $image = Timber::get_external_image($dest, [
@@ -252,7 +261,8 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
 
     public function testExternalImageCaption()
     {
-        $dest = $this->copy_image_to_stylesheet('assets/images');
+        $dest = self::copy_image_to_stylesheet('assets/images');
+        $this->addFile($dest);
         $this->assertFileExists($dest);
 
         $image = Timber::get_external_image($dest, [
@@ -266,7 +276,8 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
 
     public function testExternalImageSizes()
     {
-        $dest = $this->copy_image_to_stylesheet('assets/images');
+        $dest = self::copy_image_to_stylesheet('assets/images');
+        $this->addFile($dest);
         $this->assertFileExists($dest);
 
         $image = Timber::get_external_image($dest);
@@ -276,7 +287,8 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
 
     public function testThemeImageResize()
     {
-        $dest = $this->copy_image_to_stylesheet();
+        $dest = self::copy_image_to_stylesheet();
+        $this->addFile($dest);
         $this->assertFileExists($dest);
 
         $image = get_stylesheet_directory() . '/cardinals.jpg';
@@ -308,7 +320,8 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
             self::markTestSkipped('Letterbox image test requires GD extension');
         }
 
-        $dest = $this->copy_image_to_stylesheet();
+        $dest = self::copy_image_to_stylesheet();
+        $this->addFile($dest);
         $this->assertFileExists($dest);
 
         $image = get_stylesheet_directory() . '/cardinals.jpg';

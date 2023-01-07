@@ -59,6 +59,9 @@ class Twig
             'get_image' => [
                 'callable' => [Timber::class, 'get_image'],
             ],
+            'get_external_image' => [
+                'callable' => [Timber::class, 'get_external_image'],
+            ],
             'get_attachment' => [
                 'callable' => [Timber::class, 'get_attachment'],
             ],
