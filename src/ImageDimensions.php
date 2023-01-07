@@ -106,10 +106,9 @@ class ImageDimensions
     /**
      * Gets dimension for an image.
      *
+     * @internal
      * @param string $dimension The requested dimension. Either `width` or `height`.
      * @return int|null The requested dimension. Null if image file couldn’t be found.
-     * @internal
-     *
      */
     public function get_dimension($dimension): ?int
     {
@@ -130,6 +129,7 @@ class ImageDimensions
                 $this->dimensions[0] = $width;
                 $this->dimensions[1] = $height;
             }
+
             return $this->get_dimension_loaded($dimension);
         }
 
@@ -139,10 +139,9 @@ class ImageDimensions
     /**
      * Gets already loaded dimension values.
      *
+     * @internal
      * @param string|null $dim Optional. The requested dimension. Either `width` or `height`.
      * @return int The requested dimension in pixels.
-     * @internal
-     *
      */
     protected function get_dimension_loaded($dim = null): int
     {
@@ -156,11 +155,11 @@ class ImageDimensions
     }
 
     /**
-     * Retrieve dimensions from SVG file
+     * Retrieve dimensions from SVG file.
      *
+     * @internal
      * @param string $svg SVG Path
      * @return array
-     * @internal
      */
     protected function get_dimensions_svg($svg)
     {

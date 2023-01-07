@@ -6,8 +6,9 @@ namespace Timber;
  * Class ExternalImage
  *
  * The `Timber\ExternalImage` class represents an image that is not part of the WordPress content (Attachment).
- * Instead, it’s an image that can be either a path (relative/absolute) on the same server, or any arbitrary HTTP
- * resource (either from the same or from a different website).
+ * Instead, it’s an image that can be either a path (relative/absolute) on the same server, or a URL (either from the
+ * same or from a different website). When you use a URL of an image on a different website, Timber will load it into
+ * your WordPress installation once and then load it from there.
  *
  * @api
  * @example
@@ -72,7 +73,7 @@ class ExternalImage implements ImageInterface
      *
      * @api
      * @var string The absolute path to the attachmend file in the filesystem
-     *             (Example: `/var/www/htdocs/wp-content/uploads/2015/08/my-pic.jpg`)
+     *             (Example: `/var/www/htdocs/wp-content/themes/my-theme/images/my-pic.jpg`)
      */
     public $file_loc;
 
@@ -129,9 +130,9 @@ class ExternalImage implements ImageInterface
     /**
      * Inits the ExternalImage object.
      *
-     * @param $url string URL to load the image from.
-     * @param $alt string ALT text for the image.
      * @internal
+     * @param $url string URL or path to load the image from.
+     * @param $args array An array of arguments for the image.
      */
     public static function build($url, array $args = [])
     {
@@ -181,9 +182,6 @@ class ExternalImage implements ImageInterface
     /**
      * Gets the source URL for the image.
      *
-     * @param string $size Ignored. For compatibility with Timber\Image.
-     *
-     * @return string The src URL for the image.
      * @api
      * @example
      * ```twig
@@ -195,6 +193,9 @@ class ExternalImage implements ImageInterface
      * <img src="http://example.org/wp-content/uploads/2015/08/pic-800-600.jpg">
      * ```
      *
+     * @param string $size Ignored. For compatibility with Timber\Image.
+     *
+     * @return string The src URL for the image.
      */
     public function src($size = 'full')
     {
@@ -204,7 +205,7 @@ class ExternalImage implements ImageInterface
     /**
      * Gets the relative path to an attachment.
      *
-     * @return string The relative path to an attachment.
+     * @api
      * @example
      * ```twig
      * <img src="{{ image.path }}" />
@@ -213,7 +214,7 @@ class ExternalImage implements ImageInterface
      * <img src="/wp-content/uploads/2015/08/pic.jpg" />
      * ```
      *
-     * @api
+     * @return string The relative path to an attachment.
      */
     public function path(): string
     {
@@ -221,15 +222,14 @@ class ExternalImage implements ImageInterface
     }
 
     /**
-     * Gets filesize in a human readable format.
+     * Gets filesize in a human-readable format.
      *
-     * This can be useful if you want to display the human readable filesize for a file. It’s
+     * This can be useful if you want to display the human-readable filesize for a file. It’s
      * easier to read «16 KB» than «16555 bytes» or «1 MB» than «1048576 bytes».
      *
      * @api
      * @since 2.0.0
      * @example
-     *
      * Use filesize information in a link that downloads a file:
      *
      * ```twig
@@ -365,10 +365,10 @@ class ExternalImage implements ImageInterface
      * @example
      * ```twig
      * {% if post.thumbnail.aspect < 1 %}
-     *   {# handle vertical image #}
-     *   <img src="{{ post.thumbnail.src|resize(300, 500) }}" alt="A basketball player" />
+     *     {# handle vertical image #}
+     *     <img src="{{ post.thumbnail.src|resize(300, 500) }}" alt="A basketball player" />
      * {% else %}
-     *   <img src="{{ post.thumbnail.src|resize(500) }}" alt="A sumo wrestler" />
+     *     <img src="{{ post.thumbnail.src|resize(500) }}" alt="A sumo wrestler" />
      * {% endif %}
      * ```
      *
@@ -474,8 +474,10 @@ class ExternalImage implements ImageInterface
      * <img src="{{ image.src }}" alt="{{ image.alt }}" />
      * ```
      * ```html
-     * <img src="http://example.org/wp-content/uploads/2015/08/pic.jpg"
-     *     alt="You should always add alt texts to your images for better accessibility" />
+     * <img
+     *     src="http://example.org/wp-content/uploads/2015/08/pic.jpg"
+     *     alt="You should always add alt texts to your images for better accessibility"
+     * />
      * ```
      *
      * @return string Alt text stored in WordPress.

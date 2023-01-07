@@ -25,7 +25,7 @@ class FileSize
      * Pre-calculated human-friendly file size.
      *
      * @api
-     * @var string The precalculed file size
+     * @var string The pre-calculated file size.
      */
     private $file_size;
 
@@ -43,15 +43,14 @@ class FileSize
     }
 
     /**
-     * Gets filesize in a human readable format.
+     * Gets filesize in a human-readable format.
      *
-     * This can be useful if you want to display the human readable filesize for a file. It’s
+     * This can be useful if you want to display the human-readable filesize for a file. It’s
      * easier to read «16 KB» than «16555 bytes» or «1 MB» than «1048576 bytes».
      *
      * @api
      * @since 2.0.0
      * @example
-     *
      * Use filesize information in a link that downloads a file:
      *
      * ```twig

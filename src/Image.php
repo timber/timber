@@ -334,6 +334,8 @@ class Image extends Attachment implements ImageInterface
     }
 
     /**
+     * Gets the srcset attribute for an image based on a WordPress image size.
+     *
      * @api
      * @example
      * ```twig
@@ -357,6 +359,8 @@ class Image extends Attachment implements ImageInterface
     }
 
     /**
+     * Gets the sizes attribute for an image based on a WordPress image size.
+     *
      * @api
      * @example
      * ```twig
