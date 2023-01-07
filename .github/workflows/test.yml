@@ -56,12 +56,6 @@ jobs:
             dependency-version: 'highest'
             multisite: '0'
             experimental: true
-          # PHP 8.1 / expiremntal
-          - php: '8.1'
-            wp: 'trunk'
-            dependency-version: 'highest'
-            multisite: '0'
-            experimental: true
           # PHP 8.0
           - php: '8.0'
             wp: 'latest'
@@ -86,6 +80,18 @@ jobs:
             dependency-version: 'prefer-lowest'
             multisite: '0'
             experimental: false
+          # PHP 8.1 / experimental
+          - php: '8.1'
+            wp: 'trunk'
+            dependency-version: 'highest'
+            multisite: '0'
+            experimental: true
+          # PHP 8.2 / experimental
+          - php: '8.2'
+            wp: 'trunk'
+            dependency-version: 'highest'
+            multisite: '0'
+            experimental: true
           # PHP with Imagick
           - php: '7.4'
             wp: 'latest'
