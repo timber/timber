@@ -1,5 +1,6 @@
 <?php
 
+#[AllowDynamicProperties]
 class TestTimberSite extends Timber_UnitTestCase
 {
     public function testStandardThemeLocation()

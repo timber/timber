@@ -5,6 +5,7 @@ namespace Timber;
 /**
  * Class Core
  */
+#[\AllowDynamicProperties]
 abstract class Core
 {
     public $id;
