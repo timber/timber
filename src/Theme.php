@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use JsonSerializable;
+
 /**
  * Class Theme
  *
@@ -25,7 +27,7 @@ namespace Timber;
  * <script src="http://example.org/wp-content/themes/my-theme/static/js/all.js"></script>
  * ```
  */
-class Theme extends Core implements \JsonSerializable
+class Theme extends Core implements JsonSerializable
 {
     /**
      * The human-friendly name of the theme (ex: `My Timber Starter Theme`)
