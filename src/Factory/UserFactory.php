@@ -2,9 +2,10 @@
 
 namespace Timber\Factory;
 
+use InvalidArgumentException;
 use Timber\CoreInterface;
-use Timber\User;
 
+use Timber\User;
 use WP_User;
 use WP_User_Query;
 
@@ -80,7 +81,7 @@ class UserFactory
             return $this->build($obj);
         }
 
-        throw new \InvalidArgumentException(sprintf(
+        throw new InvalidArgumentException(sprintf(
             'Expected an instance of Timber\CoreInterface or WP_User, got %s',
             get_class($obj)
         ));
@@ -119,7 +120,7 @@ class UserFactory
          * ```
          *
          * @param string   $class The name of the class. Default `Timber\User`.
-         * @param \WP_User $user  The `WP_User` object that is used as the base for the
+         * @param WP_User $user  The `WP_User` object that is used as the base for the
          *                        `Timber\User` object.
          */
         $class = apply_filters('timber/user/class', User::class, $user);

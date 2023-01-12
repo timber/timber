@@ -9,8 +9,11 @@ use Timber\Factory\PagesMenuFactory;
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
 use Timber\Factory\UserFactory;
+use WP_Comment;
 use WP_Post;
 use WP_Query;
+use WP_Term;
+use WP_User;
 
 /**
  * Class Timber
@@ -509,7 +512,7 @@ class Timber
                 'name' => $search_value,
                 'fields' => 'ids',
             ]);
-            $query = new \WP_Query($args);
+            $query = new WP_Query($args);
 
             if ($query->post_count < 1) {
                 return null;
@@ -723,7 +726,7 @@ class Timber
      * Gets a term.
      *
      * @api
-     * @param int|\WP_Term $term A WP_Term or term_id
+     * @param int|WP_Term $term A WP_Term or term_id
      * @return \Timber\Term|null
      * @example
      * ```php
@@ -882,7 +885,7 @@ class Timber
      *
      * @todo Add links to Class Maps documentation in function summary.
      *
-     * @param int|\WP_User $user A WP_User object or a WordPress user ID. Defaults to the ID of the
+     * @param int|WP_User $user A WP_User object or a WordPress user ID. Defaults to the ID of the
      *                           currently logged-in user.
      *
      * @return \Timber\User|null
@@ -1069,7 +1072,7 @@ class Timber
      *
      * @api
      * @since 2.0.0
-     * @param int|\WP_Comment $comment
+     * @param int|WP_Comment $comment
      * @return \Timber\Comment|null
      */
     public static function get_comment($comment)

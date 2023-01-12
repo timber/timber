@@ -47,7 +47,7 @@ class User extends CoreEntity
      *
      * @since 2.0.0
      *
-     * @var \WP_User|null
+     * @var WP_User|null
      */
     protected ?WP_User $wp_object;
 
@@ -150,7 +150,7 @@ class User extends CoreEntity
      *
      * @since 2.0.0
      *
-     * @return \WP_User|null
+     * @return WP_User|null
      */
     public function wp_object(): ?WP_User
     {

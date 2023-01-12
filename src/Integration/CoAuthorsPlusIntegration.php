@@ -42,7 +42,7 @@ class CoAuthorsPlusIntegration implements IntegrationInterface
             if ($uid) {
                 $authors[] = \Timber\Timber::get_user($uid);
             } else {
-                $wp_user = new \WP_User($author);
+                $wp_user = new WP_User($author);
                 $user = \Timber\Timber::get_user($wp_user);
                 $user->import($wp_user->data);
                 unset($user->user_pass);

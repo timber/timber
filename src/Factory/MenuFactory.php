@@ -2,6 +2,7 @@
 
 namespace Timber\Factory;
 
+use InvalidArgumentException;
 use Timber\CoreInterface;
 use Timber\Menu;
 use WP_Term;
@@ -172,7 +173,7 @@ class MenuFactory
             return $this->build($obj, $args);
         }
 
-        throw new \InvalidArgumentException(sprintf(
+        throw new InvalidArgumentException(sprintf(
             'Expected an instance of Timber\CoreInterface or WP_Term, got %s',
             get_class($obj)
         ));

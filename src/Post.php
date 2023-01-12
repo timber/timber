@@ -2,10 +2,10 @@
 
 namespace Timber;
 
-use Timber\Factory\PostFactory;
+use SimpleXMLElement;
 
+use Timber\Factory\PostFactory;
 use Timber\Factory\UserFactory;
-use WP_Post;
 
 /**
  * Class Post
@@ -58,7 +58,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      *
      * @var \WP_Post|null
      */
-    protected ?WP_Post $wp_object;
+    protected ?\WP_Post $wp_object;
 
     /**
      * @var string What does this class represent in WordPress terms?
@@ -176,7 +176,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * @internal
      * @return \Timber\Post
      */
-    public static function build(WP_Post $wp_post): self
+    public static function build(\WP_Post $wp_post): self
     {
         $post = new static();
 
@@ -255,7 +255,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      *
      * @return WP_Post|null
      */
-    public function wp_object(): ?WP_Post
+    public function wp_object(): ?\WP_Post
     {
         return $this->wp_object;
     }
@@ -485,7 +485,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     protected static function get_wp_link_page($i)
     {
         $link = _wp_link_page($i);
-        $link = new \SimpleXMLElement($link . '</a>');
+        $link = new SimpleXMLElement($link . '</a>');
         if (isset($link['href'])) {
             return $link['href'];
         }
@@ -498,7 +498,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * @param  int|null|boolean $pid The ID to generate info from.
      * @return WP_Post
      */
-    protected function get_info(WP_Post $post)
+    protected function get_info(\WP_Post $post)
     {
         $post->status = $post->post_status;
         $post->id = $post->ID;

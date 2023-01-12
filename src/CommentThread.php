@@ -2,6 +2,7 @@
 
 namespace Timber;
 
+use ArrayObject;
 use Timber\Factory\CommentFactory;
 
 /**
@@ -44,7 +45,7 @@ use Timber\Factory\CommentFactory;
  * </li>
  * ```
  */
-class CommentThread extends \ArrayObject
+class CommentThread extends ArrayObject
 {
     public $post_id;
 

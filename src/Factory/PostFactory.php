@@ -2,6 +2,7 @@
 
 namespace Timber\Factory;
 
+use InvalidArgumentException;
 use Timber\Attachment;
 use Timber\CoreInterface;
 use Timber\Helper;
@@ -9,8 +10,8 @@ use Timber\Image;
 use Timber\PathHelper;
 use Timber\Post;
 use Timber\PostArrayObject;
-use Timber\PostQuery;
 
+use Timber\PostQuery;
 use WP_Post;
 use WP_Query;
 
@@ -69,7 +70,7 @@ class PostFactory
             return $this->build($obj);
         }
 
-        throw new \InvalidArgumentException(sprintf(
+        throw new InvalidArgumentException(sprintf(
             'Expected an instance of Timber\CoreInterface or WP_Post, got %s',
             get_class($obj)
         ));

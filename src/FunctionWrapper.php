@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use Exception;
+
 /**
  * Class FunctionWrapper
  *
@@ -24,7 +26,7 @@ class FunctionWrapper
     {
         try {
             return (string) $this->call();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return 'Caught exception: ' . $e->getMessage() . "\n";
         }
     }

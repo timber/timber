@@ -49,7 +49,7 @@ class Term extends CoreEntity
      *
      * @since 2.0.0
      *
-     * @var \WP_Term|null
+     * @var WP_Term|null
      */
     protected ?WP_Term $wp_object;
 
@@ -80,7 +80,7 @@ class Term extends CoreEntity
 
     /**
      * @internal
-     * @param \WP_Term the vanilla WP term object to build from
+     * @param WP_Term the vanilla WP term object to build from
      * @return \Timber\Term
      */
     public static function build(WP_Term $wp_term, array $_options = []): self
@@ -146,7 +146,7 @@ class Term extends CoreEntity
 
     /**
      * @internal
-     * @param \WP_Term $term
+     * @param WP_Term $term
      */
     protected function init(WP_Term $term)
     {

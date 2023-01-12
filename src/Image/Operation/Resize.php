@@ -2,9 +2,11 @@
 
 namespace Timber\Image\Operation;
 
+use Imagick;
 use Timber\Helper;
 use Timber\Image\Operation as ImageOperation;
 use Timber\ImageHelper;
+use WP_Image_Editor;
 
 /**
  * Changes image to new size, by shrinking/enlarging
@@ -67,10 +69,10 @@ class Resize extends ImageOperation
      *
      * @param string           $load_filename the name of the file to resize.
      * @param string           $save_filename the desired name of the file to save.
-     * @param \WP_Image_Editor $editor the image editor we're using.
+     * @param WP_Image_Editor $editor the image editor we're using.
      * @return bool
      */
-    protected function run_animated_gif($load_filename, $save_filename, \WP_Image_Editor $editor)
+    protected function run_animated_gif($load_filename, $save_filename, WP_Image_Editor $editor)
     {
         $w = $this->w;
         $h = $this->h;
@@ -78,7 +80,7 @@ class Resize extends ImageOperation
             Helper::warn('Cannot resize GIF, Imagick is not installed');
             return false;
         }
-        $image = new \Imagick($load_filename);
+        $image = new Imagick($load_filename);
         $image = $image->coalesceImages();
         $crop = $this->get_target_sizes($editor);
         foreach ($image as $frame) {
@@ -91,9 +93,9 @@ class Resize extends ImageOperation
     }
 
     /**
-     * @param \WP_Image_Editor $image
+     * @param WP_Image_Editor $image
      */
-    protected function get_target_sizes(\WP_Image_Editor $image)
+    protected function get_target_sizes(WP_Image_Editor $image)
     {
         $w = $this->w;
         $h = $this->h;

@@ -2,8 +2,9 @@
 
 namespace Timber;
 
-use Timber\Factory\MenuItemFactory;
+use Throwable;
 
+use Timber\Factory\MenuItemFactory;
 use WP_Term;
 
 /**
@@ -18,7 +19,7 @@ class Menu extends CoreEntity
      *
      * @since 2.0.0
      *
-     * @var \WP_Term|null
+     * @var WP_Term|null
      */
     protected ?WP_Term $wp_object;
 
@@ -97,7 +98,7 @@ class Menu extends CoreEntity
 
     /**
      * @internal
-     * @param \WP_Term   $wp_term the vanilla WP term object to build from
+     * @param WP_Term   $wp_term the vanilla WP term object to build from
      * @param array      $args Optional. Right now, only the `depth` is
      *                            supported which says how many levels of hierarchy should be
      *                            included in the menu. Default `0`, which is all levels.
@@ -156,7 +157,7 @@ class Menu extends CoreEntity
                 if ($nav_menu instanceof Menu) {
                     return $nav_menu;
                 }
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
             }
         }
 

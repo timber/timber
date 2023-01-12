@@ -2,8 +2,9 @@
 
 namespace Timber;
 
-use Timber\Factory\PostFactory;
+use ReturnTypeWillChange;
 
+use Timber\Factory\PostFactory;
 use WP_Post;
 
 /**
@@ -117,7 +118,7 @@ trait AccessesPostsLazily
      *
      * @internal
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         $post = parent::offsetGet($offset);

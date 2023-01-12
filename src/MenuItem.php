@@ -2,6 +2,7 @@
 
 namespace Timber;
 
+use stdClass;
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
 use WP_Post;
@@ -18,7 +19,7 @@ class MenuItem extends CoreEntity
      *
      * @since 2.0.0
      *
-     * @var \WP_Post|null
+     * @var WP_Post|null
      */
     protected ?WP_Post $wp_object;
 
@@ -153,7 +154,7 @@ class MenuItem extends CoreEntity
      *
      * @since 2.0.0
      *
-     * @return \WP_Post|null
+     * @return WP_Post|null
      */
     public function wp_object(): ?WP_Post
     {
@@ -332,7 +333,7 @@ class MenuItem extends CoreEntity
         $this->classes = array_unique(array_merge($this->classes, $data->classes ?? []));
         $this->classes = array_values(array_filter($this->classes));
 
-        $args = new \stdClass();
+        $args = new stdClass();
         if (isset($this->menu->args)) {
             // The args need to be an object.
             $args = $this->menu->args;
@@ -579,7 +580,7 @@ class MenuItem extends CoreEntity
         /**
          * @see Walker_Nav_Menu::start_el()
          */
-        $title = apply_filters('nav_menu_item_title', $this->title, $this->wp_object, $this->menu->args ? $this->menu->args : new \stdClass(), $this->level);
+        $title = apply_filters('nav_menu_item_title', $this->title, $this->wp_object, $this->menu->args ? $this->menu->args : new stdClass(), $this->level);
         return $title;
     }
 }

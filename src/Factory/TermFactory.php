@@ -2,9 +2,10 @@
 
 namespace Timber\Factory;
 
+use InvalidArgumentException;
 use Timber\CoreInterface;
-use Timber\Term;
 
+use Timber\Term;
 use WP_Term;
 use WP_Term_Query;
 
@@ -75,7 +76,7 @@ class TermFactory
             return $this->build($obj);
         }
 
-        throw new \InvalidArgumentException(sprintf(
+        throw new InvalidArgumentException(sprintf(
             'Expected an instance of Timber\CoreInterface or WP_Term, got %s',
             get_class($obj)
         ));

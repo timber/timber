@@ -35,7 +35,7 @@ class Site extends Core implements CoreInterface
      *
      * @since 2.0.0
      *
-     * @var \WP_Site|null Will only be filled in multisite environments. Otherwise `null`.
+     * @var WP_Site|null Will only be filled in multisite environments. Otherwise `null`.
      */
     protected ?WP_Site $wp_object;
 
@@ -178,7 +178,7 @@ class Site extends Core implements CoreInterface
      *
      * @since 2.0.0
      *
-     * @return \WP_Site|null Will only return a `WP_Site` object in multisite environments. Otherwise `null`.
+     * @return WP_Site|null Will only return a `WP_Site` object in multisite environments. Otherwise `null`.
      */
     public function wp_object(): ?WP_Site
     {

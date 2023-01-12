@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use WP_Query;
+
 /**
  * Class Pagination
  *
@@ -25,7 +27,7 @@ class Pagination
      * @api
      *
      * @param array           $prefs
-     * @param \WP_Query|null  $wp_query
+     * @param WP_Query|null  $wp_query
      */
     public function __construct($prefs = [], $wp_query = null)
     {

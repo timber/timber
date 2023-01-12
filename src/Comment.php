@@ -40,7 +40,7 @@ class Comment extends CoreEntity
      *
      * @since 2.0.0
      *
-     * @var \WP_Comment|null
+     * @var WP_Comment|null
      */
     protected ?WP_Comment $wp_object;
 
@@ -130,7 +130,7 @@ class Comment extends CoreEntity
      * Build a Timber\Comment. Do not call this directly. Use `Timber::get_comment()` instead.
      *
      * @internal
-     * @param \WP_Comment $wp_comment a native WP_Comment instance
+     * @param WP_Comment $wp_comment a native WP_Comment instance
      */
     public static function build(WP_Comment $wp_comment): self
     {
@@ -174,7 +174,7 @@ class Comment extends CoreEntity
      *
      * @since 2.0.0
      *
-     * @return \WP_Comment|null
+     * @return WP_Comment|null
      */
     public function wp_object(): ?WP_Comment
     {

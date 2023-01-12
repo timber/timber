@@ -2,7 +2,14 @@
 
 namespace Timber;
 
+use Exception;
+use InvalidArgumentException;
+use stdClass;
 use Timber\Factory\PostFactory;
+use WP_List_Util;
+use WP_Post;
+use WP_Term;
+use WP_User;
 
 /**
  * Class Helper
@@ -496,11 +503,11 @@ class Helper
      * @api
      *
      * @param array   $array
-     * @return \stdClass
+     * @return stdClass
      */
     public static function array_to_object($array)
     {
-        $obj = new \stdClass();
+        $obj = new stdClass();
         foreach ($array as $k => $v) {
             if (is_array($v)) {
                 $obj->{$k} = self::array_to_object($v); //RECURSION
@@ -546,7 +553,7 @@ class Helper
      * @param string  $key
      * @param mixed   $value
      * @return array|null
-     * @throws \Exception
+     * @throws Exception
      */
     public static function get_object_by_property($array, $key, $value)
     {
@@ -558,7 +565,7 @@ class Helper
             }
             return false;
         }
-        throw new \InvalidArgumentException('$array is not an array, got:');
+        throw new InvalidArgumentException('$array is not an array, got:');
     }
 
     /**
@@ -674,7 +681,7 @@ class Helper
             return [];
         }
 
-        $util = new \WP_List_Util($list);
+        $util = new WP_List_Util($list);
         return $util->filter($args, $operator);
     }
 
@@ -689,13 +696,13 @@ class Helper
      */
     public static function convert_wp_object($obj)
     {
-        if ($obj instanceof \WP_Post) {
+        if ($obj instanceof WP_Post) {
             static $postFactory;
             $postFactory = $postFactory ?: new PostFactory();
             return $postFactory->from($obj->ID);
-        } elseif ($obj instanceof \WP_Term) {
+        } elseif ($obj instanceof WP_Term) {
             return Timber::get_term($obj->term_id);
-        } elseif ($obj instanceof \WP_User) {
+        } elseif ($obj instanceof WP_User) {
             return Timber::get_user($obj->ID);
         }
 

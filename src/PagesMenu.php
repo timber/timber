@@ -2,6 +2,9 @@
 
 namespace Timber;
 
+use stdClass;
+use WP_Post;
+
 /**
  * Class PagesMenu
  *
@@ -157,7 +160,7 @@ class PagesMenu extends Menu
                  * Filters the sorted list of menu item objects before generating the menu's HTML.
                  *
                  * @param array     $menu_items The menu items, sorted by each menu item's menu order.
-                 * @param \stdClass $args       An object containing wp_nav_menu() arguments.
+                 * @param stdClass $args       An object containing wp_nav_menu() arguments.
                  */
                 $menu_items = apply_filters('wp_nav_menu_objects', $menu_items, $args);
 
@@ -200,7 +203,7 @@ class PagesMenu extends Menu
      * We need to set some properties so that we can use `wp_setup_nav_menu_item()` on the menu
      * items and a proper menu item hierarchy can be built.
      *
-     * @param \WP_Post $pages A post object.
+     * @param WP_Post $pages A post object.
      *
      * @return array Updated post object.
      */

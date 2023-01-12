@@ -2,12 +2,14 @@
 
 namespace Timber;
 
+use ArrayIterator;
+use ReturnTypeWillChange;
 use Timber\Factory\PostFactory;
 
 /**
  * Class PostsIterator
  */
-class PostsIterator extends \ArrayIterator
+class PostsIterator extends ArrayIterator
 {
     /**
      * Prepares the state before working on a post.
@@ -17,7 +19,7 @@ class PostsIterator extends \ArrayIterator
      *
      * @return mixed
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function current()
     {
         static $factory;

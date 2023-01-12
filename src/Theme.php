@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use WP_Theme;
+
 /**
  * Class Theme
  *
@@ -75,7 +77,7 @@ class Theme extends Core
     public $uri;
 
     /**
-     * @var \WP_Theme the underlying WordPress native Theme object
+     * @var WP_Theme the underlying WordPress native Theme object
      */
     private $theme;
 

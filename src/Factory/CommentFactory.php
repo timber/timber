@@ -2,9 +2,10 @@
 
 namespace Timber\Factory;
 
+use InvalidArgumentException;
 use Timber\Comment;
-use Timber\CoreInterface;
 
+use Timber\CoreInterface;
 use WP_Comment;
 use WP_Comment_Query;
 
@@ -58,7 +59,7 @@ class CommentFactory
             return $this->build($comment);
         }
 
-        throw new \InvalidArgumentException(sprintf(
+        throw new InvalidArgumentException(sprintf(
             'Expected an instance of Timber\CoreInterface or WP_Comment, got %s',
             get_class($comment)
         ));

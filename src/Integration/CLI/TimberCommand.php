@@ -3,6 +3,8 @@
 namespace Timber\Integration\CLI;
 
 use Timber\Cache\Cleaner;
+use WP_CLI;
+use WP_CLI_Command;
 
 if (!class_exists('WP_CLI_Command')) {
     return;
@@ -13,7 +15,7 @@ if (!class_exists('WP_CLI_Command')) {
  *
  * Handles WP-CLI commands.
  */
-class TimberCommand extends \WP_CLI_Command
+class TimberCommand extends WP_CLI_Command
 {
     /**
      * Clears caches in Timber.
@@ -42,12 +44,12 @@ class TimberCommand extends \WP_CLI_Command
         $mode = $args[0] ?? 'all';
         $mode_string = 'all' !== $mode ? ucfirst($mode) : $mode;
 
-        \WP_CLI::log("Clearing {$mode_string} caches …");
+        WP_CLI::log("Clearing {$mode_string} caches …");
 
         if (Cleaner::clear_cache($mode)) {
-            \WP_CLI::success("Cleared {$mode_string} caches.");
+            WP_CLI::success("Cleared {$mode_string} caches.");
         } else {
-            \WP_CLI::warning("Failed to clear {$mode_string} cached contents.");
+            WP_CLI::warning("Failed to clear {$mode_string} cached contents.");
         }
     }
 }

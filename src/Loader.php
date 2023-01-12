@@ -2,6 +2,7 @@
 
 namespace Timber;
 
+use InvalidArgumentException;
 use Timber\Cache\Cleaner;
 use Twig\CacheExtension;
 use Twig\Environment;
@@ -606,7 +607,7 @@ class Loader
     public static function rrmdir($dirPath)
     {
         if (!is_dir($dirPath)) {
-            throw new \InvalidArgumentException("$dirPath must be a directory");
+            throw new InvalidArgumentException("$dirPath must be a directory");
         }
         if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
             $dirPath .= '/';

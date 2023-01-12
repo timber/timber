@@ -2,6 +2,9 @@
 
 namespace Timber;
 
+use DateTimeInterface;
+use DateTimeZone;
+
 /**
  * Class DateTimeHelper
  *
@@ -20,8 +23,8 @@ class DateTimeHelper
      *
      * @param null|string|false             $format   Optional. PHP date format. Will use the
      *                                                `date_format` option as a default.
-     * @param string|int|\DateTimeInterface $date     A date.
-     * @param null|\DateTimeZone            $timezone Optional. Timezone to output result in.
+     * @param string|int|DateTimeInterface $date     A date.
+     * @param null|DateTimeZone            $timezone Optional. Timezone to output result in.
      *                                                Defaults to timezone from site settings.
      *
      * @return false|string
@@ -34,7 +37,7 @@ class DateTimeHelper
 
         if (null === $date) {
             $timestamp = time();
-        } elseif ($date instanceof \DateTimeInterface) {
+        } elseif ($date instanceof DateTimeInterface) {
             $timestamp = $date->getTimestamp();
         } elseif (is_numeric($date) && (strtotime($date) === false || strlen($date) !== 8)) {
             $timestamp = intval($date);
@@ -43,7 +46,7 @@ class DateTimeHelper
         }
 
         if (is_string($timezone)) {
-            $timezone = new \DateTimeZone($timezone);
+            $timezone = new DateTimeZone($timezone);
         }
 
         return wp_date($format, $timestamp, $timezone);

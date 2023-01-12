@@ -2,11 +2,15 @@
 
 namespace Timber;
 
+use DateInterval;
+use DateTime;
+use DateTimeInterface;
+use Exception;
+
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
 use Twig\Environment;
 use Twig\Extension\CoreExtension;
-
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 
@@ -448,19 +452,19 @@ class Twig
      */
     public function add_timber_escapers($twig)
     {
-        $esc_url = function (\Twig\Environment $env, $string) {
+        $esc_url = function (Environment $env, $string) {
             return esc_url($string);
         };
 
-        $wp_kses_post = function (\Twig\Environment $env, $string) {
+        $wp_kses_post = function (Environment $env, $string) {
             return wp_kses_post($string);
         };
 
-        $esc_html = function (\Twig\Environment $env, $string) {
+        $esc_html = function (Environment $env, $string) {
             return esc_html($string);
         };
 
-        $esc_js = function (\Twig\Environment $env, $string) {
+        $esc_js = function (Environment $env, $string) {
             return esc_js($string);
         };
 
@@ -509,10 +513,10 @@ class Twig
      * @see  twig_date_format_filter()
      * @link https://twig.symfony.com/doc/2.x/filters/date.html
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @param \Twig\Environment         $env      Twig Environment.
-     * @param null|string|int|\DateTime $date     A date.
+     * @param null|string|int|DateTime $date     A date.
      * @param null|string               $format   Optional. PHP date format. Will return the
      *                                            current date as a DateTimeImmutable object by
      *                                            default.
@@ -525,7 +529,7 @@ class Twig
     public function twig_date_format_filter(Environment $env, $date = null, $format = null, $timezone = null)
     {
         // Support for DateInterval.
-        if ($date instanceof \DateInterval) {
+        if ($date instanceof DateInterval) {
             if (null === $format) {
                 $format = $env->getExtension(CoreExtension::class)->getDateFormat()[1];
             }
@@ -554,7 +558,7 @@ class Twig
          *
          * @link https://twig.symfony.com/doc/2.x/filters/date.html#timezone
          */
-        if (false === $timezone && $date instanceof \DateTimeInterface) {
+        if (false === $timezone && $date instanceof DateTimeInterface) {
             $timezone = $date->getTimezone();
         }
 
@@ -621,7 +625,7 @@ class Twig
      *
      * @param null|string|false    $format Optional. PHP date format. Will use the `date_format`
      *                                     option as a default.
-     * @param string|int|\DateTime $date   A date.
+     * @param string|int|DateTime $date   A date.
      *
      * @return string
      */
