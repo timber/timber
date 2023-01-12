@@ -1170,22 +1170,47 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         if ($len == -1 && $page == 0 && $this->___content) {
             return $this->___content;
         }
+
         $content = $this->post_content;
+
         if ($len > 0) {
             $content = wp_trim_words($content, $len);
         }
-        if ($page) {
-            $contents = explode('<!--nextpage-->', $content);
+
+        /**
+         * Page content split by <!--nextpage-->.
+         *
+         * @see WP_Query::generate_postdata()
+         */
+        if ($page && false !== strpos($content, '<!--nextpage-->')) {
+            $content = str_replace("\n<!--nextpage-->\n", '<!--nextpage-->', $content);
+            $content = str_replace("\n<!--nextpage-->", '<!--nextpage-->', $content);
+            $content = str_replace("<!--nextpage-->\n", '<!--nextpage-->', $content);
+
+            // Remove the nextpage block delimiters, to avoid invalid block structures in the split content.
+            $content = str_replace('<!-- wp:nextpage -->', '', $content);
+            $content = str_replace('<!-- /wp:nextpage -->', '', $content);
+
+            // Ignore nextpage at the beginning of the content.
+            if (0 === strpos($content, '<!--nextpage-->')) {
+                $content = substr($content, 15);
+            }
+
+            $pages = explode('<!--nextpage-->', $content);
             $page--;
-            if (count($contents) > $page) {
-                $content = $contents[$page];
+
+            if (count($pages) > $page) {
+                $content = $pages[$page];
             }
         }
+
         $content = $this->content_handle_no_teaser_block($content);
         $content = apply_filters('the_content', ($content));
+
         if ($len == -1 && $page == 0) {
             $this->___content = $content;
         }
+
         return $content;
     }
 
@@ -1477,16 +1502,42 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     }
 
     /**
-     * Returns the edit URL of a post if the user has access to it
+     * Checks whether the current user can edit the post.
      *
      * @api
-     * @return bool|string the edit URL of a post in the WordPress admin
+     * @example
+     * ```twig
+     * {% if post.can_edit %}
+     *     <a href="{{ post.edit_link }}">Edit</a>
+     * {% endif %}
+     * ```
+     * @return bool
      */
-    public function edit_link()
+    public function can_edit(): bool
     {
-        if ($this->can_edit()) {
-            return get_edit_post_link($this->ID);
+        return current_user_can('edit_post', $this->ID);
+    }
+
+    /**
+     * Gets the edit link for a post if the current user has the correct rights.
+     *
+     * @api
+     * @example
+     * ```twig
+     * {% if post.can_edit %}
+     *     <a href="{{ post.edit_link }}">Edit</a>
+     * {% endif %}
+     * ```
+     * @return string|null The edit URL of a post in the WordPress admin or null if the current user can’t edit the
+     *                     post.
+     */
+    public function edit_link(): ?string
+    {
+        if (!$this->can_edit()) {
+            return null;
         }
+
+        return get_edit_post_link($this->ID);
     }
 
     /**

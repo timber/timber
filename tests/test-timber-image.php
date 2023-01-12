@@ -8,6 +8,7 @@ use Timber\Post;
 /**
  * @group posts-api
  * @group attachments
+ * @group image
  */
 class TestTimberImage extends TimberAttachment_UnitTestCase
 {

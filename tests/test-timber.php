@@ -529,6 +529,12 @@ class TestTimberMainClass extends Timber_UnitTestCase
         $this->assertEquals('I am single course', $str);
     }
 
+    public function testCompileAbsolutePath()
+    {
+        $str = Timber::compile(__DIR__ . '/assets/single.twig', null);
+        $this->assertEquals('I am single.twig', trim($str));
+    }
+
     /**
        * @ticket 1660
        */

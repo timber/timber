@@ -65,30 +65,6 @@ class User extends CoreEntity
 
     /**
      * @api
-     * @var string The description from WordPress
-     */
-    public $description;
-
-    /**
-     * @api
-     * @var string
-     */
-    public $display_name = '';
-
-    /**
-     * @api
-     * @var string The first name of the user
-     */
-    public $first_name;
-
-    /**
-     * @api
-     * @var string The last name of the user
-     */
-    public $last_name;
-
-    /**
-     * @api
      * @var int The ID from WordPress
      */
     public $id;
@@ -410,6 +386,56 @@ class User extends CoreEntity
     public function can($capability, ...$args)
     {
         return user_can($this->wp_object, $capability, ...$args);
+    }
+
+    /**
+     * Checks whether the current user can edit the post.
+     *
+     * @api
+     * @example
+     * ```twig
+     * {% if user.can_edit %}
+     *     <a href="{{ user.edit_link }}">Edit</a>
+     * {% endif %}
+     * ```
+     * @return bool
+     */
+    public function can_edit(): bool
+    {
+        return current_user_can('edit_user', $this->ID);
+    }
+
+    /**
+     * Gets the edit link for a user if the current user has the correct rights or the profile link for the current
+     * user.
+     *
+     * @api
+     * @since 2.0.0
+     * @example
+     * ```twig
+     * {% if user.can_edit %}
+     *     <a href="{{ user.edit_link }}">Edit</a>
+     * {% endif %}
+     * ```
+     *
+     * Get the profile URL for the current user:
+     *
+     * ```twig
+     * {# Assuming user is the current user. #}
+     * {% if user %}
+     *     <a href="{{ user.edit_link }}">My profile</a>
+     * {% endif %}
+     * ```
+     * @return string|null The edit URL of a user in the WordPress admin or the profile link if the user object is for
+     *                     the current user. Null if the current user can’t edit the user.
+     */
+    public function edit_link(): ?string
+    {
+        if (!$this->can_edit()) {
+            return null;
+        }
+
+        return get_edit_user_link($this->ID);
     }
 
     /**

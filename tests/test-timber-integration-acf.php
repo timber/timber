@@ -106,6 +106,9 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
 
     public function testACFFormatValue()
     {
+        // Avoid deprecation warning on ACF 5.6.x
+        $this->remove_filter_temporarily('acf_the_content', 'wp_make_content_images_responsive');
+
         acf_add_local_field_group([
             'key' => 'group_1',
             'title' => 'Group 1',
