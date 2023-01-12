@@ -66,8 +66,8 @@ class FileSize
     public function size()
     {
         if (!$this->file_size) {
-            $formatted_size = size_format($this->size_raw());
-            $this->file_size = str_replace(' ', '&nbsp;', $formatted_size);
+            $formatted_size = \size_format($this->size_raw());
+            $this->file_size = \str_replace(' ', '&nbsp;', $formatted_size);
         }
 
         return $this->file_size;
@@ -97,7 +97,7 @@ class FileSize
     public function size_raw()
     {
         if (!$this->file_size_raw) {
-            $this->file_size_raw = filesize($this->file_loc);
+            $this->file_size_raw = \filesize($this->file_loc);
         }
 
         return $this->file_size_raw;

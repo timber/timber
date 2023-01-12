@@ -35,15 +35,15 @@ class MenuFactory
         }
 
         // If $params is a numeric slug, we might get the wrong menu
-        if (is_numeric($params)) {
+        if (\is_numeric($params)) {
             $menu = $this->from_id((int) $params, $args);
         }
 
-        if (is_object($params)) {
+        if (\is_object($params)) {
             $menu = $this->from_object($params, $args);
         }
 
-        if (!$menu && is_string($params)) {
+        if (!$menu && \is_string($params)) {
             // If $location is the same than some menu slug, we might get the wrong menu
             $menu = $this->from_location($params, $args);
             if (!$menu) {
@@ -65,9 +65,9 @@ class MenuFactory
      */
     protected function from_nav_menu_terms(array $args = []): ?Menu
     {
-        $menus = wp_get_nav_menus();
+        $menus = \wp_get_nav_menus();
         foreach ($menus as $menu_maybe) {
-            $menu_items = wp_get_nav_menu_items($menu_maybe->term_id, [
+            $menu_items = \wp_get_nav_menu_items($menu_maybe->term_id, [
                 'update_post_term_cache' => false,
             ]);
             if ($menu_items) {
@@ -87,12 +87,12 @@ class MenuFactory
      */
     public function from_location(string $location, array $args = []): ?Menu
     {
-        $locations = get_nav_menu_locations();
+        $locations = \get_nav_menu_locations();
         if (!isset($locations[$location])) {
             return null;
         }
 
-        $term = get_term_by('id', $locations[$location], 'nav_menu');
+        $term = \get_term_by('id', $locations[$location], 'nav_menu');
         if (!$term) {
             return null;
         }
@@ -109,7 +109,7 @@ class MenuFactory
      */
     public function from_id(int $id, array $args = []): ?Menu
     {
-        $term = get_term_by('id', $id, 'nav_menu');
+        $term = \get_term_by('id', $id, 'nav_menu');
 
         if (!$term) {
             return null;
@@ -127,7 +127,7 @@ class MenuFactory
      */
     public function from_slug(string $slug, array $args = []): ?Menu
     {
-        $term = get_term_by('slug', $slug, 'nav_menu');
+        $term = \get_term_by('slug', $slug, 'nav_menu');
 
         if (!$term) {
             return null;
@@ -145,7 +145,7 @@ class MenuFactory
      */
     public function from_name(string $name, array $args = []): ?Menu
     {
-        $term = get_term_by('name', $name, 'nav_menu');
+        $term = \get_term_by('name', $name, 'nav_menu');
 
         if (!$term) {
             return null;
@@ -173,9 +173,9 @@ class MenuFactory
             return $this->build($obj, $args);
         }
 
-        throw new InvalidArgumentException(sprintf(
+        throw new InvalidArgumentException(\sprintf(
             'Expected an instance of Timber\CoreInterface or WP_Term, got %s',
-            get_class($obj)
+            \get_class($obj)
         ));
     }
 
@@ -210,14 +210,14 @@ class MenuFactory
          *                        the location and the value the name of the class to use for this
          *                        menu or a callback that determines the class to use.
          */
-        $classmap = apply_filters('timber/menu/classmap', []);
+        $classmap = \apply_filters('timber/menu/classmap', []);
 
         $location = $this->get_menu_location($term);
 
         $class = $classmap[$location] ?? null;
 
         // If class is a callable, call it to get the actual class name
-        if (is_callable($class)) {
+        if (\is_callable($class)) {
             $class = $class($term, $args);
         }
 
@@ -246,7 +246,7 @@ class MenuFactory
          * @param WP_Term $term The menu term.
          * @param array $args The arguments passed to the menu.
          */
-        $class = apply_filters('timber/menu/class', $class, $term, $args);
+        $class = \apply_filters('timber/menu/class', $class, $term, $args);
 
         return $class;
     }
@@ -259,7 +259,7 @@ class MenuFactory
      */
     protected function get_menu_location(WP_Term $term): ?string
     {
-        $locations = array_flip(array_filter(get_nav_menu_locations(), fn ($location) => is_string($location) || is_int($location)));
+        $locations = \array_flip(\array_filter(\get_nav_menu_locations(), fn ($location) => \is_string($location) || \is_int($location)));
         return $locations[$term->term_id] ?? null;
     }
 

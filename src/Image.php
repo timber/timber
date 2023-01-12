@@ -150,8 +150,8 @@ class Image extends Attachment implements ImageInterface
             "{{ image.meta('my_field') }}",
             '2.0.0'
         );
-        $pc = get_post_custom($iid);
-        if (is_bool($pc)) {
+        $pc = \get_post_custom($iid);
+        if (\is_bool($pc)) {
             return [];
         }
         return $pc;
@@ -187,10 +187,10 @@ class Image extends Attachment implements ImageInterface
         }
 
         if (!$this->is_image()) {
-            return wp_get_attachment_url($this->ID);
+            return \wp_get_attachment_url($this->ID);
         }
 
-        $src = wp_get_attachment_image_src($this->ID, $size);
+        $src = \wp_get_attachment_image_src($this->ID, $size);
         $src = $src[0];
 
         /**
@@ -202,14 +202,14 @@ class Image extends Attachment implements ImageInterface
          * @param string $src The image src.
          * @param int    $id  The image ID.
          */
-        $src = apply_filters('timber/image/src', $src, $this->ID);
+        $src = \apply_filters('timber/image/src', $src, $this->ID);
 
         /**
          * Filters the src URL for a `Timber\Image`.
          *
          * @deprecated 2.0.0, use `timber/image/src`
          */
-        $src = apply_filters_deprecated(
+        $src = \apply_filters_deprecated(
             'timber_image_src',
             [$src, $this->ID],
             '2.0.0',
@@ -299,7 +299,7 @@ class Image extends Attachment implements ImageInterface
     public function alt()
     {
         $alt = $this->meta('_wp_attachment_image_alt');
-        return trim(wp_strip_all_tags($alt));
+        return \trim(\wp_strip_all_tags($alt));
     }
 
     /**
@@ -349,7 +349,7 @@ class Image extends Attachment implements ImageInterface
     public function srcset($size = "full")
     {
         if ($this->is_image()) {
-            return wp_get_attachment_image_srcset($this->ID, $size);
+            return \wp_get_attachment_image_srcset($this->ID, $size);
         }
     }
 
@@ -369,7 +369,7 @@ class Image extends Attachment implements ImageInterface
     public function img_sizes($size = "full")
     {
         if ($this->is_image()) {
-            return wp_get_attachment_image_sizes($this->ID, $size);
+            return \wp_get_attachment_image_sizes($this->ID, $size);
         }
     }
 
@@ -381,9 +381,9 @@ class Image extends Attachment implements ImageInterface
      */
     protected function is_image()
     {
-        $src = wp_get_attachment_url($this->ID);
-        $check = wp_check_filetype(PathHelper::basename($src), null);
-        $image_exts = apply_filters('timber/post/image_extensions', [
+        $src = \wp_get_attachment_url($this->ID);
+        $check = \wp_check_filetype(PathHelper::basename($src), null);
+        $image_exts = \apply_filters('timber/post/image_extensions', [
             'jpg',
             'jpeg',
             'jpe',
@@ -392,6 +392,6 @@ class Image extends Attachment implements ImageInterface
             'webp',
         ]);
 
-        return in_array($check['ext'], $image_exts);
+        return \in_array($check['ext'], $image_exts);
     }
 }

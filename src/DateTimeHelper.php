@@ -32,24 +32,24 @@ class DateTimeHelper
     public static function wp_date($format = null, $date = null, $timezone = null)
     {
         if (null === $format) {
-            $format = get_option('date_format');
+            $format = \get_option('date_format');
         }
 
         if (null === $date) {
-            $timestamp = time();
+            $timestamp = \time();
         } elseif ($date instanceof DateTimeInterface) {
             $timestamp = $date->getTimestamp();
-        } elseif (is_numeric($date) && (strtotime($date) === false || strlen($date) !== 8)) {
-            $timestamp = intval($date);
+        } elseif (\is_numeric($date) && (\strtotime($date) === false || \strlen($date) !== 8)) {
+            $timestamp = \intval($date);
         } else {
-            $timestamp = strtotime($date);
+            $timestamp = \strtotime($date);
         }
 
-        if (is_string($timezone)) {
+        if (\is_string($timezone)) {
             $timezone = new DateTimeZone($timezone);
         }
 
-        return wp_date($format, $timestamp, $timezone);
+        return \wp_date($format, $timestamp, $timezone);
     }
 
     /**
@@ -73,22 +73,22 @@ class DateTimeHelper
     {
         if (null === $format_past) {
             /* translators: %s: Human-readable time difference. */
-            $format_past = __('%s ago');
+            $format_past = \__('%s ago');
         }
 
         if (null === $format_future) {
             /* translators: %s: Human-readable time difference. */
-            $format_future = __('%s from now');
+            $format_future = \__('%s from now');
         }
 
-        $to = $to === null ? time() : $to;
-        $to = is_int($to) ? $to : strtotime($to);
-        $from = is_int($from) ? $from : strtotime($from);
+        $to = $to === null ? \time() : $to;
+        $to = \is_int($to) ? $to : \strtotime($to);
+        $from = \is_int($from) ? $from : \strtotime($from);
 
         if ($from < $to) {
-            return sprintf($format_past, human_time_diff($from, $to));
+            return \sprintf($format_past, \human_time_diff($from, $to));
         } else {
-            return sprintf($format_future, human_time_diff($to, $from));
+            return \sprintf($format_future, \human_time_diff($to, $from));
         }
     }
 }

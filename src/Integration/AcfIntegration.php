@@ -19,22 +19,22 @@ class AcfIntegration implements IntegrationInterface
 {
     public function should_init(): bool
     {
-        return class_exists(ACF::class);
+        return \class_exists(ACF::class);
     }
 
     public function init(): void
     {
-        add_filter('timber/post/pre_meta', [__CLASS__, 'post_get_meta_field'], 10, 5);
-        add_filter('timber/post/meta_object_field', [__CLASS__, 'post_meta_object'], 10, 3);
-        add_filter('timber/term/pre_meta', [__CLASS__, 'term_get_meta_field'], 10, 5);
-        add_filter('timber/user/pre_meta', [__CLASS__, 'user_get_meta_field'], 10, 5);
+        \add_filter('timber/post/pre_meta', [__CLASS__, 'post_get_meta_field'], 10, 5);
+        \add_filter('timber/post/meta_object_field', [__CLASS__, 'post_meta_object'], 10, 3);
+        \add_filter('timber/term/pre_meta', [__CLASS__, 'term_get_meta_field'], 10, 5);
+        \add_filter('timber/user/pre_meta', [__CLASS__, 'user_get_meta_field'], 10, 5);
 
         /**
          * Allowed a user to set a meta value
          *
          * @deprecated 2.0.0 with no replacement
          */
-        add_filter('timber/term/meta/set', [__CLASS__, 'term_set_meta'], 10, 4);
+        \add_filter('timber/term/meta/set', [__CLASS__, 'term_set_meta'], 10, 4);
     }
 
     /**
@@ -54,7 +54,7 @@ class AcfIntegration implements IntegrationInterface
 
     public static function post_meta_object($value, $post_id, $field_name)
     {
-        return get_field_object($field_name, $post_id);
+        return \get_field_object($field_name, $post_id);
     }
 
     /**
@@ -80,7 +80,7 @@ class AcfIntegration implements IntegrationInterface
     public static function term_set_meta($value, $field, $term_id, $term)
     {
         $searcher = $term->taxonomy . '_' . $term->ID;
-        update_field($field, $value, $searcher);
+        \update_field($field, $value, $searcher);
         return $value;
     }
 
@@ -156,7 +156,7 @@ class AcfIntegration implements IntegrationInterface
         if (!$value) {
             return $value;
         }
-        return new DateTimeImmutable(acf_format_date($value, 'Y-m-d H:i:s'));
+        return new DateTimeImmutable(\acf_format_date($value, 'Y-m-d H:i:s'));
     }
 
     /**
@@ -233,66 +233,66 @@ class AcfIntegration implements IntegrationInterface
      */
     private static function get_meta($value, $id, $field_name, $args)
     {
-        $args = wp_parse_args($args, [
+        $args = \wp_parse_args($args, [
             'format_value' => true,
             'transform_value' => false,
         ]);
 
         if (!$args['transform_value']) {
-            return get_field($field_name, $id, $args['format_value']);
+            return \get_field($field_name, $id, $args['format_value']);
         }
 
-        $file_field_type = acf_get_field_type('file');
-        $image_field_type = acf_get_field_type('image');
-        $gallery_field_type = acf_get_field_type('gallery');
-        $date_picker_field_type = acf_get_field_type('date_picker');
-        $date_time_picker_field_type = acf_get_field_type('date_time_picker');
-        $post_object_field_type = acf_get_field_type('post_object');
-        $relationship_field_type = acf_get_field_type('relationship');
-        $taxonomy_field_type = acf_get_field_type('taxonomy');
-        $user_field_type = acf_get_field_type('user');
+        $file_field_type = \acf_get_field_type('file');
+        $image_field_type = \acf_get_field_type('image');
+        $gallery_field_type = \acf_get_field_type('gallery');
+        $date_picker_field_type = \acf_get_field_type('date_picker');
+        $date_time_picker_field_type = \acf_get_field_type('date_time_picker');
+        $post_object_field_type = \acf_get_field_type('post_object');
+        $relationship_field_type = \acf_get_field_type('relationship');
+        $taxonomy_field_type = \acf_get_field_type('taxonomy');
+        $user_field_type = \acf_get_field_type('user');
 
-        remove_filter('acf/format_value/type=file', [$file_field_type, 'format_value']);
-        remove_filter('acf/format_value/type=image', [$image_field_type, 'format_value']);
-        remove_filter('acf/format_value/type=gallery', [$gallery_field_type, 'format_value']);
-        remove_filter('acf/format_value/type=date_picker', [$date_picker_field_type, 'format_value']);
-        remove_filter('acf/format_value/type=date_time_picker', [$date_time_picker_field_type, 'format_value']);
-        remove_filter('acf/format_value/type=post_object', [$post_object_field_type, 'format_value']);
-        remove_filter('acf/format_value/type=relationship', [$relationship_field_type, 'format_value']);
-        remove_filter('acf/format_value/type=taxonomy', [$taxonomy_field_type, 'format_value']);
-        remove_filter('acf/format_value/type=user', [$user_field_type, 'format_value']);
+        \remove_filter('acf/format_value/type=file', [$file_field_type, 'format_value']);
+        \remove_filter('acf/format_value/type=image', [$image_field_type, 'format_value']);
+        \remove_filter('acf/format_value/type=gallery', [$gallery_field_type, 'format_value']);
+        \remove_filter('acf/format_value/type=date_picker', [$date_picker_field_type, 'format_value']);
+        \remove_filter('acf/format_value/type=date_time_picker', [$date_time_picker_field_type, 'format_value']);
+        \remove_filter('acf/format_value/type=post_object', [$post_object_field_type, 'format_value']);
+        \remove_filter('acf/format_value/type=relationship', [$relationship_field_type, 'format_value']);
+        \remove_filter('acf/format_value/type=taxonomy', [$taxonomy_field_type, 'format_value']);
+        \remove_filter('acf/format_value/type=user', [$user_field_type, 'format_value']);
 
-        add_filter('acf/format_value/type=file', [__CLASS__, 'transform_file'], 10, 3);
-        add_filter('acf/format_value/type=image', [__CLASS__, 'transform_image'], 10, 3);
-        add_filter('acf/format_value/type=gallery', [__CLASS__, 'transform_gallery'], 10, 3);
-        add_filter('acf/format_value/type=date_picker', [__CLASS__, 'transform_date_picker'], 10, 3);
-        add_filter('acf/format_value/type=date_time_picker', [__CLASS__, 'transform_date_picker'], 10, 3);
-        add_filter('acf/format_value/type=post_object', [__CLASS__, 'transform_post_object'], 10, 3);
-        add_filter('acf/format_value/type=relationship', [__CLASS__, 'transform_relationship'], 10, 3);
-        add_filter('acf/format_value/type=taxonomy', [__CLASS__, 'transform_taxonomy'], 10, 3);
-        add_filter('acf/format_value/type=user', [__CLASS__, 'transform_user'], 10, 3);
+        \add_filter('acf/format_value/type=file', [__CLASS__, 'transform_file'], 10, 3);
+        \add_filter('acf/format_value/type=image', [__CLASS__, 'transform_image'], 10, 3);
+        \add_filter('acf/format_value/type=gallery', [__CLASS__, 'transform_gallery'], 10, 3);
+        \add_filter('acf/format_value/type=date_picker', [__CLASS__, 'transform_date_picker'], 10, 3);
+        \add_filter('acf/format_value/type=date_time_picker', [__CLASS__, 'transform_date_picker'], 10, 3);
+        \add_filter('acf/format_value/type=post_object', [__CLASS__, 'transform_post_object'], 10, 3);
+        \add_filter('acf/format_value/type=relationship', [__CLASS__, 'transform_relationship'], 10, 3);
+        \add_filter('acf/format_value/type=taxonomy', [__CLASS__, 'transform_taxonomy'], 10, 3);
+        \add_filter('acf/format_value/type=user', [__CLASS__, 'transform_user'], 10, 3);
 
-        $value = get_field($field_name, $id, true);
+        $value = \get_field($field_name, $id, true);
 
-        add_filter('acf/format_value/type=file', [$file_field_type, 'format_value'], 10, 3);
-        add_filter('acf/format_value/type=image', [$image_field_type, 'format_value'], 10, 3);
-        add_filter('acf/format_value/type=gallery', [$gallery_field_type, 'format_value'], 10, 3);
-        add_filter('acf/format_value/type=date_picker', [$date_picker_field_type, 'format_value'], 10, 3);
-        add_filter('acf/format_value/type=date_time_picker', [$date_time_picker_field_type, 'format_value'], 10, 3);
-        add_filter('acf/format_value/type=post_object', [$post_object_field_type, 'format_value'], 10, 3);
-        add_filter('acf/format_value/type=relationship', [$relationship_field_type, 'format_value'], 10, 3);
-        add_filter('acf/format_value/type=taxonomy', [$taxonomy_field_type, 'format_value'], 10, 3);
-        add_filter('acf/format_value/type=user', [$taxonomy_field_type, 'format_value'], 10, 3);
+        \add_filter('acf/format_value/type=file', [$file_field_type, 'format_value'], 10, 3);
+        \add_filter('acf/format_value/type=image', [$image_field_type, 'format_value'], 10, 3);
+        \add_filter('acf/format_value/type=gallery', [$gallery_field_type, 'format_value'], 10, 3);
+        \add_filter('acf/format_value/type=date_picker', [$date_picker_field_type, 'format_value'], 10, 3);
+        \add_filter('acf/format_value/type=date_time_picker', [$date_time_picker_field_type, 'format_value'], 10, 3);
+        \add_filter('acf/format_value/type=post_object', [$post_object_field_type, 'format_value'], 10, 3);
+        \add_filter('acf/format_value/type=relationship', [$relationship_field_type, 'format_value'], 10, 3);
+        \add_filter('acf/format_value/type=taxonomy', [$taxonomy_field_type, 'format_value'], 10, 3);
+        \add_filter('acf/format_value/type=user', [$taxonomy_field_type, 'format_value'], 10, 3);
 
-        remove_filter('acf/format_value/type=file', [__CLASS__, 'transform_file']);
-        remove_filter('acf/format_value/type=image', [__CLASS__, 'transform_image']);
-        remove_filter('acf/format_value/type=gallery', [__CLASS__, 'transform_gallery']);
-        remove_filter('acf/format_value/type=date_picker', [__CLASS__, 'transform_date_picker']);
-        remove_filter('acf/format_value/type=date_time_picker', [__CLASS__, 'transform_date_picker']);
-        remove_filter('acf/format_value/type=post_object', [__CLASS__, 'transform_post_object']);
-        remove_filter('acf/format_value/type=relationship', [__CLASS__, 'transform_relationship']);
-        remove_filter('acf/format_value/type=taxonomy', [__CLASS__, 'transform_taxonomy']);
-        remove_filter('acf/format_value/type=user', [__CLASS__, 'transform_user']);
+        \remove_filter('acf/format_value/type=file', [__CLASS__, 'transform_file']);
+        \remove_filter('acf/format_value/type=image', [__CLASS__, 'transform_image']);
+        \remove_filter('acf/format_value/type=gallery', [__CLASS__, 'transform_gallery']);
+        \remove_filter('acf/format_value/type=date_picker', [__CLASS__, 'transform_date_picker']);
+        \remove_filter('acf/format_value/type=date_time_picker', [__CLASS__, 'transform_date_picker']);
+        \remove_filter('acf/format_value/type=post_object', [__CLASS__, 'transform_post_object']);
+        \remove_filter('acf/format_value/type=relationship', [__CLASS__, 'transform_relationship']);
+        \remove_filter('acf/format_value/type=taxonomy', [__CLASS__, 'transform_taxonomy']);
+        \remove_filter('acf/format_value/type=user', [__CLASS__, 'transform_user']);
 
         return $value;
     }

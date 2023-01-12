@@ -130,7 +130,7 @@ class User extends CoreEntity
     {
         $this->wp_object = $wp_user;
 
-        $data = get_userdata($wp_user->ID);
+        $data = \get_userdata($wp_user->ID);
         if (!isset($data->data)) {
             return;
         }
@@ -166,7 +166,7 @@ class User extends CoreEntity
     public function link()
     {
         if (!$this->_link) {
-            $this->_link = user_trailingslashit(get_author_posts_url($this->ID));
+            $this->_link = \user_trailingslashit(\get_author_posts_url($this->ID));
         }
         return $this->_link;
     }
@@ -208,7 +208,7 @@ class User extends CoreEntity
          * @param string       $name The name of the user. Default `display_name`.
          * @param \Timber\User $user The user object.
          */
-        return apply_filters('timber/user/name', $this->display_name, $this);
+        return \apply_filters('timber/user/name', $this->display_name, $this);
     }
 
     /**
@@ -286,7 +286,7 @@ class User extends CoreEntity
             // @codeCoverageIgnoreEnd
         }
 
-        $wp_roles = wp_roles();
+        $wp_roles = \wp_roles();
         $names = $wp_roles->get_names();
 
         $values = [];
@@ -294,7 +294,7 @@ class User extends CoreEntity
         foreach ($roles as $role) {
             $name = $role;
             if (isset($names[$role])) {
-                $name = translate_user_role($names[$role]);
+                $name = \translate_user_role($names[$role]);
             }
             $values[$role] = $name;
         }
@@ -385,7 +385,7 @@ class User extends CoreEntity
      */
     public function can($capability, ...$args)
     {
-        return user_can($this->wp_object, $capability, ...$args);
+        return \user_can($this->wp_object, $capability, ...$args);
     }
 
     /**
@@ -402,7 +402,7 @@ class User extends CoreEntity
      */
     public function can_edit(): bool
     {
-        return current_user_can('edit_user', $this->ID);
+        return \current_user_can('edit_user', $this->ID);
     }
 
     /**
@@ -435,7 +435,7 @@ class User extends CoreEntity
             return null;
         }
 
-        return get_edit_user_link($this->ID);
+        return \get_edit_user_link($this->ID);
     }
 
     /**
@@ -460,6 +460,6 @@ class User extends CoreEntity
             return $this->avatar_override;
         }
 
-        return get_avatar_url($this->id, $args);
+        return \get_avatar_url($this->id, $args);
     }
 }

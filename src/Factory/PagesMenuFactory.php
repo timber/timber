@@ -48,10 +48,10 @@ class PagesMenuFactory
          * @param array $class The pages menu class to use.
          * @param array $args  The arguments passed to `Timber::get_pages_menu()`.
          */
-        $class = apply_filters('timber/pages_menu/class', PagesMenu::class, $args);
+        $class = \apply_filters('timber/pages_menu/class', PagesMenu::class, $args);
 
         // If class is a callable, call it to get the actual class name
-        if (is_callable($class)) {
+        if (\is_callable($class)) {
             $class = $class($args);
         }
 

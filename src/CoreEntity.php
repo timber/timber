@@ -96,9 +96,9 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
          *
          * @param bool $transform_value
          */
-        $transform_value = apply_filters('timber/meta/transform_value', false);
+        $transform_value = \apply_filters('timber/meta/transform_value', false);
 
-        $args = wp_parse_args($args, [
+        $args = \wp_parse_args($args, [
             'transform_value' => $transform_value,
         ]);
 
@@ -136,7 +136,7 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
              * @param object $object           The Timber object.
              * @param array        $args       An array of arguments.
              */
-            $object_meta = apply_filters(
+            $object_meta = \apply_filters(
                 "timber/{$object_type}/pre_meta",
                 $object_meta,
                 $this->ID,
@@ -152,7 +152,7 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
                  *
                  * @deprecated 2.0.0, use `timber/{object_type}/pre_meta`
                  */
-                $object_meta = apply_filters_deprecated(
+                $object_meta = \apply_filters_deprecated(
                     "timber_{$object_type}_get_meta_field_pre",
                     [$object_meta, $this->ID, $field_name, $this],
                     '2.0.0',
@@ -164,7 +164,7 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
                  *
                  * @deprecated 2.0.0, use `timber/{object_type}/pre_meta`
                  */
-                do_action_deprecated(
+                \do_action_deprecated(
                     "timber_{$object_type}_get_meta_pre",
                     [$object_meta, $this->ID, $this],
                     '2.0.0',
@@ -175,18 +175,18 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
 
         if (null === $object_meta) {
             // Fetch values. Auto-fetches all values if $field_name is empty.
-            $object_meta = get_metadata($object_type, $this->ID, $field_name, true);
+            $object_meta = \get_metadata($object_type, $this->ID, $field_name, true);
 
             // Mimick $single argument when fetching all meta values.
-            if (empty($field_name) && is_array($object_meta) && !empty($object_meta)) {
-                $object_meta = array_map(function ($meta) {
+            if (empty($field_name) && \is_array($object_meta) && !empty($object_meta)) {
+                $object_meta = \array_map(function ($meta) {
                     /**
                      * We use array_key_exists() instead of isset(), because when the meta value is null, isset() would
                      * return false, even though null is a valid value to return.
                      *
                      * @ticket #2519
                      */
-                    if (1 === count($meta) && array_key_exists(0, $meta)) {
+                    if (1 === \count($meta) && \array_key_exists(0, $meta)) {
                         return $meta[0];
                     }
 
@@ -227,7 +227,7 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
              * @param \Timber\Post $post       The post object.
              * @param array        $args       An array of arguments.
              */
-            $object_meta = apply_filters(
+            $object_meta = \apply_filters(
                 "timber/{$object_type}/meta",
                 $object_meta,
                 $this->ID,
@@ -243,7 +243,7 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
                  *
                  * @deprecated 2.0.0, use `timber/term/meta`
                  */
-                $object_meta = apply_filters_deprecated(
+                $object_meta = \apply_filters_deprecated(
                     'timber/term/meta/field',
                     [$object_meta, $this->ID, $field_name, $this],
                     '2.0.0',
@@ -256,7 +256,7 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
              *
              * @deprecated 2.0.0, use `timber/{object_type}/meta`
              */
-            $object_meta = apply_filters_deprecated(
+            $object_meta = \apply_filters_deprecated(
                 "timber_{$object_type}_get_meta_field",
                 [$object_meta, $this->ID, $field_name, $this],
                 '2.0.0',
@@ -268,7 +268,7 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
              *
              * @deprecated 2.0.0, use `timber/{object_type}/meta`
              */
-            $object_meta = apply_filters_deprecated(
+            $object_meta = \apply_filters_deprecated(
                 "timber_{$object_type}_get_meta",
                 [$object_meta, $this->ID, $this],
                 '2.0.0',
@@ -293,10 +293,10 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
      */
     public function convert($data)
     {
-        if (is_object($data)) {
+        if (\is_object($data)) {
             $data = Helper::convert_wp_object($data);
-        } elseif (is_array($data)) {
-            $data = array_map([$this, 'convert'], $data);
+        } elseif (\is_array($data)) {
+            $data = \array_map([$this, 'convert'], $data);
         }
         return $data;
     }

@@ -120,13 +120,13 @@ class Attachment extends Post
      */
     protected function get_info(WP_Post $wp_post)
     {
-        $post_data = get_object_vars(parent::get_info($wp_post));
-        $image_info = wp_get_attachment_metadata($wp_post->ID) ?: [];
+        $post_data = \get_object_vars(parent::get_info($wp_post));
+        $image_info = \wp_get_attachment_metadata($wp_post->ID) ?: [];
         $meta_values = $this->raw_meta();
 
-        $data = array_merge($post_data, $image_info, $meta_values);
+        $data = \array_merge($post_data, $image_info, $meta_values);
 
-        $basedir = wp_get_upload_dir()['basedir'];
+        $basedir = \wp_get_upload_dir()['basedir'];
 
         if (isset($data['file'])) {
             $data['file_loc'] = $basedir . DIRECTORY_SEPARATOR . $data['file'];
@@ -164,7 +164,7 @@ class Attachment extends Post
             return $this->abs_url;
         }
 
-        return get_permalink($this->ID);
+        return \get_permalink($this->ID);
     }
 
     /**
@@ -206,7 +206,7 @@ class Attachment extends Post
             return URLHelper::maybe_secure_url($this->abs_url);
         }
 
-        return wp_get_attachment_url($this->ID);
+        return \wp_get_attachment_url($this->ID);
     }
 
     /**
@@ -238,7 +238,7 @@ class Attachment extends Post
          * @param string $caption Caption for the given attachment.
          * @param int    $post_id Attachment ID.
          */
-        return apply_filters('wp_get_attachment_caption', $this->post_excerpt, $this->ID);
+        return \apply_filters('wp_get_attachment_caption', $this->post_excerpt, $this->ID);
     }
 
     /**
@@ -324,10 +324,10 @@ class Attachment extends Post
     public function extension()
     {
         if (!$this->file_extension) {
-            $file_info = wp_check_filetype($this->file);
+            $file_info = \wp_check_filetype($this->file);
 
             if (!empty($file_info['ext'])) {
-                $this->file_extension = strtoupper($file_info['ext']);
+                $this->file_extension = \strtoupper($file_info['ext']);
             }
         }
 

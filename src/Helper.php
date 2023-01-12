@@ -54,10 +54,10 @@ class Helper
          *
          * @param string $slug The slug for the transient.
          */
-        $slug = apply_filters('timber/transient/slug', $slug);
+        $slug = \apply_filters('timber/transient/slug', $slug);
 
-        $enable_transients = ($transient_time === false || (defined('WP_DISABLE_TRANSIENTS') && WP_DISABLE_TRANSIENTS)) ? false : true;
-        $data = $enable_transients ? get_transient($slug) : false;
+        $enable_transients = ($transient_time === false || (\defined('WP_DISABLE_TRANSIENTS') && WP_DISABLE_TRANSIENTS)) ? false : true;
+        $data = $enable_transients ? \get_transient($slug) : false;
 
         if (false === $data) {
             $data = self::handle_transient_locking($slug, $callback, $transient_time, $lock_timeout, $force, $enable_transients);
@@ -88,7 +88,7 @@ class Helper
              * @since 2.0.0
              * @param bool $force
              */
-            $force = apply_filters('timber/transient/force_transients', $force);
+            $force = \apply_filters('timber/transient/force_transients', $force);
 
             /**
              * Filters …
@@ -97,7 +97,7 @@ class Helper
              *
              * @deprecated 2.0.0, use `timber/transient/force_transients`
              */
-            $force = apply_filters_deprecated(
+            $force = \apply_filters_deprecated(
                 'timber_force_transients',
                 [$force],
                 '2.0.0',
@@ -116,7 +116,7 @@ class Helper
              *
              * @param bool $force
              */
-            $force = apply_filters("timber/transient/force_transient_{$slug}", $force);
+            $force = \apply_filters("timber/transient/force_transient_{$slug}", $force);
 
             /**
              * Filters …
@@ -125,7 +125,7 @@ class Helper
              *
              * @deprecated 2.0.0, use `timber/transient/force_transient_{$slug}`
              */
-            $force = apply_filters("timber_force_transient_{$slug}", $force);
+            $force = \apply_filters("timber_force_transient_{$slug}", $force);
 
             if (!$force) {
                 //the server is currently executing the process.
@@ -141,7 +141,7 @@ class Helper
         }
         $data = $callback();
         if ($enable_transients) {
-            set_transient($slug, $data, $transient_time);
+            \set_transient($slug, $data, $transient_time);
             self::_unlock_transient($slug);
         }
         return $data;
@@ -154,7 +154,7 @@ class Helper
      */
     public static function _lock_transient($slug, $lock_timeout)
     {
-        set_transient($slug . '_lock', true, $lock_timeout);
+        \set_transient($slug . '_lock', true, $lock_timeout);
     }
 
     /**
@@ -163,7 +163,7 @@ class Helper
      */
     public static function _unlock_transient($slug)
     {
-        delete_transient($slug . '_lock');
+        \delete_transient($slug . '_lock');
     }
 
     /**
@@ -172,7 +172,7 @@ class Helper
      */
     public static function _is_transient_locked($slug)
     {
-        return (bool) get_transient($slug . '_lock');
+        return (bool) \get_transient($slug . '_lock');
     }
 
     /* These are for measuring page render time */
@@ -185,8 +185,8 @@ class Helper
      */
     public static function start_timer()
     {
-        $time = microtime();
-        $time = explode(' ', $time);
+        $time = \microtime();
+        $time = \explode(' ', $time);
         $time = $time[1] + $time[0];
         return $time;
     }
@@ -207,11 +207,11 @@ class Helper
      */
     public static function stop_timer($start)
     {
-        $time = microtime();
-        $time = explode(' ', $time);
+        $time = \microtime();
+        $time = \explode(' ', $time);
         $time = $time[1] + $time[0];
         $finish = $time;
-        $total_time = round(($finish - $start), 4);
+        $total_time = \round(($finish - $start), 4);
         return $total_time . ' seconds.';
     }
 
@@ -251,9 +251,9 @@ class Helper
      */
     public static function ob_function($function, $args = [null])
     {
-        ob_start();
-        call_user_func_array($function, $args);
-        return ob_get_clean();
+        \ob_start();
+        \call_user_func_array($function, $args);
+        return \ob_get_clean();
     }
 
     /**
@@ -269,10 +269,10 @@ class Helper
         if (!WP_DEBUG || $timber_disable_error_log) {
             return;
         }
-        if (is_object($error) || is_array($error)) {
-            $error = print_r($error, true);
+        if (\is_object($error) || \is_array($error)) {
+            $error = \print_r($error, true);
         }
-        return error_log('[ Timber ] ' . $error);
+        return \error_log('[ Timber ] ' . $error);
     }
 
     /**
@@ -290,7 +290,7 @@ class Helper
             return;
         }
 
-        trigger_error($message, E_USER_WARNING);
+        \trigger_error($message, E_USER_WARNING);
     }
 
     /**
@@ -323,7 +323,7 @@ class Helper
          * @param string $message  A message explaining what has been done incorrectly.
          * @param string $version  The version of WordPress where the message was added.
          */
-        do_action('doing_it_wrong_run', $function, $message, $version);
+        \do_action('doing_it_wrong_run', $function, $message, $version);
 
         if (!WP_DEBUG) {
             return;
@@ -342,7 +342,7 @@ class Helper
          * @param string $message  A message explaining what has been done incorrectly.
          * @param string $version  The version of WordPress where the message was added.
          */
-        $should_trigger_error = apply_filters(
+        $should_trigger_error = \apply_filters(
             'doing_it_wrong_trigger_error',
             true,
             $function,
@@ -351,22 +351,22 @@ class Helper
         );
 
         if ($should_trigger_error) {
-            if (is_null($version)) {
+            if (\is_null($version)) {
                 $version = '';
             } else {
-                $version = sprintf(
+                $version = \sprintf(
                     '(This message was added in Timber version %s.)',
                     $version
                 );
             }
 
-            $message .= sprintf(
+            $message .= \sprintf(
                 ' Please see Debugging in WordPress (%1$s) as well as Debugging in Timber (%2$s) for more information.',
                 'https://wordpress.org/support/article/debugging-in-wordpress/',
                 'https://timber.github.io/docs/guides/debugging/'
             );
 
-            $error_message = sprintf(
+            $error_message = \sprintf(
                 '%1$s was called <strong>incorrectly</strong>. %2$s %3$s',
                 $function,
                 $message,
@@ -375,7 +375,7 @@ class Helper
 
             // phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
             // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-            trigger_error('[ Timber ] ' . $error_message);
+            \trigger_error('[ Timber ] ' . $error_message);
         }
     }
 
@@ -403,7 +403,7 @@ class Helper
          * @param string $replacement The name of the function/method to use instead.
          * @param string $version     The version of Timber where the message was added.
          */
-        do_action('deprecated_function_run', $function, $replacement, $version);
+        \do_action('deprecated_function_run', $function, $replacement, $version);
 
         if (!WP_DEBUG) {
             return;
@@ -416,19 +416,19 @@ class Helper
          *
          * @param bool $trigger Whether to trigger the error for deprecated functions. Default true.
          */
-        if (!apply_filters('deprecated_function_trigger_error', true)) {
+        if (!\apply_filters('deprecated_function_trigger_error', true)) {
             return;
         }
 
-        if (!is_null($replacement)) {
-            $error_message = sprintf(
+        if (!\is_null($replacement)) {
+            $error_message = \sprintf(
                 '%1$s is deprecated since Timber version %2$s! Use %3$s instead.',
                 $function,
                 $version,
                 $replacement
             );
         } else {
-            $error_message = sprintf(
+            $error_message = \sprintf(
                 '%1$s is deprecated since Timber version %2$s with no alternative available.',
                 $function,
                 $version
@@ -437,7 +437,7 @@ class Helper
 
         // phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
         // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-        trigger_error('[ Timber ] ' . $error_message);
+        \trigger_error('[ Timber ] ' . $error_message);
     }
 
     /**
@@ -456,16 +456,16 @@ class Helper
          *
          * @param string $separator The separator to use. Default `' '`.
          */
-        $separator = apply_filters('timber/helper/wp_title_separator', $separator);
+        $separator = \apply_filters('timber/helper/wp_title_separator', $separator);
 
         /**
          * Filters the separator used for the page title.
          *
          * @deprecated 2.0.0, use `timber/helper/wp_title_separator`
          */
-        $separator = apply_filters_deprecated('timber_wp_title_seperator', [$separator], '2.0.0', 'timber/helper/wp_title_separator');
+        $separator = \apply_filters_deprecated('timber_wp_title_seperator', [$separator], '2.0.0', 'timber/helper/wp_title_separator');
 
-        return trim(wp_title($separator, false, $seplocation));
+        return \trim(\wp_title($separator, false, $seplocation));
     }
 
     /**
@@ -480,7 +480,7 @@ class Helper
      */
     public static function osort(&$array, $prop)
     {
-        usort($array, function ($a, $b) use ($prop) {
+        \usort($array, function ($a, $b) use ($prop) {
             return $a->$prop > $b->$prop ? 1 : -1;
         });
     }
@@ -493,10 +493,10 @@ class Helper
      */
     public static function is_array_assoc($arr)
     {
-        if (!is_array($arr)) {
+        if (!\is_array($arr)) {
             return false;
         }
-        return (bool) count(array_filter(array_keys($arr), 'is_string'));
+        return (bool) \count(\array_filter(\array_keys($arr), 'is_string'));
     }
 
     /**
@@ -509,7 +509,7 @@ class Helper
     {
         $obj = new stdClass();
         foreach ($array as $k => $v) {
-            if (is_array($v)) {
+            if (\is_array($v)) {
                 $obj->{$k} = self::array_to_object($v); //RECURSION
             } else {
                 $obj->{$k} = $v;
@@ -528,10 +528,10 @@ class Helper
      */
     public static function get_object_index_by_property($array, $key, $value)
     {
-        if (is_array($array)) {
+        if (\is_array($array)) {
             $i = 0;
             foreach ($array as $arr) {
-                if (is_array($arr)) {
+                if (\is_array($arr)) {
                     if ($arr[$key] == $value) {
                         return $i;
                     }
@@ -557,7 +557,7 @@ class Helper
      */
     public static function get_object_by_property($array, $key, $value)
     {
-        if (is_array($array)) {
+        if (\is_array($array)) {
             foreach ($array as $arr) {
                 if ($arr->$key == $value) {
                     return $arr;
@@ -577,8 +577,8 @@ class Helper
      */
     public static function array_truncate($array, $len)
     {
-        if (sizeof($array) > $len) {
-            $array = array_splice($array, 0, $len);
+        if (\sizeof($array) > $len) {
+            $array = \array_splice($array, 0, $len);
         }
         return $array;
     }
@@ -595,8 +595,8 @@ class Helper
     public static function is_true($value)
     {
         if (isset($value)) {
-            if (is_string($value)) {
-                $value = strtolower($value);
+            if (\is_string($value)) {
+                $value = \strtolower($value);
             }
             if (($value == 'true' || $value === 1 || $value === '1' || $value == true) && $value !== false && $value !== 'false') {
                 return true;
@@ -645,11 +645,11 @@ class Helper
     {
         $return = [];
         foreach ($array as $obj) {
-            if (is_object($obj) && method_exists($obj, $key)) {
+            if (\is_object($obj) && \method_exists($obj, $key)) {
                 $return[] = $obj->$key();
-            } elseif (is_object($obj) && property_exists($obj, $key)) {
+            } elseif (\is_object($obj) && \property_exists($obj, $key)) {
                 $return[] = $obj->$key;
-            } elseif (is_array($obj) && isset($obj[$key])) {
+            } elseif (\is_array($obj) && isset($obj[$key])) {
                 $return[] = $obj[$key];
             }
         }
@@ -671,13 +671,13 @@ class Helper
      */
     public static function wp_list_filter($list, $args, $operator = 'AND')
     {
-        if (!is_array($args)) {
+        if (!\is_array($args)) {
             $args = [
                 'slug' => $args,
             ];
         }
 
-        if (!is_array($list) && !is_a($list, 'Traversable')) {
+        if (!\is_array($list) && !\is_a($list, 'Traversable')) {
             return [];
         }
 

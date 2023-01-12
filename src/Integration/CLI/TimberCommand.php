@@ -6,7 +6,7 @@ use Timber\Cache\Cleaner;
 use WP_CLI;
 use WP_CLI_Command;
 
-if (!class_exists('WP_CLI_Command')) {
+if (!\class_exists('WP_CLI_Command')) {
     return;
 }
 
@@ -42,7 +42,7 @@ class TimberCommand extends WP_CLI_Command
     public function clear_cache($args = [])
     {
         $mode = $args[0] ?? 'all';
-        $mode_string = 'all' !== $mode ? ucfirst($mode) : $mode;
+        $mode_string = 'all' !== $mode ? \ucfirst($mode) : $mode;
 
         WP_CLI::log("Clearing {$mode_string} caches …");
 

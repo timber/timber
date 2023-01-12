@@ -97,14 +97,14 @@ class Timber
      */
     protected function test_compatibility()
     {
-        if (is_admin() || $_SERVER['PHP_SELF'] == '/wp-login.php') {
+        if (\is_admin() || $_SERVER['PHP_SELF'] == '/wp-login.php') {
             return;
         }
     }
 
     protected function init_constants()
     {
-        defined("TIMBER_LOC") or define("TIMBER_LOC", realpath(dirname(__DIR__)));
+        \defined("TIMBER_LOC") or \define("TIMBER_LOC", \realpath(\dirname(__DIR__)));
     }
 
     /**
@@ -112,9 +112,9 @@ class Timber
      */
     public static function init()
     {
-        if (!defined('ABSPATH')
-            || !class_exists('\WP')
-            || defined('TIMBER_LOADED')
+        if (!\defined('ABSPATH')
+            || !\class_exists('\WP')
+            || \defined('TIMBER_LOADED')
         ) {
             return;
         }
@@ -128,7 +128,7 @@ class Timber
         ImageHelper::init();
         Admin::init();
 
-        add_action('init', function () {
+        \add_action('init', function () {
             $integrations = [
                 Integration\AcfIntegration::class,
                 Integration\CoAuthorsPlusIntegration::class,
@@ -144,7 +144,7 @@ class Timber
              * @param array $integrations An array of PHP class names. Default: array of
              *                            integrations that Timber initializes by default.
              */
-            $integrations = apply_filters('timber/integrations', $integrations);
+            $integrations = \apply_filters('timber/integrations', $integrations);
 
             foreach ($integrations as $integration) {
                 self::init_integration(new $integration());
@@ -152,7 +152,7 @@ class Timber
         });
 
         // @todo find a more permanent home for this stuff, maybe in a QueryHelper class?
-        add_filter('pre_get_posts', function (WP_Query $query) {
+        \add_filter('pre_get_posts', function (WP_Query $query) {
             $cat = $query->query['category'] ?? null;
             if ($cat && !isset($query->query['cat'])) {
                 unset($query->query['category']);
@@ -160,18 +160,18 @@ class Timber
             }
         });
 
-        add_filter('pre_get_posts', function (WP_Query $query) {
+        \add_filter('pre_get_posts', function (WP_Query $query) {
             $count = $query->query['numberposts'] ?? null;
             if ($count && !isset($query->query['posts_per_page'])) {
                 $query->set('posts_per_page', $count);
             }
         });
 
-        add_filter('timber/post/import_data', function ($data) {
+        \add_filter('timber/post/import_data', function ($data) {
             if (isset($_GET['preview']) && isset($_GET['preview_id'])) {
-                $preview = wp_get_post_autosave($_GET['preview_id']);
-                if (is_object($preview)) {
-                    $preview = sanitize_post($preview);
+                $preview = \wp_get_post_autosave($_GET['preview_id']);
+                if (\is_object($preview)) {
+                    $preview = \sanitize_post($preview);
 
                     $data->post_content = $preview->post_content;
                     $data->post_title = $preview->post_title;
@@ -182,7 +182,7 @@ class Timber
                     // so I think it was always just falling into a magic __call() and doing nothing.
                     // $post->import_custom($preview_id);
 
-                    add_filter('get_the_terms', '_wp_preview_terms_filter', 10, 3);
+                    \add_filter('get_the_terms', '_wp_preview_terms_filter', 10, 3);
                 }
             }
 
@@ -195,9 +195,9 @@ class Timber
          * This way, developers can use Timber::render() instead of Timber\Timber::render, which
          * is more user-friendly.
          */
-        class_alias('Timber\Timber', 'Timber');
+        \class_alias('Timber\Timber', 'Timber');
 
-        define('TIMBER_LOADED', true);
+        \define('TIMBER_LOADED', true);
     }
 
     /**
@@ -259,7 +259,7 @@ class Timber
      */
     public static function get_post($query = false, $options = [])
     {
-        if (is_string($query) && !is_numeric($query)) {
+        if (\is_string($query) && !\is_numeric($query)) {
             Helper::doing_it_wrong(
                 'Timber::get_post()',
                 'Getting a post by post slug or post name was removed from Timber::get_post() in Timber 2.0. Use Timber::get_post_by() instead.',
@@ -267,7 +267,7 @@ class Timber
             );
         }
 
-        if (is_string($options)) {
+        if (\is_string($options)) {
             Helper::doing_it_wrong(
                 'Timber::get_post()',
                 'The $PostClass parameter for passing in the post class to use in Timber::get_posts() was replaced with an $options array in Timber 2.0. To customize which class to instantiate for your post, use Class Maps instead: https://timber.github.io/docs/v2/guides/class-maps/',
@@ -281,15 +281,15 @@ class Timber
 
         global $wp_query;
 
-        $options = wp_parse_args($options, [
+        $options = \wp_parse_args($options, [
             'merge_default' => false,
         ]);
 
         // Has WP already queried and found a post?
         if ($query === false && ($wp_query->queried_object instanceof WP_Post)) {
             $query = $wp_query->queried_object;
-        } elseif (is_array($query) && $options['merge_default']) {
-            $query = wp_parse_args($wp_query->query_vars);
+        } elseif (\is_array($query) && $options['merge_default']) {
+            $query = \wp_parse_args($wp_query->query_vars);
         }
 
         // Default to the global query.
@@ -371,7 +371,7 @@ class Timber
      */
     public static function get_external_image($url = false, array $args = [])
     {
-        $args = wp_parse_args($args, [
+        $args = \wp_parse_args($args, [
             'alt' => '',
         ]);
 
@@ -419,7 +419,7 @@ class Timber
      */
     public static function get_posts($query = false, $options = [])
     {
-        if (is_string($query)) {
+        if (\is_string($query)) {
             Helper::doing_it_wrong(
                 'Timber::get_posts()',
                 "Querying posts by using a query string was removed in Timber 2.0. Pass in the query string as an options array instead. For example, change Timber::get_posts( 'post_type=portfolio&posts_per_page=3') to Timber::get_posts( [ 'post_type' => 'portfolio', 'posts_per_page' => 3 ] ). Learn more: https://timber.github.io/docs/v2/reference/timber-timber/#get_posts",
@@ -429,7 +429,7 @@ class Timber
             $query = new WP_Query($query);
         }
 
-        if (is_string($options)) {
+        if (\is_string($options)) {
             Helper::doing_it_wrong(
                 'Timber::get_posts()',
                 'The $PostClass parameter for passing in the post class to use in Timber::get_posts() was replaced with an $options array in Timber 2.0. To customize which class to instantiate for your post, use Class Maps instead: https://timber.github.io/docs/v2/guides/class-maps/',
@@ -438,7 +438,7 @@ class Timber
             $options = [];
         }
 
-        if (3 === func_num_args()) {
+        if (3 === \func_num_args()) {
             Helper::doing_it_wrong(
                 'Timber::get_posts()',
                 'The $return_collection parameter to control whether a post collection is returned in Timber::get_posts() was removed in Timber 2.0.',
@@ -449,14 +449,14 @@ class Timber
         /**
          * @todo Are there any more default options to support?
          */
-        $options = wp_parse_args($options, [
+        $options = \wp_parse_args($options, [
             'merge_default' => false,
         ]);
 
         global $wp_query;
 
-        if (is_array($query) && $options['merge_default']) {
-            $query = wp_parse_args($query, $wp_query->query_vars);
+        if (\is_array($query) && $options['merge_default']) {
+            $query = \wp_parse_args($query, $wp_query->query_vars);
         }
 
         $factory = new PostFactory();
@@ -502,13 +502,13 @@ class Timber
     public static function get_post_by($type, $search_value, $args = [])
     {
         $post_id = false;
-        $args = wp_parse_args($args, [
+        $args = \wp_parse_args($args, [
             'post_type' => 'any',
             'order_by' => 'post_date',
             'order' => 'ASC',
         ]);
         if ('slug' === $type) {
-            $args = wp_parse_args($args, [
+            $args = \wp_parse_args($args, [
                 'name' => $search_value,
                 'fields' => 'ids',
             ]);
@@ -519,7 +519,7 @@ class Timber
             }
 
             $posts = $query->get_posts();
-            $post_id = array_shift($posts);
+            $post_id = \array_shift($posts);
         } elseif ('title' === $type) {
             /**
              * The following section is inspired by post_exists() as well as get_page_by_title().
@@ -534,9 +534,9 @@ class Timber
 
             $sql = "SELECT ID FROM $wpdb->posts WHERE post_title = %s";
             $query_args = [$search_value];
-            if (is_array($args['post_type'])) {
-                $post_type = esc_sql($args['post_type']);
-                $post_type_in_string = "'" . implode("','", $args['post_type']) . "'";
+            if (\is_array($args['post_type'])) {
+                $post_type = \esc_sql($args['post_type']);
+                $post_type_in_string = "'" . \implode("','", $args['post_type']) . "'";
 
                 $sql .= " AND post_type IN ($post_type_in_string)";
             } elseif ('any' !== $args['post_type']) {
@@ -635,7 +635,7 @@ class Timber
                 return null;
             }
 
-            $id = attachment_url_to_postid($ident);
+            $id = \attachment_url_to_postid($ident);
 
             return $id ? (new PostFactory())->from($id) : null;
         }
@@ -651,7 +651,7 @@ class Timber
                 return null;
             }
 
-            if (!file_exists($ident)) {
+            if (!\file_exists($ident)) {
                 // Deal with a relative path.
                 $ident = URLHelper::get_full_path($ident);
             }
@@ -714,7 +714,7 @@ class Timber
     {
         // default to all queryable taxonomies
         $args = $args ?? [
-            'taxonomy' => get_taxonomies(),
+            'taxonomy' => \get_taxonomies(),
         ];
 
         $factory = new TermFactory();
@@ -750,7 +750,7 @@ class Timber
         $factory = new TermFactory();
         $terms = $factory->from($term);
 
-        if (is_array($terms)) {
+        if (\is_array($terms)) {
             $terms = $terms[0];
         }
 
@@ -788,7 +788,7 @@ class Timber
      */
     public static function get_term_by(string $field, $value, string $taxonomy = '')
     {
-        $wp_term = get_term_by($field, $value, $taxonomy);
+        $wp_term = \get_term_by($field, $value, $taxonomy);
 
         if ($wp_term === false) {
             if (empty($taxonomy) && $field != 'term_taxonomy_id') {
@@ -897,7 +897,7 @@ class Timber
          * a better place to do this or something that already implements this, let me know
          * and I'll switch over to that.
          */
-        $user = $user ?: get_current_user_id();
+        $user = $user ?: \get_current_user_id();
 
         $factory = new UserFactory();
         return $factory->from($user);
@@ -929,7 +929,7 @@ class Timber
      */
     public static function get_user_by(string $field, $value)
     {
-        $wp_user = get_user_by($field, $value);
+        $wp_user = \get_user_by($field, $value);
 
         if ($wp_user === false) {
             return null;
@@ -1092,7 +1092,7 @@ class Timber
      */
     public static function get_sites($blog_ids = false)
     {
-        if (!is_array($blog_ids)) {
+        if (!\is_array($blog_ids)) {
             global $wpdb;
             $blog_ids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs ORDER BY blog_id ASC");
         }
@@ -1158,10 +1158,10 @@ class Timber
     {
         $context = self::context_global();
 
-        if (is_singular()) {
+        if (\is_singular()) {
             // NOTE: this also handles the is_front_page() case.
             $context['post'] = Timber::get_post()->setup();
-        } elseif (is_home()) {
+        } elseif (\is_home()) {
             $post = Timber::get_post();
 
             // When no page_on_front is set, there’s no post we can set up.
@@ -1171,20 +1171,20 @@ class Timber
 
             $context['post'] = $post;
             $context['posts'] = Timber::get_posts();
-        } elseif (is_category() || is_tag() || is_tax()) {
+        } elseif (\is_category() || \is_tag() || \is_tax()) {
             $context['term'] = Timber::get_term();
             $context['posts'] = Timber::get_posts();
-        } elseif (is_search()) {
+        } elseif (\is_search()) {
             $context['posts'] = Timber::get_posts();
-            $context['search_query'] = get_search_query();
-        } elseif (is_author()) {
-            $context['author'] = Timber::get_user(get_query_var('author'));
+            $context['search_query'] = \get_search_query();
+        } elseif (\is_author()) {
+            $context['author'] = Timber::get_user(\get_query_var('author'));
             $context['posts'] = Timber::get_posts();
-        } elseif (is_archive()) {
+        } elseif (\is_archive()) {
             $context['posts'] = Timber::get_posts();
         }
 
-        return array_merge($context, $extra);
+        return \array_merge($context, $extra);
     }
 
     /**
@@ -1215,11 +1215,11 @@ class Timber
         if (empty(self::$context_cache)) {
             self::$context_cache['site'] = new Site();
             self::$context_cache['theme'] = self::$context_cache['site']->theme;
-            self::$context_cache['user'] = is_user_logged_in() ? static::get_user() : false;
+            self::$context_cache['user'] = \is_user_logged_in() ? static::get_user() : false;
 
             self::$context_cache['http_host'] = URLHelper::get_scheme() . '://' . URLHelper::get_host();
             self::$context_cache['wp_title'] = Helper::get_wp_title();
-            self::$context_cache['body_class'] = implode(' ', get_body_class());
+            self::$context_cache['body_class'] = \implode(' ', \get_body_class());
 
             /**
              * Filters the global Timber context.
@@ -1265,14 +1265,14 @@ class Timber
              *
              * @param array $context The global context.
              */
-            self::$context_cache = apply_filters('timber/context', self::$context_cache);
+            self::$context_cache = \apply_filters('timber/context', self::$context_cache);
 
             /**
              * Filters the global Timber context.
              *
              * @deprecated 2.0.0, use `timber/context`
              */
-            self::$context_cache = apply_filters_deprecated(
+            self::$context_cache = \apply_filters_deprecated(
                 'timber_context',
                 [self::$context_cache],
                 '2.0.0',
@@ -1312,7 +1312,7 @@ class Timber
      */
     public static function compile($filenames, $data = [], $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT, $via_render = false)
     {
-        if (!defined('TIMBER_LOADED')) {
+        if (!\defined('TIMBER_LOADED')) {
             self::init();
         }
         $caller = LocationManager::get_calling_script_dir(1);
@@ -1332,7 +1332,7 @@ class Timber
          *
          * @param string|null $caller_file The calling script file.
          */
-        do_action('timber/calling_php_file', $caller_file);
+        \do_action('timber/calling_php_file', $caller_file);
 
         if ($via_render) {
             /**
@@ -1342,7 +1342,7 @@ class Timber
              *
              * @param string $file The chosen Twig template name to render.
              */
-            $file = apply_filters('timber/render/file', $file);
+            $file = \apply_filters('timber/render/file', $file);
 
             /**
              * Filters the Twig file that should be rendered.
@@ -1350,7 +1350,7 @@ class Timber
              * @codeCoverageIgnore
              * @deprecated 2.0.0, use `timber/render/file`
              */
-            $file = apply_filters_deprecated(
+            $file = \apply_filters_deprecated(
                 'timber_render_file',
                 [$file],
                 '2.0.0',
@@ -1364,14 +1364,14 @@ class Timber
              *
              * @param string $file The chosen Twig template name to compile.
              */
-            $file = apply_filters('timber/compile/file', $file);
+            $file = \apply_filters('timber/compile/file', $file);
 
             /**
              * Filters the Twig template that should be compiled.
              *
              * @deprecated 2.0.0
              */
-            $file = apply_filters_deprecated(
+            $file = \apply_filters_deprecated(
                 'timber_compile_file',
                 [$file],
                 '2.0.0',
@@ -1381,7 +1381,7 @@ class Timber
         $output = false;
 
         if ($file !== false) {
-            if (is_null($data)) {
+            if (\is_null($data)) {
                 $data = [];
             }
 
@@ -1394,14 +1394,14 @@ class Timber
                  * @param array  $data The data that is used to render the Twig template.
                  * @param string $file The name of the Twig template to render.
                  */
-                $data = apply_filters('timber/render/data', $data, $file);
+                $data = \apply_filters('timber/render/data', $data, $file);
                 /**
                  * Filters the data that should be passed for rendering a Twig template.
                  *
                  * @codeCoverageIgnore
                  * @deprecated 2.0.0
                  */
-                $data = apply_filters_deprecated(
+                $data = \apply_filters_deprecated(
                     'timber_render_data',
                     [$data],
                     '2.0.0',
@@ -1416,14 +1416,14 @@ class Timber
                  * @param array  $data The data that is used to compile the Twig template.
                  * @param string $file The name of the Twig template to compile.
                  */
-                $data = apply_filters('timber/compile/data', $data, $file);
+                $data = \apply_filters('timber/compile/data', $data, $file);
 
                 /**
                  * Filters the data that should be passed for compiling a Twig template.
                  *
                  * @deprecated 2.0.0, use `timber/compile/data`
                  */
-                $data = apply_filters_deprecated(
+                $data = \apply_filters_deprecated(
                     'timber_compile_data',
                     [$data],
                     '2.0.0',
@@ -1433,8 +1433,8 @@ class Timber
 
             $output = $loader->render($file, $data, $expires, $cache_mode);
         } else {
-            if (is_array($filenames)) {
-                $filenames = implode(", ", $filenames);
+            if (\is_array($filenames)) {
+                $filenames = \implode(", ", $filenames);
             }
             Helper::error_log('Error loading your template files: ' . $filenames . '. Make sure one of these files exists.');
         }
@@ -1448,7 +1448,7 @@ class Timber
          *
          * @param string $output
          */
-        $output = apply_filters('timber/compile/result', $output);
+        $output = \apply_filters('timber/compile/result', $output);
 
         /**
          * Fires after a Twig template was compiled and before the compiled data
@@ -1467,7 +1467,7 @@ class Timber
          * @param bool   $expires
          * @param string $cache_mode
          */
-        do_action('timber/compile/done', $output, $file, $data, $expires, $cache_mode);
+        \do_action('timber/compile/done', $output, $file, $data, $expires, $cache_mode);
 
         /**
          * Fires after a Twig template was compiled and before the compiled data
@@ -1475,7 +1475,7 @@ class Timber
          *
          * @deprecated 2.0.0, use `timber/compile/done`
          */
-        do_action_deprecated('timber_compile_done', [], '2.0.0', 'timber/compile/done');
+        \do_action_deprecated('timber_compile_done', [], '2.0.0', 'timber/compile/done');
 
         return $output;
     }
@@ -1536,7 +1536,7 @@ class Timber
          *
          * @param string $output The compiled output.
          */
-        $output = apply_filters_deprecated(
+        $output = \apply_filters_deprecated(
             'timber_compile_result',
             [$output],
             '2.0.0',
@@ -1608,7 +1608,7 @@ class Timber
      */
     public static function get_sidebar($sidebar = 'sidebar.php', $data = [])
     {
-        if (strstr(strtolower($sidebar), '.php')) {
+        if (\strstr(\strtolower($sidebar), '.php')) {
             return self::get_sidebar_from_php($sidebar, $data);
         }
         return self::compile($sidebar, $data);
@@ -1625,13 +1625,13 @@ class Timber
     {
         $caller = LocationManager::get_calling_script_dir(1);
         $uris = LocationManager::get_locations($caller);
-        ob_start();
+        \ob_start();
         $found = false;
         foreach ($uris as $namespace => $uri_locations) {
-            if (is_array($uri_locations)) {
+            if (\is_array($uri_locations)) {
                 foreach ($uri_locations as $uri) {
-                    if (file_exists(trailingslashit($uri) . $sidebar)) {
-                        include trailingslashit($uri) . $sidebar;
+                    if (\file_exists(\trailingslashit($uri) . $sidebar)) {
+                        include \trailingslashit($uri) . $sidebar;
                         $found = true;
                     }
                 }
@@ -1640,8 +1640,8 @@ class Timber
         if (!$found) {
             Helper::error_log('error loading your sidebar, check to make sure the file exists');
         }
-        $ret = ob_get_contents();
-        ob_end_clean();
+        $ret = \ob_get_contents();
+        \ob_end_clean();
 
         return $ret;
     }
@@ -1655,7 +1655,7 @@ class Timber
      */
     public static function get_widgets($widget_id)
     {
-        return trim(Helper::ob_function('dynamic_sidebar', [$widget_id]));
+        return \trim(Helper::ob_function('dynamic_sidebar', [$widget_id]));
     }
 
     /**

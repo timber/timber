@@ -162,7 +162,7 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
     public function __debugInfo(): array
     {
         return [
-            'info' => sprintf(
+            'info' => \sprintf(
                 '
 ********************************************************************************
 

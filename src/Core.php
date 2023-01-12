@@ -62,7 +62,7 @@ abstract class Core
      */
     public function __call($field, $arguments)
     {
-        if (method_exists($this, 'meta') && $meta_value = $this->meta($field)) {
+        if (\method_exists($this, 'meta') && $meta_value = $this->meta($field)) {
             return $meta_value;
         }
 
@@ -98,10 +98,10 @@ abstract class Core
      */
     public function __get($field)
     {
-        if (method_exists($this, 'meta') && $meta_value = $this->meta($field)) {
+        if (\method_exists($this, 'meta') && $meta_value = $this->meta($field)) {
             return $this->$field = $meta_value;
         }
-        if (method_exists($this, $field)) {
+        if (\method_exists($this, $field)) {
             return $this->$field = $this->$field();
         }
 
@@ -131,19 +131,19 @@ abstract class Core
      */
     public function import($info, $force = false, $only_declared_properties = false)
     {
-        if (is_object($info)) {
-            $info = get_object_vars($info);
+        if (\is_object($info)) {
+            $info = \get_object_vars($info);
         }
-        if (is_array($info)) {
+        if (\is_array($info)) {
             foreach ($info as $key => $value) {
-                if ($key === '' || ord($key[0]) === 0) {
+                if ($key === '' || \ord($key[0]) === 0) {
                     continue;
                 }
                 if (!empty($key) && $force) {
                     $this->$key = $value;
-                } elseif (!empty($key) && !method_exists($this, $key)) {
+                } elseif (!empty($key) && !\method_exists($this, $key)) {
                     if ($only_declared_properties) {
-                        if (property_exists($this, $key)) {
+                        if (\property_exists($this, $key)) {
                             $this->$key = $value;
                         }
                     } else {
@@ -165,7 +165,7 @@ abstract class Core
     public function update($key, $value)
     {
         Helper::deprecated('Timber\Core::update()', 'update_metadata()', '2.0.0');
-        update_metadata($this->object_type, $this->ID, $key, $value);
+        \update_metadata($this->object_type, $this->ID, $key, $value);
     }
 
     /**

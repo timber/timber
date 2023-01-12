@@ -16,11 +16,11 @@ class TermFactory
 {
     public function from($params)
     {
-        if (is_int($params) || is_string($params) && is_numeric($params)) {
+        if (\is_int($params) || \is_string($params) && \is_numeric($params)) {
             return $this->from_id((int) $params);
         }
 
-        if (is_string($params)) {
+        if (\is_string($params)) {
             return $this->from_taxonomy_names([$params]);
         }
 
@@ -28,7 +28,7 @@ class TermFactory
             return $this->from_wp_term_query($params);
         }
 
-        if (is_object($params)) {
+        if (\is_object($params)) {
             return $this->from_term_object($params);
         }
 
@@ -37,10 +37,10 @@ class TermFactory
                 return $this->from_taxonomy_names($params);
             }
 
-            return array_map([$this, 'from'], $params);
+            return \array_map([$this, 'from'], $params);
         }
 
-        if (is_array($params)) {
+        if (\is_array($params)) {
             return $this->from_wp_term_query(new WP_Term_Query(
                 $this->filter_query_params($params)
             ));
@@ -51,7 +51,7 @@ class TermFactory
 
     protected function from_id(int $id): ?Term
     {
-        $wp_term = get_term($id);
+        $wp_term = \get_term($id);
 
         if (!$wp_term) {
             return null;
@@ -62,7 +62,7 @@ class TermFactory
 
     protected function from_wp_term_query(WP_Term_Query $query): Iterable
     {
-        return array_map([$this, 'build'], $query->get_terms());
+        return \array_map([$this, 'build'], $query->get_terms());
     }
 
     protected function from_term_object(object $obj): CoreInterface
@@ -76,9 +76,9 @@ class TermFactory
             return $this->build($obj);
         }
 
-        throw new InvalidArgumentException(sprintf(
+        throw new InvalidArgumentException(\sprintf(
             'Expected an instance of Timber\CoreInterface or WP_Term, got %s',
-            get_class($obj)
+            \get_class($obj)
         ));
     }
 
@@ -94,14 +94,14 @@ class TermFactory
     protected function get_term_class(WP_Term $term): string
     {
         // Get the user-configured Class Map
-        $map = apply_filters('timber/term/classmap', [
+        $map = \apply_filters('timber/term/classmap', [
             'post_tag' => Term::class,
             'category' => Term::class,
         ]);
 
         $class = $map[$term->taxonomy] ?? null;
 
-        if (is_callable($class)) {
+        if (\is_callable($class)) {
             $class = $class($term);
         }
 
@@ -128,7 +128,7 @@ class TermFactory
          * @param string $class The class to use.
          * @param WP_Term $term The term object.
          */
-        $class = apply_filters('timber/term/class', $class, $term);
+        $class = \apply_filters('timber/term/class', $class, $term);
 
         return $class;
     }
@@ -159,7 +159,7 @@ class TermFactory
 
     protected function correct_taxonomies($tax): array
     {
-        $taxonomies = is_array($tax) ? $tax : [$tax];
+        $taxonomies = \is_array($tax) ? $tax : [$tax];
 
         $corrections = [
             'categories' => 'category',
@@ -167,7 +167,7 @@ class TermFactory
             'tag' => 'post_tag',
         ];
 
-        return array_map(function ($taxonomy) use ($corrections) {
+        return \array_map(function ($taxonomy) use ($corrections) {
             return $corrections[$taxonomy] ?? $taxonomy;
         }, $taxonomies);
     }
@@ -182,7 +182,7 @@ class TermFactory
 
         $include = $params['term_id'] ?? null;
         if ($include) {
-            $params['include'] = is_array($include) ? $include : [$include];
+            $params['include'] = \is_array($include) ? $include : [$include];
         }
 
         return $params;
@@ -190,11 +190,11 @@ class TermFactory
 
     protected function is_numeric_array($arr)
     {
-        if (!is_array($arr)) {
+        if (!\is_array($arr)) {
             return false;
         }
-        foreach (array_keys($arr) as $k) {
-            if (!is_int($k)) {
+        foreach (\array_keys($arr) as $k) {
+            if (!\is_int($k)) {
                 return false;
             }
         }
@@ -203,11 +203,11 @@ class TermFactory
 
     protected function is_array_of_strings($arr)
     {
-        if (!is_array($arr)) {
+        if (!\is_array($arr)) {
             return false;
         }
         foreach ($arr as $v) {
-            if (!is_string($v)) {
+            if (!\is_string($v)) {
                 return false;
             }
         }

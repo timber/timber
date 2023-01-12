@@ -132,9 +132,9 @@ class Menu extends CoreEntity
             'theme_location' => '',
         ];
 
-        $args = wp_parse_args($args, $defaults);
+        $args = \wp_parse_args($args, $defaults);
 
-        if (!in_array($args['item_spacing'], ['preserve', 'discard'], true)) {
+        if (!\in_array($args['item_spacing'], ['preserve', 'discard'], true)) {
             // Invalid value, fall back to default.
             $args['item_spacing'] = $defaults['item_spacing'];
         }
@@ -142,7 +142,7 @@ class Menu extends CoreEntity
         /**
          * @see wp_nav_menu()
          */
-        $args = apply_filters('wp_nav_menu_args', $args);
+        $args = \apply_filters('wp_nav_menu_args', $args);
         $args = (object) $args;
 
         /**
@@ -150,10 +150,10 @@ class Menu extends CoreEntity
          *
          * @see wp_nav_menu()
          */
-        $nav_menu = apply_filters('pre_wp_nav_menu', null, $args);
+        $nav_menu = \apply_filters('pre_wp_nav_menu', null, $args);
         if (null !== $nav_menu) {
             try {
-                $nav_menu = unserialize($nav_menu);
+                $nav_menu = \unserialize($nav_menu);
                 if ($nav_menu instanceof Menu) {
                     return $nav_menu;
                 }
@@ -175,11 +175,11 @@ class Menu extends CoreEntity
 
         // Skip the menu term guessing part, we already have our menu term
 
-        $menu_items = wp_get_nav_menu_items($menu->term_id, [
+        $menu_items = \wp_get_nav_menu_items($menu->term_id, [
             'update_post_term_cache' => false,
         ]);
 
-        _wp_menu_item_classes_by_context($menu_items);
+        \_wp_menu_item_classes_by_context($menu_items);
 
         $sorted_menu_items = [];
         $menu_items_with_children = [];
@@ -204,7 +204,7 @@ class Menu extends CoreEntity
         /**
          * @see wp_nav_menu()
          */
-        $sorted_menu_items = apply_filters('wp_nav_menu_objects', $sorted_menu_items, $args);
+        $sorted_menu_items = \apply_filters('wp_nav_menu_objects', $sorted_menu_items, $args);
 
         // Create Menu object
         $nav_menu = new static($menu, (array) $args);
@@ -223,7 +223,7 @@ class Menu extends CoreEntity
          *
          * @see wp_nav_menu()
          */
-        $_nav_menu = apply_filters('wp_nav_menu', serialize($nav_menu), $args);
+        $_nav_menu = \apply_filters('wp_nav_menu', \serialize($nav_menu), $args);
 
         return $nav_menu;
     }
@@ -253,7 +253,7 @@ class Menu extends CoreEntity
         }
 
         // Set theme location if available
-        $this->theme_location = array_flip(get_nav_menu_locations())[$term->term_id] ?? null;
+        $this->theme_location = \array_flip(\get_nav_menu_locations())[$term->term_id] ?? null;
         if ($this->theme_location) {
             $this->args->theme_location = $this->theme_location;
         }
@@ -286,7 +286,7 @@ class Menu extends CoreEntity
     protected function convert_menu_items(array $menu_items): array
     {
         $menu_item_factory = new MenuItemFactory();
-        return array_map(function ($item) use ($menu_item_factory): MenuItem {
+        return \array_map(function ($item) use ($menu_item_factory): MenuItem {
             return $menu_item_factory->from($item, $this);
         }, $menu_items);
     }
@@ -399,7 +399,7 @@ class Menu extends CoreEntity
      */
     public function get_items()
     {
-        if (is_array($this->items)) {
+        if (\is_array($this->items)) {
             return $this->items;
         }
 
@@ -451,7 +451,7 @@ class Menu extends CoreEntity
                 $depth
             );
 
-            if (is_null($depth)) {
+            if (\is_null($depth)) {
                 $this->_current_item = $current;
             } else {
                 return $current;
@@ -536,18 +536,18 @@ class Menu extends CoreEntity
             * @param string[] $tags The acceptable HTML tags for use as menu containers.
             *                       Default is array containing 'div' and 'nav'.
             */
-            $allowed_tags = apply_filters('wp_nav_menu_container_allowedtags', ['div', 'nav']);
+            $allowed_tags = \apply_filters('wp_nav_menu_container_allowedtags', ['div', 'nav']);
 
-            if (is_string($args->container) && in_array($args->container, $allowed_tags, true)) {
+            if (\is_string($args->container) && \in_array($args->container, $allowed_tags, true)) {
                 $show_container = true;
-                $class = $args->container_class ? ' class="' . esc_attr($args->container_class) . '"' : ' class="menu-' . $this->slug . '-container"';
-                $id = $args->container_id ? ' id="' . esc_attr($args->container_id) . '"' : '';
-                $aria_label = ('nav' === $args->container && $args->container_aria_label) ? ' aria-label="' . esc_attr($args->container_aria_label) . '"' : '';
+                $class = $args->container_class ? ' class="' . \esc_attr($args->container_class) . '"' : ' class="menu-' . $this->slug . '-container"';
+                $id = $args->container_id ? ' id="' . \esc_attr($args->container_id) . '"' : '';
+                $aria_label = ('nav' === $args->container && $args->container_aria_label) ? ' aria-label="' . \esc_attr($args->container_aria_label) . '"' : '';
                 $nav_menu .= '<' . $args->container . $id . $class . $aria_label . '>';
             }
         }
 
-        $items .= walk_nav_menu_tree($this->sorted_menu_items, $args->depth, $args);
+        $items .= \walk_nav_menu_tree($this->sorted_menu_items, $args->depth, $args);
 
         // Attributes.
         if (!empty($args->menu_id)) {
@@ -555,9 +555,9 @@ class Menu extends CoreEntity
         } else {
             $wrap_id = 'menu-' . $this->slug;
 
-            while (in_array($wrap_id, $menu_id_slugs, true)) {
-                if (preg_match('#-(\d+)$#', $wrap_id, $matches)) {
-                    $wrap_id = preg_replace('#-(\d+)$#', '-' . ++$matches[1], $wrap_id);
+            while (\in_array($wrap_id, $menu_id_slugs, true)) {
+                if (\preg_match('#-(\d+)$#', $wrap_id, $matches)) {
+                    $wrap_id = \preg_replace('#-(\d+)$#', '-' . ++$matches[1], $wrap_id);
                 } else {
                     $wrap_id = $wrap_id . '-1';
                 }
@@ -567,7 +567,7 @@ class Menu extends CoreEntity
 
         $wrap_class = $args->menu_class ? $args->menu_class : '';
 
-        $nav_menu .= sprintf($args->items_wrap, esc_attr($wrap_id), esc_attr($wrap_class), $items);
+        $nav_menu .= \sprintf($args->items_wrap, \esc_attr($wrap_id), \esc_attr($wrap_class), $items);
         if ($show_container) {
             $nav_menu .= '</' . $args->container . '>';
         }
@@ -584,6 +584,6 @@ class Menu extends CoreEntity
      */
     public function can_edit(): bool
     {
-        return current_user_can('edit_theme_options');
+        return \current_user_can('edit_theme_options');
     }
 }

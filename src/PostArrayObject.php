@@ -47,7 +47,7 @@ class PostArrayObject extends ArrayObject implements PostCollectionInterface, Js
     public function __debugInfo(): array
     {
         return [
-            'info' => sprintf(
+            'info' => \sprintf(
                 '
 ********************************************************************************
 

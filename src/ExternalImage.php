@@ -143,23 +143,23 @@ class ExternalImage implements ImageInterface
      */
     public static function build($url, array $args = [])
     {
-        $args = wp_parse_args($args, [
+        $args = \wp_parse_args($args, [
             'alt' => '',
         ]);
 
-        if (!is_numeric($url) && is_string($url)) {
+        if (!\is_numeric($url) && \is_string($url)) {
             $external_image = new static();
 
             if ($args['alt'] != '') {
                 $external_image->set_alt_text($args['alt']);
             }
 
-            if (strstr($url, '://')) {
+            if (\strstr($url, '://')) {
                 // Assume URL.
                 $external_image->init_with_url($url);
 
                 return $external_image;
-            } elseif (strstr($url, ABSPATH)) {
+            } elseif (\strstr($url, ABSPATH)) {
                 // Assume absolute path.
                 $external_image->init_with_file_path($url);
 
@@ -168,7 +168,7 @@ class ExternalImage implements ImageInterface
                 // Check for image file types.
                 foreach ($external_image->image_file_types as $type) {
                     // Assume a relative path.
-                    if (strstr(strtolower($url), $type)) {
+                    if (\strstr(\strtolower($url), $type)) {
                         $external_image->init_with_relative_path($url);
 
                         return $external_image;
@@ -317,10 +317,10 @@ class ExternalImage implements ImageInterface
     public function extension()
     {
         if (!$this->file_extension) {
-            $file_info = wp_check_filetype($this->file);
+            $file_info = \wp_check_filetype($this->file);
 
             if (!empty($file_info['ext'])) {
-                $this->file_extension = strtoupper($file_info['ext']);
+                $this->file_extension = \strtoupper($file_info['ext']);
             }
         }
 
@@ -435,7 +435,7 @@ class ExternalImage implements ImageInterface
     {
         $file_path = URLHelper::get_full_path($relative_path);
 
-        $this->abs_url = home_url($relative_path);
+        $this->abs_url = \home_url($relative_path);
         $this->file_loc = $file_path;
         $this->file = $file_path;
         $this->imageDimensions = new ImageDimensions($file_path);
@@ -512,6 +512,6 @@ class ExternalImage implements ImageInterface
             'value' => $size,
         ];
 
-        return str_replace(' ', '%20', $source['url']) . ' ' . $source['value'] . $source['descriptor'];
+        return \str_replace(' ', '%20', $source['url']) . ' ' . $source['value'] . $source['descriptor'];
     }
 }

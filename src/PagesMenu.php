@@ -48,9 +48,9 @@ class PagesMenu extends Menu
             'container' => 'div',
         ];
 
-        $args = wp_parse_args($args, $defaults);
+        $args = \wp_parse_args($args, $defaults);
 
-        if (!in_array($args['item_spacing'], ['preserve', 'discard'], true)) {
+        if (!\in_array($args['item_spacing'], ['preserve', 'discard'], true)) {
             // Invalid value, fall back to default.
             $args['item_spacing'] = $defaults['item_spacing'];
         }
@@ -63,7 +63,7 @@ class PagesMenu extends Menu
          * @param array $args An array of page menu arguments. See wp_page_menu() for information on
          *                    accepted arguments.
          */
-        $args = apply_filters('wp_page_menu_args', $args);
+        $args = \apply_filters('wp_page_menu_args', $args);
 
         /**
          * Default arguments from wp_list_pages() function.
@@ -73,10 +73,10 @@ class PagesMenu extends Menu
         $defaults = [
             'depth' => 0,
             'show_date' => '',
-            'date_format' => get_option('date_format'),
+            'date_format' => \get_option('date_format'),
             'child_of' => 0,
             'exclude' => '',
-            'title_li' => __('Pages'),
+            'title_li' => \__('Pages'),
             'echo' => 1,
             'authors' => '',
             'sort_column' => 'menu_order, post_title',
@@ -86,19 +86,19 @@ class PagesMenu extends Menu
             'walker' => '',
         ];
 
-        $args = wp_parse_args($args, $defaults);
+        $args = \wp_parse_args($args, $defaults);
 
-        if (!in_array($args['item_spacing'], ['preserve', 'discard'], true)) {
+        if (!\in_array($args['item_spacing'], ['preserve', 'discard'], true)) {
             // Invalid value, fall back to default.
             $args['item_spacing'] = $defaults['item_spacing'];
         }
 
         // Sanitize, mostly to keep spaces out.
-        $args['exclude'] = preg_replace('/[^0-9,]/', '', $args['exclude']);
+        $args['exclude'] = \preg_replace('/[^0-9,]/', '', $args['exclude']);
 
         // Allow plugins to filter an array of excluded pages (but don't put a nullstring into the array).
         $exclude_array = ($args['exclude'])
-            ? explode(',', $args['exclude'])
+            ? \explode(',', $args['exclude'])
             : [];
 
         /**
@@ -106,25 +106,25 @@ class PagesMenu extends Menu
          *
          * @param string[] $exclude_array An array of page IDs to exclude.
          */
-        $args['exclude'] = implode(',', apply_filters('wp_list_pages_excludes', $exclude_array));
+        $args['exclude'] = \implode(',', \apply_filters('wp_list_pages_excludes', $exclude_array));
 
         $args['hierarchical'] = 0;
 
         $pages_menu = new static($args);
 
         // Query pages.
-        $menu_items = get_pages($pages_menu->args);
+        $menu_items = \get_pages($pages_menu->args);
 
         if (!empty($menu_items)) {
-            $menu_items = array_map([$pages_menu, 'pre_setup_nav_menu_item'], $menu_items);
-            $menu_items = array_map('wp_setup_nav_menu_item', $menu_items);
+            $menu_items = \array_map([$pages_menu, 'pre_setup_nav_menu_item'], $menu_items);
+            $menu_items = \array_map('wp_setup_nav_menu_item', $menu_items);
 
             /**
              * Can’t really apply the "wp_get_nav_menu_items" filter here, because we don’t have a
              * $menu object to pass in.
              */
 
-            _wp_menu_item_classes_by_context($menu_items);
+            \_wp_menu_item_classes_by_context($menu_items);
 
             $menu_items_with_children = [];
 
@@ -145,7 +145,7 @@ class PagesMenu extends Menu
 
             unset($menu_item);
 
-            if (is_array($menu_items)) {
+            if (\is_array($menu_items)) {
                 /**
                  * Filters the arguments used to display a navigation menu.
                  *
@@ -153,7 +153,7 @@ class PagesMenu extends Menu
                  *
                  * @param array $args Array of wp_nav_menu() arguments.
                  */
-                $args = apply_filters('wp_nav_menu_args', $args);
+                $args = \apply_filters('wp_nav_menu_args', $args);
                 $args = (object) $args;
 
                 /**
@@ -162,7 +162,7 @@ class PagesMenu extends Menu
                  * @param array     $menu_items The menu items, sorted by each menu item's menu order.
                  * @param stdClass $args       An object containing wp_nav_menu() arguments.
                  */
-                $menu_items = apply_filters('wp_nav_menu_objects', $menu_items, $args);
+                $menu_items = \apply_filters('wp_nav_menu_objects', $menu_items, $args);
 
                 $menu_items = $pages_menu->convert_menu_items($menu_items);
                 $menu_items = $pages_menu->order_children($menu_items);
@@ -183,7 +183,7 @@ class PagesMenu extends Menu
          *
          * @see wp_nav_menu()
          */
-        apply_filters('wp_nav_menu', serialize($pages_menu), $args);
+        \apply_filters('wp_nav_menu', \serialize($pages_menu), $args);
 
         return $pages_menu;
     }
