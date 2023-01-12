@@ -322,7 +322,7 @@ class Term extends CoreEntity
      */
     public function link()
     {
-        $link = get_term_link($this);
+        $link = get_term_link($this->wp_object);
 
         /**
          * Filters the link to the term archive page.
