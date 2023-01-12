@@ -68,13 +68,13 @@ class TestTimberUser extends Timber_UnitTestCase
 
     public function testUserCapability()
     {
-        $uid = $this->factory->user->create([
+        $this->factory->user->create([
             'display_name' => 'Tito Bottitta',
             'user_login' => 'mbottitta',
             'role' => 'editor',
         ]);
 
-        $subscriber_uid = $this->factory->user->create([
+        $this->factory->user->create([
             'display_name' => 'Baberaham Lincoln',
             'user_login' => 'blincoln',
             'role' => 'subscriber',
@@ -213,6 +213,42 @@ class TestTimberUser extends Timber_UnitTestCase
         $this->assertEquals('http://2.gravatar.com/avatar/b2965625410b81a2b25ef02b54493ce0?s=120&d=mm&r=g', $user->avatar([
             'size' => 120,
         ]));
+    }
+
+    public function testEditLink()
+    {
+        $subscriber_id = $this->factory->user->create([
+            'display_name' => 'Subscriber Sam',
+            'user_login' => 'subsam',
+            'role' => 'subscriber',
+        ]);
+
+        $editor_id = $this->factory->user->create([
+            'display_name' => 'Emilia Editore',
+            'user_login' => 'eeditore',
+            'role' => 'editor',
+        ]);
+
+        $subscriber = Timber::get_user($subscriber_id);
+        $editor = Timber::get_user($editor_id);
+        $admin = Timber::get_user(1);
+
+        // Test admin role.
+        wp_set_current_user(1);
+        $this->assertEquals(
+            'http://example.org/wp-admin/user-edit.php?user_id=' . $subscriber_id,
+            $subscriber->edit_link()
+        );
+        $this->assertEquals('http://example.org/wp-admin/user-edit.php?user_id=' . $editor_id, $editor->edit_link());
+        $this->assertEquals('http://example.org/wp-admin/profile.php', $admin->edit_link());
+
+        // Test subscriber role.
+        wp_set_current_user($subscriber_id);
+        $this->assertEquals('http://example.org/wp-admin/profile.php', $subscriber->edit_link());
+        $this->assertNull($editor->edit_link());
+        $this->assertNull($admin->edit_link());
+
+        wp_set_current_user(0);
     }
 
     public function testWPObject()

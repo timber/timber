@@ -574,4 +574,16 @@ class Menu extends CoreEntity
 
         return $nav_menu;
     }
+
+    /**
+     * Checks whether the current user can edit the menu.
+     *
+     * @api
+     * @since 2.0.0
+     * @return bool
+     */
+    public function can_edit(): bool
+    {
+        return current_user_can('edit_theme_options');
+    }
 }

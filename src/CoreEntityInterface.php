@@ -15,4 +15,11 @@ interface CoreEntityInterface
      * @return object|null
      */
     public function wp_object();
+
+    /**
+     * Checks whether the current user can edit the object.
+     *
+     * @return bool
+     */
+    public function can_edit(): bool;
 }
