@@ -111,22 +111,4 @@ interface ImageInterface
      * @return string Alt text stored in WordPress.
      */
     public function alt(): string;
-
-    /**
-     * Gets the srcset attribute for an image based on a WordPress image size.
-     *
-     * @api
-     * @param string $size An image size known to WordPress (like "medium").
-     * @return string
-     */
-    public function srcset(string $size = 'full'): ?string;
-
-    /**
-     * Gets the sizes attribute for an image based on a WordPress image size.
-     *
-     * @api
-     * @param string $size An image size known to WordPress (like "medium").
-     * @return string|null
-     */
-    public function img_sizes(string $size = 'full'): ?string;
 }

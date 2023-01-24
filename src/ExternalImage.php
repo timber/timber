@@ -491,14 +491,4 @@ class ExternalImage implements ImageInterface
     {
         return $this->caption;
     }
-
-    public function srcset(string $size = 'full'): ?string
-    {
-        return null;
-    }
-
-    public function img_sizes(string $size = 'full'): ?string
-    {
-        return null;
-    }
 }
