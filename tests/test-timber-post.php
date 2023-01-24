@@ -1163,9 +1163,6 @@ class TestTimberPost extends Timber_UnitTestCase
      */
     public function testEditUrl()
     {
-        ini_set("log_errors", 1);
-        ini_set("error_log", "/tmp/php-error.log");
-
         global $current_user;
         $current_user = [];
 
@@ -1178,13 +1175,17 @@ class TestTimberPost extends Timber_UnitTestCase
         ]);
         $post = Timber::get_post($pid);
         $edit_url = $post->edit_link();
-        $this->assertEquals('', $edit_url);
+        $this->assertFalse($post->can_edit());
+        $this->assertNull($edit_url);
+
         $user = wp_set_current_user($uid);
         $user->add_role('administrator');
-        $data = get_userdata($uid);
+
         $this->assertTrue($post->can_edit());
-        $this->assertEquals('http://example.org/wp-admin/post.php?post=' . $pid . '&amp;action=edit', $post->edit_link());
-        //
+        $this->assertEquals(
+            'http://example.org/wp-admin/post.php?post=' . $pid . '&amp;action=edit',
+            $post->edit_link()
+        );
     }
 
     public function testPostThumbnailId()
