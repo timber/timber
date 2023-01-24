@@ -93,6 +93,44 @@ This allows you to check for a login state with an if statement.
 {% endif %}
 ```
 
+## User data
+
+If you need to access user data like the first and the last name, you can either load them from the properties set on user or with `{{ user.meta }}` for user values that are saved as meta values.
+
+Here’s a little cheat sheet:
+
+```twig
+{# Display name #}
+{{ user.name }}
+{{ user.display_name }}
+
+{# Nice name #}
+{{ user.slug }}
+{{ user.user_nicename }}
+
+{# Email #}
+{{ user.user_email }}
+
+{# Website #}
+{{ user.user_url }}
+
+{# Values loaded from user meta. #}
+{{ user.meta('first_name') }}
+{{ user.meta('last_name') }}
+{{ user.meta('description') }}
+
+{# Contact info #}
+{{ user.meta('facebook') }}
+{{ user.meta('instagram') }}
+{{ user.meta('linkedin') }}
+{{ user.meta('pinterest') }}
+{{ user.meta('soundcloud') }}
+{{ user.meta('tumblr') }}
+{{ user.meta('twitter') }}
+{{ user.meta('youtube') }}
+{{ user.meta('wikipedia') }}
+```
+
 ## Extending `Timber\User`
 
 If you need additional functionality that the `Timber\User` class doesn’t provide or if you want to have cleaner Twig templates, you can extend the `Timber\User` class with your own classes:

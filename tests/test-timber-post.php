@@ -312,12 +312,24 @@ class TestTimberPost extends Timber_UnitTestCase
 
     public function testCanEdit()
     {
+        $subscriber_id = $this->factory->user->create([
+            'display_name' => 'Subscriber Sam',
+            'user_login' => 'subsam',
+            'role' => 'subscriber',
+        ]);
+
+        // Test admin role.
         wp_set_current_user(1);
         $post_id = $this->factory->post->create([
             'post_author' => 1,
         ]);
         $post = Timber::get_post($post_id);
         $this->assertTrue($post->can_edit());
+
+        // Test subscriber role.
+        wp_set_current_user($subscriber_id);
+        $this->assertFalse($post->can_edit());
+
         wp_set_current_user(0);
     }
 
@@ -1158,10 +1170,7 @@ class TestTimberPost extends Timber_UnitTestCase
         update_option('home', 'http://example.org', true);
     }
 
-    /**
-     * @group failing
-     */
-    public function testEditUrl()
+    public function testEditLink()
     {
         global $current_user;
         $current_user = [];
