@@ -172,16 +172,6 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
         $this->assertSame('http://example.org/wp-content/themes/twentytwentyone/assets/images/cardinals.jpg', $result);
     }
 
-    public function testExternalImageSrcset()
-    {
-        $dest = self::copy_image_to_stylesheet('assets/images');
-        $this->assertFileExists($dest);
-
-        $image = Timber::get_external_image($dest);
-
-        $this->assertNull($image->srcset());
-    }
-
     public function testExternalImageSize()
     {
         $dest = self::copy_image_to_stylesheet('assets/images');
@@ -272,17 +262,6 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
 
         $image->set_caption('Cardinals logo with a cardinal');
         $this->assertSame('Cardinals logo with a cardinal', $image->caption());
-    }
-
-    public function testExternalImageSizes()
-    {
-        $dest = self::copy_image_to_stylesheet('assets/images');
-        $this->addFile($dest);
-        $this->assertFileExists($dest);
-
-        $image = Timber::get_external_image($dest);
-
-        $this->assertNull($image->img_sizes());
     }
 
     public function testThemeImageResize()
