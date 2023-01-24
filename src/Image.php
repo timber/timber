@@ -351,6 +351,8 @@ class Image extends Attachment implements ImageInterface
         if ($this->is_image()) {
             return wp_get_attachment_image_srcset($this->ID, $size);
         }
+
+        return false;
     }
 
     /**
@@ -371,6 +373,8 @@ class Image extends Attachment implements ImageInterface
         if ($this->is_image()) {
             return wp_get_attachment_image_sizes($this->ID, $size);
         }
+
+        return false;
     }
 
     /**
