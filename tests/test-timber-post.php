@@ -312,12 +312,24 @@ class TestTimberPost extends Timber_UnitTestCase
 
     public function testCanEdit()
     {
+        $subscriber_id = $this->factory->user->create([
+            'display_name' => 'Subscriber Sam',
+            'user_login' => 'subsam',
+            'role' => 'subscriber',
+        ]);
+
+        // Test admin role.
         wp_set_current_user(1);
         $post_id = $this->factory->post->create([
             'post_author' => 1,
         ]);
         $post = Timber::get_post($post_id);
         $this->assertTrue($post->can_edit());
+
+        // Test subscriber role.
+        wp_set_current_user($subscriber_id);
+        $this->assertFalse($post->can_edit());
+
         wp_set_current_user(0);
     }
 
@@ -1158,14 +1170,8 @@ class TestTimberPost extends Timber_UnitTestCase
         update_option('home', 'http://example.org', true);
     }
 
-    /**
-     * @group failing
-     */
-    public function testEditUrl()
+    public function testEditLink()
     {
-        ini_set("log_errors", 1);
-        ini_set("error_log", "/tmp/php-error.log");
-
         global $current_user;
         $current_user = [];
 
@@ -1178,13 +1184,17 @@ class TestTimberPost extends Timber_UnitTestCase
         ]);
         $post = Timber::get_post($pid);
         $edit_url = $post->edit_link();
-        $this->assertEquals('', $edit_url);
+        $this->assertFalse($post->can_edit());
+        $this->assertNull($edit_url);
+
         $user = wp_set_current_user($uid);
         $user->add_role('administrator');
-        $data = get_userdata($uid);
+
         $this->assertTrue($post->can_edit());
-        $this->assertEquals('http://example.org/wp-admin/post.php?post=' . $pid . '&amp;action=edit', $post->edit_link());
-        //
+        $this->assertEquals(
+            'http://example.org/wp-admin/post.php?post=' . $pid . '&amp;action=edit',
+            $post->edit_link()
+        );
     }
 
     public function testPostThumbnailId()

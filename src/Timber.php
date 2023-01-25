@@ -149,7 +149,7 @@ class Timber
         });
 
         // @todo find a more permanent home for this stuff, maybe in a QueryHelper class?
-        add_filter('pre_get_posts', function (WP_Query $query) {
+        add_action('pre_get_posts', function (WP_Query $query) {
             $cat = $query->query['category'] ?? null;
             if ($cat && !isset($query->query['cat'])) {
                 unset($query->query['category']);
@@ -157,7 +157,7 @@ class Timber
             }
         });
 
-        add_filter('pre_get_posts', function (WP_Query $query) {
+        add_action('pre_get_posts', function (WP_Query $query) {
             $count = $query->query['numberposts'] ?? null;
             if ($count && !isset($query->query['posts_per_page'])) {
                 $query->set('posts_per_page', $count);
@@ -1221,7 +1221,6 @@ class Timber
     {
         if (empty(self::$context_cache)) {
             self::$context_cache['site'] = new Site();
-            self::$context_cache['request'] = new Request();
             self::$context_cache['theme'] = self::$context_cache['site']->theme;
             self::$context_cache['user'] = is_user_logged_in() ? static::get_user() : false;
 
@@ -1573,7 +1572,6 @@ class Timber
      *                                 array, the first value is used for non-logged in visitors, the second for users.
      *                                 Default false.
      * @param string       $cache_mode Optional. Any of the cache mode constants defined in Timber\Loader.
-     * @return bool|string The echoed output.
      */
     public static function render($filenames, $data = [], $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT)
     {
@@ -1595,7 +1593,6 @@ class Timber
      * ```
      * @param string $string A string with Twig variables.
      * @param array  $data   An array of data to use in Twig template.
-     * @return bool|string
      */
     public static function render_string($string, $data = [])
     {
