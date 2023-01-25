@@ -7,7 +7,8 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
 {
     public function set_up()
     {
-        switch_theme('twentytwentyone');
+        $this->_setupParentTheme();
+        switch_theme('fake-parent-theme');
 
         parent::set_up();
     }
@@ -41,13 +42,17 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
         }
 
         $source = __DIR__ . '/assets/' . $filename;
-        $dest = trailingslashit(get_stylesheet_directory()) . $target_dir . $filename;
+        $dest_dir = trailingslashit(get_stylesheet_directory()) . $target_dir;
+        $dest = $dest_dir . $filename;
+
+        if (!file_exists($dest_dir)) {
+            mkdir($dest_dir, 0777, true);
+        }
 
         if (strpos($dest, 'http') === 0) {
             $dest = Timber\URLHelper::url_to_file_system($dest);
         }
 
-        //$dest = self::maybe_realpath($dest);
         copy($source, $dest);
 
         return $dest;
@@ -69,12 +74,12 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
         $image = Timber::get_external_image($dest);
 
         $this->assertSame(
-            'http://example.org/wp-content/themes/twentytwentyone/assets/images/cardinals.jpg',
+            'http://example.org/wp-content/themes/fake-parent-theme/assets/images/cardinals.jpg',
             $image->src()
         );
 
         $this->assertSame(
-            'http://example.org/wp-content/themes/twentytwentyone/assets/images/cardinals.jpg',
+            'http://example.org/wp-content/themes/fake-parent-theme/assets/images/cardinals.jpg',
             $image->src('medium')
         );
     }
@@ -85,15 +90,15 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
         $this->addFile($dest);
         $this->assertFileExists($dest);
 
-        $image = Timber::get_external_image('/wp-content/themes/twentytwentyone/assets/images/cardinals.jpg');
-        $image2 = Timber::get_external_image('wp-content/themes/twentytwentyone/assets/images/cardinals.jpg');
+        $image = Timber::get_external_image('/wp-content/themes/fake-parent-theme/assets/images/cardinals.jpg');
+        $image2 = Timber::get_external_image('wp-content/themes/fake-parent-theme/assets/images/cardinals.jpg');
 
         $this->assertSame(
-            'http://example.org/wp-content/themes/twentytwentyone/assets/images/cardinals.jpg',
+            'http://example.org/wp-content/themes/fake-parent-theme/assets/images/cardinals.jpg',
             $image->src()
         );
         $this->assertSame(
-            'http://example.org/wp-content/themes/twentytwentyone/assets/images/cardinals.jpg',
+            'http://example.org/wp-content/themes/fake-parent-theme/assets/images/cardinals.jpg',
             $image2->src()
         );
     }
@@ -105,11 +110,11 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
         $this->assertFileExists($dest);
 
         $image = Timber::get_external_image(
-            'http://example.org/wp-content/themes/twentytwentyone/assets/images/cardinals.jpg'
+            'http://example.org/wp-content/themes/fake-parent-theme/assets/images/cardinals.jpg'
         );
 
         $this->assertSame(
-            'http://example.org/wp-content/themes/twentytwentyone/assets/images/cardinals.jpg',
+            'http://example.org/wp-content/themes/fake-parent-theme/assets/images/cardinals.jpg',
             $image->src()
         );
     }
@@ -135,7 +140,7 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
         $image = Timber::get_external_image($dest);
 
         $this->assertSame(
-            'http://example.org/wp-content/themes/twentytwentyone/non-existent-image.jpg',
+            'http://example.org/wp-content/themes/fake-parent-theme/non-existent-image.jpg',
             $image->src()
         );
 
@@ -153,7 +158,7 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
         $image = Timber::get_external_image($dest);
 
         $this->assertSame(
-            'wp-content/themes/twentytwentyone/assets/images/cardinals.jpg',
+            'wp-content/themes/fake-parent-theme/assets/images/cardinals.jpg',
             $image->path()
         );
     }
@@ -169,7 +174,7 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
         $result = Timber::compile_string('{{ image }}', [
             'image' => $image,
         ]);
-        $this->assertSame('http://example.org/wp-content/themes/twentytwentyone/assets/images/cardinals.jpg', $result);
+        $this->assertSame('http://example.org/wp-content/themes/fake-parent-theme/assets/images/cardinals.jpg', $result);
     }
 
     public function testExternalImageSize()

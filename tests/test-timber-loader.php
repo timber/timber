@@ -108,29 +108,6 @@ class TestTimberLoader extends Timber_UnitTestCase
         $this->assertEquals('I am single.twig', trim($str));
     }
 
-    public static function _setupChildTheme()
-    {
-        $dest_dir = WP_CONTENT_DIR . '/themes/fake-child-theme';
-        if (!file_exists($dest_dir)) {
-            mkdir($dest_dir, 0777, true);
-        }
-        if (!file_exists($dest_dir . '/views')) {
-            mkdir($dest_dir . '/views', 0777, true);
-        }
-        copy(__DIR__ . '/assets/style.css', $dest_dir . '/style.css');
-        copy(__DIR__ . '/assets/single.twig', $dest_dir . '/views/single.twig');
-    }
-
-    public static function _setupParentTheme()
-    {
-        $dest_dir = WP_CONTENT_DIR . '/themes/twentyfifteen';
-        if (!file_exists($dest_dir . '/views')) {
-            mkdir($dest_dir . '/views', 0777, true);
-        }
-        copy(__DIR__ . '/assets/single-parent.twig', $dest_dir . '/views/single.twig');
-        copy(__DIR__ . '/assets/single-parent.twig', $dest_dir . '/views/single-parent.twig');
-    }
-
     public function testTwigLoadsFromParentTheme()
     {
         $this->_setupParentTheme();
