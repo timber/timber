@@ -7,14 +7,8 @@ class TestTimberParentChild extends Timber_UnitTestCase
 {
     public function testParentChildGeneral()
     {
-        $this->setupParentTheme();
-        $this->setupChildTheme();
-        switch_theme('fake-child-theme');
+        switch_theme('timber-test-theme-child');
         register_post_type('course');
-
-        //copy a specific file to the PARENT directory
-        $dest_dir = WP_CONTENT_DIR . '/themes/fake-parent-theme';
-        copy(__DIR__ . '/assets/single-course.twig', $dest_dir . '/views/single-course.twig');
 
         $pid = $this->factory->post->create();
         $post = Timber::get_post($pid);
@@ -22,5 +16,7 @@ class TestTimberParentChild extends Timber_UnitTestCase
             'post' => $post,
         ]);
         $this->assertEquals('I am single course', $str);
+
+        switch_theme('default');
     }
 }
