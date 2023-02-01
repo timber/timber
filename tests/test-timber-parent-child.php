@@ -7,8 +7,8 @@ class TestTimberParentChild extends Timber_UnitTestCase
 {
     public function testParentChildGeneral()
     {
-        $this->_setupParentTheme();
-        $this->_setupChildTheme();
+        $this->setupParentTheme();
+        $this->setupChildTheme();
         switch_theme('fake-child-theme');
         register_post_type('course');
 

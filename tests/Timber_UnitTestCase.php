@@ -260,7 +260,7 @@ class Timber_UnitTestCase extends TestCase
         unset($GLOBALS['wp_themes']);
     }
 
-    public function _setupChildTheme()
+    public function setupChildTheme()
     {
         $dest_dir = WP_CONTENT_DIR . '/themes/fake-child-theme';
 
@@ -278,7 +278,7 @@ class Timber_UnitTestCase extends TestCase
         $this->clean_themes_cache();
     }
 
-    public function _setupParentTheme()
+    public function setupParentTheme()
     {
         $dest_dir = WP_CONTENT_DIR . '/themes/fake-parent-theme';
 

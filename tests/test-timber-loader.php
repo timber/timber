@@ -99,8 +99,8 @@ class TestTimberLoader extends Timber_UnitTestCase
 
     public function testTwigLoadsFromChildTheme()
     {
-        $this->_setupParentTheme();
-        $this->_setupChildTheme();
+        $this->setupParentTheme();
+        $this->setupChildTheme();
         $this->assertFileExists(WP_CONTENT_DIR . '/themes/fake-child-theme/style.css');
         switch_theme('fake-child-theme');
         $child_theme = get_stylesheet_directory_uri();
@@ -112,8 +112,8 @@ class TestTimberLoader extends Timber_UnitTestCase
 
     public function testTwigLoadsFromParentTheme()
     {
-        $this->_setupParentTheme();
-        $this->_setupChildTheme();
+        $this->setupParentTheme();
+        $this->setupChildTheme();
         switch_theme('fake-child-theme');
         $templates = ['single-parent.twig'];
         $str = Timber::compile($templates, []);
@@ -159,7 +159,7 @@ class TestTimberLoader extends Timber_UnitTestCase
 
     public function testTwigLoadsFromAlternateDirName()
     {
-        $this->_setupParentTheme();
+        $this->setupParentTheme();
         switch_theme('fake-parent-theme');
 
         Timber::$dirname = [
@@ -175,7 +175,7 @@ class TestTimberLoader extends Timber_UnitTestCase
 
     public function testTwigLoadsFromAlternateDirNameWithoutNamespace()
     {
-        $this->_setupParentTheme();
+        $this->setupParentTheme();
         switch_theme('fake-parent-theme');
 
         Timber::$dirname = [['foo', 'views']];
@@ -189,7 +189,7 @@ class TestTimberLoader extends Timber_UnitTestCase
 
     public function testTwigLoadsFromAlternateDirNameWithoutNamespaceAndSimpleArray()
     {
-        $this->_setupParentTheme();
+        $this->setupParentTheme();
         switch_theme('fake-parent-theme');
 
         Timber::$dirname = ['foo', 'views'];
@@ -244,7 +244,7 @@ class TestTimberLoader extends Timber_UnitTestCase
 
     public function testTwigLoadsFromLocationWithAndWithoutNamespacesAndDirs()
     {
-        $this->_setupParentTheme();
+        $this->setupParentTheme();
         switch_theme('fake-parent-theme');
 
         Timber::$dirname = [
