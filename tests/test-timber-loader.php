@@ -159,6 +159,9 @@ class TestTimberLoader extends Timber_UnitTestCase
 
     public function testTwigLoadsFromAlternateDirName()
     {
+        $this->_setupParentTheme();
+        switch_theme('fake-parent-theme');
+
         Timber::$dirname = [
             \Timber\Loader::MAIN_NAMESPACE => ['foo', 'views'],
         ];
@@ -172,6 +175,9 @@ class TestTimberLoader extends Timber_UnitTestCase
 
     public function testTwigLoadsFromAlternateDirNameWithoutNamespace()
     {
+        $this->_setupParentTheme();
+        switch_theme('fake-parent-theme');
+
         Timber::$dirname = [['foo', 'views']];
         if (!file_exists(get_template_directory() . '/foo')) {
             mkdir(get_template_directory() . '/foo', 0777, true);
@@ -183,6 +189,9 @@ class TestTimberLoader extends Timber_UnitTestCase
 
     public function testTwigLoadsFromAlternateDirNameWithoutNamespaceAndSimpleArray()
     {
+        $this->_setupParentTheme();
+        switch_theme('fake-parent-theme');
+
         Timber::$dirname = ['foo', 'views'];
         if (!file_exists(get_template_directory() . '/foo')) {
             mkdir(get_template_directory() . '/foo', 0777, true);
@@ -235,6 +244,9 @@ class TestTimberLoader extends Timber_UnitTestCase
 
     public function testTwigLoadsFromLocationWithAndWithoutNamespacesAndDirs()
     {
+        $this->_setupParentTheme();
+        switch_theme('fake-parent-theme');
+
         Timber::$dirname = [
             \Timber\Loader::MAIN_NAMESPACE => ['foo', 'views'],
         ];
