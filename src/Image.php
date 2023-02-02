@@ -2,8 +2,6 @@
 
 namespace Timber;
 
-use WP_Post;
-
 /**
  * Class Image
  *
@@ -92,12 +90,12 @@ class Image extends Attachment implements ImageInterface
      *
      * @internal
      *
-     * @param int $image_id The ID number of the image in the WP database.
-     * @return array Image info as an array or ID
+     * @param array $data Data to update.
+     * @return array
      */
-    protected function get_info(WP_Post $wp_post)
+    protected function get_info(array $data): array
     {
-        $data = parent::get_info($wp_post);
+        $data = parent::get_info($data);
 
         if (isset($data['file_loc'])) {
             $data['image_dimensions'] = new ImageDimensions($data['file_loc']);
