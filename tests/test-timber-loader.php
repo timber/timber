@@ -73,17 +73,22 @@ class TestTimberLoader extends Timber_UnitTestCase
      */
     public function testTwigPathFilter()
     {
+        switch_theme('timber-test-theme-child');
+
         $php_unit = $this;
+
         add_filter('timber/loader/paths', function ($paths) use ($php_unit) {
             $paths = call_user_func_array('array_merge', array_values($paths));
-            $count = count($paths);
-            $php_unit->assertEquals(3, count($paths));
+            $php_unit->assertEquals(6, count($paths));
             $pos = array_search('/', $paths);
             unset($paths[$pos]);
-            $php_unit->assertEquals(2, count($paths));
+            $php_unit->assertEquals(5, count($paths));
             return $paths;
         });
-        $str = Timber::compile('assets/single.twig', []);
+
+        Timber::compile('assets/single.twig', []);
+
+        switch_theme('default');
     }
 
     public function testTimberLocationsFilterAdded()
@@ -99,25 +104,23 @@ class TestTimberLoader extends Timber_UnitTestCase
 
     public function testTwigLoadsFromChildTheme()
     {
-        $this->_setupParentTheme();
-        $this->_setupChildTheme();
-        $this->assertFileExists(WP_CONTENT_DIR . '/themes/fake-child-theme/style.css');
-        switch_theme('fake-child-theme');
+        $this->assertFileExists(WP_CONTENT_DIR . '/themes/timber-test-theme-child/style.css');
+        switch_theme('timber-test-theme-child');
         $child_theme = get_stylesheet_directory_uri();
-        $this->assertEquals(WP_CONTENT_URL . '/themes/fake-child-theme', $child_theme);
+        $this->assertEquals(WP_CONTENT_URL . '/themes/timber-test-theme-child', $child_theme);
         $context = [];
         $str = Timber::compile('single.twig', $context);
         $this->assertEquals('I am single.twig', trim($str));
+        switch_theme('default');
     }
 
     public function testTwigLoadsFromParentTheme()
     {
-        $this->_setupParentTheme();
-        $this->_setupChildTheme();
-        switch_theme('fake-child-theme');
+        switch_theme('timber-test-theme-child');
         $templates = ['single-parent.twig'];
         $str = Timber::compile($templates, []);
         $this->assertEquals('I am single.twig in parent theme', trim($str));
+        switch_theme('default');
     }
 
     public function _setupRelativeViews()
@@ -159,6 +162,8 @@ class TestTimberLoader extends Timber_UnitTestCase
 
     public function testTwigLoadsFromAlternateDirName()
     {
+        switch_theme('timber-test-theme');
+
         Timber::$dirname = [
             \Timber\Loader::MAIN_NAMESPACE => ['foo', 'views'],
         ];
@@ -168,10 +173,14 @@ class TestTimberLoader extends Timber_UnitTestCase
         copy(__DIR__ . '/assets/single-foo.twig', get_template_directory() . '/foo/single-foo.twig');
         $str = Timber::compile('single-foo.twig');
         $this->assertEquals('I am single-foo', trim($str));
+
+        switch_theme('default');
     }
 
     public function testTwigLoadsFromAlternateDirNameWithoutNamespace()
     {
+        switch_theme('timber-test-theme');
+
         Timber::$dirname = [['foo', 'views']];
         if (!file_exists(get_template_directory() . '/foo')) {
             mkdir(get_template_directory() . '/foo', 0777, true);
@@ -179,10 +188,14 @@ class TestTimberLoader extends Timber_UnitTestCase
         copy(__DIR__ . '/assets/single-foo.twig', get_template_directory() . '/foo/single-foo.twig');
         $str = Timber::compile('single-foo.twig');
         $this->assertEquals('I am single-foo', trim($str));
+
+        switch_theme('default');
     }
 
     public function testTwigLoadsFromAlternateDirNameWithoutNamespaceAndSimpleArray()
     {
+        switch_theme('timber-test-theme');
+
         Timber::$dirname = ['foo', 'views'];
         if (!file_exists(get_template_directory() . '/foo')) {
             mkdir(get_template_directory() . '/foo', 0777, true);
@@ -190,6 +203,8 @@ class TestTimberLoader extends Timber_UnitTestCase
         copy(__DIR__ . '/assets/single-foo.twig', get_template_directory() . '/foo/single-foo.twig');
         $str = Timber::compile('single-foo.twig');
         $this->assertEquals('I am single-foo', trim($str));
+
+        switch_theme('default');
     }
 
     public function testTwigLoadsFromLocation()
@@ -235,6 +250,8 @@ class TestTimberLoader extends Timber_UnitTestCase
 
     public function testTwigLoadsFromLocationWithAndWithoutNamespacesAndDirs()
     {
+        switch_theme('timber-test-theme');
+
         Timber::$dirname = [
             \Timber\Loader::MAIN_NAMESPACE => ['foo', 'views'],
         ];
@@ -259,6 +276,8 @@ class TestTimberLoader extends Timber_UnitTestCase
         // Dir
         $str = Timber::compile('single-foo.twig');
         $this->assertEquals('I am single-foo', trim($str));
+
+        switch_theme('default');
     }
 
     public function testTwigLoadsFromMultipleLocationsWithNamespace()

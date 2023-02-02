@@ -20,16 +20,14 @@ class TestTimberSite extends Timber_UnitTestCase
 
     public function testChildParentThemeLocation()
     {
-        $this->_setupParentTheme();
-        $this->_setupChildTheme();
-
         $content_subdir = Timber\URLHelper::get_content_subdir();
-        $this->assertFileExists(WP_CONTENT_DIR . '/themes/fake-child-theme/style.css');
-        $this->assertFileExists(WP_CONTENT_DIR . '/themes/fake-parent-theme/style.css');
-        switch_theme('fake-child-theme');
+        $this->assertFileExists(WP_CONTENT_DIR . '/themes/timber-test-theme-child/style.css');
+        switch_theme('timber-test-theme-child');
         $site = new Timber\Site();
-        $this->assertEquals($content_subdir . '/themes/fake-child-theme', $site->theme->path);
-        $this->assertEquals($content_subdir . '/themes/fake-parent-theme', $site->theme->parent->path);
+        $this->assertEquals($content_subdir . '/themes/timber-test-theme-child', $site->theme->path);
+        $this->assertEquals($content_subdir . '/themes/timber-test-theme', $site->theme->parent->path);
+
+        switch_theme('default');
     }
 
     public function testThemeFromContext()

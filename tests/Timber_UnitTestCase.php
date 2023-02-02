@@ -251,40 +251,15 @@ class Timber_UnitTestCase extends TestCase
 
     public function restore_themes()
     {
+        if (!$this->backup_wp_theme_directories) {
+            return;
+        }
+
         global $wp_theme_directories;
 
         $wp_theme_directories = $this->backup_wp_theme_directories;
 
         wp_clean_themes_cache();
         unset($GLOBALS['wp_themes']);
-        parent::tear_down();
-    }
-
-    public function _setupChildTheme()
-    {
-        $dest_dir = WP_CONTENT_DIR . '/themes/fake-child-theme';
-        if (!file_exists($dest_dir)) {
-            mkdir($dest_dir, 0777, true);
-        }
-        if (!file_exists($dest_dir . '/views')) {
-            mkdir($dest_dir . '/views', 0777, true);
-        }
-        copy(__DIR__ . '/assets/fake-child-theme-style.css', $dest_dir . '/style.css');
-        copy(__DIR__ . '/assets/single.twig', $dest_dir . '/views/single.twig');
-
-        $this->clean_themes_cache();
-    }
-
-    public function _setupParentTheme()
-    {
-        $dest_dir = WP_CONTENT_DIR . '/themes/fake-parent-theme';
-        if (!file_exists($dest_dir . '/views')) {
-            mkdir($dest_dir . '/views', 0777, true);
-        }
-        copy(__DIR__ . '/assets/fake-parent-theme-style.css', $dest_dir . '/style.css');
-        copy(__DIR__ . '/assets/single-parent.twig', $dest_dir . '/views/single.twig');
-        copy(__DIR__ . '/assets/single-parent.twig', $dest_dir . '/views/single-parent.twig');
-
-        $this->clean_themes_cache();
     }
 }
