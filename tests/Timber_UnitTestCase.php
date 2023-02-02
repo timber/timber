@@ -9,6 +9,9 @@ class Timber_UnitTestCase extends TestCase
      */
     private $temporary_hook_removals = [];
 
+    /**
+     * Backup variable for saving and restoring themes.
+     */
     protected $backup_wp_theme_directories;
 
     /**
