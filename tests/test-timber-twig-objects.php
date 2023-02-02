@@ -44,6 +44,31 @@ class TestTimberTwigObjects extends Timber_UnitTestCase
         $this->assertEquals('http://example.org/wp-content/uploads/' . date('Y/m') . '/arch.jpg', $compiled);
     }
 
+    public function testImageWithGetImageInTwig()
+    {
+        $compiled = Timber::compile_string('{{ get_image(iid).src }}', [
+            'iid' => TestTimberImage::get_attachment(),
+        ]);
+
+        $this->assertEquals('http://example.org/wp-content/uploads/' . date('Y/m') . '/arch.jpg', $compiled);
+    }
+
+    public function testExternalImageWithGetExternalImageInTwig()
+    {
+        switch_theme('twentytwentyone');
+
+        $dest = TestExternalImage::copy_image_to_stylesheet('assets/images');
+        $this->assertFileExists($dest);
+
+        $compiled = Timber::compile_string('{{ get_external_image(image_path).src }}', [
+            'image_path' => $dest,
+        ]);
+
+        $this->assertEquals('http://example.org/wp-content/themes/twentytwentyone/assets/images/cardinals.jpg', $compiled);
+
+        switch_theme('default');
+    }
+
     /**
      * @expectedDeprecated {{ Image() }}
      */
@@ -52,7 +77,7 @@ class TestTimberTwigObjects extends Timber_UnitTestCase
         $images = [];
         $images[] = TestTimberImage::get_attachment(0, 'arch.jpg');
         $images[] = TestTimberImage::get_attachment(0, 'city-museum.jpg');
-        $str = '{% for image in Image(images) %}{{image.src}}{% endfor %}';
+        $str = '{% for image in Image(images) %}{{ image.src }}{% endfor %}';
         $compiled = Timber::compile_string($str, [
             'images' => $images,
         ]);
@@ -64,7 +89,7 @@ class TestTimberTwigObjects extends Timber_UnitTestCase
         $images = [];
         $images[] = TestTimberImage::get_attachment(0, 'arch.jpg');
         $images[] = TestTimberImage::get_attachment(0, 'city-museum.jpg');
-        $str = '{% for image in get_posts(images) %}{{image.src}}{% endfor %}';
+        $str = '{% for image in get_posts(images) %}{{ image.src }}{% endfor %}';
         $compiled = Timber::compile_string($str, [
             'images' => $images,
         ]);

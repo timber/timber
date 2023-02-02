@@ -356,20 +356,30 @@ class Timber
     /**
      * Gets an external image.
      *
-     * Behaves just like Timber::get_image(), except that it uses a URL to load an image
+     * Behaves just like Timber::get_image(), except that you can use an absolute or relative path or a URL to load an
+     * image. You can also pass in an external URL. In that case, Timber will sideload the image and store it in the
+     * uploads folder of your WordPress installation. The next time the image is accessed, it will be loaded from there.
      *
      * @api
      * @since 2.0.0
      * @see Timber::get_image()
+     * @see ImageHelper::sideload_image()
      *
-     * @param string $url   Url where to load an image from
+     * @param bool  $url Image path or URL. The path can be absolute or relative to the WordPress installation.
+     * @param array $args {
+     *     An associative array with additional arguments for the image.
+     *
+     *     @type string $alt Alt text for the image.
+     *     @type string $caption Caption text for the image.
+     * }
      *
      * @return ExternalImage|null
      */
-    public static function get_external_image($url = false, array $args = [])
+    public static function get_external_image($url = false, array $args = []): ?ExternalImage
     {
         $args = wp_parse_args($args, [
             'alt' => '',
+            'caption' => '',
         ]);
 
         return ExternalImage::build($url, $args);
