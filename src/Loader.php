@@ -103,8 +103,16 @@ class Loader
         $output = false;
         if (false !== $expires) {
             ksort($data);
-            $key = md5($file . json_encode($data));
-            $output = $this->get_cache($key, self::CACHEGROUP, $cache_mode);
+            $encoded = json_encode($data);
+
+            /**
+             * The encoding might fail, e.g. when an object has a recursion. In that case, we’d rather not cache the
+             * data instead of possibly returning the wrong data.
+             */
+            if (false !== $encoded) {
+                $key = md5($file . $encoded);
+                $output = $this->get_cache($key, self::CACHEGROUP, $cache_mode);
+            }
         }
 
         if (false === $output || null === $output) {
@@ -292,8 +300,6 @@ class Loader
          *
          * @link https://github.com/timber/timber/pull/1254
          * @since 1.1.11
-         *
-         * @param array $paths
          */
         $fs = apply_filters('timber/loader/loader', $fs);
 
@@ -333,7 +339,7 @@ class Loader
          *  *
          *  * @link https://twig.symfony.com/doc/2.x/api.html#environment-options
          *  *
-         *  * @param array $options An array of environment options.
+         *  * \@param array $options An array of environment options.
          *  *
          *  * @return array
          *  *\/
@@ -479,7 +485,7 @@ class Loader
          * /**
          *  * Adds Twig functionality.
          *  *
-         *  * @param \Twig\Environment $twig The Twig Environment to which you can add additional functionality.
+         *  * \@param \Twig\Environment $twig The Twig Environment to which you can add additional functionality.
          *  *\/
          * add_filter( 'timber/twig', function( $twig ) {
          *     // Make get_theme_file_uri() usable as {{ theme_file() }} in Twig.

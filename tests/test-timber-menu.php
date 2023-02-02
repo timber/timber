@@ -1078,6 +1078,53 @@ class TestTimberMenu extends Timber_UnitTestCase
         $this->assertStringContainsString('id="my-unique-container-id"', $nav_menu_timber);
     }
 
+    public function testMenuCanEdit()
+    {
+        self::_createTestMenu();
+
+        $subscriber_id = $this->factory->user->create([
+            'display_name' => 'Subscriber Sam',
+            'user_login' => 'subsam',
+            'role' => 'subscriber',
+        ]);
+
+        $menu = Timber::get_menu('Menu One');
+
+        // Test admin role.
+        wp_set_current_user(1);
+        $this->assertTrue($menu->can_edit());
+
+        // Test subscriber role.
+        wp_set_current_user($subscriber_id);
+        $this->assertFalse($menu->can_edit());
+
+        wp_set_current_user(0);
+    }
+
+    public function testMenuItemCanEdit()
+    {
+        self::_createTestMenu();
+
+        $subscriber_id = $this->factory->user->create([
+            'display_name' => 'Subscriber Sam',
+            'user_login' => 'subsam',
+            'role' => 'subscriber',
+        ]);
+
+        $menu = Timber::get_menu('Menu One');
+        $menu_items = $menu->get_items();
+
+        // Test admin role.
+        wp_set_current_user(1);
+        $this->assertTrue($menu_items[0]->can_edit());
+
+        // Test subscriber role.
+        wp_set_current_user($subscriber_id);
+        $this->assertFalse($menu_items[0]->can_edit());
+
+        wp_set_current_user(0);
+    }
+
     public function testWPObject()
     {
         $menu_id = self::_createTestMenu()['term_id'];

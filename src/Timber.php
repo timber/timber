@@ -149,7 +149,7 @@ class Timber
         });
 
         // @todo find a more permanent home for this stuff, maybe in a QueryHelper class?
-        add_filter('pre_get_posts', function (WP_Query $query) {
+        add_action('pre_get_posts', function (WP_Query $query) {
             $cat = $query->query['category'] ?? null;
             if ($cat && !isset($query->query['cat'])) {
                 unset($query->query['category']);
@@ -157,7 +157,7 @@ class Timber
             }
         });
 
-        add_filter('pre_get_posts', function (WP_Query $query) {
+        add_action('pre_get_posts', function (WP_Query $query) {
             $count = $query->query['numberposts'] ?? null;
             if ($count && !isset($query->query['posts_per_page'])) {
                 $query->set('posts_per_page', $count);
@@ -354,6 +354,38 @@ class Timber
         // @todo make this determination at the Factory level.
         // No need to instantiate a Post we're not going to use.
         return ($post instanceof Image) ? $post : null;
+    }
+
+    /**
+     * Gets an external image.
+     *
+     * Behaves just like Timber::get_image(), except that you can use an absolute or relative path or a URL to load an
+     * image. You can also pass in an external URL. In that case, Timber will sideload the image and store it in the
+     * uploads folder of your WordPress installation. The next time the image is accessed, it will be loaded from there.
+     *
+     * @api
+     * @since 2.0.0
+     * @see Timber::get_image()
+     * @see ImageHelper::sideload_image()
+     *
+     * @param bool  $url Image path or URL. The path can be absolute or relative to the WordPress installation.
+     * @param array $args {
+     *     An associative array with additional arguments for the image.
+     *
+     *     @type string $alt Alt text for the image.
+     *     @type string $caption Caption text for the image.
+     * }
+     *
+     * @return ExternalImage|null
+     */
+    public static function get_external_image($url = false, array $args = []): ?ExternalImage
+    {
+        $args = wp_parse_args($args, [
+            'alt' => '',
+            'caption' => '',
+        ]);
+
+        return ExternalImage::build($url, $args);
     }
 
     /**
@@ -1192,7 +1224,6 @@ class Timber
     {
         if (empty(self::$context_cache)) {
             self::$context_cache['site'] = new Site();
-            self::$context_cache['request'] = new Request();
             self::$context_cache['theme'] = self::$context_cache['site']->theme;
             self::$context_cache['user'] = is_user_logged_in() ? static::get_user() : false;
 
@@ -1263,10 +1294,10 @@ class Timber
     }
 
     /**
-     * Compile a Twig file.
+     * Compiles a Twig file.
      *
-     * Passes data to a Twig file and returns the output.
-     * If the template file doesn't exist it will throw a warning when WP_DEBUG is enabled.
+     * Passes data to a Twig file and returns the output. If the template file doesn't exist it will throw a warning
+     * when WP_DEBUG is enabled.
      *
      * @api
      * @example
@@ -1279,8 +1310,8 @@ class Timber
      *
      * $team_member = Timber::compile( 'team-member.twig', $data );
      * ```
-     * @param array|string $filenames  Name of the Twig file to render. If this is an array of files, Timber will
-     *                                 render the first file that exists.
+     * @param array|string $filenames  Name or full path of the Twig file to compile. If this is an array of file
+     *                                 names or paths, Timber will compile the first file that exists.
      * @param array        $data       Optional. An array of data to use in Twig template.
      * @param bool|int     $expires    Optional. In seconds. Use false to disable cache altogether. When passed an
      *                                 array, the first value is used for non-logged in visitors, the second for users.
@@ -1526,7 +1557,7 @@ class Timber
     }
 
     /**
-     * Render function.
+     * Renders a Twig file.
      *
      * Passes data to a Twig file and echoes the output.
      *
@@ -1537,14 +1568,13 @@ class Timber
      *
      * Timber::render( 'index.twig', $context );
      * ```
-     * @param array|string $filenames  Name of the Twig file to render. If this is an array of files, Timber will
-     *                                 render the first file that exists.
+     * @param array|string $filenames  Name or full path of the Twig file to render. If this is an array of file
+     *                                 names or paths, Timber will render the first file that exists.
      * @param array        $data       Optional. An array of data to use in Twig template.
      * @param bool|int     $expires    Optional. In seconds. Use false to disable cache altogether. When passed an
      *                                 array, the first value is used for non-logged in visitors, the second for users.
      *                                 Default false.
      * @param string       $cache_mode Optional. Any of the cache mode constants defined in Timber\Loader.
-     * @return bool|string The echoed output.
      */
     public static function render($filenames, $data = [], $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT)
     {
@@ -1566,7 +1596,6 @@ class Timber
      * ```
      * @param string $string A string with Twig variables.
      * @param array  $data   An array of data to use in Twig template.
-     * @return bool|string
      */
     public static function render_string($string, $data = [])
     {
