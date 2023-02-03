@@ -184,9 +184,22 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         $post->ID = $wp_post->ID;
         $post->wp_object = $wp_post;
 
-        $data = $post->get_info($wp_post);
+        $data = get_object_vars($wp_post);
+        $data = $post->get_info($data);
 
-        $post->import(apply_filters('timber/post/import_data', $data));
+        /**
+         * Filters the imported post data.
+         *
+         * Used internally for previews.
+         *
+         * @since 2.0.0
+         * @see   Timber::init()
+         * @param array        $data An array of post data to import.
+         * @param \Timber\Post $post The Timber post instance.
+         */
+        $data = apply_filters('timber/post/import_data', $data, $post);
+
+        $post->import($data);
 
         return $post;
     }
@@ -494,19 +507,23 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     }
 
     /**
+     * Gets info to import on Timber post object.
+     *
      * Used internally by init, etc. to build Timber\Post object.
      *
      * @internal
-     * @param  int|null|boolean $pid The ID to generate info from.
-     * @return WP_Post
+     *
+     * @param array $data Data to update.
+     * @return array
      */
-    protected function get_info(WP_Post $post)
+    protected function get_info(array $data): array
     {
-        $post->status = $post->post_status;
-        $post->id = $post->ID;
-        $post->slug = $post->post_name;
+        $data = array_merge($data, [
+            'slug' => $this->wp_object->post_name,
+            'status' => $this->wp_object->post_status,
+        ]);
 
-        return $post;
+        return $data;
     }
 
     /**
