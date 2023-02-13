@@ -252,7 +252,8 @@ class Menu extends CoreEntity
         }
 
         // Set theme location if available
-        $this->theme_location = array_flip(get_nav_menu_locations())[$term->term_id] ?? null;
+        $locations = array_flip(array_filter(get_nav_menu_locations(), fn ($location) => is_string($location) || is_int($location)));
+        $this->theme_location = $locations[$term->term_id] ?? null;
         if ($this->theme_location) {
             $this->args->theme_location = $this->theme_location;
         }
