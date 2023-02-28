@@ -2,4 +2,6 @@
 
 use Timber\Post;
 
-class CollectionTestCustom extends Post {}
+class CollectionTestCustom extends Post
+{
+}

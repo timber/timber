@@ -1,15 +1,14 @@
 {
   "name": "timber/timber",
-  "type": "library",
   "description": "Plugin to write WordPress themes w Object-Oriented Code and the Twig Template Engine",
+  "license": "MIT",
+  "type": "library",
   "keywords": [
     "timber",
     "twig",
     "themes",
     "templating"
   ],
-  "homepage": "http://timber.upstatement.com",
-  "license": "MIT",
   "authors": [
     {
       "name": "Jared Novack",
@@ -22,32 +21,50 @@
       "homepage": "http://connorburton.com"
     }
   ],
+  "homepage": "http://timber.upstatement.com",
   "support": {
     "issues": "https://github.com/timber/timber/issues",
     "source": "https://github.com/timber/timber",
     "docs": "https://timber.github.io/docs/"
   },
   "require": {
-    "php": "^7.4|^8.0",
-    "twig/twig": "^2.12|^3.0",
-    "composer/installers": "^1.9",
-    "twig/cache-extension": "^1.5.0"
+    "php": "^7.4 || ^8.0",
+    "composer/installers": "^1.0 || ^2.0",
+    "twig/twig": "^2.15.3 || ^3.0"
   },
   "require-dev": {
+    "ergebnis/composer-normalize": "^2.28",
+    "php-parallel-lint/php-parallel-lint": "^1.3",
+    "php-stubs/acf-pro-stubs": "^5.12",
+    "php-stubs/wp-cli-stubs": "^2.0",
+    "phpro/grumphp": "^1.12",
+    "phpstan/extension-installer": "^1.1",
+    "phpstan/phpstan": "^1.7",
     "squizlabs/php_codesniffer": "^3.0",
-    "wp-coding-standards/wpcs": "^2.0",
-    "wpackagist-plugin/advanced-custom-fields": "^5.0",
+    "symplify/easy-coding-standard": "^11.0",
+    "szepeviktor/phpstan-wordpress": "^1.1",
+    "twig/cache-extra": "^3.3",
+    "wpackagist-plugin/advanced-custom-fields": "^5.0 || ^6.0",
     "wpackagist-plugin/co-authors-plus": "^3.3",
-    "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
-    "php-stubs/wp-cli-stubs": "^2.2.0",
-    "yoast/phpunit-polyfills": "^1.0.1"
+    "yoast/wp-test-utils": "^1.0"
   },
   "suggest": {
-    "php-coveralls/php-coveralls": "^2.0 for code coverage"
+    "php-coveralls/php-coveralls": "^2.0 for code coverage",
+    "twig/cache-extra": "For using the cache tag in Twig"
   },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://wpackagist.org",
+      "only": [
+        "wpackagist-plugin/*",
+        "wpackagist-theme/*"
+      ]
+    }
+  ],
   "autoload": {
     "psr-4": {
-      "Timber\\": "lib/"
+      "Timber\\": "src/"
     }
   },
   "autoload-dev": {
@@ -59,15 +76,34 @@
       "tests/phpstan"
     ]
   },
-  "repositories": [
-    {
-      "type": "composer",
-      "url": "https://wpackagist.org",
-      "only": ["wpackagist-plugin/*", "wpackagist-theme/*"]
+  "config": {
+    "allow-plugins": {
+      "composer/installers": true,
+      "phpro/grumphp": true,
+      "phpstan/extension-installer": true,
+      "ergebnis/composer-normalize": true
     }
-  ],
+  },
   "scripts": {
-    "test": "vendor/bin/phpunit -c phpunit-nocover.xml --verbose --colors=always",
-    "lint": "phpcs --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1"
+    "analyze": "phpstan",
+    "cs": "ecs check",
+    "cs:docs": "ecs check-markdown docs/v2/**/*.md --fix",
+    "cs:docs:fix": "ecs check-markdown docs/v2/**/*.md",
+    "cs:fix": "ecs check --fix",
+    "grump": "grumphp run",
+    "grump:install": "grumphp git:init",
+    "lint": "parallel-lint --exclude .git --exclude vendor .",
+    "lint-composer": "@composer normalize --dry-run",
+    "lint-composer:fix": "@composer normalize",
+    "qa": [
+      "@lint-composer",
+      "@lint",
+      "@test",
+      "@cs"
+    ],
+    "test": "phpunit",
+    "test:codecov": "phpunit --coverage-clover ./build/logs/clover.xml",
+    "test:make-pot": "wp i18n make-pot src tests/languages/timber.pot --domain= && wp i18n make-pot ./tests/assets/translations ./tests/languages/timber-test.pot --domain=timber-test",
+    "test:no-cov": "phpunit --no-coverage"
   }
 }

@@ -7,7 +7,7 @@ Everyone loves widgets! Of course they do...
 
 ```php
 $data = [
-    'footer_widgets' => Timber::get_widgets( 'footer_widgets' ),
+    'footer_widgets' => Timber::get_widgets('footer_widgets'),
 ];
 ```
 
@@ -30,14 +30,18 @@ You can also use twig templates for your widgets! Let’s imagine we want a widg
 Inside the widget class, the widget function is used to show the widget:
 
 ```php
-public function widget( $args, $instance ) {
-    $number = rand();
+class My_Widget extends WP_Widget
+{
+    public function widget($args, $instance)
+    {
+        $number = rand();
 
-    Timber::render( 'random-widget.twig', array(
-        'args' => $args,
-        'instance' => $instance,
-        'number' => $number
-    ) );
+        Timber::render('random-widget.twig', [
+            'args' => $args,
+            'instance' => $instance,
+            'number' => $number,
+        ]);
+    }
 }
 ```
 
@@ -57,18 +61,22 @@ The raw filter is needed here to embed the widget properly.
 You may also want to check if the Timber plugin was loaded before using it:
 
 ```php
-public function widget( $args, $instance ) {
-    if ( ! class_exists( 'Timber' ) ) {
-        // if you want to show some error message, this is the right place
-        return;
+class My_Widget extends WP_Widget
+{
+    public function widget($args, $instance)
+    {
+        if (!class_exists('Timber')) {
+            // if you want to show some error message, this is the right place
+            return;
+        }
+
+        $number = rand();
+
+        Timber::render('random-widget.twig', [
+            'args' => $args,
+            'instance' => $instance,
+            'number' => $number,
+        ]);
     }
-
-    $number = rand();
-
-    Timber::render( 'random-widget.twig', array(
-        'args' => $args,
-        'instance' => $instance,
-        'number' => $number
-    ) );
 }
 ```

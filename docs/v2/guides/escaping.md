@@ -14,11 +14,11 @@ If you want to enable Twig’s `autoescape` behavior, you can enable it with the
 **functions.php**
 
 ```php
-add_filter( 'timber/twig/environment/options', function( $options ) {
-	$options['autoescape'] = 'html';
+add_filter('timber/twig/environment/options', function ($options) {
+    $options['autoescape'] = 'html';
 
-	return $options;
-} );
+    return $options;
+});
 ```
 
 ## Why should I escape?

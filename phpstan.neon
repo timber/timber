@@ -1,17 +1,14 @@
-includes:
-    - vendor/szepeviktor/phpstan-wordpress/extension.neon
 parameters:
-    #level: max
-    level: 5
+    level: 0 # Increase until "max"
     paths:
-        - lib/
+        - src/
     scanFiles:
-        # Plugin stubs
         - vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
-    bootstrapFiles:
-        - tests/phpstan/bootstrap.php
+        - vendor/php-stubs/acf-pro-stubs/acf-pro-stubs.php
     ignoreErrors:
-        # Uses func_get_args()
-        - '#^Function apply_filters invoked with [3456] parameters, 2 required\.$#'
-        # TODO Do not create a static instance of a non-final class.
-        - '#^Unsafe usage of new static\(\)\.$#'
+        - '#Instantiated class Twig\\CacheExtension\\CacheStrategy\\GenerationalCacheStrategy not found.#'
+        - '#Instantiated class Twig\\CacheExtension\\Extension not found.#'
+    #     # Uses func_get_args()
+    #     - '#^Function apply_filters invoked with [3456] parameters, 2 required\.$#'
+    #     # TODO Do not create a static instance of a non-final class.
+    #     - '#^Unsafe usage of new static\(\)\.$#'

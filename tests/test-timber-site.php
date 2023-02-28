@@ -1,111 +1,130 @@
 <?php
 
-class TestTimberSite extends Timber_UnitTestCase {
+#[AllowDynamicProperties]
+class TestTimberSite extends Timber_UnitTestCase
+{
+    public function testStandardThemeLocation()
+    {
+        switch_theme('timber-test-theme');
 
-	function testStandardThemeLocation() {
-		switch_theme( 'twentyfifteen' );
-		$site = new \Timber\Site();
-		$content_subdir = Timber\URLHelper::get_content_subdir();
-		$this->assertEquals( $content_subdir.'/themes/twentyfifteen', $site->theme->path );
-	}
+        $site = new \Timber\Site();
+        $content_subdir = Timber\URLHelper::get_content_subdir();
+        $this->assertEquals($content_subdir . '/themes/timber-test-theme', $site->theme->path);
 
-	function testLanguageAttributes() {
-		$this->restore_locale();
-		$site = new \Timber\Site();
-		$lang = $site->language_attributes();
-		$this->assertEquals('lang="en-US"', $lang);
-	}
+        switch_theme('default');
+    }
 
-	function testChildParentThemeLocation() {
-		TestTimberLoader::_setupChildTheme();
-		$content_subdir = Timber\URLHelper::get_content_subdir();
-		$this->assertFileExists( WP_CONTENT_DIR.'/themes/fake-child-theme/style.css' );
-		switch_theme( 'fake-child-theme' );
-		$site = new Timber\Site();
-		$this->assertEquals( $content_subdir.'/themes/fake-child-theme', $site->theme->path );
-		$this->assertEquals( $content_subdir.'/themes/twentyfifteen', $site->theme->parent->path );
-	}
+    public function testLanguageAttributes()
+    {
+        restore_current_locale();
+        $site = new \Timber\Site();
+        $lang = $site->language_attributes();
+        $this->assertEquals('lang="en-US"', $lang);
+    }
 
-	function testThemeFromContext() {
-		switch_theme( 'twentyfifteen' );
-		$context = Timber::context();
-		$this->assertEquals( 'twentyfifteen', $context['theme']->slug );
-	}
+    public function testChildParentThemeLocation()
+    {
+        $content_subdir = Timber\URLHelper::get_content_subdir();
+        $this->assertFileExists(WP_CONTENT_DIR . '/themes/timber-test-theme-child/style.css');
+        switch_theme('timber-test-theme-child');
+        $site = new Timber\Site();
+        $this->assertEquals($content_subdir . '/themes/timber-test-theme-child', $site->theme->path);
+        $this->assertEquals($content_subdir . '/themes/timber-test-theme', $site->theme->parent->path);
 
-	function testThemeFromSiteContext() {
-		switch_theme( 'twentyfifteen' );
-		$context = Timber::context();
-		$this->assertEquals( 'twentyfifteen', $context['site']->theme->slug );
-	}
+        switch_theme('default');
+    }
 
-	function testSiteURL() {
-		$site = new \Timber\Site();
-		$this->assertEquals( 'http://example.org', $site->link() );
-		$this->assertEquals(site_url(), $site->site_url);
-	}
+    public function testThemeFromContext()
+    {
+        switch_theme('timber-test-theme');
 
-	function testHomeUrl() {
-		$site = new \Timber\Site();
-		$this->assertEquals($site->url, $site->home_url);
-	}
+        $context = Timber::context();
+        $this->assertEquals('timber-test-theme', $context['theme']->slug);
 
-	function testSiteIcon() {
-		$icon_id = TestTimberImage::get_attachment(0, 'cardinals.jpg');
-		update_option('site_icon', $icon_id);
-		$site = new Timber\Site();
-		$icon = $site->icon();
-		$this->assertEquals('Timber\Image', get_class($icon));
-		$this->assertStringContainsString('cardinals.jpg', $icon->src());
-	}
+        switch_theme('default');
+    }
 
+    public function testThemeFromSiteContext()
+    {
+        switch_theme('timber-test-theme');
 
-	function testNullIcon() {
-		delete_option('site_icon');
-		$site = new Timber\Site();
-		$this->assertNull($site->icon());
-	}
+        $context = Timber::context();
+        $this->assertEquals('timber-test-theme', $context['site']->theme->slug);
 
-	function testSiteGet() {
-		update_option( 'foo', 'bar' );
-		$site = new Timber\Site();
-		$this->assertEquals( 'bar', $site->foo );
-	}
+        switch_theme('default');
+    }
 
-	/**
-	 * @expectedDeprecated {{ site.meta() }}
-	 */
-	function testSiteMeta() {
-		$ts = new Timber\Site();
-		update_option('foo', 'magoo');
-		$this->assertEquals('magoo', $ts->meta('foo'));
-	}
+    public function testSiteURL()
+    {
+        $site = new \Timber\Site();
+        $this->assertEquals('http://example.org', $site->link());
+        $this->assertEquals(site_url(), $site->site_url);
+    }
 
-	function testSiteOption() {
-		$ts = new Timber\Site();
-		update_option('date_format', 'j. F Y');
-		$this->assertEquals('j. F Y', $ts->option('date_format'));
-	}
+    public function testHomeUrl()
+    {
+        $site = new \Timber\Site();
+        $this->assertEquals($site->url, $site->home_url);
+    }
 
-	function set_up() {
-		global $wp_theme_directories;
+    public function testSiteIcon()
+    {
+        $icon_id = TestTimberImage::get_attachment(0, 'cardinals.jpg');
+        update_option('site_icon', $icon_id);
+        $site = new Timber\Site();
+        $icon = $site->icon();
+        $this->assertEquals('Timber\Image', get_class($icon));
+        $this->assertStringContainsString('cardinals.jpg', $icon->src());
+    }
 
-		parent::set_up();
+    public function testNullIcon()
+    {
+        delete_option('site_icon');
+        $site = new Timber\Site();
+        $this->assertNull($site->icon());
+    }
 
-		$this->backup_wp_theme_directories = $wp_theme_directories;
-		$wp_theme_directories = array( WP_CONTENT_DIR . '/themes' );
+    public function testSiteGet()
+    {
+        update_option('foo', 'bar');
+        $site = new Timber\Site();
+        $this->assertEquals('bar', $site->foo);
+    }
 
-		wp_clean_themes_cache();
-		unset( $GLOBALS['wp_themes'] );
+    /**
+     * @expectedDeprecated {{ site.meta() }}
+     */
+    public function testSiteMeta()
+    {
+        $ts = new Timber\Site();
+        update_option('foo', 'magoo');
+        $this->assertEquals('magoo', $ts->meta('foo'));
+    }
 
-	}
+    public function testSiteOption()
+    {
+        $ts = new Timber\Site();
+        update_option('date_format', 'j. F Y');
+        $this->assertEquals('j. F Y', $ts->option('date_format'));
+    }
 
-	function tear_down() {
-		global $wp_theme_directories;
+    public function testWPObject()
+    {
+        $this->skipWithMultisite();
 
-		$wp_theme_directories = $this->backup_wp_theme_directories;
+        $ts = new Timber\Site();
+        $this->assertNull($ts->wp_object());
+    }
 
-		wp_clean_themes_cache();
-		unset( $GLOBALS['wp_themes'] );
-		parent::tear_down();
-	}
+    public function set_up()
+    {
+        parent::set_up();
+        $this->clean_themes_cache();
+    }
+
+    public function tear_down()
+    {
+        $this->restore_themes();
+        parent::tear_down();
+    }
 }

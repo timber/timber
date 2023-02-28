@@ -1,127 +1,157 @@
 <?php
 
-	class TestTimberTheme extends Timber_UnitTestCase {
+use Timber\Theme;
 
-		protected $backup_wp_theme_directories;
+class TestTimberTheme extends Timber_UnitTestCase
+{
+    public $theme_slug = 'timber-test-theme';
 
-		var $theme_slug = 'twentythirty';
+    public function set_up()
+    {
+        parent::set_up();
 
-		function testThemeVersion() {
-			switch_theme($this->theme_slug);
-			$theme = new Timber\Theme();
-			$this->assertGreaterThan(1.2, $theme->version);
-			switch_theme('default');
-		}
+        $this->clean_themes_cache();
 
-		function testThemeParentWithNoParent() {
-			switch_theme('twentynineteen');
-			$context = Timber::context();
-			$theme = $context['site']->theme;
-			$output = Timber::compile_string('{{ site.theme.parent.slug }}', $context);
-			$this->assertEquals('twentynineteen', $output );
-		}
+        $theme = wp_get_theme($this->theme_slug);
+        if (!$theme->exists()) {
+            $this->markTestSkipped('The ' . $this->theme_slug . ' theme is not available');
+        }
+    }
 
-		function testThemeMods(){
-			set_theme_mod('foo', 'bar');
-			$theme = new Timber\Theme();
-			$mods = $theme->theme_mods();
-			$this->assertEquals('bar', $mods['foo']);
-			$bar = $theme->theme_mod('foo');
-			$this->assertEquals('bar', $bar);
-		}
+    public function tear_down()
+    {
+        $this->restore_themes();
+        switch_theme('default');
 
-		function testPath() {
-			$context = Timber::context();
-			$theme = $context['site']->theme;
-			$output = Timber::compile_string('{{site.theme.path}}', $context);
-			$this->assertEquals('/wp-content/themes/'.$theme->slug, $output);
-		}
+        parent::tear_down();
+    }
 
-		function testPathWithPort() {
-			/* setUp */
-			update_option( 'siteurl', 'http://example.org:3000', true );
-			update_option( 'home', 'http://example.org:3000', true );
-			self::setPermalinkStructure();
-            $old_port = $_SERVER['SERVER_PORT'];
-            $_SERVER['SERVER_PORT'] = 3000;
-            if (!isset($_SERVER['SERVER_NAME'])){
-                $_SERVER['SERVER_NAME'] = 'example.org';
-            }
+    public function testThemeVersion()
+    {
+        switch_theme($this->theme_slug);
+        $theme = new Timber\Theme();
+        $this->assertSame('1.0.1', $theme->version);
+    }
 
-            /* test */
-            $theme = new Timber\Theme();
-			$this->assertEquals('/wp-content/themes/default', $theme->path());
+    public function testThemeParentWithNoParent()
+    {
+        switch_theme($this->theme_slug);
+        $context = Timber::context();
+        $theme = $context['site']->theme;
+        $output = Timber::compile_string('{{ site.theme.parent.slug }}', $context);
+        $this->assertEquals('timber-test-theme', $output);
+    }
 
-			/* tearDown */
-            $_SERVER['SERVER_PORT'] = $old_port;
-            update_option( 'siteurl', 'http://example.org', true );
-            update_option( 'home', 'http://example.org', true );
-		}
+    public function testThemeMods()
+    {
+        set_theme_mod('foo', 'bar');
+        $theme = new Timber\Theme();
+        $mods = $theme->theme_mods();
+        $this->assertEquals('bar', $mods['foo']);
+        $bar = $theme->theme_mod('foo');
+        $this->assertEquals('bar', $bar);
+    }
 
-		function testPathOnSubdirectoryInstall() {
-			update_option( 'siteurl', 'http://example.org/wordpress', true );
-			$context = Timber::context();
-			$theme = $context['site']->theme;
-			$output = Timber::compile_string('{{site.theme.path}}', $context);
-			$this->assertEquals('/wp-content/themes/'.$theme->slug, $output);
-		}
+    public function testPath()
+    {
+        $context = Timber::context();
+        $theme = $context['site']->theme;
+        $output = Timber::compile_string('{{site.theme.path}}', $context);
+        $this->assertEquals('/wp-content/themes/' . $theme->slug, $output);
+    }
 
-		function testLink() {
-			$context = Timber::context();
-			$theme = $context['site']->theme;
-			$output = Timber::compile_string('{{site.theme.link}}', $context);
-			$this->assertEquals('http://example.org/wp-content/themes/'.$theme->slug, $output);
-		}
+    public function testPathWithPort()
+    {
+        switch_theme($this->theme_slug);
 
-		function testLinkOnSubdirectoryInstall() {
-			update_option( 'siteurl', 'http://example.org/wordpress', true );
-			$context = Timber::context();
-			$theme = $context['site']->theme;
-			$output = Timber::compile_string('{{site.theme.link}}', $context);
-			$this->assertEquals('http://example.org/wp-content/themes/'.$theme->slug, $output);
-		}
+        /* setUp */
+        update_option('siteurl', 'http://example.org:3000', true);
+        update_option('home', 'http://example.org:3000', true);
+        self::setPermalinkStructure();
+        $old_port = $_SERVER['SERVER_PORT'];
+        $_SERVER['SERVER_PORT'] = 3000;
+        if (!isset($_SERVER['SERVER_NAME'])) {
+            $_SERVER['SERVER_NAME'] = 'example.org';
+        }
 
-		function testThemeGet() {
-			switch_theme($this->theme_slug);
-			$context = Timber::context();
-			$output = Timber::compile_string('{{site.theme.get("Name")}}', $context);
-			$this->assertEquals('Twenty Nineteen', $output);
-			switch_theme('default');
-		}
+        /* test */
+        $theme = new Timber\Theme();
+        $this->assertEquals('/wp-content/themes/timber-test-theme', $theme->path());
 
-		function testThemeDisplay() {
-			switch_theme($this->theme_slug);
-			$context = Timber::context();
-			$output = Timber::compile_string('{{site.theme.display("Description")}}', $context);
-			$this->assertEquals("Our 2019 default theme is designed to show off the power of the block editor. It features custom styles for all the default blocks, and is built so that what you see in the editor looks like what you&#8217;ll see on your website. Twenty Nineteen is designed to be adaptable to a wide range of websites, whether you’re running a photo blog, launching a new business, or supporting a non-profit. Featuring ample whitespace and modern sans-serif headlines paired with classic serif body text, it&#8217;s built to be beautiful on all screen sizes.", $output);
-			switch_theme('default');
-		}
+        /* tearDown */
+        $_SERVER['SERVER_PORT'] = $old_port;
+        update_option('siteurl', 'http://example.org', true);
+        update_option('home', 'http://example.org', true);
+    }
 
-		function set_up() {
-			global $wp_theme_directories;
+    public function testPathOnSubdirectoryInstall()
+    {
+        update_option('siteurl', 'http://example.org/wordpress', true);
+        $context = Timber::context();
+        $theme = $context['site']->theme;
+        $output = Timber::compile_string('{{site.theme.path}}', $context);
+        $this->assertEquals('/wp-content/themes/' . $theme->slug, $output);
+    }
 
-			parent::set_up();
+    public function testLink()
+    {
+        $context = Timber::context();
+        $theme = $context['site']->theme;
+        $output = Timber::compile_string('{{site.theme.link}}', $context);
+        $this->assertEquals('http://example.org/wp-content/themes/' . $theme->slug, $output);
+    }
 
-			$this->backup_wp_theme_directories = $wp_theme_directories;
-			$wp_theme_directories = array( WP_CONTENT_DIR . '/themes' );
+    public function testLinkOnSubdirectoryInstall()
+    {
+        update_option('siteurl', 'http://example.org/wordpress', true);
+        $context = Timber::context();
+        $theme = $context['site']->theme;
+        $output = Timber::compile_string('{{site.theme.link}}', $context);
+        $this->assertEquals('http://example.org/wp-content/themes/' . $theme->slug, $output);
+    }
 
-			wp_clean_themes_cache();
-			unset( $GLOBALS['wp_themes'] );
+    public function testThemeGet()
+    {
+        switch_theme($this->theme_slug);
+        $context = Timber::context();
+        $output = Timber::compile_string('{{site.theme.get("Name")}}', $context);
+        $this->assertEquals('Timber Tests Theme', $output);
+    }
 
-			$theme = wp_get_theme($this->theme_slug);
-			if ( !$theme->exists() ) {
-				$this->markTestSkipped('The '.$this->theme_slug.' theme is not available');
-			}
+    public function testThemeDisplay()
+    {
+        switch_theme($this->theme_slug);
+        $context = Timber::context();
+        $output = Timber::compile_string('{{site.theme.display("Description")}}', $context);
+        $this->assertEquals("Parent Theme", $output);
+    }
 
-		}
+    public function testTimberThemeJsonSerialize()
+    {
+        switch_theme('timber-test-theme-child');
 
-		function tear_down() {
-			global $wp_theme_directories;
+        $theme = new Theme('timber-test-theme-child');
 
-			$wp_theme_directories = $this->backup_wp_theme_directories;
+        $encoded = json_encode($theme);
 
-			wp_clean_themes_cache();
-			unset( $GLOBALS['wp_themes'] );
-			parent::tear_down();
-		}
-	}
+        $this->assertNotFalse($encoded);
+
+        $decoded = json_decode($encoded, true);
+
+        $this->assertEquals([
+            'name' => 'Timber Tests Child Theme',
+            'parent' => [
+                'name' => 'Timber Tests Theme',
+                'parent' => null,
+                'parent_slug' => null,
+                'slug' => 'timber-test-theme',
+                'uri' => 'http://example.org/wp-content/themes/timber-test-theme',
+                'version' => '1.0.1',
+            ],
+            'parent_slug' => 'timber-test-theme',
+            'slug' => 'timber-test-theme-child',
+            'uri' => 'http://example.org/wp-content/themes/timber-test-theme',
+            'version' => '1.0.0',
+        ], $decoded);
+    }
+}

@@ -46,9 +46,9 @@ Warning: this one will take a while.
 Copy `/wordpress-trunk/public_html/wp-tests-config-sample.php` to `/wordpress-trunk/public_html/wp-tests-config.php`. Assuming you're using VVV's defaults, we just need to specify how to access the database:
 
 ```php
-define( 'DB_NAME', 'wordpress_unit_tests' );
-define( 'DB_USER', 'root' );
-define( 'DB_PASSWORD', 'root' );
+define('DB_NAME', 'wordpress_unit_tests');
+define('DB_USER', 'root');
+define('DB_PASSWORD', 'root');
 ```
 
 ### 5. Install WordPress tests

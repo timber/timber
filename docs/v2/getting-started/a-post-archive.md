@@ -8,11 +8,9 @@ Here’s how a PHP template file for a WordPress archive looks like.
 **index.php**
 
 ```php
-<?php
-
 $context = Timber::context();
 
-Timber::render( 'index.twig', $context );
+Timber::render('index.twig', $context);
 ```
 
 For basic archives, that’s all you need. Behind the scenes, Timber already prepared a `posts` variable for you that holds all the posts that you would normally find in [The Loop](https://developer.wordpress.org/themes/basics/the-loop/).
@@ -76,27 +74,25 @@ There are two new things that you see here:
 Sometimes you’ll want to use your own queries for archive pages or to display a list of posts in other places. For that, you can use `Timber::get_posts()`. Here’s an example for a more complex query, that selects posts that have certain movie genre and actor terms assigned. The parameters you use are the same as those for [WP_Query](https://developer.wordpress.org/reference/classes/wp_query/).
 
 ```php
-<?php
-
 $args = [
     'post_type' => 'post',
     'tax_query' => [
         'relation' => 'AND',
         [
             'taxonomy' => 'movie_genre',
-            'field'    => 'slug',
-            'terms'    => [ 'action', 'comedy' ]
+            'field' => 'slug',
+            'terms' => ['action', 'comedy'],
         ],
         [
             'taxonomy' => 'actor',
-            'field'    => 'id',
-            'terms'    => [ 103, 115, 206 ],
-            'operator' => 'NOT IN'
-        ]
-    ]
+            'field' => 'id',
+            'terms' => [103, 115, 206],
+            'operator' => 'NOT IN',
+        ],
+    ],
 ];
 
-$context['posts'] = Timber::get_posts( $args );
+$context['posts'] = Timber::get_posts($args);
 ```
 
 ### An example: related posts
@@ -108,25 +104,23 @@ First, you would prepare the data in your PHP template. For this, we add `relate
 **single.php**
 
 ```php
-<?php
-
 $context = Timber::context();
 
 $post = $context['post'];
 
-$context['related_posts'] = Timber::get_posts( [
-	'post_type'      => 'post',
+$context['related_posts'] = Timber::get_posts([
+    'post_type' => 'post',
     'posts_per_page' => 3,
-    'orderby'        => 'date',
-    'order'          => 'DESC',
-    'post__not_in'   => [ $post->ID ],
-    'category__in'   => $post->terms( [
+    'orderby' => 'date',
+    'order' => 'DESC',
+    'post__not_in' => [$post->ID],
+    'category__in' => $post->terms([
         'taxonomy' => 'category',
-        'fields'   => 'ids',
-    ] ),
-] );
+        'fields' => 'ids',
+    ]),
+]);
 
-Timber::render( 'single.twig', $context );
+Timber::render('single.twig', $context);
 ```
 
 And then, in your singular view, you would loop over them. We can also reuse the **teaser.twig** view, that we introduced earlier.

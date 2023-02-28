@@ -176,6 +176,21 @@ install_db() {
 	fi
 }
 
+# Install WP-CLI
+install_wp_cli() {
+    curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+    chmod +x wp-cli.phar
+    mkdir -p $TMPDIR/wp-cli
+    mv wp-cli.phar $WP_TESTS_DIR/
+}
+
+copy_test_themes() {
+    cp -rf ./tests/assets/themes/timber-test-theme $WP_CORE_DIR/wp-content/themes/
+    cp -rf ./tests/assets/themes/timber-test-theme-child $WP_CORE_DIR/wp-content/themes/
+}
+
 install_wp
 install_test_suite
 install_db
+install_wp_cli
+copy_test_themes

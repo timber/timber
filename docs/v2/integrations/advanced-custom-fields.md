@@ -17,7 +17,7 @@ If you’ve worked with ACF before, you’re use to use `get_field( 'my_acf_fiel
 **PHP**
 
 ```php
-$meta = $post->meta( 'my_acf_field' );
+$meta = $post->meta('my_acf_field');
 ```
 
 ### Unformatted values
@@ -33,9 +33,9 @@ In ACF, all values are filtered. If you want to use unfiltered, raw values from 
 **PHP**
 
 ```php
-$meta = $post->meta( 'my_acf_field', [
+$meta = $post->meta('my_acf_field', [
     'format_value' => false,
-] );
+]);
 ```
 
 You can also use the **faster `raw_meta()` method**, which accesses values directly from the database and bypasses any ACF filters:
@@ -77,13 +77,13 @@ This is where we’ll start in PHP.
 ```php
 $post = Timber::get_post();
 
-if (isset($post->hero_image) && strlen($post->hero_image)){
-    $post->hero_image = Timber::get_image( $post->hero_image );
+if (isset($post->hero_image) && strlen($post->hero_image)) {
+    $post->hero_image = Timber::get_image($post->hero_image);
 }
 
-$context = Timber::context( [
+$context = Timber::context([
     'post' => $post,
-] );
+]);
 
 Timber::render('single.twig', $context);
 ```
@@ -261,7 +261,7 @@ To prevent errors with include files that can’t be found, you can optionally u
 **PHP**
 
 ```php
-$context['site_copyright_info'] = get_field( 'copyright_info', 'options' );
+$context['site_copyright_info'] = get_field('copyright_info', 'options');
 
 Timber::render('index.twig', $context);
 ```
@@ -275,9 +275,9 @@ Timber::render('index.twig', $context);
 ### Get all info from your options page
 
 ```php
-$context['options'] = get_fields( 'options' );
+$context['options'] = get_fields('options');
 
-Timber::render( 'index.twig', $context );
+Timber::render('index.twig', $context);
 ```
 
 ACF Pro has a built in options page, and changes the `get_fields( 'options' )` to `get_fields( 'option' )`.
@@ -291,7 +291,7 @@ ACF Pro has a built in options page, and changes the `get_fields( 'options' )` t
 To use any options fields site wide, add the `option` context to your **functions.php** file:
 
 ```php
-add_filter( 'timber/context', 'global_timber_context' );
+add_filter('timber/context', 'global_timber_context');
 
 /**
  * Filters global context.
@@ -299,8 +299,9 @@ add_filter( 'timber/context', 'global_timber_context' );
  * @param array $context An array of existing context variables.
  * @return mixed
  */
-function global_timber_context( $context ) {
-    $context['options'] = get_fields( 'option' );
+function global_timber_context($context)
+{
+    $context['options'] = get_fields('option');
 
     return $context;
 }
@@ -321,7 +322,7 @@ You can grab specific field label data like so:
 **single.php**
 
 ```php
-$context['acf'] = get_field_objects( $data['post']->ID );
+$context['acf'] = get_field_objects($data['post']->ID);
 ```
 
 ```twig

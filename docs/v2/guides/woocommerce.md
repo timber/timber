@@ -7,11 +7,12 @@ title: "WooCommerce"
 The first step to get your WooCommerce project integrated with Timber is declaring WooCommerce support in your theme’s **functions.php** file like so:
 
 ```php
-function theme_add_woocommerce_support() {
-    add_theme_support( 'woocommerce' );
+function theme_add_woocommerce_support()
+{
+    add_theme_support('woocommerce');
 }
 
-add_action( 'after_setup_theme', 'theme_add_woocommerce_support' );
+add_action('after_setup_theme', 'theme_add_woocommerce_support');
 ```
 
 For more information about how you can enable or disable features and change settings through theme support, refer to the [WooCommerce Theme Developer Handbook](https://docs.woocommerce.com/document/woocommerce-theme-developer-handbook).
@@ -19,43 +20,41 @@ For more information about how you can enable or disable features and change set
 Once that’s done you can start integrating WooCommerce into your theme by creating a file named **woocommerce.php** in the root of your theme. That will establish the context and data to be passed to your Twig files:
 
 ```php
-<?php
-
-if ( ! class_exists( 'Timber' ) ) {
+if (!class_exists('Timber')) {
     echo 'Timber not activated. Make sure you activate the plugin in <a href="/wp-admin/plugins.php#timber">/wp-admin/plugins.php</a>';
 
     return;
 }
 
-$context            = Timber::context();
-$context['sidebar'] = Timber::get_widgets( 'shop-sidebar' );
+$context = Timber::context();
+$context['sidebar'] = Timber::get_widgets('shop-sidebar');
 
-if ( is_singular( 'product' ) ) {
-    $context['post']    = Timber::get_post();
-    $product            = wc_get_product( $context['post']->ID );
+if (is_singular('product')) {
+    $context['post'] = Timber::get_post();
+    $product = wc_get_product($context['post']->ID);
     $context['product'] = $product;
 
     // Get related products
-    $related_limit               = wc_get_loop_prop( 'columns' );
-    $related_ids                 = wc_get_related_products( $context['post']->id, $related_limit );
-    $context['related_products'] =  Timber::get_posts( $related_ids );
+    $related_limit = wc_get_loop_prop('columns');
+    $related_ids = wc_get_related_products($context['post']->id, $related_limit);
+    $context['related_products'] = Timber::get_posts($related_ids);
 
     // Restore the context and loop back to the main query loop.
     wp_reset_postdata();
 
-    Timber::render( 'views/woo/single-product.twig', $context );
+    Timber::render('views/woo/single-product.twig', $context);
 } else {
     $posts = Timber::get_posts();
     $context['products'] = $posts;
 
-    if ( is_product_category() ) {
+    if (is_product_category()) {
         $queried_object = get_queried_object();
         $term_id = $queried_object->term_id;
-        $context['category'] = get_term( $term_id, 'product_cat' );
-        $context['title'] = single_term_title( '', false );
+        $context['category'] = get_term($term_id, 'product_cat');
+        $context['title'] = single_term_title('', false);
     }
 
-    Timber::render( 'views/woo/archive.twig', $context );
+    Timber::render('views/woo/archive.twig', $context);
 }
 ```
 
@@ -185,11 +184,12 @@ This should all sound familiar by now, except for one line:
 For some reason, products in the loop don’t get the right context by default. This line will call the following function that you need to add somewhere in your **functions.php** file:
 
 ```php
-function timber_set_product( $post ) {
+function timber_set_product($post)
+{
     global $product;
 
-    if ( is_woocommerce() ) {
-        $product = wc_get_product( $post->ID );
+    if (is_woocommerce()) {
+        $product = wc_get_product($post->ID);
     }
 }
 ```
@@ -209,7 +209,7 @@ One way to get around this is by building your own image calls, that means remov
 To remove the default image, add the following to your **functions.php** file:
 
 ```php
-remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_template_loop_product_thumbnail' );
+remove_action('woocommerce_before_shop_loop_item_title', 'woocommerce_template_loop_product_thumbnail');
 ```
 
 This comes with the added benefit that you’ll have total control over where your image is created in the markup.

@@ -1,10 +1,9 @@
 # Timber Core
-/lib        @gchtr @jarednova @acobster
+/src        @gchtr @jarednova @nlemoine
 
 # Documentation
 /docs       @gchtr
 .md         @gchtr
-phpcs.xml   @gchtr
 
 # Tooling
-*.yml       @jarednova
+*.yml       @jarednova @nlemoine

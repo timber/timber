@@ -1,3 +1,5 @@
 <?php
 
-class page extends Timber\Post {}
+class page extends Timber\Post
+{
+}

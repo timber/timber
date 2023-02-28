@@ -1,8 +1,9 @@
 <?php
-	class CustomComment extends \Timber\Comment {
 
-		public function foo(){
-			return 'bar';
-		}
-
-	}
+class CustomComment extends \Timber\Comment
+{
+    public function foo()
+    {
+        return 'bar';
+    }
+}

@@ -16,13 +16,11 @@ Let’s look at a simple example. First, we prepare the data in our PHP file.
 **single.php**
 
 ```php
-<?php
-
 use Timber\Timber;
 
 $context = Timber::context();
 
-Timber::render( 'single.twig', $context );
+Timber::render('single.twig', $context);
 ```
 
 And then we render that data in your Twig template.
@@ -55,10 +53,8 @@ Timber makes Posts, Terms, Users, Comments and Menus more object-oriented. You c
 For example, have you ever tried to get the thumbnail of a post? Here’s how that looks like in traditional WordPress themes:
 
 ```php
-<?php
-
-$thumb_id = get_post_thumbnail_id( $post->ID );
-$url      = wp_get_attachment_url( $thumb_id );
+$thumb_id = get_post_thumbnail_id($post->ID);
+$url = wp_get_attachment_url($thumb_id);
 
 ?>
 
@@ -84,9 +80,9 @@ Timber works with your existing themes to unlock new power. You don’t have to 
 **home.php**
 
 ```php
-$data['welcome_message'] = get_option( 'welcome_message' );
+$data['welcome_message'] = get_option('welcome_message');
 
-Timber::render( 'welcome.twig',  $data );
+Timber::render('welcome.twig', $data);
 ```
 
 **welcome.twig**
