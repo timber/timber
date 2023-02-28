@@ -184,9 +184,22 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         $post->ID = $wp_post->ID;
         $post->wp_object = $wp_post;
 
-        $data = $post->get_info($wp_post);
+        $data = \get_object_vars($wp_post);
+        $data = $post->get_info($data);
 
-        $post->import(\apply_filters('timber/post/import_data', $data));
+        /**
+         * Filters the imported post data.
+         *
+         * Used internally for previews.
+         *
+         * @since 2.0.0
+         * @see   Timber::init()
+         * @param array        $data An array of post data to import.
+         * @param \Timber\Post $post The Timber post instance.
+         */
+        $data = \apply_filters('timber/post/import_data', $data, $post);
+
+        $post->import($data);
 
         return $post;
     }
@@ -331,9 +344,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     protected static function is_previewing()
     {
         global $wp_query;
-        if (isset($_GET['preview']) && isset($_GET['preview_nonce']) && \wp_verify_nonce($_GET['preview_nonce'], 'post_preview_' . $wp_query->queried_object_id)) {
-            return true;
-        }
+        return isset($_GET['preview']) && isset($_GET['preview_nonce']) && \wp_verify_nonce($_GET['preview_nonce'], 'post_preview_' . $wp_query->queried_object_id);
     }
 
     /**
@@ -478,9 +489,11 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     }
 
     /**
+     * Gets the link to a page number.
+     *
      * @internal
      * @param int $i
-     * @return string
+     * @return string|null Link to page number or `null` if link could not be read.
      */
     protected static function get_wp_link_page($i)
     {
@@ -489,22 +502,28 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         if (isset($link['href'])) {
             return $link['href'];
         }
+
+        return null;
     }
 
     /**
+     * Gets info to import on Timber post object.
+     *
      * Used internally by init, etc. to build Timber\Post object.
      *
      * @internal
-     * @param  int|null|boolean $pid The ID to generate info from.
-     * @return WP_Post
+     *
+     * @param array $data Data to update.
+     * @return array
      */
-    protected function get_info(\WP_Post $post)
+    protected function get_info(array $data): array
     {
-        $post->status = $post->post_status;
-        $post->id = $post->ID;
-        $post->slug = $post->post_name;
+        $data = \array_merge($data, [
+            'slug' => $this->wp_object->post_name,
+            'status' => $this->wp_object->post_status,
+        ]);
 
-        return $post;
+        return $data;
     }
 
     /**
@@ -705,8 +724,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable
          * @see   \Timber\Post::field_object()
          * @since 1.6.0
          *
-         * @param array        $value      The field object array.
-         * @param int          $post_id    The post ID.
+         * @param mixed        $value      The value.
+         * @param int|null     $post_id    The post ID.
          * @param string       $field_name The ACF field name.
          * @param \Timber\Post $post       The post object.
          */

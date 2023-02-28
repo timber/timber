@@ -225,10 +225,10 @@ class AcfIntegration implements IntegrationInterface
     /**
      * Gets meta value through ACF’s API.
      *
-     * @param string $value
-     * @param int $id
-     * @param string $field_name
-     * @param array $args
+     * @param string     $value
+     * @param int|string $id
+     * @param string     $field_name
+     * @param array      $args
      * @return mixed|false
      */
     private static function get_meta($value, $id, $field_name, $args)
@@ -242,6 +242,13 @@ class AcfIntegration implements IntegrationInterface
             return \get_field($field_name, $id, $args['format_value']);
         }
 
+        /**
+         * We use acf()->fields->get_field_type() instead of acf_get_field_type(), because of some function stub issues
+         * in the php-stubs/acf-pro-stubs package. The ACF plugin doesn’t use the right parameter and return values for
+         * some functions in the DocBlocks.
+         *
+         * @ticket https://github.com/timber/timber/pull/2630
+         */
         $file_field_type = \acf_get_field_type('file');
         $image_field_type = \acf_get_field_type('image');
         $gallery_field_type = \acf_get_field_type('gallery');

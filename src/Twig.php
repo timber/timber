@@ -63,6 +63,9 @@ class Twig
             'get_image' => [
                 'callable' => [Timber::class, 'get_image'],
             ],
+            'get_external_image' => [
+                'callable' => [Timber::class, 'get_external_image'],
+            ],
             'get_attachment' => [
                 'callable' => [Timber::class, 'get_attachment'],
             ],
@@ -110,7 +113,7 @@ class Twig
             ],
             'Image' => [
                 'callable' => function ($post_id) use ($post_factory) {
-                    Helper::deprecated('{{ Image() }}', '{{ get_post() }} or {{ get_attachment_by() }}', '2.0.0');
+                    Helper::deprecated('{{ Image() }}', '{{ get_image() }}, {{ get_post() }}, {{ get_posts() }}, {{ get_attachment() }} or {{ get_attachment_by() }}', '2.0.0');
                     return $post_factory->from($post_id);
                 },
                 'options' => [
@@ -119,7 +122,7 @@ class Twig
             ],
             'TimberImage' => [
                 'callable' => function ($post_id) use ($post_factory) {
-                    Helper::deprecated('{{ TimberImage() }}', '{{ get_post() }} or {{ get_posts() }}', '2.0.0');
+                    Helper::deprecated('{{ TimberImage() }}', '{{ get_image() }}, {{ get_post() }}, {{ get_posts() }}, {{ get_attachment() }} or {{ get_attachment_by() }}', '2.0.0');
                     return $post_factory->from($post_id);
                 },
                 'options' => [

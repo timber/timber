@@ -2,8 +2,6 @@
 
 namespace Timber;
 
-use WP_Post;
-
 /**
  * Class Image
  *
@@ -74,7 +72,7 @@ class Image extends Attachment implements ImageInterface
      * @internal
      * @var ImageDimensions stores Image Dimensions in a structured way.
      */
-    protected ImageDimensions $imageDimensions;
+    protected ImageDimensions $image_dimensions;
 
     /**
      * @return string the src of the file
@@ -92,15 +90,15 @@ class Image extends Attachment implements ImageInterface
      *
      * @internal
      *
-     * @param int $image_id The ID number of the image in the WP database.
-     * @return array Image info as an array or ID
+     * @param array $data Data to update.
+     * @return array
      */
-    protected function get_info(WP_Post $wp_post)
+    protected function get_info(array $data): array
     {
-        $data = parent::get_info($wp_post);
+        $data = parent::get_info($data);
 
         if (isset($data['file_loc'])) {
-            $data['imageDimensions'] = new ImageDimensions($data['file_loc']);
+            $data['image_dimensions'] = new ImageDimensions($data['file_loc']);
         }
 
         return $data;
@@ -116,11 +114,11 @@ class Image extends Attachment implements ImageInterface
     protected function get_dimensions($dim)
     {
         Helper::deprecated(
-            'Image::get_dimensions',
-            'Image::get_width | Image::get_height',
+            'Image::get_dimensions()',
+            'Image::get_width() | Image::get_height()',
             '2.0.0'
         );
-        return [$this->imageDimensions->width(), $this->imageDimensions->height()];
+        return [$this->image_dimensions->width(), $this->image_dimensions->height()];
     }
 
     /**
@@ -132,11 +130,11 @@ class Image extends Attachment implements ImageInterface
     protected function get_dimensions_loaded($dim)
     {
         Helper::deprecated(
-            'Image::get_dimensions',
-            'Image::get_width | Image::get_height',
+            'Image::get_dimensions()',
+            'Image::get_width() or Image::get_height()',
             '2.0.0'
         );
-        return $this->imageDimensions->get_dimension($dim);
+        return $this->image_dimensions->get_dimension($dim);
     }
 
     /**
@@ -178,7 +176,7 @@ class Image extends Attachment implements ImageInterface
      * @param string $size Optional. The requested image size. This can be a size that was in
      *                     WordPress. Example: `medium` or `large`. Default `full`.
      *
-     * @return bool|string The src URL for the image.
+     * @return string|bool The src URL for the image.
      */
     public function src($size = 'full')
     {
@@ -235,7 +233,7 @@ class Image extends Attachment implements ImageInterface
      */
     public function width()
     {
-        return $this->imageDimensions->width();
+        return $this->image_dimensions->width();
     }
 
     /**
@@ -254,7 +252,7 @@ class Image extends Attachment implements ImageInterface
      */
     public function height()
     {
-        return $this->imageDimensions->height();
+        return $this->image_dimensions->height();
     }
 
     /**
@@ -275,7 +273,7 @@ class Image extends Attachment implements ImageInterface
      */
     public function aspect()
     {
-        return $this->imageDimensions->aspect();
+        return $this->image_dimensions->aspect();
     }
 
     /**
@@ -296,7 +294,7 @@ class Image extends Attachment implements ImageInterface
      *
      * @return string Alt text stored in WordPress.
      */
-    public function alt()
+    public function alt(): string
     {
         $alt = $this->meta('_wp_attachment_image_alt');
         return \trim(\wp_strip_all_tags($alt));
@@ -313,11 +311,11 @@ class Image extends Attachment implements ImageInterface
     protected function get_dimension($dimension)
     {
         Helper::deprecated(
-            'Image::get_dimension',
-            'Image::get_width | Image::get_height',
+            'Image::get_dimension()',
+            'Image::get_width() or Image::get_height()',
             '2.0.0'
         );
-        return $this->imageDimensions->get_dimension($dimension);
+        return $this->image_dimensions->get_dimension($dimension);
     }
 
     /**
@@ -330,11 +328,12 @@ class Image extends Attachment implements ImageInterface
      */
     protected function get_dimension_loaded($dim = null)
     {
-        return $this->imageDimensions->get_dimension($dim);
+        return $this->image_dimensions->get_dimension($dim);
     }
 
     /**
-     * @param string $size a size known to WordPress (like "medium")
+     * Gets the srcset attribute for an image based on a WordPress image size.
+     *
      * @api
      * @example
      * ```twig
@@ -344,17 +343,22 @@ class Image extends Attachment implements ImageInterface
      * ```html
      * <img src="http://example.org/wp-content/uploads/2018/10/pic.jpg" srcset="http://example.org/wp-content/uploads/2018/10/pic.jpg 1024w, http://example.org/wp-content/uploads/2018/10/pic-600x338.jpg 600w, http://example.org/wp-content/uploads/2018/10/pic-300x169.jpg 300w" />
      * ```
-     *	@return bool|string
+     * @param string $size An image size known to WordPress (like "medium").
+     *
+     * @return string|null
      */
-    public function srcset($size = "full")
+    public function srcset(string $size = 'full'): ?string
     {
         if ($this->is_image()) {
-            return \wp_get_attachment_image_srcset($this->ID, $size);
+            return \wp_get_attachment_image_srcset($this->ID, $size) ?: null;
         }
+
+        return null;
     }
 
     /**
-     * @param string $size a size known to WordPress (like "medium")
+     * Gets the sizes attribute for an image based on a WordPress image size.
+     *
      * @api
      * @example
      * ```twig
@@ -364,13 +368,16 @@ class Image extends Attachment implements ImageInterface
      * ```html
      * <img src="http://example.org/wp-content/uploads/2018/10/pic.jpg" srcset="http://example.org/wp-content/uploads/2018/10/pic.jpg 1024w, http://example.org/wp-content/uploads/2018/10/pic-600x338.jpg 600w, http://example.org/wp-content/uploads/2018/10/pic-300x169.jpg 300w sizes="(max-width: 1024px) 100vw, 102" />
      * ```
-     *	@return bool|string
+     *	@param string $size An image size known to WordPress (like "medium").
+     * @return string|null
      */
-    public function img_sizes($size = "full")
+    public function img_sizes(string $size = 'full'): ?string
     {
         if ($this->is_image()) {
-            return \wp_get_attachment_image_sizes($this->ID, $size);
+            return \wp_get_attachment_image_sizes($this->ID, $size) ?: null;
         }
+
+        return null;
     }
 
     /**

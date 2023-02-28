@@ -4,8 +4,6 @@ namespace Timber;
 
 use Timber\Factory\PostFactory;
 
-use WP_Post;
-
 /**
  * Class Attachment
  *
@@ -115,13 +113,13 @@ class Attachment extends Post
      *
      * @internal
      *
-     * @param int $attachment_id The ID number of the image in the WP database.
-     * @return array Attachment info as an array or ID
+     * @param array $data Data to update.
+     * @return array Attachment info as an array.
      */
-    protected function get_info(WP_Post $wp_post)
+    protected function get_info(array $data): array
     {
-        $post_data = \get_object_vars(parent::get_info($wp_post));
-        $image_info = \wp_get_attachment_metadata($wp_post->ID) ?: [];
+        $post_data = parent::get_info($data);
+        $image_info = \wp_get_attachment_metadata($this->wp_object->ID) ?: [];
         $meta_values = $this->raw_meta();
 
         $data = \array_merge($post_data, $image_info, $meta_values);
@@ -181,7 +179,7 @@ class Attachment extends Post
      *
      * @return string The relative path to an attachment.
      */
-    public function path()
+    public function path(): string
     {
         return URLHelper::get_rel_path($this->src());
     }
@@ -203,10 +201,10 @@ class Attachment extends Post
     public function src()
     {
         if (isset($this->abs_url)) {
-            return URLHelper::maybe_secure_url($this->abs_url);
+            return URLHelper::maybe_secure_url($this->abs_url) ?: null;
         }
 
-        return \wp_get_attachment_url($this->ID);
+        return \wp_get_attachment_url($this->ID) ?: null;
     }
 
     /**
@@ -227,7 +225,7 @@ class Attachment extends Post
      *
      * @return string
      */
-    public function caption()
+    public function caption(): string
     {
         /**
          * Filters the attachment caption.
@@ -260,15 +258,12 @@ class Attachment extends Post
      * </a>
      * ```
      *
-     * @return mixed|null The filesize string in a human readable format.
+     * @return string|null The filesize string in a human-readable format or null if the
+     *                     filesize can’t be read.
      */
-    public function size()
+    public function size(): ?string
     {
-        if ($this->file_size) {
-            return $this->file_size->size();
-        }
-
-        return false;
+        return $this->file_size->size();
     }
 
     /**
@@ -290,15 +285,11 @@ class Attachment extends Post
      * </table>
      * ```
      *
-     * @return mixed|null The filesize string in bytes, or false if the filesize can’t be read.
+     * @return int|false The filesize string in bytes, or false if the filesize can’t be read.
      */
     public function size_raw()
     {
-        if ($this->file_size) {
-            return $this->file_size->size_raw();
-        }
-
-        return false;
+        return $this->file_size->size_raw();
     }
 
     /**
@@ -307,7 +298,6 @@ class Attachment extends Post
      * @api
      * @since 2.0.0
      * @example
-     *
      * Use extension information in a link that downloads a file:
      *
      * ```twig
@@ -319,9 +309,9 @@ class Attachment extends Post
      * </a>
      * ```
      *
-     * @return null|string An uppercase extension string.
+     * @return string|null An uppercase extension string.
      */
-    public function extension()
+    public function extension(): ?string
     {
         if (!$this->file_extension) {
             $file_info = \wp_check_filetype($this->file);

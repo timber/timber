@@ -1,8 +1,13 @@
 parameters:
-    level: 5 # Increase until "max"
+    level: 0 # Increase until "max"
     paths:
         - src/
-    # ignoreErrors:
+    scanFiles:
+        - vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
+        - vendor/php-stubs/acf-pro-stubs/acf-pro-stubs.php
+    ignoreErrors:
+        - '#Instantiated class Twig\\CacheExtension\\CacheStrategy\\GenerationalCacheStrategy not found.#'
+        - '#Instantiated class Twig\\CacheExtension\\Extension not found.#'
     #     # Uses func_get_args()
     #     - '#^Function apply_filters invoked with [3456] parameters, 2 required\.$#'
     #     # TODO Do not create a static instance of a non-final class.

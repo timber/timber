@@ -924,12 +924,16 @@ class TestTimberMenu extends Timber_UnitTestCase
         $this->assertEquals($parent->link(), $top->link());
     }
 
+    /**
+     * @issue https://github.com/timber/timber/issues/2576
+     */
     public function testThemeLocationProperty()
     {
         $term = self::_createTestMenu();
         $menu_id = $term['term_id'];
 
         $this->registerNavMenus([
+            'primary' => null,
             'secondary' => $menu_id,
         ]);
 

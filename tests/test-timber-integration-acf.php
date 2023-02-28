@@ -48,7 +48,7 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
     public function testACFGetFieldTermCategory()
     {
         $tid = $this->factory->term->create();
-        update_field('color', 'blue', "category_${tid}");
+        update_field('color', 'blue', "category_{$tid}");
         $cat = Timber::get_term($tid);
         $this->assertEquals('blue', $cat->color);
         $str = '{{term.color}}';

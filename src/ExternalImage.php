@@ -6,8 +6,9 @@ namespace Timber;
  * Class ExternalImage
  *
  * The `Timber\ExternalImage` class represents an image that is not part of the WordPress content (Attachment).
- * Instead, it's an image that can be either a path (relative/absolute) on the same server, or any arbitrary HTTP
- * resource (either from the same or from a different website).
+ * Instead, it’s an image that can be either a path (relative/absolute) on the same server, or a URL (either from the
+ * same or from a different website). When you use a URL of an image on a different website, Timber will load it into
+ * your WordPress installation once and then load it from there.
  *
  * @api
  * @example
@@ -23,15 +24,11 @@ namespace Timber;
  *
  * ```twig
  * <article>
- *   <img src="{{cover_image.src}}" class="cover-image" />
- *   <h1 class="headline">{{post.title}}</h1>
+ *   <img src="{{ cover_image.src }}" class="cover-image" />
+ *   <h1 class="headline">{{ post.title }}</h1>
  *   <div class="body">
- *     {{post.content}}
+ *     {{ post.content }}
  *   </div>
- *
- *  <img
- *    src="{{ get_image(post.custom_field_with_image_id).src }}"
- *    alt="Another way to initialize images as Timber\Image objects, but within Twig" />
  * </article>
  * ```
  *
@@ -42,9 +39,6 @@ namespace Timber;
  *   <div class="body">
  *     Whatever whatever
  *   </div>
- *   <img
- *     src="http://example.org/wp-content/uploads/2015/06/kurt.jpg"
- *     alt="Another way to initialize images as Timber\Image objects, but within Twig" />
  * </article>
  * ```
  */
@@ -64,7 +58,7 @@ class ExternalImage implements ImageInterface
      * @api
      * @var string
      */
-    private $_caption;
+    private $caption = '';
 
     /**
      * File.
@@ -79,7 +73,7 @@ class ExternalImage implements ImageInterface
      *
      * @api
      * @var string The absolute path to the attachmend file in the filesystem
-     *             (Example: `/var/www/htdocs/wp-content/uploads/2015/08/my-pic.jpg`)
+     *             (Example: `/var/www/htdocs/wp-content/themes/my-theme/images/my-pic.jpg`)
      */
     public $file_loc;
 
@@ -106,7 +100,7 @@ class ExternalImage implements ImageInterface
      * @since 2.0.0
      * @var FileSize File size string.
      */
-    private $file_size = null;
+    private FileSize $file_size;
 
     /**
      * File types.
@@ -129,50 +123,55 @@ class ExternalImage implements ImageInterface
      * Image dimensions.
      *
      * @internal
-     * @var ImageDimensions stores Image Dimensions in a structured way.
+     * @var ImageDimensions|null stores Image Dimensions in a structured way.
      */
-    protected ImageDimensions $imageDimensions;
+    protected ?ImageDimensions $image_dimensions;
 
     /**
      * Inits the ExternalImage object.
      *
-     * @param $url string URL to load the image from.
-     * @param $alt string ALT text for the image.
      * @internal
-     *
+     * @param $url string URL or path to load the image from.
+     * @param $args array An array of arguments for the image.
      */
     public static function build($url, array $args = [])
     {
+        if (!\is_string($url) || \is_numeric($url)) {
+            return null;
+        }
+
         $args = \wp_parse_args($args, [
             'alt' => '',
         ]);
 
-        if (!\is_numeric($url) && \is_string($url)) {
-            $external_image = new static();
+        $external_image = new static();
 
-            if ($args['alt'] != '') {
-                $external_image->set_alt_text($args['alt']);
-            }
+        if (!empty($args['alt'])) {
+            $external_image->set_alt($args['alt']);
+        }
 
-            if (\strstr($url, '://')) {
-                // Assume URL.
-                $external_image->init_with_url($url);
+        if (!empty($args['caption'])) {
+            $external_image->set_caption($args['caption']);
+        }
 
-                return $external_image;
-            } elseif (\strstr($url, ABSPATH)) {
-                // Assume absolute path.
-                $external_image->init_with_file_path($url);
+        if (\strstr($url, '://')) {
+            // Assume URL.
+            $external_image->init_with_url($url);
 
-                return $external_image;
-            } else {
-                // Check for image file types.
-                foreach ($external_image->image_file_types as $type) {
-                    // Assume a relative path.
-                    if (\strstr(\strtolower($url), $type)) {
-                        $external_image->init_with_relative_path($url);
+            return $external_image;
+        } elseif (\strstr($url, ABSPATH)) {
+            // Assume absolute path.
+            $external_image->init_with_file_path($url);
 
-                        return $external_image;
-                    }
+            return $external_image;
+        } else {
+            // Check for image file types.
+            foreach ($external_image->image_file_types as $type) {
+                // Assume a relative path.
+                if (\strstr(\strtolower($url), $type)) {
+                    $external_image->init_with_relative_path($url);
+
+                    return $external_image;
                 }
             }
         }
@@ -183,9 +182,6 @@ class ExternalImage implements ImageInterface
     /**
      * Gets the source URL for the image.
      *
-     * @param string $size Ignored. For compatibility with Timber\Image.
-     *
-     * @return string The src URL for the image.
      * @api
      * @example
      * ```twig
@@ -197,6 +193,9 @@ class ExternalImage implements ImageInterface
      * <img src="http://example.org/wp-content/uploads/2015/08/pic-800-600.jpg">
      * ```
      *
+     * @param string $size Ignored. For compatibility with Timber\Image.
+     *
+     * @return string The src URL for the image.
      */
     public function src($size = 'full')
     {
@@ -206,7 +205,7 @@ class ExternalImage implements ImageInterface
     /**
      * Gets the relative path to an attachment.
      *
-     * @return string The relative path to an attachment.
+     * @api
      * @example
      * ```twig
      * <img src="{{ image.path }}" />
@@ -215,23 +214,22 @@ class ExternalImage implements ImageInterface
      * <img src="/wp-content/uploads/2015/08/pic.jpg" />
      * ```
      *
-     * @api
+     * @return string The relative path to an attachment.
      */
-    public function path()
+    public function path(): string
     {
-        return URLHelper::get_rel_path($this->src());
+        return URLHelper::get_rel_path($this->file);
     }
 
     /**
-     * Gets filesize in a human readable format.
+     * Gets filesize in a human-readable format.
      *
-     * This can be useful if you want to display the human readable filesize for a file. It’s
+     * This can be useful if you want to display the human-readable filesize for a file. It’s
      * easier to read «16 KB» than «16555 bytes» or «1 MB» than «1048576 bytes».
      *
-     * @return mixed|null The filesize string in a human readable format.
+     * @api
      * @since 2.0.0
      * @example
-     *
      * Use filesize information in a link that downloads a file:
      *
      * ```twig
@@ -241,21 +239,18 @@ class ExternalImage implements ImageInterface
      * </a>
      * ```
      *
-     * @api
+     * @return string The filesize string in a human-readable format or null if the
+     *                filesize can’t be read.
      */
-    public function size()
+    public function size(): string
     {
-        if ($this->file_size) {
-            return $this->file_size->size();
-        }
-
-        return false;
+        return $this->file_size->size();
     }
 
     /**
      * Gets filesize in bytes.
      *
-     * @return mixed|null The filesize string in bytes, or false if the filesize can’t be read.
+     * @api
      * @since 2.0.0
      * @example
      *
@@ -271,23 +266,19 @@ class ExternalImage implements ImageInterface
      * </table>
      * ```
      *
-     * @api
+     * @return int|null The filesize number in bytes, or null if the filesize can’t be read.
      */
     public function size_raw()
     {
-        if ($this->file_size) {
-            return $this->file_size->size_raw();
-        }
-
-        return false;
+        return $this->file_size->size_raw();
     }
 
     /**
      * Gets the src for an attachment.
      *
-     * @return string The src of the attachment.
      * @api
      *
+     * @return string The src of the attachment.
      */
     public function __toString()
     {
@@ -297,7 +288,7 @@ class ExternalImage implements ImageInterface
     /**
      * Gets the extension of the attached file.
      *
-     * @return null|string An uppercase extension string.
+     * @api
      * @since 2.0.0
      * @example
      *
@@ -312,9 +303,9 @@ class ExternalImage implements ImageInterface
      * </a>
      * ```
      *
-     * @api
+     * @return string|null An uppercase extension string.
      */
-    public function extension()
+    public function extension(): ?string
     {
         if (!$this->file_extension) {
             $file_info = \wp_check_filetype($this->file);
@@ -330,7 +321,7 @@ class ExternalImage implements ImageInterface
     /**
      * Gets the width of the image in pixels.
      *
-     * @return int The width of the image in pixels.
+     * @api
      * @example
      * ```twig
      * <img src="{{ image.src }}" width="{{ image.width }}" />
@@ -339,17 +330,18 @@ class ExternalImage implements ImageInterface
      * <img src="http://example.org/wp-content/uploads/2015/08/pic.jpg" width="1600" />
      * ```
      *
-     * @api
+     * @return int|null The width of the image in pixels. Null if the width can’t be read, e.g. because the file doesn’t
+     *                  exist.
      */
-    public function width()
+    public function width(): ?int
     {
-        return $this->imageDimensions->width();
+        return $this->image_dimensions->width();
     }
 
     /**
      * Gets the height of the image in pixels.
      *
-     * @return int The height of the image in pixels.
+     * @api
      * @example
      * ```twig
      * <img src="{{ image.src }}" height="{{ image.height }}" />
@@ -358,40 +350,41 @@ class ExternalImage implements ImageInterface
      * <img src="http://example.org/wp-content/uploads/2015/08/pic.jpg" height="900" />
      * ```
      *
-     * @api
+     * @return int|null The height of the image in pixels. Null if the height can’t be read, e.g. because the file
+     *                  doesn’t exist.
      */
-    public function height()
+    public function height(): ?int
     {
-        return $this->imageDimensions->height();
+        return $this->image_dimensions->height();
     }
 
     /**
      * Gets the aspect ratio of the image.
      *
-     * @return float The aspect ratio of the image.
+     * @api
      * @example
      * ```twig
      * {% if post.thumbnail.aspect < 1 %}
-     *   {# handle vertical image #}
-     *   <img src="{{ post.thumbnail.src|resize(300, 500) }}" alt="A basketball player" />
+     *     {# handle vertical image #}
+     *     <img src="{{ post.thumbnail.src|resize(300, 500) }}" alt="A basketball player" />
      * {% else %}
-     *   <img src="{{ post.thumbnail.src|resize(500) }}" alt="A sumo wrestler" />
+     *     <img src="{{ post.thumbnail.src|resize(500) }}" alt="A sumo wrestler" />
      * {% endif %}
      * ```
      *
-     * @api
+     * @return float The aspect ratio of the image.
      */
     public function aspect()
     {
-        return $this->imageDimensions->aspect();
+        return $this->image_dimensions->aspect();
     }
 
     /**
      * Sets the relative alt text of the image.
      *
-     * @param string $alt Alt text for the image
+     * @param string $alt Alt text for the image.
      */
-    public function set_alt_text($alt)
+    public function set_alt(string $alt)
     {
         $this->alt_text = $alt;
     }
@@ -399,19 +392,19 @@ class ExternalImage implements ImageInterface
     /**
      * Sets the relative alt text of the image.
      *
-     * @param string $alt Alt text for the image
+     * @param string $caption Caption text for the image
      */
-    public function set_caption($caption)
+    public function set_caption(string $caption)
     {
-        $this->_caption = $caption;
+        $this->caption = $caption;
     }
 
     /**
      * Inits the object with an absolute path.
      *
-     * @param string $file_path An absolute path to a file.
      * @internal
      *
+     * @param string $file_path An absolute path to a file.
      */
     protected function init_with_file_path($file_path)
     {
@@ -420,16 +413,16 @@ class ExternalImage implements ImageInterface
         $this->abs_url = $url;
         $this->file_loc = $file_path;
         $this->file = $file_path;
-        $this->imageDimensions = new ImageDimensions($file_path);
+        $this->image_dimensions = new ImageDimensions($file_path);
         $this->file_size = new FileSize($file_path);
     }
 
     /**
      * Inits the object with a relative path.
      *
-     * @param string $relative_path A relative path to a file.
      * @internal
      *
+     * @param string $relative_path A relative path to a file.
      */
     protected function init_with_relative_path($relative_path)
     {
@@ -438,24 +431,24 @@ class ExternalImage implements ImageInterface
         $this->abs_url = \home_url($relative_path);
         $this->file_loc = $file_path;
         $this->file = $file_path;
-        $this->imageDimensions = new ImageDimensions($file_path);
+        $this->image_dimensions = new ImageDimensions($file_path);
         $this->file_size = new FileSize($file_path);
     }
 
     /**
      * Inits the object with an URL.
      *
-     * @param string $url An URL on the same host.
      * @internal
      *
+     * @param string $url An URL on the same host.
      */
     protected function init_with_url($url)
     {
-        $this->abs_url = $url;
-
         if (!URLHelper::is_local($url)) {
             $url = ImageHelper::sideload_image($url);
         }
+
+        $this->abs_url = $url;
 
         if (URLHelper::is_local($url)) {
             $this->file = URLHelper::remove_double_slashes(
@@ -464,10 +457,8 @@ class ExternalImage implements ImageInterface
             $this->file_loc = URLHelper::remove_double_slashes(
                 ABSPATH . URLHelper::get_rel_url($url)
             );
-            $this->imageDimensions = new ImageDimensions($this->file_loc);
+            $this->image_dimensions = new ImageDimensions($this->file_loc);
             $this->file_size = new FileSize($this->file_loc);
-        } else {
-            $this->imageDimensions = new ImageDimensions();
         }
     }
 
@@ -477,41 +468,27 @@ class ExternalImage implements ImageInterface
      * For better accessibility, you should always add an alt attribute to your images, even if it’s
      * empty.
      *
-     * @return string Alt text stored in WordPress.
+     * @api
      * @example
      * ```twig
      * <img src="{{ image.src }}" alt="{{ image.alt }}" />
      * ```
      * ```html
-     * <img src="http://example.org/wp-content/uploads/2015/08/pic.jpg"
-     *     alt="You should always add alt texts to your images for better accessibility" />
+     * <img
+     *     src="http://example.org/wp-content/uploads/2015/08/pic.jpg"
+     *     alt="You should always add alt texts to your images for better accessibility"
+     * />
      * ```
      *
-     * @api
+     * @return string Alt text stored in WordPress.
      */
-    public function alt()
+    public function alt(): string
     {
         return $this->alt_text;
     }
 
-    public function caption()
+    public function caption(): string
     {
-        return $this->_caption;
-    }
-
-    public function img_sizes($size = "full")
-    {
-        return [$size];
-    }
-
-    public function srcset($size = "full")
-    {
-        $source = [
-            'url' => $this->src(),
-            'descriptor' => 'w',
-            'value' => $size,
-        ];
-
-        return \str_replace(' ', '%20', $source['url']) . ' ' . $source['value'] . $source['descriptor'];
+        return $this->caption;
     }
 }

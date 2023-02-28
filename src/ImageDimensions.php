@@ -38,7 +38,7 @@ class ImageDimensions
     /**
      * Gets the width of the image in pixels.
      *
-     * @return int The width of the image in pixels.
+     * @api
      * @example
      * ```twig
      * <img src="{{ image.src }}" width="{{ image.width }}" />
@@ -47,9 +47,10 @@ class ImageDimensions
      * <img src="http://example.org/wp-content/uploads/2015/08/pic.jpg" width="1600" />
      * ```
      *
-     * @api
+     * @return int|null The width of the image in pixels. Null if the width can’t be read, e.g. because the file doesn’t
+     *                  exist.
      */
-    public function width()
+    public function width(): ?int
     {
         return $this->get_dimension('width');
     }
@@ -57,7 +58,7 @@ class ImageDimensions
     /**
      * Gets the height of the image in pixels.
      *
-     * @return int The height of the image in pixels.
+     * @api
      * @example
      * ```twig
      * <img src="{{ image.src }}" height="{{ image.height }}" />
@@ -66,9 +67,10 @@ class ImageDimensions
      * <img src="http://example.org/wp-content/uploads/2015/08/pic.jpg" height="900" />
      * ```
      *
-     * @api
+     * @return int|null The height of the image in pixels. Null if the height can’t be read, e.g. because the file
+     *                  doesn’t exist.
      */
-    public function height()
+    public function height(): ?int
     {
         return $this->get_dimension('height');
     }
@@ -76,7 +78,7 @@ class ImageDimensions
     /**
      * Gets the aspect ratio of the image.
      *
-     * @return float The aspect ratio of the image.
+     * @api
      * @example
      * ```twig
      * {% if post.thumbnail.aspect < 1 %}
@@ -87,25 +89,28 @@ class ImageDimensions
      * {% endif %}
      * ```
      *
-     * @api
+     * @return float|null The aspect ratio of the image. Null if the aspect ratio can’t be calculated.
      */
-    public function aspect()
+    public function aspect(): ?float
     {
         $w = \intval($this->width());
         $h = \intval($this->height());
 
-        return $w / $h;
+        if ($w and $h > 0) {
+            return $w / $h;
+        }
+
+        return null;
     }
 
     /**
      * Gets dimension for an image.
      *
+     * @internal
      * @param string $dimension The requested dimension. Either `width` or `height`.
      * @return int|null The requested dimension. Null if image file couldn’t be found.
-     * @internal
-     *
      */
-    public function get_dimension($dimension)
+    public function get_dimension($dimension): ?int
     {
         // Load from internal cache.
         if (isset($this->dimensions)) {
@@ -124,6 +129,7 @@ class ImageDimensions
                 $this->dimensions[0] = $width;
                 $this->dimensions[1] = $height;
             }
+
             return $this->get_dimension_loaded($dimension);
         }
 
@@ -133,12 +139,11 @@ class ImageDimensions
     /**
      * Gets already loaded dimension values.
      *
+     * @internal
      * @param string|null $dim Optional. The requested dimension. Either `width` or `height`.
      * @return int The requested dimension in pixels.
-     * @internal
-     *
      */
-    protected function get_dimension_loaded($dim = null)
+    protected function get_dimension_loaded($dim = null): int
     {
         $dim = \strtolower($dim);
 
@@ -150,11 +155,11 @@ class ImageDimensions
     }
 
     /**
-     * Retrieve dimensions from SVG file
+     * Retrieve dimensions from SVG file.
      *
+     * @internal
      * @param string $svg SVG Path
      * @return array
-     * @internal
      */
     protected function get_dimensions_svg($svg)
     {

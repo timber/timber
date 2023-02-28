@@ -25,7 +25,7 @@ class FileSize
      * Pre-calculated human-friendly file size.
      *
      * @api
-     * @var string The precalculed file size
+     * @var string The pre-calculated file size.
      */
     private $file_size;
 
@@ -43,15 +43,14 @@ class FileSize
     }
 
     /**
-     * Gets filesize in a human readable format.
+     * Gets filesize in a human-readable format.
      *
-     * This can be useful if you want to display the human readable filesize for a file. It’s
+     * This can be useful if you want to display the human-readable filesize for a file. It’s
      * easier to read «16 KB» than «16555 bytes» or «1 MB» than «1048576 bytes».
      *
-     * @return mixed|null The filesize string in a human readable format.
+     * @api
      * @since 2.0.0
      * @example
-     *
      * Use filesize information in a link that downloads a file:
      *
      * ```twig
@@ -61,11 +60,12 @@ class FileSize
      * </a>
      * ```
      *
-     * @api
+     * @return string|null The filesize string in a human-readable format or null if the
+     *                     filesize can’t be read.
      */
-    public function size()
+    public function size(): ?string
     {
-        if (!$this->file_size) {
+        if (!$this->file_size && $this->size_raw()) {
             $formatted_size = \size_format($this->size_raw());
             $this->file_size = \str_replace(' ', '&nbsp;', $formatted_size);
         }
@@ -76,10 +76,9 @@ class FileSize
     /**
      * Gets filesize in bytes.
      *
-     * @return mixed|null The filesize string in bytes, or false if the filesize can’t be read.
+     * @api
      * @since 2.0.0
      * @example
-     *
      * ```twig
      * <table>
      *     {% for attachment in Attachment(attachment_ids) %}
@@ -92,7 +91,7 @@ class FileSize
      * </table>
      * ```
      *
-     * @api
+     * @return int|false The filesize string in bytes, or false if the filesize can’t be read.
      */
     public function size_raw()
     {

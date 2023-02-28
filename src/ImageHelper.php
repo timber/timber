@@ -37,7 +37,7 @@ class ImageHelper
         self::$home_url = \get_home_url();
         \add_action('delete_attachment', [__CLASS__, 'delete_attachment']);
         \add_filter('wp_generate_attachment_metadata', [__CLASS__, 'generate_attachment_metadata'], 10, 2);
-        \add_filter('upload_dir', [__CLASS__, 'add_relative_upload_dir_key'], 10, 2);
+        \add_filter('upload_dir', [__CLASS__, 'add_relative_upload_dir_key']);
         return true;
     }
 
@@ -402,8 +402,8 @@ class ImageHelper
     /**
      * Downloads an external image to the server and stores it on the server.
      *
-     * External/sideloaded images are saved in a folder named **external** in the uploads folder.
-     * If you want to change the folder that is used for your sideloaded images, you can use the
+     * External/sideloaded images are saved in a folder named **external** in the uploads folder. If you want to change
+     * the folder that is used for your sideloaded images, you can use the
      * [`timber/sideload_image/subdir`](https://timber.github.io/docs/v2/hooks/filters/#timber/sideload_image/subdir)
      * filter. You can disable this behavior using the same filter.
      *
