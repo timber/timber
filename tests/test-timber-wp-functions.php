@@ -21,10 +21,10 @@ class TestTimberWPFunctions extends Timber_UnitTestCase
         $fw2 = new FunctionWrapper('wp_footer', [], true);
         $this->assertGreaterThan(50, strlen($fw1->call()));
         //this is bunk because footer scripts will only print once
-        $this->assertEquals(0, strlen($fw2->call()));
+        $this->assertSame(0, strlen($fw2->call()));
         wp_dequeue_script('jquery');
         $wp_footer_output1 = new FunctionWrapper('wp_footer', [], true);
-        $this->assertEquals(0, strlen($wp_footer_output1));
+        $this->assertSame(0, strlen($wp_footer_output1));
     }
 
     public function testFooterAlone()

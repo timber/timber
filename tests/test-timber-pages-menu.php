@@ -265,7 +265,7 @@ class TestTimberPagesMenu extends Timber_UnitTestCase
             'menu_order' => 1,
         ]);
         $pages_menu = Timber::get_pages_menu();
-        $this->assertEquals(2, count($pages_menu->items));
+        $this->assertSame(2, count($pages_menu->items));
         $this->assertEquals('Bar Page', $pages_menu->items[0]->title());
         self::_createTestMenu();
 
@@ -296,7 +296,7 @@ class TestTimberPagesMenu extends Timber_UnitTestCase
             'include' => [$page_id_1],
         ]);
 
-        $this->assertEquals(1, count($pages_menu->items));
+        $this->assertSame(1, count($pages_menu->items));
         $this->assertEquals('Foo Page', $pages_menu->items[0]->title());
     }
 
@@ -348,7 +348,7 @@ class TestTimberPagesMenu extends Timber_UnitTestCase
             'menu_order' => 1,
         ]);
         $pages_menu = Timber::get_pages_menu();
-        $this->assertEquals(2, count($pages_menu->items));
+        $this->assertSame(2, count($pages_menu->items));
         $this->assertEquals('Bar Page', $pages_menu->items[0]->title());
         self::_createTestMenu();
         //make sure other menus are still more powerful
@@ -383,14 +383,14 @@ class TestTimberPagesMenu extends Timber_UnitTestCase
         $pages_menu = Timber::get_pages_menu([
             'depth' => 0,
         ]);
-        $this->assertEquals(2, count($pages_menu->get_items()));
-        $this->assertEquals(2, count($pages_menu->get_items()[0]->children()));
+        $this->assertSame(2, count($pages_menu->get_items()));
+        $this->assertSame(2, count($pages_menu->get_items()[0]->children()));
 
         // Get first level only.
         $pages_menu = Timber::get_pages_menu([
             'depth' => 1,
         ]);
-        $this->assertEquals(2, count($pages_menu->get_items()));
+        $this->assertSame(2, count($pages_menu->get_items()));
         $this->assertEmpty($pages_menu->get_items()[0]->children());
     }
 

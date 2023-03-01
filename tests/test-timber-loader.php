@@ -79,10 +79,10 @@ class TestTimberLoader extends Timber_UnitTestCase
 
         add_filter('timber/loader/paths', function ($paths) use ($php_unit) {
             $paths = call_user_func_array('array_merge', array_values($paths));
-            $php_unit->assertEquals(6, count($paths));
+            $php_unit->assertSame(6, count($paths));
             $pos = array_search('/', $paths);
             unset($paths[$pos]);
-            $php_unit->assertEquals(5, count($paths));
+            $php_unit->assertSame(5, count($paths));
             return $paths;
         });
 

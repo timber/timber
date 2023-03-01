@@ -134,6 +134,7 @@ class Image extends Attachment implements ImageInterface
             'Image::get_width() or Image::get_height()',
             '2.0.0'
         );
+
         return $this->image_dimensions->get_dimension($dim);
     }
 

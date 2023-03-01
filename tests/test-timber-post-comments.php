@@ -18,8 +18,8 @@ class TestTimberPostComments extends Timber_UnitTestCase
             'comment_post_ID' => $post_id,
         ]);
         $post = Timber::get_post($post_id);
-        $this->assertEquals(5, count($post->comments()));
-        $this->assertEquals(5, $post->comment_count());
+        $this->assertSame(5, count($post->comments()));
+        $this->assertSame(5, $post->comment_count());
     }
 
     public function testCommentCount()
@@ -31,8 +31,8 @@ class TestTimberPostComments extends Timber_UnitTestCase
             'comment_post_ID' => $post_id,
         ]);
         $post = Timber::get_post($post_id);
-        $this->assertEquals(2, count($post->comments(2)));
-        $this->assertEquals(5, count($post->comments()));
+        $this->assertSame(2, count($post->comments(2)));
+        $this->assertSame(5, count($post->comments()));
     }
 
     public function testCommentCountZero()
@@ -42,7 +42,7 @@ class TestTimberPostComments extends Timber_UnitTestCase
             'post_content' => $quote,
         ]);
         $post = Timber::get_post($post_id);
-        $this->assertEquals(0, $post->get_comment_count());
+        $this->assertSame(0, $post->comment_count());
     }
 
     public function testShowUnmoderatedCommentIfByLoggedInUser()
@@ -58,10 +58,10 @@ class TestTimberPostComments extends Timber_UnitTestCase
             'comment_approved' => 0,
         ]);
         $post = Timber::get_post($post_id);
-        $this->assertEquals(1, count($post->comments()));
+        $this->assertSame(1, count($post->comments()));
         wp_set_current_user(0);
         $post = Timber::get_post($post_id);
-        $this->assertEquals(0, count($post->comments()));
+        $this->assertSame(0, count($post->comments()));
     }
 
     public function testPostWithCustomCommentClass()
@@ -103,7 +103,7 @@ class TestTimberPostComments extends Timber_UnitTestCase
             'comment_author_email' => 'jarednova@upstatement.com',
         ]);
         $post = Timber::get_post($post_id);
-        $this->assertEquals(1, count($post->comments()));
+        $this->assertSame(1, count($post->comments()));
     }
 
     public function testMultilevelThreadedComments()
@@ -129,11 +129,11 @@ class TestTimberPostComments extends Timber_UnitTestCase
         ]);
         $post = Timber::get_post($post_id);
         $comments = $post->comments();
-        $this->assertEquals(1, count($comments));
+        $this->assertSame(1, count($comments));
         $children = $comments[0]->children();
-        $this->assertEquals(1, count($children));
+        $this->assertSame(1, count($children));
         $grand_children = $children[0]->children();
-        $this->assertEquals(2, count($grand_children));
+        $this->assertSame(2, count($grand_children));
     }
 
     public function testMultilevelThreadedCommentsCorrectParents()
