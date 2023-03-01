@@ -685,10 +685,12 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     }
 
     /**
+     * Gets the number of comments on a post.
+     *
      * @api
-     * @return int the number of comments on a post
+     * @return int The number of comments on a post
      */
-    public function comment_count()
+    public function comment_count(): int
     {
         return (int) get_comments_number($this->ID);
     }
