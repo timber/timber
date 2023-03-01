@@ -8,9 +8,26 @@ use Timber\Post;
 /**
  * @group posts-api
  * @group attachments
+ * @group image
  */
 class TestTimberImage extends TimberAttachment_UnitTestCase
 {
+    public function tear_down()
+    {
+        $img_dir = get_stylesheet_directory_uri() . '/images';
+        if (file_exists($img_dir)) {
+            exec(sprintf("rm -rf %s", escapeshellarg($img_dir)));
+        }
+        $uploads = wp_upload_dir();
+        $files = glob($uploads['basedir'] . date('/Y/m/') . '*');
+        foreach ($files as $file) {
+            if (is_file($file)) {
+                unlink($file);
+            }
+        }
+        parent::tear_down();
+    }
+
     /* ----------------
      * Helper functions
      * ---------------- */
@@ -799,93 +816,6 @@ class TestTimberImage extends TimberAttachment_UnitTestCase
         Timber\ImageHelper::delete_generated_files($file);
         //Have the children been deleted as well?
         $this->assertFileDoesNotExist($letterboxed_file);
-    }
-
-    public function _makeThemeImageDirectory()
-    {
-        $theme_url = get_theme_root_uri() . '/' . get_stylesheet();
-        $img_dir = realpath(get_stylesheet_directory_uri()) . '/images';
-        if (strpos($img_dir, 'http') === 0) {
-            $img_dir = Timber\URLHelper::url_to_file_system($img_dir);
-        }
-        if (!file_exists($img_dir)) {
-            $parent = dirname($img_dir);
-            chmod($parent, 0777);
-            $res = mkdir($img_dir, 0777, true);
-        }
-    }
-
-    public function tear_down()
-    {
-        $theme_url = get_theme_root_uri() . '/' . get_stylesheet();
-        $img_dir = get_stylesheet_directory_uri() . '/images';
-        if (file_exists($img_dir)) {
-            exec(sprintf("rm -rf %s", escapeshellarg($img_dir)));
-        }
-        $uploads = wp_upload_dir();
-        $files = glob($uploads['basedir'] . date('/Y/m/') . '*');
-        foreach ($files as $file) {
-            if (is_file($file)) {
-                unlink($file);
-            }
-        }
-        parent::tear_down();
-    }
-
-    public function testThemeImageResize()
-    {
-        $theme_url = get_theme_root_uri() . '/' . get_stylesheet();
-        $source = __DIR__ . '/assets/cardinals.jpg';
-        $dest = get_stylesheet_directory_uri() . '/cardinals.jpg';
-        if (strpos($dest, 'http') === 0) {
-            $dest = Timber\URLHelper::url_to_file_system($dest);
-        }
-        $dest = self::maybe_realpath($dest);
-        copy($source, $dest);
-        $this->assertTrue(file_exists($dest));
-        $image = $theme_url . '/cardinals.jpg';
-        $image = str_replace('http://example.org', '', $image);
-        $data = [];
-        $data['test_image'] = $image;
-        $data['size'] = [
-            'width' => 120,
-            'height' => 120,
-        ];
-        $str = Timber::compile('assets/image-test.twig', $data);
-        $file_location = get_stylesheet_directory_uri() . '/cardinals-120x120-c-default.jpg';
-        if (strpos($file_location, 'http') === 0) {
-            $file_location = Timber\URLHelper::url_to_file_system($file_location);
-        }
-        $file_location = self::maybe_realpath($file_location);
-        $this->assertFileExists($file_location);
-        $this->addFile($file_location);
-    }
-
-    public function maybe_realpath($path)
-    {
-        if (realpath($path)) {
-            return realpath($path);
-        }
-        return $path;
-    }
-
-    /**
-     * @group maybeSkipped
-     */
-    public function testThemeImageLetterbox()
-    {
-        $theme_url = get_theme_root_uri() . '/' . get_stylesheet();
-        if (!extension_loaded('gd')) {
-            self::markTestSkipped('Letterbox image test requires GD extension');
-        }
-        $source = __DIR__ . '/assets/cardinals.jpg';
-        $dest = self::maybe_realpath(get_template_directory()) . '/cardinals.jpg';
-        copy($source, $dest);
-        $image = $theme_url . '/cardinals.jpg';
-        $image = str_replace('http://example.org', '', $image);
-        $letterboxed = Timber\ImageHelper::letterbox($image, 600, 300, '#FF0000');
-        $this->assertFileExists(realpath(get_template_directory() . '/cardinals-lbox-600x300-FF0000.jpg'));
-        unlink(realpath(get_template_directory() . '/cardinals-lbox-600x300-FF0000.jpg'));
     }
 
     public function testGetAttachmentByInTwig()

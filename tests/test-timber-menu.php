@@ -924,12 +924,16 @@ class TestTimberMenu extends Timber_UnitTestCase
         $this->assertEquals($parent->link(), $top->link());
     }
 
+    /**
+     * @issue https://github.com/timber/timber/issues/2576
+     */
     public function testThemeLocationProperty()
     {
         $term = self::_createTestMenu();
         $menu_id = $term['term_id'];
 
         $this->registerNavMenus([
+            'primary' => null,
             'secondary' => $menu_id,
         ]);
 
@@ -1076,6 +1080,53 @@ class TestTimberMenu extends Timber_UnitTestCase
         $this->assertStringContainsString('id="my-unique-menu-id"', $nav_menu_timber);
         $this->assertStringContainsString('class="my-unique-container-class"', $nav_menu_timber);
         $this->assertStringContainsString('id="my-unique-container-id"', $nav_menu_timber);
+    }
+
+    public function testMenuCanEdit()
+    {
+        self::_createTestMenu();
+
+        $subscriber_id = $this->factory->user->create([
+            'display_name' => 'Subscriber Sam',
+            'user_login' => 'subsam',
+            'role' => 'subscriber',
+        ]);
+
+        $menu = Timber::get_menu('Menu One');
+
+        // Test admin role.
+        wp_set_current_user(1);
+        $this->assertTrue($menu->can_edit());
+
+        // Test subscriber role.
+        wp_set_current_user($subscriber_id);
+        $this->assertFalse($menu->can_edit());
+
+        wp_set_current_user(0);
+    }
+
+    public function testMenuItemCanEdit()
+    {
+        self::_createTestMenu();
+
+        $subscriber_id = $this->factory->user->create([
+            'display_name' => 'Subscriber Sam',
+            'user_login' => 'subsam',
+            'role' => 'subscriber',
+        ]);
+
+        $menu = Timber::get_menu('Menu One');
+        $menu_items = $menu->get_items();
+
+        // Test admin role.
+        wp_set_current_user(1);
+        $this->assertTrue($menu_items[0]->can_edit());
+
+        // Test subscriber role.
+        wp_set_current_user($subscriber_id);
+        $this->assertFalse($menu_items[0]->can_edit());
+
+        wp_set_current_user(0);
     }
 
     public function testWPObject()

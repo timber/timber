@@ -14,6 +14,37 @@ class TestTimberRevisions extends Timber_UnitTestCase
         $_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
     }
 
+    public function testGetPostExcerpt()
+    {
+        $editor_user_id = $this->factory->user->create([
+            'role' => 'editor',
+        ]);
+        wp_set_current_user($editor_user_id);
+
+        $post_id = $this->factory->post->create([
+            'post_author' => $editor_user_id,
+            'post_content' => "OLD CONTENT HERE",
+        ]);
+        _wp_put_post_revision([
+            'ID' => $post_id,
+            'post_title' => 'Revised Title',
+            'post_content' => 'New Stuff Goes here',
+            'post_excerpt' => 'New and improved!',
+        ], true);
+
+        $_GET['preview'] = true;
+        $_GET['preview_id'] = $post_id;
+
+        $post = Timber::get_post($post_id);
+
+        $this->assertEquals('Revised Title', $post->post_title);
+        $this->assertEquals('New Stuff Goes here', $post->post_content);
+        $this->assertEquals('New and improved!', $post->post_excerpt);
+
+        unset($_GET['preview']);
+        unset($_GET['preview_id']);
+    }
+
     public function testParentOfPost()
     {
         // Register Custom Post Type
@@ -362,5 +393,47 @@ class TestTimberRevisions extends Timber_UnitTestCase
 
         $this->assertEquals($original_content, $str_direct);
         $this->assertEquals($original_content, $str_getfield);
+    }
+
+    /**
+     * Tests whether visiting a post revision with an attachment/featured image doesn’t throw a fatal error.
+     *
+     * @ticket https://github.com/timber/timber/issues/2582
+     *
+     * @return void
+     */
+    public function testPreviewPostWithImage()
+    {
+        global $wp_query;
+
+        $quote = 'The way to do well is to do well.';
+
+        $post_id = $this->factory->post->create([
+            'post_content' => $quote,
+        ]);
+
+        _wp_put_post_revision([
+            'ID' => $post_id,
+            'post_content' => $quote . 'Revised',
+        ], true);
+
+        set_post_thumbnail($post_id, TestTimberImage::get_attachment($post_id));
+
+        $wp_query->queried_object_id = $post_id;
+        $wp_query->queried_object = get_post($post_id);
+
+        $_GET['preview'] = true;
+        $_GET['preview_id'] = $post_id;
+        $_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
+
+        $post = Timber::get_post($post_id);
+
+        $post->thumbnail();
+
+        $this->assertEquals($quote . 'Revised', trim(strip_tags($post->content())));
+
+        unset($_GET['preview']);
+        unset($_GET['preview_id']);
+        unset($_GET['preview_nonce']);
     }
 }

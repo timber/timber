@@ -184,7 +184,13 @@ install_wp_cli() {
     mv wp-cli.phar $WP_TESTS_DIR/
 }
 
+copy_test_themes() {
+    cp -rf ./tests/assets/themes/timber-test-theme $WP_CORE_DIR/wp-content/themes/
+    cp -rf ./tests/assets/themes/timber-test-theme-child $WP_CORE_DIR/wp-content/themes/
+}
+
 install_wp
 install_test_suite
 install_db
 install_wp_cli
+copy_test_themes

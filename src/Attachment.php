@@ -4,8 +4,6 @@ namespace Timber;
 
 use Timber\Factory\PostFactory;
 
-use WP_Post;
-
 /**
  * Class Attachment
  *
@@ -42,20 +40,11 @@ class Attachment extends Post
     public $file_loc;
 
     /**
-     * Raw file size.
-     *
-     * @api
-     * @since 2.0.0
-     * @var int Raw file size in bytes.
-     */
-    public $file_size_raw = null;
-
-    /**
      * Formatted file size.
      *
      * @api
      * @since 2.0.0
-     * @var null|string File size string.
+     * @var FileSize File size string.
      */
     public $file_size = null;
 
@@ -120,70 +109,17 @@ class Attachment extends Post
     }
 
     /**
-     * Inits the object with an absolute path.
-     *
-     * @internal
-     *
-     * @param string $file_path An absolute path to a file.
-     */
-    protected function init_with_file_path($file_path)
-    {
-        $url = URLHelper::file_system_to_url($file_path);
-
-        $this->abs_url = $url;
-        $this->file_loc = $file_path;
-        $this->file = $file_path;
-    }
-
-    /**
-     * Inits the object with a relative path.
-     *
-     * @internal
-     *
-     * @param string $relative_path A relative path to a file.
-     */
-    protected function init_with_relative_path($relative_path)
-    {
-        $file_path = URLHelper::get_full_path($relative_path);
-
-        $this->abs_url = home_url($relative_path);
-        $this->file_loc = $file_path;
-        $this->file = $file_path;
-    }
-
-    /**
-     * Inits the object with an URL.
-     *
-     * @internal
-     *
-     * @param string $url An URL on the same host.
-     */
-    protected function init_with_url($url)
-    {
-        $this->abs_url = $url;
-
-        if (URLHelper::is_local($url)) {
-            $this->file = URLHelper::remove_double_slashes(
-                ABSPATH . URLHelper::get_rel_url($url)
-            );
-            $this->file_loc = URLHelper::remove_double_slashes(
-                ABSPATH . URLHelper::get_rel_url($url)
-            );
-        }
-    }
-
-    /**
      * Gets the attachment information.
      *
      * @internal
      *
-     * @param int $attachment_id The ID number of the image in the WP database.
-     * @return array Attachment info as an array or ID
+     * @param array $data Data to update.
+     * @return array Attachment info as an array.
      */
-    protected function get_info(WP_Post $wp_post)
+    protected function get_info(array $data): array
     {
-        $post_data = get_object_vars(parent::get_info($wp_post));
-        $image_info = wp_get_attachment_metadata($wp_post->ID) ?: [];
+        $post_data = parent::get_info($data);
+        $image_info = wp_get_attachment_metadata($this->wp_object->ID) ?: [];
         $meta_values = $this->raw_meta();
 
         $data = array_merge($post_data, $image_info, $meta_values);
@@ -197,23 +133,9 @@ class Attachment extends Post
             $data['file_loc'] = $basedir . DIRECTORY_SEPARATOR . $data['file'];
         }
 
+        $data['file_size'] = new FileSize($data['file_loc']);
+
         return $data;
-    }
-
-    /**
-     * Secures an URL based on the current environment.
-     *
-     * @param  string $url The URL to evaluate.
-     *
-     * @return string An URL with or without http/https, depending on what’s appropriate for server.
-     */
-    protected function maybe_secure_url($url)
-    {
-        if (is_ssl() && strpos($url, 'https') !== 0 && strpos($url, 'http') === 0) {
-            $url = 'https' . substr($url, strlen('http'));
-        }
-
-        return $url;
     }
 
     /**
@@ -257,7 +179,7 @@ class Attachment extends Post
      *
      * @return string The relative path to an attachment.
      */
-    public function path()
+    public function path(): string
     {
         return URLHelper::get_rel_path($this->src());
     }
@@ -279,10 +201,10 @@ class Attachment extends Post
     public function src()
     {
         if (isset($this->abs_url)) {
-            return $this->maybe_secure_url($this->abs_url);
+            return URLHelper::maybe_secure_url($this->abs_url) ?: null;
         }
 
-        return wp_get_attachment_url($this->ID);
+        return wp_get_attachment_url($this->ID) ?: null;
     }
 
     /**
@@ -303,7 +225,7 @@ class Attachment extends Post
      *
      * @return string
      */
-    public function caption()
+    public function caption(): string
     {
         /**
          * Filters the attachment caption.
@@ -336,16 +258,12 @@ class Attachment extends Post
      * </a>
      * ```
      *
-     * @return mixed|null The filesize string in a human readable format.
+     * @return string|null The filesize string in a human-readable format or null if the
+     *                     filesize can’t be read.
      */
-    public function size()
+    public function size(): ?string
     {
-        if (!$this->file_size) {
-            $formatted_size = size_format($this->size_raw());
-            $this->file_size = str_replace(' ', '&nbsp;', $formatted_size);
-        }
-
-        return $this->file_size;
+        return $this->file_size->size();
     }
 
     /**
@@ -367,15 +285,11 @@ class Attachment extends Post
      * </table>
      * ```
      *
-     * @return mixed|null The filesize string in bytes, or false if the filesize can’t be read.
+     * @return int|false The filesize string in bytes, or false if the filesize can’t be read.
      */
     public function size_raw()
     {
-        if (!$this->file_size_raw) {
-            $this->file_size_raw = filesize($this->file_loc);
-        }
-
-        return $this->file_size_raw;
+        return $this->file_size->size_raw();
     }
 
     /**
@@ -384,7 +298,6 @@ class Attachment extends Post
      * @api
      * @since 2.0.0
      * @example
-     *
      * Use extension information in a link that downloads a file:
      *
      * ```twig
@@ -396,9 +309,9 @@ class Attachment extends Post
      * </a>
      * ```
      *
-     * @return null|string An uppercase extension string.
+     * @return string|null An uppercase extension string.
      */
-    public function extension()
+    public function extension(): ?string
     {
         if (!$this->file_extension) {
             $file_info = wp_check_filetype($this->file);

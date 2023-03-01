@@ -68,14 +68,34 @@ class TestTimberUser extends Timber_UnitTestCase
 
     public function testUserCapability()
     {
-        $uid = $this->factory->user->create([
+        $this->factory->user->create([
             'display_name' => 'Tito Bottitta',
             'user_login' => 'mbottitta',
             'role' => 'editor',
         ]);
+
+        $this->factory->user->create([
+            'display_name' => 'Baberaham Lincoln',
+            'user_login' => 'blincoln',
+            'role' => 'subscriber',
+        ]);
+
+        $post_id = wp_insert_post(
+            [
+                'post_title' => 'Baseball',
+                'post_content' => 'is fine, I guess',
+                'post_status' => 'publish',
+            ]
+        );
+
         $user = Timber::get_user_by('login', 'mbottitta');
+        $subscriber = Timber::get_user_by('login', 'blincoln');
+
         $this->assertTrue($user->can('edit_posts'));
+        $this->assertTrue($user->can('edit_post', $post_id));
         $this->assertFalse($user->can('activate_plugins'));
+        $this->assertFalse($subscriber->can('edit_posts'));
+        $this->assertFalse($subscriber->can('edit_post', $post_id));
     }
 
     public function testUserRole()
@@ -103,10 +123,42 @@ class TestTimberUser extends Timber_UnitTestCase
             'post_author' => $uid,
         ]);
         $post = Timber::get_post($pid);
-        $str = Timber::compile_string("{{post.author.meta('description')}}", [
+        $str = Timber::compile_string("{{ post.author.description }}", [
             'post' => $post,
         ]);
         $this->assertEquals('Sixteenth President', $str);
+    }
+
+    public function testUserData()
+    {
+        $user_id = $this->factory->user->create([
+            'display_name' => 'Baberaham Lincoln',
+            'user_login' => 'blincoln',
+            'user_email' => 'babe@exmample.org',
+        ]);
+        $user = Timber::get_user($user_id);
+
+        update_user_meta($user_id, 'first_name', 'Baberaham');
+        update_user_meta($user_id, 'last_name', 'Lincoln');
+        update_user_meta($user_id, 'description', 'Sixteenth President');
+
+        $result = Timber::compile_string(
+            '{{ user.first_name }}, {{ user.last_name }}, {{ user.user_nicename }}, {{ user.display_name }}, {{ user.user_email }}, {{ user.description }}',
+            [
+                'user' => $user,
+            ]
+        );
+
+        $this->assertEquals('Baberaham, Lincoln, blincoln, Baberaham Lincoln, babe@exmample.org, Sixteenth President', $result);
+
+        $result = Timber::compile_string(
+            "{{ user.meta('first_name') }}, {{ user.meta('last_name') }}, {{ user.user_nicename }}, {{ user.display_name }}, {{ user.user_email }}, {{ user.meta('description') }}",
+            [
+                'user' => $user,
+            ]
+        );
+
+        $this->assertEquals('Baberaham, Lincoln, blincoln, Baberaham Lincoln, babe@exmample.org, Sixteenth President', $result);
     }
 
     public function testInitShouldUnsetPassword()
@@ -161,6 +213,42 @@ class TestTimberUser extends Timber_UnitTestCase
         $this->assertEquals('http://2.gravatar.com/avatar/b2965625410b81a2b25ef02b54493ce0?s=120&d=mm&r=g', $user->avatar([
             'size' => 120,
         ]));
+    }
+
+    public function testEditLink()
+    {
+        $subscriber_id = $this->factory->user->create([
+            'display_name' => 'Subscriber Sam',
+            'user_login' => 'subsam',
+            'role' => 'subscriber',
+        ]);
+
+        $editor_id = $this->factory->user->create([
+            'display_name' => 'Emilia Editore',
+            'user_login' => 'eeditore',
+            'role' => 'editor',
+        ]);
+
+        $subscriber = Timber::get_user($subscriber_id);
+        $editor = Timber::get_user($editor_id);
+        $admin = Timber::get_user(1);
+
+        // Test admin role.
+        wp_set_current_user(1);
+        $this->assertEquals(
+            'http://example.org/wp-admin/user-edit.php?user_id=' . $subscriber_id,
+            $subscriber->edit_link()
+        );
+        $this->assertEquals('http://example.org/wp-admin/user-edit.php?user_id=' . $editor_id, $editor->edit_link());
+        $this->assertEquals('http://example.org/wp-admin/profile.php', $admin->edit_link());
+
+        // Test subscriber role.
+        wp_set_current_user($subscriber_id);
+        $this->assertEquals('http://example.org/wp-admin/profile.php', $subscriber->edit_link());
+        $this->assertNull($editor->edit_link());
+        $this->assertNull($admin->edit_link());
+
+        wp_set_current_user(0);
     }
 
     public function testWPObject()

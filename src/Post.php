@@ -184,9 +184,22 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         $post->ID = $wp_post->ID;
         $post->wp_object = $wp_post;
 
-        $data = $post->get_info($wp_post);
+        $data = get_object_vars($wp_post);
+        $data = $post->get_info($data);
 
-        $post->import(apply_filters('timber/post/import_data', $data));
+        /**
+         * Filters the imported post data.
+         *
+         * Used internally for previews.
+         *
+         * @since 2.0.0
+         * @see   Timber::init()
+         * @param array        $data An array of post data to import.
+         * @param \Timber\Post $post The Timber post instance.
+         */
+        $data = apply_filters('timber/post/import_data', $data, $post);
+
+        $post->import($data);
 
         return $post;
     }
@@ -494,19 +507,23 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     }
 
     /**
+     * Gets info to import on Timber post object.
+     *
      * Used internally by init, etc. to build Timber\Post object.
      *
      * @internal
-     * @param  int|null|boolean $pid The ID to generate info from.
-     * @return WP_Post
+     *
+     * @param array $data Data to update.
+     * @return array
      */
-    protected function get_info(WP_Post $post)
+    protected function get_info(array $data): array
     {
-        $post->status = $post->post_status;
-        $post->id = $post->ID;
-        $post->slug = $post->post_name;
+        $data = array_merge($data, [
+            'slug' => $this->wp_object->post_name,
+            'status' => $this->wp_object->post_status,
+        ]);
 
-        return $post;
+        return $data;
     }
 
     /**
@@ -1172,22 +1189,47 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         if ($len == -1 && $page == 0 && $this->___content) {
             return $this->___content;
         }
+
         $content = $this->post_content;
+
         if ($len > 0) {
             $content = wp_trim_words($content, $len);
         }
-        if ($page) {
-            $contents = explode('<!--nextpage-->', $content);
+
+        /**
+         * Page content split by <!--nextpage-->.
+         *
+         * @see WP_Query::generate_postdata()
+         */
+        if ($page && false !== strpos($content, '<!--nextpage-->')) {
+            $content = str_replace("\n<!--nextpage-->\n", '<!--nextpage-->', $content);
+            $content = str_replace("\n<!--nextpage-->", '<!--nextpage-->', $content);
+            $content = str_replace("<!--nextpage-->\n", '<!--nextpage-->', $content);
+
+            // Remove the nextpage block delimiters, to avoid invalid block structures in the split content.
+            $content = str_replace('<!-- wp:nextpage -->', '', $content);
+            $content = str_replace('<!-- /wp:nextpage -->', '', $content);
+
+            // Ignore nextpage at the beginning of the content.
+            if (0 === strpos($content, '<!--nextpage-->')) {
+                $content = substr($content, 15);
+            }
+
+            $pages = explode('<!--nextpage-->', $content);
             $page--;
-            if (count($contents) > $page) {
-                $content = $contents[$page];
+
+            if (count($pages) > $page) {
+                $content = $pages[$page];
             }
         }
+
         $content = $this->content_handle_no_teaser_block($content);
         $content = apply_filters('the_content', ($content));
+
         if ($len == -1 && $page == 0) {
             $this->___content = $content;
         }
+
         return $content;
     }
 
@@ -1479,19 +1521,42 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     }
 
     /**
-     * Returns the edit URL of a post if the user has access to it
+     * Checks whether the current user can edit the post.
      *
      * @api
-     * @return null|string The edit URL of a post in the WordPress admin. Null if user can’t edit a post or edit post
-     *                     link can’t be read.
+     * @example
+     * ```twig
+     * {% if post.can_edit %}
+     *     <a href="{{ post.edit_link }}">Edit</a>
+     * {% endif %}
+     * ```
+     * @return bool
      */
-    public function edit_link()
+    public function can_edit(): bool
     {
-        if ($this->can_edit()) {
-            return get_edit_post_link($this->ID);
+        return current_user_can('edit_post', $this->ID);
+    }
+
+    /**
+     * Gets the edit link for a post if the current user has the correct rights.
+     *
+     * @api
+     * @example
+     * ```twig
+     * {% if post.can_edit %}
+     *     <a href="{{ post.edit_link }}">Edit</a>
+     * {% endif %}
+     * ```
+     * @return string|null The edit URL of a post in the WordPress admin or null if the current user can’t edit the
+     *                     post.
+     */
+    public function edit_link(): ?string
+    {
+        if (!$this->can_edit()) {
+            return null;
         }
 
-        return null;
+        return get_edit_post_link($this->ID);
     }
 
     /**
