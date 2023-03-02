@@ -22,7 +22,7 @@ class PostFactory
     public function from($params)
     {
         if (is_int($params) || is_string($params) && is_numeric($params)) {
-            return $this->from_id($params);
+            return $this->from_id((int) $params);
         }
 
         if ($params instanceof WP_Query) {
@@ -48,7 +48,7 @@ class PostFactory
         return null;
     }
 
-    protected function from_id(int $id)
+    protected function from_id(int $id): ?Post
     {
         $wp_post = get_post($id);
 
