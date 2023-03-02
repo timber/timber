@@ -182,7 +182,7 @@ class Timber
      *
      * @param array $data
      * @param Post $post
-     * @return void
+     * @return array
      */
     public static function handle_preview($data, $post)
     {
