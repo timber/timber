@@ -174,8 +174,8 @@ class TestTimberComment extends Timber_UnitTestCase
         ]);
         $post = Timber::get_post($post_id);
         $comments = $post->comments();
-        $this->assertEquals(2, count($comments));
-        $this->assertEquals(1, count($comments[1]->children()));
+        $this->assertSame(2, count($comments));
+        $this->assertSame(1, count($comments[1]->children()));
         $twig_string = '{{comment.author.name}}';
         $result = Timber::compile_string($twig_string, [
             'comment' => $comments[0],
@@ -241,13 +241,13 @@ class TestTimberComment extends Timber_UnitTestCase
         $comments = $post->comments();
         $children = $comments[1]->children();
         $grand_children = $children[0]->children();
-        $this->assertEquals(3, count($comments));
-        $this->assertEquals(1, count($children));
+        $this->assertSame(3, count($comments));
+        $this->assertSame(1, count($children));
 
-        $this->assertEquals(0, $comments[1]->depth());
-        $this->assertEquals(1, $children[0]->depth());
-        $this->assertEquals(2, $grand_children[0]->depth());
-        $this->assertEquals(0, $comments[2]->depth());
+        $this->assertSame(0, $comments[1]->depth());
+        $this->assertSame(1, $children[0]->depth());
+        $this->assertSame(2, $grand_children[0]->depth());
+        $this->assertSame(0, $comments[2]->depth());
 
         $comment_id = $this->factory->comment->create([
             'comment_post_ID' => $post_id,

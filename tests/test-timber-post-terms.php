@@ -74,7 +74,7 @@ class TestTimberPostTerms extends Timber_UnitTestCase
         $terms = $post->terms([], [
             'merge' => true,
         ]);
-        $this->assertEquals(3, count($terms));
+        $this->assertSame(3, count($terms));
     }
 
     /**

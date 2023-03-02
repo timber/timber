@@ -380,7 +380,7 @@ class TestTimberMenu extends Timber_UnitTestCase
         $menu = Timber::get_menu($menu_arr['term_id']);
         $defaults['menu'] = $menu_arr['term_id'];
         $this->assertIsInt($menu->depth);
-        $this->assertEquals(0, $menu->depth);
+        $this->assertSame(0, $menu->depth);
         $this->assertIsArray($menu->raw_args);
         $this->assertIsObject($menu->args);
         $this->assertEquals((object) $defaults, $menu->args);
@@ -392,7 +392,7 @@ class TestTimberMenu extends Timber_UnitTestCase
         $menu = Timber::get_menu('Menu One', $args);
         $args['menu'] = 'Menu One';
         $this->assertIsInt($menu->depth);
-        $this->assertEquals(1, $menu->depth);
+        $this->assertSame(1, $menu->depth);
         $this->assertIsArray($menu->raw_args);
         $this->assertEquals($args, $menu->raw_args);
         $this->assertIsObject($menu->args);
@@ -404,7 +404,7 @@ class TestTimberMenu extends Timber_UnitTestCase
         ];
         $menu = Timber::get_menu('Menu One', $args);
         $this->assertIsInt($menu->depth);
-        $this->assertEquals(0, $menu->depth);
+        $this->assertSame(0, $menu->depth);
     }
 
     public function testMenuOptions_Depth()
@@ -418,7 +418,7 @@ class TestTimberMenu extends Timber_UnitTestCase
         // Confirm that none of them have "children" set.
         $items = $menu->get_items();
         foreach ($items as $item) {
-            $this->assertEquals(null, $item->children);
+            $this->assertSame(false, $item->children);
         }
 
         // Confirm two levels deep
@@ -429,7 +429,7 @@ class TestTimberMenu extends Timber_UnitTestCase
         foreach ($items as $item) {
             if ($item->children) {
                 foreach ($item->children as $child) {
-                    $this->assertEquals(null, $child->children);
+                    $this->assertSame(null, $child->children);
                 }
             }
         }
@@ -462,7 +462,7 @@ class TestTimberMenu extends Timber_UnitTestCase
         ]);
 
         $filter = function ($classes, $item, $args) {
-            $this->assertEquals(3, $args->depth);
+            $this->assertSame(3, $args->depth);
 
             return $classes;
         };
@@ -661,15 +661,15 @@ class TestTimberMenu extends Timber_UnitTestCase
         $menu_arr = self::_createTestMenu();
         $menu = Timber::get_menu($menu_arr['term_id']);
         $parent = $menu->items[0];
-        $this->assertEquals(0, $parent->level);
+        $this->assertSame(0, $parent->level);
         $child = $parent->children[0];
-        $this->assertEquals(1, $child->level);
+        $this->assertSame(1, $child->level);
         $olderGrandchild = $child->children[0];
         $this->assertEquals('Grandchild Page', $olderGrandchild->title());
-        $this->assertEquals(2, $olderGrandchild->level);
+        $this->assertSame(2, $olderGrandchild->level);
         $youngerGrandchild = $child->children[1];
         $this->assertEquals('Other Grandchild Page', $youngerGrandchild->title());
-        $this->assertEquals(2, $youngerGrandchild->level);
+        $this->assertSame(2, $youngerGrandchild->level);
     }
 
     public function testMenuLevelsChildren()
@@ -677,9 +677,9 @@ class TestTimberMenu extends Timber_UnitTestCase
         $menu_arr = self::_createTestMenu();
         $menu = Timber::get_menu($menu_arr['term_id']);
         $parent = $menu->items[0];
-        $this->assertEquals(0, $parent->level);
+        $this->assertSame(0, $parent->level);
         $children = $parent->children();
-        $this->assertEquals(1, count($children));
+        $this->assertSame(1, count($children));
         $this->assertEquals('Child Page', $children[0]->title());
     }
 
@@ -749,7 +749,7 @@ class TestTimberMenu extends Timber_UnitTestCase
         $this->buildMenu('Fancy Suit', $items);
 
         $menu = Timber::get_menu('Fancy Suit');
-        $this->assertEquals(3, count($menu->get_items()));
+        $this->assertSame(3, count($menu->get_items()));
     }
 
     public function testConstructMenuBySlug()
@@ -771,7 +771,7 @@ class TestTimberMenu extends Timber_UnitTestCase
         $this->buildMenu('Jolly Jeepers', $items);
 
         $menu = Timber::get_menu('jolly-jeepers');
-        $this->assertEquals(3, count($menu->get_items()));
+        $this->assertSame(3, count($menu->get_items()));
     }
 
     public function testGetCurrentItem()

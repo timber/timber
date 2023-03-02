@@ -159,13 +159,13 @@ class ImageDimensions
      *
      * @internal
      * @param string $svg SVG Path
-     * @return array
+     * @return object
      */
     protected function get_dimensions_svg($svg)
     {
         $svg = \simplexml_load_file($svg);
-        $width = '0';
-        $height = '0';
+        $width = 0;
+        $height = 0;
 
         if (false !== $svg) {
             $attributes = $svg->attributes();
@@ -174,14 +174,14 @@ class ImageDimensions
                 $width = $viewbox[2];
                 $height = $viewbox[3];
             } elseif ($attributes->width && $attributes->height) {
-                $width = (string) $attributes->width;
-                $height = (string) $attributes->height;
+                $width = $attributes->width;
+                $height = $attributes->height;
             }
         }
 
         return (object) [
-            'width' => $width,
-            'height' => $height,
+            'width' => (float) $width,
+            'height' => (float) $height,
         ];
     }
 }

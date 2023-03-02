@@ -81,7 +81,7 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
     public function __construct(WP_Query $query)
     {
         $this->wp_query = $query;
-        $this->found_posts = $this->wp_query->found_posts;
+        $this->found_posts = (int) $this->wp_query->found_posts;
 
         $posts = $this->wp_query->posts ?: [];
 

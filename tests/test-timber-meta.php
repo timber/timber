@@ -95,10 +95,10 @@ class TestTimberMeta extends Timber_UnitTestCase
         $user = Timber::get_user($user_id);
         $comment = Timber::get_comment($comment_id);
 
-        $this->assertEquals(null, $post->meta('not_found'));
-        $this->assertEquals(null, $term->meta('not_found'));
-        $this->assertEquals(null, $user->meta('not_found'));
-        $this->assertEquals(null, $comment->meta('not_found'));
+        $this->assertSame(null, $post->meta('not_found'));
+        $this->assertSame(null, $term->meta('not_found'));
+        $this->assertSame(null, $user->meta('not_found'));
+        $this->assertSame(null, $comment->meta('not_found'));
     }
 
     public function testPreMetaFilter()
@@ -184,18 +184,18 @@ class TestTimberMeta extends Timber_UnitTestCase
         $term = Timber::get_term($term_id);
         $comment = Timber::get_comment($comment_id);
 
-        $this->assertEquals(false, $this->is_get_post_meta_hit);
-        $this->assertEquals(false, $this->is_get_term_meta_hit);
-        $this->assertEquals(false, $this->is_get_comment_meta_hit);
+        $this->assertSame(false, $this->is_get_post_meta_hit);
+        $this->assertSame(false, $this->is_get_term_meta_hit);
+        $this->assertSame(false, $this->is_get_comment_meta_hit);
 
         // Run fetch.
         $post->meta();
         $term->meta();
         $comment->meta();
 
-        $this->assertEquals(false, $this->is_get_post_meta_hit);
-        $this->assertEquals(false, $this->is_get_term_meta_hit);
-        $this->assertEquals(false, $this->is_get_comment_meta_hit);
+        $this->assertSame(false, $this->is_get_post_meta_hit);
+        $this->assertSame(false, $this->is_get_term_meta_hit);
+        $this->assertSame(false, $this->is_get_comment_meta_hit);
     }
 
     public function testMetaFilter()
@@ -321,16 +321,16 @@ class TestTimberMeta extends Timber_UnitTestCase
         $comment = Timber::get_comment($comment_id);
 
         $this->assertEquals('I am a meta value', $post->raw_meta('meta_value'));
-        $this->assertEquals(false, $post->meta('meta_value'));
+        $this->assertSame(false, $post->meta('meta_value'));
 
         $this->assertEquals('I am a meta value', $term->raw_meta('meta_value'));
-        $this->assertEquals(false, $term->meta('meta_value'));
+        $this->assertSame(false, $term->meta('meta_value'));
 
         $this->assertEquals('I am a meta value', $user->raw_meta('meta_value'));
-        $this->assertEquals(false, $user->meta('meta_value'));
+        $this->assertSame(false, $user->meta('meta_value'));
 
         $this->assertEquals('I am a meta value', $comment->raw_meta('meta_value'));
-        $this->assertEquals(false, $comment->meta('meta_value'));
+        $this->assertSame(false, $comment->meta('meta_value'));
     }
 
     /**
@@ -373,17 +373,17 @@ class TestTimberMeta extends Timber_UnitTestCase
             ]
         );
 
-        $this->assertEquals(null, $post->raw_meta('my_custom_property_inexistent'));
-        $this->assertEquals(null, $post_string);
+        $this->assertSame(null, $post->raw_meta('my_custom_property_inexistent'));
+        $this->assertSame('', $post_string);
 
-        $this->assertEquals(null, $term->raw_meta('my_custom_property_inexistent'));
-        $this->assertEquals(null, $term_string);
+        $this->assertSame(null, $term->raw_meta('my_custom_property_inexistent'));
+        $this->assertSame('', $term_string);
 
-        $this->assertEquals(null, $user->raw_meta('my_custom_property_inexistent'));
-        $this->assertEquals(null, $user_string);
+        $this->assertSame(null, $user->raw_meta('my_custom_property_inexistent'));
+        $this->assertSame('', $user_string);
 
-        $this->assertEquals(null, $comment->raw_meta('my_custom_property_inexistent'));
-        $this->assertEquals(null, $comment_string);
+        $this->assertSame(null, $comment->raw_meta('my_custom_property_inexistent'));
+        $this->assertSame('', $comment_string);
     }
 
     /**
@@ -893,8 +893,8 @@ class TestTimberMeta extends Timber_UnitTestCase
             'post' => $post,
         ]);
 
-        $this->assertEquals('', $string);
-        $this->assertEquals(false, $post->custom);
+        $this->assertSame('', $string);
+        $this->assertSame(false, $post->custom);
     }
 
     /**
@@ -913,8 +913,8 @@ class TestTimberMeta extends Timber_UnitTestCase
             'term' => $term,
         ]);
 
-        $this->assertEquals('', $string);
-        $this->assertEquals(false, $term->custom);
+        $this->assertSame('', $string);
+        $this->assertSame(false, $term->custom);
     }
 
     /**
@@ -933,8 +933,8 @@ class TestTimberMeta extends Timber_UnitTestCase
             'user' => $user,
         ]);
 
-        $this->assertEquals('', $string);
-        $this->assertEquals(false, $user->custom);
+        $this->assertSame('', $string);
+        $this->assertSame(false, $user->custom);
     }
 
     /**
@@ -953,8 +953,8 @@ class TestTimberMeta extends Timber_UnitTestCase
             'comment' => $comment,
         ]);
 
-        $this->assertEquals('', $string);
-        $this->assertEquals(false, $comment->custom);
+        $this->assertSame('', $string);
+        $this->assertSame(false, $comment->custom);
     }
 
     /**
@@ -1017,17 +1017,17 @@ class TestTimberMeta extends Timber_UnitTestCase
             ]
         );
 
-        $this->assertEquals('', $post_string);
-        $this->assertEquals(false, $post->inexistent);
+        $this->assertSame('', $post_string);
+        $this->assertSame(false, $post->inexistent);
 
-        $this->assertEquals('', $term_string);
-        $this->assertEquals(false, $term->inexistent);
+        $this->assertSame('', $term_string);
+        $this->assertSame(false, $term->inexistent);
 
-        $this->assertEquals('', $user_string);
-        $this->assertEquals(false, $user->inexistent);
+        $this->assertSame('', $user_string);
+        $this->assertSame(false, $user->inexistent);
 
-        $this->assertEquals('', $comment_string);
-        $this->assertEquals(false, $comment->inexistent);
+        $this->assertSame('', $comment_string);
+        $this->assertSame(false, $comment->inexistent);
     }
 
     /**
