@@ -1,5 +1,5 @@
 # Timber Core
-/lib		@jarednova @palmiak
+/lib		@gchtr @nlemoine
 
 # Documentation
 /docs		@gchtr
@@ -7,4 +7,4 @@
 phpcs.xml	@gchtr
 
 # Tooling
-*.yml	@jarednova
+*.yml	@nlemoine

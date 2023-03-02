@@ -2,12 +2,11 @@
 <a href="https://upstatement.com/timber/"><img src="http://i.imgur.com/PbEwvZ9.png" style="display:block; margin:auto; width:100%; max-width:100%"/></a>
 </div>
 
-By 
-[Jared Novack](https://github.com/jarednova) ([@jarednova](https://twitter.com/jarednova)), 
-[Lukas Gächter](https://github.com/gchtr) ([@lgaechter](https://twitter.com/lgaechter)), 
+By
+[Jared Novack](https://github.com/jarednova) ([@jarednova](https://twitter.com/jarednova)),
+[Lukas Gächter](https://github.com/gchtr) ([@lgaechter](https://twitter.com/lgaechter)),
+[Nicolas Lemoine](https://github.com/nlemoine) ([@nlemoine](https://niconico.fr/)),
 [Coby Tamayo](https://github.com/acobster) ([@cobytamayo](https://keybase.io/acobster)),
-[Maciej Palmowski](https://github.com/palmiak) ([@palmiak_fp](https://twitter.com/palmiak_fp)),
-[Nicolas Lemoine](https://github.com/nlemoine) ([@nlemoine](https://niconico.fr/))
 [Upstatement](https://twitter.com/upstatement) and [hundreds of other GitHub contributors](https://github.com/timber/timber/graphs/contributors)
 
 [![Build Status](https://img.shields.io/travis/timber/timber/master?style=flat-square)](https://app.travis-ci.com/github/timber/timber/branches)
