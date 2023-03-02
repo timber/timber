@@ -7,7 +7,7 @@ body:
     value: |
       Thanks for taking the time to fill out the issue form. We can help best if you provide as much information as possible.
 
-      Is this a support or usage question? Please post it to [Discussions](https://github.com/timber/timber/discussions) or on Stack Overflow (http://stackoverflow.com/questions/tagged/timber) using the *Timber* tag."
+      Is this a support or usage question? Please post it to [Discussions](https://github.com/timber/timber/discussions) or on Stack Overflow (http://stackoverflow.com/questions/tagged/timber) using the *Timber* tag.
 - type: textarea
   attributes:
     label: Expected Behavior
@@ -24,11 +24,11 @@ body:
   attributes:
     label: Steps to reproduce behavior
     description: Please include complete code samples in-line or linked from [GitHub Gists](https://gist.github.com/).
-  value: |
-    1.
-    2.
-    3.
-    ...
+    value: |
+      1.
+      2.
+      3.
+      ...
   validations:
     required: false
 - type: textarea
@@ -45,14 +45,14 @@ body:
   validations:
     required: true
 - type: input
-  id: prevalence
+  id: wordpress
   attributes:
     label: What version of WordPress are you using?
     placeholder: "Example: WordPress 6.2"
   validations:
     required: false
 - type: input
-  id: prevalence
+  id: php
   attributes:
     label: What version of PHP are you using?
     placeholder: "Example: PHP 8.0"
