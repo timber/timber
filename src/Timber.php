@@ -164,30 +164,7 @@ class Timber
             }
         });
 
-        add_filter('timber/post/import_data', function ($data) {
-            if (!isset($_GET['preview']) || !isset($_GET['preview_id'])) {
-                return $data;
-            }
-
-            $preview = wp_get_post_autosave($_GET['preview_id']);
-
-            if (is_object($preview)) {
-                $preview = sanitize_post($preview);
-
-                $data['post_content'] = $preview->post_content;
-                $data['post_title'] = $preview->post_title;
-                $data['post_excerpt'] = $preview->post_excerpt;
-
-                // @todo I think we can safely delete this?
-                // It was included in the old PostCollection method but not defined anywhere,
-                // so I think it was always just falling into a magic __call() and doing nothing.
-                // $post->import_custom($preview_id);
-
-                add_filter('get_the_terms', '_wp_preview_terms_filter', 10, 3);
-            }
-
-            return $data;
-        });
+        add_filter('timber/post/import_data', [__CLASS__, 'handle_preview'], 10, 2);
 
         /**
          * Make an alias for the Timber class.
@@ -198,6 +175,47 @@ class Timber
         class_alias('Timber\Timber', 'Timber');
 
         define('TIMBER_LOADED', true);
+    }
+
+    /**
+     * Handles previewing posts.
+     *
+     * @param array $data
+     * @param Post $post
+     * @return array
+     */
+    public static function handle_preview($data, $post)
+    {
+        if (!isset($_GET['preview']) || !isset($_GET['preview_id'])) {
+            return $data;
+        }
+
+        $preview_post_id = (int) $_GET['preview_id'];
+        $current_post_id = $post->ID ?? null;
+        // ⚠️ Don't filter imported data if the current post ID is not the preview post ID.
+        // You might alter every `Timber::get_post()`!
+        if ($current_post_id !== $preview_post_id) {
+            return $data;
+        }
+
+        $preview = wp_get_post_autosave($preview_post_id);
+
+        if (is_object($preview)) {
+            $preview = sanitize_post($preview);
+
+            $data['post_content'] = $preview->post_content;
+            $data['post_title'] = $preview->post_title;
+            $data['post_excerpt'] = $preview->post_excerpt;
+
+            // @todo I think we can safely delete this?
+            // It was included in the old PostCollection method but not defined anywhere,
+            // so I think it was always just falling into a magic __call() and doing nothing.
+            // $post->import_custom($preview_id);
+
+            add_filter('get_the_terms', '_wp_preview_terms_filter', 10, 3);
+        }
+
+        return $data;
     }
 
     /**
