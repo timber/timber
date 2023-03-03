@@ -211,7 +211,7 @@ class Menu extends CoreEntity
          * @since 2.0.0
          * @example
          * ```
-         * add_filter( 'timber/menu/items', function ( $items ) {
+         * add_filter( 'timber/menu/item_objects', function ( $items ) {
          *     return array_map(function ($item) {
          *         if ( is_object( $item ) && ! ( $item instanceof \WP_Post ) ) {
          *             return new \WP_Post( get_object_vars( $item ) );
@@ -225,7 +225,7 @@ class Menu extends CoreEntity
          * @param array<mixed> $item
          * @param WP_Term $menu
          */
-        $sorted_menu_items = apply_filters('timber/menu/items', $sorted_menu_items, $menu);
+        $sorted_menu_items = apply_filters('timber/menu/item_objects', $sorted_menu_items, $menu);
 
         // Create Menu object
         $nav_menu = new static($menu, (array) $args);

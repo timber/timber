@@ -486,7 +486,7 @@ class TestTimberMenu extends Timber_UnitTestCase
             }, $items);
         };
 
-        $this->add_filter_temporarily('timber/menu/items', $filter, 10, 2);
+        $this->add_filter_temporarily('timber/menu/item_objects', $filter, 10, 2);
 
         $menu = Timber::get_menu($menu_id);
         $items = $menu->get_items();
