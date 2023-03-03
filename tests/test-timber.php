@@ -528,34 +528,6 @@ class TestTimberMainClass extends Timber_UnitTestCase
         $this->assertInstanceOf(Post::class, Timber::get_post($post_id));
     }
 
-    /**
-     * @group wp_query_hacks
-     */
-    public function testNumberpostsFix()
-    {
-        $this->factory->post->create_many(10);
-
-        $posts = Timber::get_posts([
-            'post_type' => 'post',
-            'numberposts' => 6,
-        ]);
-        $this->assertCount(6, $posts);
-    }
-
-    /**
-     * @group wp_query_hacks
-     */
-    public function testNumberPostsAll()
-    {
-        $pids = $this->factory->post->create_many(17);
-        $query = 'post_type=post&numberposts=-1';
-        $posts = Timber::get_posts([
-            'post_type' => 'post',
-            'numberposts' => 17,
-        ]);
-        $this->assertSame(17, count($posts));
-    }
-
     public function testPostsPerPage()
     {
         $pids = $this->factory->post->create_many(15);
@@ -590,33 +562,6 @@ class TestTimberMainClass extends Timber_UnitTestCase
         ]);
 
         $this->assertCount(15, $posts);
-    }
-
-    /**
-     * @group wp_query_hacks
-     */
-    public function testGetPostsWithCategoryFix()
-    {
-        // Create several irrelevant posts that should NOT show up in our query.
-        $this->factory->post->create_many(6);
-
-        $cat = $this->factory->term->create([
-            'name' => 'News',
-            'taxonomy' => 'category',
-        ]);
-        $cats = $this->factory->post->create_many(3, [
-            'post_category' => [$cat],
-        ]);
-        $cat_post = $this->factory->post->create([
-            'post_category' => [$cat],
-        ]);
-
-        $cat_post = Timber::get_post($cat_post);
-        $this->assertEquals('News', $cat_post->category()->title());
-
-        $this->assertCount(4, Timber\Timber::get_posts([
-            'category' => $cat,
-        ]));
     }
 
     /**

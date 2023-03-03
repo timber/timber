@@ -4,11 +4,12 @@ namespace Timber;
 
 use Timber\Factory\CommentFactory;
 use Timber\Factory\MenuFactory;
-
 use Timber\Factory\PagesMenuFactory;
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
 use Timber\Factory\UserFactory;
+use Timber\Integration\IntegrationInterface;
+
 use WP_Post;
 use WP_Query;
 
@@ -88,17 +89,6 @@ class Timber
     {
     }
 
-    /**
-     * Tests whether we can use Timber
-     * @codeCoverageIgnore
-     */
-    protected function test_compatibility()
-    {
-        if (is_admin() || $_SERVER['PHP_SELF'] == '/wp-login.php') {
-            return;
-        }
-    }
-
     protected function init_constants()
     {
         defined("TIMBER_LOC") or define("TIMBER_LOC", realpath(dirname(__DIR__)));
@@ -117,52 +107,13 @@ class Timber
         }
 
         $self = new self();
-
-        $self->test_compatibility();
         $self->init_constants();
 
         Twig::init();
         ImageHelper::init();
-        Admin::init();
 
-        add_action('init', function () {
-            $integrations = [
-                Integration\AcfIntegration::class,
-                Integration\CoAuthorsPlusIntegration::class,
-                Integration\WpCliIntegration::class,
-                Integration\WpmlIntegration::class,
-            ];
-
-            /**
-             * Filters the integrations that should be initialized by Timber.
-             *
-             * @since 2.0.0
-             *
-             * @param array $integrations An array of PHP class names. Default: array of
-             *                            integrations that Timber initializes by default.
-             */
-            $integrations = apply_filters('timber/integrations', $integrations);
-
-            foreach ($integrations as $integration) {
-                self::init_integration(new $integration());
-            }
-        });
-
-        // @todo find a more permanent home for this stuff, maybe in a QueryHelper class?
-        add_action('pre_get_posts', function (WP_Query $query) {
-            $cat = $query->query['category'] ?? null;
-            if ($cat && !isset($query->query['cat'])) {
-                unset($query->query['category']);
-                $query->set('cat', $cat);
-            }
-        });
-
-        add_action('pre_get_posts', function (WP_Query $query) {
-            $count = $query->query['numberposts'] ?? null;
-            if ($count && !isset($query->query['posts_per_page'])) {
-                $query->set('posts_per_page', $count);
-            }
-        });
+        add_action('init', [__CLASS__, 'init_integrations']);
+        add_action('admin_init', [Admin::class, 'init']);
 
         add_filter('timber/post/import_data', [__CLASS__, 'handle_preview'], 10, 2);
 
@@ -175,6 +126,44 @@ class Timber
         class_alias('Timber\Timber', 'Timber');
 
         define('TIMBER_LOADED', true);
+    }
+
+    /**
+     * Initializes Timber's integrations.
+     *
+     * @return void
+     */
+    public static function init_integrations(): void
+    {
+        $integrations = [
+            Integration\AcfIntegration::class,
+            Integration\CoAuthorsPlusIntegration::class,
+            Integration\WpCliIntegration::class,
+            Integration\WpmlIntegration::class,
+        ];
+
+        /**
+         * Filters the integrations that should be initialized by Timber.
+         *
+         * @since 2.0.0
+         *
+         * @param array $integrations An array of PHP class names. Default: array of
+         *                            integrations that Timber initializes by default.
+         */
+        $integrations = apply_filters('timber/integrations', $integrations);
+
+        // Integration classes must implement the IntegrationInterface.
+        $integrations = array_filter($integrations, static function ($integration) {
+            return in_array(IntegrationInterface::class, class_implements($integration), true);
+        });
+
+        foreach ($integrations as $integration_class) {
+            $integration = new $integration_class();
+            if (!$integration->should_init()) {
+                continue;
+            }
+            $integration->init();
+        }
     }
 
     /**
@@ -216,19 +205,6 @@ class Timber
         }
 
         return $data;
-    }
-
-    /**
-     * Initialize a single IntegrationInterface instance.
-     *
-     * @internal
-     */
-    protected static function init_integration(
-        Integration\IntegrationInterface $integration
-    ): void {
-        if ($integration->should_init()) {
-            $integration->init();
-        }
     }
 
     /* Post Retrieval Routine
