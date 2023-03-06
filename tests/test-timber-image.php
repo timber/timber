@@ -212,10 +212,10 @@ class TestTimberImage extends TimberAttachment_UnitTestCase
     {
         $post = $this->get_post_with_image();
         $image = $post->thumbnail();
-        $this->assertEquals(1500, $image->width());
-        $this->assertEquals(1000, $image->height());
+        $this->assertSame(1500, $image->width());
+        $this->assertSame(1000, $image->height());
         $this->assertEquals($post->ID, $image->parent()->id);
-        $this->assertEquals(1.5, $image->aspect());
+        $this->assertSame(1.5, $image->aspect());
     }
 
     public function testImageSrcset()
@@ -284,7 +284,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase
         $new_file = Timber\ImageHelper::resize($upload_dir['url'] . '/stl.jpg', 500, 200, 'default', true);
         $location_of_image = Timber\ImageHelper::get_server_location($new_file);
         $size = getimagesize($location_of_image);
-        $this->assertEquals(500, $size[0]);
+        $this->assertSame(500, $size[0]);
     }
 
     public function testUpSizing2Param()
@@ -295,8 +295,8 @@ class TestTimberImage extends TimberAttachment_UnitTestCase
         $new_file = Timber\ImageHelper::resize($upload_dir['url'] . '/stl.jpg', 500, 300, 'default', true);
         $location_of_image = Timber\ImageHelper::get_server_location($new_file);
         $size = getimagesize($location_of_image);
-        $this->assertEquals(500, $size[0]);
-        $this->assertEquals(300, $size[1]);
+        $this->assertSame(500, $size[0]);
+        $this->assertSame(300, $size[1]);
     }
 
     public function testImageResizeRelative()
@@ -610,9 +610,9 @@ class TestTimberImage extends TimberAttachment_UnitTestCase
         $image = imagecreatefromjpeg($location_of_image);
         $pixel_rgb = imagecolorat($image, 1, 1);
         $colors = imagecolorsforindex($image, $pixel_rgb);
-        $this->assertEquals(255, $colors['red']);
-        $this->assertEquals(255, $colors['green']);
-        $this->assertEquals(0, $colors['blue']);
+        $this->assertSame(255, $colors['red']);
+        $this->assertSame(255, $colors['green']);
+        $this->assertSame(0, $colors['blue']);
     }
 
     public function testImageDeletionSimilarNames()
@@ -1184,7 +1184,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase
     {
         $pid = $this->factory->post->create();
         $image = Timber::get_image(self::get_attachment($pid, 'icon-twitter.svg'));
-        $this->assertEquals(23, $image->width());
-        $this->assertEquals(20, $image->height());
+        $this->assertSame(23, $image->width());
+        $this->assertSame(20, $image->height());
     }
 }

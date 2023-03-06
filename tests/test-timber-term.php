@@ -555,7 +555,7 @@ class TestTimberTerm extends Timber_UnitTestCase
         // @todo #2087 get this to work w/o $taxonomy param
         $term = Timber::get_term($parent_id, '');
         $children = $term->children();
-        $this->assertEquals(2, count($children));
+        $this->assertSame(2, count($children));
         $this->assertEquals('Local', $children[0]->name);
     }
 
@@ -590,7 +590,7 @@ class TestTimberTerm extends Timber_UnitTestCase
         add_term_meta($tid, 'foo', false);
         // @todo #2087 get this to work w/o $taxonomy param
         $term = Timber::get_term($tid, '');
-        $this->assertEquals('', $term->meta('foo'));
+        $this->assertSame('', $term->meta('foo'));
     }
 
     /**

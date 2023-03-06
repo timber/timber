@@ -34,7 +34,7 @@ class TestTimberMetaDeprecated extends Timber_UnitTestCase
     {
         $filter = function ($meta, $object_id, $field_name, $object) {
             $this->assertEquals('name', $field_name);
-            $this->assertEquals(null, $meta);
+            $this->assertSame(null, $meta);
             $this->assertSame($object->ID, $object_id);
 
             return $meta;
@@ -58,7 +58,7 @@ class TestTimberMetaDeprecated extends Timber_UnitTestCase
     public function testDeprecatedTimberPostGetMetaPreAction()
     {
         $action = function ($meta, $object_id, $object) {
-            $this->assertEquals(null, $meta);
+            $this->assertSame(null, $meta);
             $this->assertSame($object->ID, $object_id);
         };
 
@@ -203,7 +203,7 @@ class TestTimberMetaDeprecated extends Timber_UnitTestCase
     public function testDeprecatedTimberUserGetMetaPreFilter()
     {
         $filter = function ($meta, $object_id, $object) {
-            $this->assertEquals(null, $meta);
+            $this->assertSame(null, $meta);
             $this->assertSame($object->ID, $object_id);
 
             return $meta;
@@ -228,7 +228,7 @@ class TestTimberMetaDeprecated extends Timber_UnitTestCase
     {
         $filter = function ($meta, $object_id, $field_name, $object) {
             $this->assertEquals('name', $field_name);
-            $this->assertEquals(null, $meta);
+            $this->assertSame(null, $meta);
             $this->assertSame($object->ID, $object_id);
 
             return $meta;
@@ -302,7 +302,7 @@ class TestTimberMetaDeprecated extends Timber_UnitTestCase
     {
         $filter = function ($meta, $object_id, $field_name, $object) {
             $this->assertEquals('name', $field_name);
-            $this->assertEquals(null, $meta);
+            $this->assertSame(null, $meta);
             $this->assertSame($object->ID, $object_id);
 
             return $meta;
@@ -326,7 +326,7 @@ class TestTimberMetaDeprecated extends Timber_UnitTestCase
     public function testDeprecatedTimberCommentGetMetaPreAction()
     {
         $action = function ($meta, $object_id) {
-            $this->assertEquals(null, $meta);
+            $this->assertSame(null, $meta);
         };
 
         add_action('timber_comment_get_meta_pre', $action, 10, 2);
