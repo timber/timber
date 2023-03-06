@@ -136,10 +136,10 @@ class Timber
     public static function init_integrations(): void
     {
         $integrations = [
-            Integration\AcfIntegration::class,
-            Integration\CoAuthorsPlusIntegration::class,
-            Integration\WpCliIntegration::class,
-            Integration\WpmlIntegration::class,
+            new Integration\AcfIntegration(),
+            new Integration\CoAuthorsPlusIntegration(),
+            new Integration\WpCliIntegration(),
+            new Integration\WpmlIntegration(),
         ];
 
         /**
@@ -147,18 +147,17 @@ class Timber
          *
          * @since 2.0.0
          *
-         * @param array $integrations An array of PHP class names. Default: array of
+         * @param IntegrationInterface[] $integrations An array of PHP class names. Default: array of
          *                            integrations that Timber initializes by default.
          */
         $integrations = apply_filters('timber/integrations', $integrations);
 
         // Integration classes must implement the IntegrationInterface.
         $integrations = array_filter($integrations, static function ($integration) {
-            return in_array(IntegrationInterface::class, class_implements($integration), true);
+            return $integration instanceof IntegrationInterface;
         });
 
-        foreach ($integrations as $integration_class) {
-            $integration = new $integration_class();
+        foreach ($integrations as $integration) {
             if (!$integration->should_init()) {
                 continue;
             }
