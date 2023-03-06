@@ -75,7 +75,7 @@ class PostFactory
         ));
     }
 
-    protected function from_wp_query(WP_Query $query): Iterable
+    protected function from_wp_query(WP_Query $query): iterable
     {
         return new PostQuery($query);
     }
