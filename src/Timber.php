@@ -449,6 +449,14 @@ class Timber
             );
         }
 
+        if (is_array($query) && isset($query['numberposts'])) {
+            Helper::doing_it_wrong(
+                'Timber::get_posts()',
+                'Using `numberposts` only works when using `get_posts()`, but not for Timber::get_posts(). Use `posts_per_page` instead.',
+                '2.0.0'
+            );
+        }
+
         /**
          * @todo Are there any more default options to support?
          */

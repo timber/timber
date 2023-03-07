@@ -175,7 +175,7 @@ This example that uses a [WP_Query](http://codex.wordpress.org/Class_Reference/W
 
 ```php
 $args = [
-    'numberposts' => -1,
+    'posts_per_page' => -1,
     'post_type' => 'post',
     'meta_key' => 'color',
     'meta_value' => 'red',

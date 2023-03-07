@@ -998,7 +998,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         if (is_array($post_type)) {
             $post_type = implode('&post_type[]=', $post_type);
         }
-        $query = 'post_parent=' . $this->ID . '&post_type[]=' . $post_type . '&numberposts=-1&orderby=menu_order title&order=ASC&post_status[]=publish';
+        $query = 'post_parent=' . $this->ID . '&post_type[]=' . $post_type . '&posts_per_page=-1&orderby=menu_order title&order=ASC&post_status[]=publish';
         if ($this->post_status === 'publish') {
             $query .= '&post_status[]=inherit';
         }
