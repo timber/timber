@@ -736,9 +736,9 @@ class Timber
      *                              taxonomies.
      * @param array        $options Optional. None are currently supported. Default empty array.
      *
-     * @return Iterable
+     * @return iterable
      */
-    public static function get_terms($args = null, array $options = []): Iterable
+    public static function get_terms($args = null, array $options = []): iterable
     {
         // default to all queryable taxonomies
         $args = $args ?? [
@@ -875,9 +875,9 @@ class Timber
      *                       parameter exists to prevent future breaking changes. Default empty
      *                       array `[]`.
      *
-     * @return \Iterable An array of users objects. Will be empty if no users were found.
+     * @return iterable An array of users objects. Will be empty if no users were found.
      */
-    public static function get_users(array $query = [], array $options = []): Iterable
+    public static function get_users(array $query = [], array $options = []): iterable
     {
         $factory = new UserFactory();
         // TODO return a Collection type?
@@ -1088,7 +1088,7 @@ class Timber
      * @param array   $options optional; none are currently supported
      * @return mixed
      */
-    public static function get_comments(array $query = [], array $options = []): Iterable
+    public static function get_comments(array $query = [], array $options = []): iterable
     {
         $factory = new CommentFactory();
         // TODO return a Collection type?
