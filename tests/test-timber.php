@@ -533,6 +533,8 @@ class TestTimberMainClass extends Timber_UnitTestCase
      */
     public function testNumberPostsAll()
     {
+        $this->factory->post->create_many(17);
+
         $posts = Timber::get_posts([
             'post_type' => 'post',
             'numberposts' => 17,
