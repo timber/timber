@@ -232,4 +232,72 @@ class TestTimberImageResize extends Timber_UnitTestCase
         $resized = Timber\URLHelper::url_to_file_system($resized);
         $this->assertTrue(TestTimberImage::checkSize($resized, 50, 50), 'image should be resized');
     }
+
+    /**
+     * @ticket https://github.com/timber/timber/issues/2453
+     *
+     * @return void
+     */
+    public function testImageResizeInChildTheme()
+    {
+        switch_theme('timber-test-theme-child');
+
+        $src = get_theme_file_uri('images/cardinals.jpg');
+        $result = \Timber\ImageHelper::resize($src, 50, 50);
+
+        switch_theme('default');
+
+        $this->assertEquals(
+            'http://example.org/wp-content/themes/timber-test-theme-child/images/cardinals-50x50-c-default.jpg',
+            $result
+        );
+    }
+
+    /**
+     * @ticket https://github.com/timber/timber/issues/2453
+     *
+     * @return void
+     */
+    public function testInexistentImageResizeInChildTheme()
+    {
+        // Timber writes with error_log() when a file doesn’t exist.
+        global $timber_disable_error_log;
+        $backup_timber_disable_error_log = $timber_disable_error_log;
+        $timber_disable_error_log = true;
+
+        switch_theme('timber-test-theme-child');
+
+        $src = \Timber\ThemeHelper::get_stylesheet_directory_uri() . '/images/inexistent.jpg';
+        $result = \Timber\ImageHelper::resize($src, 50, 50);
+
+        switch_theme('default');
+
+        $timber_disable_error_log = $backup_timber_disable_error_log;
+
+        $this->assertEquals(
+            'http://example.org/wp-content/themes/timber-test-theme-child/images/inexistent.jpg',
+            $result
+        );
+    }
+
+    /**
+     * @ticket https://github.com/timber/timber/issues/2453
+     *
+     * @return void
+     */
+    public function testImageResizeInChildThemeSubfolder()
+    {
+        $content_dir = WP_CONTENT_DIR;
+        switch_theme('timber-test-theme-child-subfolder');
+
+        $src = get_theme_file_uri('images/cardinals.jpg');
+        $result = \Timber\ImageHelper::resize($src, 50, 50);
+
+        switch_theme('default');
+
+        $this->assertEquals(
+            'http://example.org/wp-content/themes/timber-test-theme-child-subfolder/images/cardinals-50x50-c-default.jpg',
+            $result
+        );
+    }
 }
