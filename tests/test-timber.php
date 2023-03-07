@@ -528,6 +528,18 @@ class TestTimberMainClass extends Timber_UnitTestCase
         $this->assertInstanceOf(Post::class, Timber::get_post($post_id));
     }
 
+    /**
+     * @expectedIncorrectUsage Timber::get_posts()
+     */
+    public function testNumberPostsAll()
+    {
+        $posts = Timber::get_posts([
+            'post_type' => 'post',
+            'numberposts' => 17,
+        ]);
+        $this->assertSame(10, count($posts));
+    }
+
     public function testPostsPerPage()
     {
         $pids = $this->factory->post->create_many(15);
