@@ -56,8 +56,38 @@ jobs:
             dependency-version: 'highest'
             multisite: '0'
             experimental: true
-          # PHP 8.1 / expiremntal
+          # PHP 8.0
+          - php: '8.0'
+            wp: 'latest'
+            dependency-version: 'prefer-stable'
+            multisite: '0'
+            experimental: false
+          # PHP 8.0 / Lowest dependencies
+          - php: '8.0'
+            wp: 'latest'
+            dependency-version: 'prefer-lowest'
+            multisite: '0'
+            experimental: false
+          # PHP 8.1
           - php: '8.1'
+            wp: 'latest'
+            dependency-version: 'prefer-stable'
+            multisite: '0'
+            experimental: false
+          # PHP 8.1 / Lowest dependencies
+          - php: '8.1'
+            wp: 'latest'
+            dependency-version: 'prefer-lowest'
+            multisite: '0'
+            experimental: false
+          # PHP 8.1 / experimental
+          - php: '8.1'
+            wp: 'trunk'
+            dependency-version: 'highest'
+            multisite: '0'
+            experimental: true
+          # PHP 8.2 / experimental
+          - php: '8.2'
             wp: 'trunk'
             dependency-version: 'highest'
             multisite: '0'
@@ -130,6 +160,10 @@ jobs:
         if: matrix.wp < '5.9'
         run: composer req phpunit/phpunit:^7.5 yoast/wp-test-utils:^1.0 -W --dev
 
+      - name: Upgrade PHPUnit to ^9.0 when prefer lowest and PHP 8.0+
+        if: ${{ matrix.dependency-version == 'prefer-lowest' && matrix.php >= '8.0' }}
+        run: composer req phpunit/phpunit:^9.0 yoast/wp-test-utils:^1.0 -W --dev
+
       - name: Install tests
         run: bash bin/install-wp-tests.sh wordpress_test root '' 127.0.0.1:${{ job.services.mysql.ports['3306'] }} ${{ matrix.wp }} true
 
@@ -156,7 +190,7 @@ jobs:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           composer global require php-coveralls/php-coveralls
-          php-coveralls --coverage_clover=build/logs/clover.xml -v
+          php-coveralls --coverage_clover=${GITHUB_WORKSPACE}/build/logs/clover.xml -v
 
       - name: Run webp tests
         if: matrix.webp

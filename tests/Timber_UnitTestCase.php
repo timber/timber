@@ -10,6 +10,11 @@ class Timber_UnitTestCase extends TestCase
     private $temporary_hook_removals = [];
 
     /**
+     * Backup variable for saving and restoring themes.
+     */
+    protected $backup_wp_theme_directories;
+
+    /**
      * Overload WP_UnitTestcase to ignore deprecated notices
      * thrown by use of wp_title() in Timber
      */
@@ -229,5 +234,32 @@ class Timber_UnitTestCase extends TestCase
         $method = $class->getMethod($name);
         $method->setAccessible(true);
         return $method->invokeArgs($obj, $args);
+    }
+
+    public function clean_themes_cache()
+    {
+        global $wp_theme_directories;
+
+        parent::set_up();
+
+        $this->backup_wp_theme_directories = $wp_theme_directories;
+        $wp_theme_directories = [WP_CONTENT_DIR . '/themes'];
+
+        wp_clean_themes_cache();
+        unset($GLOBALS['wp_themes']);
+    }
+
+    public function restore_themes()
+    {
+        if (!$this->backup_wp_theme_directories) {
+            return;
+        }
+
+        global $wp_theme_directories;
+
+        $wp_theme_directories = $this->backup_wp_theme_directories;
+
+        wp_clean_themes_cache();
+        unset($GLOBALS['wp_themes']);
     }
 }

@@ -398,8 +398,10 @@ class PostExcerpt
              * Filters the link used for a read more text in an excerpt.
              *
              * @since 2.0.0
-             * @param string $link The HTML link.
-             * @param \Timber\Post $post Post instance.
+             * @param string       $link            The HTML link.
+             * @param \Timber\Post $post            Post instance.
+             * @param string       $linktext        The link text.
+             * @param string       $read_more_class The CSS class name.
              */
             $link = apply_filters(
                 'timber/post/excerpt/read_more_link',

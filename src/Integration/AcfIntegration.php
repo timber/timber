@@ -224,10 +224,10 @@ class AcfIntegration implements IntegrationInterface
     /**
      * Gets meta value through ACF’s API.
      *
-     * @param string $value
-     * @param int $id
-     * @param string $field_name
-     * @param array $args
+     * @param string     $value
+     * @param int|string $id
+     * @param string     $field_name
+     * @param array      $args
      * @return mixed|false
      */
     private static function get_meta($value, $id, $field_name, $args)
@@ -241,15 +241,22 @@ class AcfIntegration implements IntegrationInterface
             return get_field($field_name, $id, $args['format_value']);
         }
 
-        $file_field_type = acf_get_field_type('file');
-        $image_field_type = acf_get_field_type('image');
-        $gallery_field_type = acf_get_field_type('gallery');
-        $date_picker_field_type = acf_get_field_type('date_picker');
-        $date_time_picker_field_type = acf_get_field_type('date_time_picker');
-        $post_object_field_type = acf_get_field_type('post_object');
-        $relationship_field_type = acf_get_field_type('relationship');
-        $taxonomy_field_type = acf_get_field_type('taxonomy');
-        $user_field_type = acf_get_field_type('user');
+        /**
+         * We use acf()->fields->get_field_type() instead of acf_get_field_type(), because of some function stub issues
+         * in the php-stubs/acf-pro-stubs package. The ACF plugin doesn’t use the right parameter and return values for
+         * some functions in the DocBlocks.
+         *
+         * @ticket https://github.com/timber/timber/pull/2630
+         */
+        $file_field_type = acf()->fields->get_field_type('file');
+        $image_field_type = acf()->fields->get_field_type('image');
+        $gallery_field_type = acf()->fields->get_field_type('gallery');
+        $date_picker_field_type = acf()->fields->get_field_type('date_picker');
+        $date_time_picker_field_type = acf()->fields->get_field_type('date_time_picker');
+        $post_object_field_type = acf()->fields->get_field_type('post_object');
+        $relationship_field_type = acf()->fields->get_field_type('relationship');
+        $taxonomy_field_type = acf()->fields->get_field_type('taxonomy');
+        $user_field_type = acf()->fields->get_field_type('user');
 
         remove_filter('acf/format_value/type=file', [$file_field_type, 'format_value']);
         remove_filter('acf/format_value/type=image', [$image_field_type, 'format_value']);
@@ -273,25 +280,25 @@ class AcfIntegration implements IntegrationInterface
 
         $value = get_field($field_name, $id, true);
 
-        add_filter('acf/format_value/type=file', [$file_field_type, 'format_value']);
-        add_filter('acf/format_value/type=image', [$image_field_type, 'format_value']);
-        add_filter('acf/format_value/type=gallery', [$gallery_field_type, 'format_value']);
-        add_filter('acf/format_value/type=date_picker', [$date_picker_field_type, 'format_value']);
-        add_filter('acf/format_value/type=date_time_picker', [$date_time_picker_field_type, 'format_value']);
-        add_filter('acf/format_value/type=post_object', [$post_object_field_type, 'format_value']);
-        add_filter('acf/format_value/type=relationship', [$relationship_field_type, 'format_value']);
-        add_filter('acf/format_value/type=taxonomy', [$taxonomy_field_type, 'format_value']);
-        add_filter('acf/format_value/type=user', [$taxonomy_field_type, 'format_value']);
+        add_filter('acf/format_value/type=file', [$file_field_type, 'format_value'], 10, 3);
+        add_filter('acf/format_value/type=image', [$image_field_type, 'format_value'], 10, 3);
+        add_filter('acf/format_value/type=gallery', [$gallery_field_type, 'format_value'], 10, 3);
+        add_filter('acf/format_value/type=date_picker', [$date_picker_field_type, 'format_value'], 10, 3);
+        add_filter('acf/format_value/type=date_time_picker', [$date_time_picker_field_type, 'format_value'], 10, 3);
+        add_filter('acf/format_value/type=post_object', [$post_object_field_type, 'format_value'], 10, 3);
+        add_filter('acf/format_value/type=relationship', [$relationship_field_type, 'format_value'], 10, 3);
+        add_filter('acf/format_value/type=taxonomy', [$taxonomy_field_type, 'format_value'], 10, 3);
+        add_filter('acf/format_value/type=user', [$taxonomy_field_type, 'format_value'], 10, 3);
 
-        remove_filter('acf/format_value/type=file', [__CLASS__, 'transform_file'], 10, 3);
-        remove_filter('acf/format_value/type=image', [__CLASS__, 'transform_image'], 10, 3);
-        remove_filter('acf/format_value/type=gallery', [__CLASS__, 'transform_gallery'], 10, 3);
-        remove_filter('acf/format_value/type=date_picker', [__CLASS__, 'transform_date_picker'], 10, 3);
-        remove_filter('acf/format_value/type=date_time_picker', [__CLASS__, 'transform_date_picker'], 10, 3);
-        remove_filter('acf/format_value/type=post_object', [__CLASS__, 'transform_post_object'], 10, 3);
-        remove_filter('acf/format_value/type=relationship', [__CLASS__, 'transform_relationship'], 10, 3);
-        remove_filter('acf/format_value/type=taxonomy', [__CLASS__, 'transform_taxonomy'], 10, 3);
-        remove_filter('acf/format_value/type=user', [__CLASS__, 'transform_user'], 10, 3);
+        remove_filter('acf/format_value/type=file', [__CLASS__, 'transform_file']);
+        remove_filter('acf/format_value/type=image', [__CLASS__, 'transform_image']);
+        remove_filter('acf/format_value/type=gallery', [__CLASS__, 'transform_gallery']);
+        remove_filter('acf/format_value/type=date_picker', [__CLASS__, 'transform_date_picker']);
+        remove_filter('acf/format_value/type=date_time_picker', [__CLASS__, 'transform_date_picker']);
+        remove_filter('acf/format_value/type=post_object', [__CLASS__, 'transform_post_object']);
+        remove_filter('acf/format_value/type=relationship', [__CLASS__, 'transform_relationship']);
+        remove_filter('acf/format_value/type=taxonomy', [__CLASS__, 'transform_taxonomy']);
+        remove_filter('acf/format_value/type=user', [__CLASS__, 'transform_user']);
 
         return $value;
     }

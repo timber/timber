@@ -95,7 +95,7 @@ class TestTimberMainClass extends Timber_UnitTestCase
 
         $post = Timber\Timber::get_post_by('slug', 'kill-bill-2');
 
-        $this->assertEquals(null, $post);
+        $this->assertSame(null, $post);
     }
 
     public function testGetPostByTitle()
@@ -178,7 +178,7 @@ class TestTimberMainClass extends Timber_UnitTestCase
 
         $post = Timber\Timber::get_post_by('title', 'Just a nonexistent post');
 
-        $this->assertEquals(null, $post);
+        $this->assertSame(null, $post);
     }
 
     public function testGetPostFromPostObject()
@@ -451,41 +451,6 @@ class TestTimberMainClass extends Timber_UnitTestCase
         $this->assertEquals($results, $tags);
     }
 
-
-
-    /* Previews */
-
-    public function testGetPostExcerpt()
-    {
-        $editor_user_id = $this->factory->user->create([
-            'role' => 'editor',
-        ]);
-        wp_set_current_user($editor_user_id);
-
-        $post_id = $this->factory->post->create([
-            'post_author' => $editor_user_id,
-            'post_content' => "OLD CONTENT HERE",
-        ]);
-        _wp_put_post_revision([
-            'ID' => $post_id,
-            'post_title' => 'Revised Title',
-            'post_content' => 'New Stuff Goes here',
-            'post_excerpt' => 'New and improved!',
-        ], true);
-
-        $_GET['preview'] = true;
-        $_GET['preview_id'] = $post_id;
-
-        $post = Timber::get_post($post_id);
-
-        $this->assertEquals('Revised Title', $post->post_title);
-        $this->assertEquals('New Stuff Goes here', $post->post_content);
-        $this->assertEquals('New and improved!', $post->post_excerpt);
-
-        unset($_GET['preview']);
-        unset($_GET['preview_id']);
-    }
-
     public function testTimberRenderString()
     {
         $pid = $this->factory->post->create([
@@ -564,31 +529,17 @@ class TestTimberMainClass extends Timber_UnitTestCase
     }
 
     /**
-     * @group wp_query_hacks
-     */
-    public function testNumberpostsFix()
-    {
-        $this->factory->post->create_many(10);
-
-        $posts = Timber::get_posts([
-            'post_type' => 'post',
-            'numberposts' => 6,
-        ]);
-        $this->assertCount(6, $posts);
-    }
-
-    /**
-     * @group wp_query_hacks
+     * @expectedIncorrectUsage Timber::get_posts()
      */
     public function testNumberPostsAll()
     {
-        $pids = $this->factory->post->create_many(17);
-        $query = 'post_type=post&numberposts=-1';
+        $this->factory->post->create_many(17);
+
         $posts = Timber::get_posts([
             'post_type' => 'post',
             'numberposts' => 17,
         ]);
-        $this->assertEquals(17, count($posts));
+        $this->assertSame(10, count($posts));
     }
 
     public function testPostsPerPage()
@@ -625,33 +576,6 @@ class TestTimberMainClass extends Timber_UnitTestCase
         ]);
 
         $this->assertCount(15, $posts);
-    }
-
-    /**
-     * @group wp_query_hacks
-     */
-    public function testGetPostsWithCategoryFix()
-    {
-        // Create several irrelevant posts that should NOT show up in our query.
-        $this->factory->post->create_many(6);
-
-        $cat = $this->factory->term->create([
-            'name' => 'News',
-            'taxonomy' => 'category',
-        ]);
-        $cats = $this->factory->post->create_many(3, [
-            'post_category' => [$cat],
-        ]);
-        $cat_post = $this->factory->post->create([
-            'post_category' => [$cat],
-        ]);
-
-        $cat_post = Timber::get_post($cat_post);
-        $this->assertEquals('News', $cat_post->category()->title());
-
-        $this->assertCount(4, Timber\Timber::get_posts([
-            'category' => $cat,
-        ]));
     }
 
     /**
@@ -773,7 +697,7 @@ class TestTimberMainClass extends Timber_UnitTestCase
             'cat' => $cat,
         ]);
 
-        $this->assertEquals(2, count($posts));
+        $this->assertSame(2, count($posts));
     }
 
     /**
@@ -974,7 +898,7 @@ class TestTimberMainClass extends Timber_UnitTestCase
             // whatever
         }
 
-        $this->assertEquals(3, $the_post_count);
+        $this->assertSame(3, $the_post_count);
     }
 
     public function testGetAttachment()

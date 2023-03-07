@@ -184,9 +184,22 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         $post->ID = $wp_post->ID;
         $post->wp_object = $wp_post;
 
-        $data = $post->get_info($wp_post);
+        $data = get_object_vars($wp_post);
+        $data = $post->get_info($data);
 
-        $post->import(apply_filters('timber/post/import_data', $data));
+        /**
+         * Filters the imported post data.
+         *
+         * Used internally for previews.
+         *
+         * @since 2.0.0
+         * @see   Timber::init()
+         * @param array        $data An array of post data to import.
+         * @param \Timber\Post $post The Timber post instance.
+         */
+        $data = apply_filters('timber/post/import_data', $data, $post);
+
+        $post->import($data);
 
         return $post;
     }
@@ -331,9 +344,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     protected static function is_previewing()
     {
         global $wp_query;
-        if (isset($_GET['preview']) && isset($_GET['preview_nonce']) && wp_verify_nonce($_GET['preview_nonce'], 'post_preview_' . $wp_query->queried_object_id)) {
-            return true;
-        }
+        return isset($_GET['preview']) && isset($_GET['preview_nonce']) && wp_verify_nonce($_GET['preview_nonce'], 'post_preview_' . $wp_query->queried_object_id);
     }
 
     /**
@@ -478,9 +489,11 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     }
 
     /**
+     * Gets the link to a page number.
+     *
      * @internal
      * @param int $i
-     * @return string
+     * @return string|null Link to page number or `null` if link could not be read.
      */
     protected static function get_wp_link_page($i)
     {
@@ -489,22 +502,28 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         if (isset($link['href'])) {
             return $link['href'];
         }
+
+        return null;
     }
 
     /**
+     * Gets info to import on Timber post object.
+     *
      * Used internally by init, etc. to build Timber\Post object.
      *
      * @internal
-     * @param  int|null|boolean $pid The ID to generate info from.
-     * @return WP_Post
+     *
+     * @param array $data Data to update.
+     * @return array
      */
-    protected function get_info(WP_Post $post)
+    protected function get_info(array $data): array
     {
-        $post->status = $post->post_status;
-        $post->id = $post->ID;
-        $post->slug = $post->post_name;
+        $data = array_merge($data, [
+            'slug' => $this->wp_object->post_name,
+            'status' => $this->wp_object->post_status,
+        ]);
 
-        return $post;
+        return $data;
     }
 
     /**
@@ -666,12 +685,14 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     }
 
     /**
+     * Gets the number of comments on a post.
+     *
      * @api
-     * @return int the number of comments on a post
+     * @return int The number of comments on a post
      */
-    public function comment_count()
+    public function comment_count(): int
     {
-        return get_comments_number($this->ID);
+        return (int) get_comments_number($this->ID);
     }
 
     /**
@@ -705,8 +726,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable
          * @see   \Timber\Post::field_object()
          * @since 1.6.0
          *
-         * @param array        $value      The field object array.
-         * @param int          $post_id    The post ID.
+         * @param mixed        $value      The value.
+         * @param int|null     $post_id    The post ID.
          * @param string       $field_name The ACF field name.
          * @param \Timber\Post $post       The post object.
          */
@@ -977,7 +998,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         if (is_array($post_type)) {
             $post_type = implode('&post_type[]=', $post_type);
         }
-        $query = 'post_parent=' . $this->ID . '&post_type[]=' . $post_type . '&numberposts=-1&orderby=menu_order title&order=ASC&post_status[]=publish';
+        $query = 'post_parent=' . $this->ID . '&post_type[]=' . $post_type . '&posts_per_page=-1&orderby=menu_order title&order=ASC&post_status[]=publish';
         if ($this->post_status === 'publish') {
             $query .= '&post_status[]=inherit';
         }
@@ -1502,16 +1523,42 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     }
 
     /**
-     * Returns the edit URL of a post if the user has access to it
+     * Checks whether the current user can edit the post.
      *
      * @api
-     * @return bool|string the edit URL of a post in the WordPress admin
+     * @example
+     * ```twig
+     * {% if post.can_edit %}
+     *     <a href="{{ post.edit_link }}">Edit</a>
+     * {% endif %}
+     * ```
+     * @return bool
      */
-    public function edit_link()
+    public function can_edit(): bool
     {
-        if ($this->can_edit()) {
-            return get_edit_post_link($this->ID);
+        return current_user_can('edit_post', $this->ID);
+    }
+
+    /**
+     * Gets the edit link for a post if the current user has the correct rights.
+     *
+     * @api
+     * @example
+     * ```twig
+     * {% if post.can_edit %}
+     *     <a href="{{ post.edit_link }}">Edit</a>
+     * {% endif %}
+     * ```
+     * @return string|null The edit URL of a post in the WordPress admin or null if the current user can’t edit the
+     *                     post.
+     */
+    public function edit_link(): ?string
+    {
+        if (!$this->can_edit()) {
+            return null;
         }
+
+        return get_edit_post_link($this->ID);
     }
 
     /**

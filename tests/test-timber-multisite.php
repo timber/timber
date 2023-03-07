@@ -79,14 +79,14 @@ class TestTimberMultisite extends Timber_UnitTestCase
             // display all posts
         }
 
-        $this->assertEquals(6, count($timber_posts));
-        $this->assertEquals(6, count($wp_posts));
+        $this->assertSame(6, count($timber_posts));
+        $this->assertSame(6, count($wp_posts));
 
         // ensure tha the current site's post count is distinct from our test condition
         $current_site_all_posts = get_posts([
             'post_type' => 'post',
         ]);
-        $this->assertEquals(2, count($current_site_all_posts));
+        $this->assertSame(2, count($current_site_all_posts));
     }
 
     /**
@@ -179,12 +179,12 @@ class TestTimberMultisite extends Timber_UnitTestCase
             // display all posts
         }
 
-        $this->assertEquals(3, count($timber_posts));
-        $this->assertEquals(3, count($wp_posts));
+        $this->assertSame(3, count($timber_posts));
+        $this->assertSame(3, count($wp_posts));
 
         // ensure tha the current site's post count is distinct from our test condition
         $current_site_all_posts = get_posts();
-        $this->assertEquals(5, count($current_site_all_posts));
+        $this->assertSame(5, count($current_site_all_posts));
     }
 
     /**
