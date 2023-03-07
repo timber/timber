@@ -11,15 +11,13 @@ class TestTimberTwig extends Timber_UnitTestCase
     {
         parent::tear_down();
 
-        function tear_down()
-        {
-            $lang_dir = ThemeHelper::get_stylesheet_directory() . '/languages';
-            if (file_exists($lang_dir . '/en_US.po')) {
-                unlink($lang_dir . '/en_US.po');
-            }
-            if (file_exists($lang_dir . '/en_US.mo')) {
-                unlink($lang_dir . '/en_US.mo');
-            }
+        $lang_dir = ThemeHelper::get_stylesheet_directory() . '/languages';
+
+        if (file_exists($lang_dir . '/en_US.po')) {
+            unlink($lang_dir . '/en_US.po');
+        }
+        if (file_exists($lang_dir . '/en_US.mo')) {
+            unlink($lang_dir . '/en_US.mo');
         }
     }
 
