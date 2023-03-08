@@ -1907,7 +1907,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         $audio = false;
 
         // Only get audio from the content if a playlist isn’t present.
-        if (false === strpos($this->content(), 'wp-playlist-script')) {
+        if (!str_contains($this->content(), 'wp-playlist-script')) {
             $audio = get_media_embedded_in_content($this->content(), ['audio']);
         }
 
@@ -1929,7 +1929,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         $video = false;
 
         // Only get video from the content if a playlist isn't present.
-        if (false === strpos($this->content(), 'wp-playlist-script')) {
+        if (!str_contains($this->content(), 'wp-playlist-script')) {
             $video = get_media_embedded_in_content($this->content(), ['video', 'object', 'embed', 'iframe']);
         }
 

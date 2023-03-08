@@ -173,7 +173,7 @@ class ImageHelper
             return false;
         }
 
-        if (TextHelper::ends_with(strtolower($file_path), '.svg')) {
+        if (str_ends_with(strtolower($file_path), '.svg')) {
             return true;
         }
 
@@ -537,14 +537,14 @@ class ImageHelper
         ];
         $upload_dir = wp_upload_dir();
         $tmp = $url;
-        if (TextHelper::starts_with($tmp, ABSPATH) || TextHelper::starts_with($tmp, '/srv/www/')) {
+        if (str_starts_with($tmp, ABSPATH) || str_starts_with($tmp, '/srv/www/')) {
             // we've been given a dir, not an url
             $result['absolute'] = true;
-            if (TextHelper::starts_with($tmp, $upload_dir['basedir'])) {
+            if (str_starts_with($tmp, $upload_dir['basedir'])) {
                 $result['base'] = self::BASE_UPLOADS; // upload based
                 $tmp = URLHelper::remove_url_component($tmp, $upload_dir['basedir']);
             }
-            if (TextHelper::starts_with($tmp, WP_CONTENT_DIR)) {
+            if (str_starts_with($tmp, WP_CONTENT_DIR)) {
                 $result['base'] = self::BASE_CONTENT; // content based
                 $tmp = URLHelper::remove_url_component($tmp, WP_CONTENT_DIR);
             }
