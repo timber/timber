@@ -85,10 +85,10 @@ The hard part’s over. Now you need to tell Timber about your class:
 ```php
 use MyProject\MyAcfIntegration;
 
-add_filter('timber/integrations', function (array $classes): array {
-    $classes[] = MyAcfIntegration::class;
+add_filter('timber/integrations', function (array $integrations): array {
+    $integrations[] = new MyAcfIntegration();
 
-    return $classes;
+    return $integrations;
 });
 ```
 
