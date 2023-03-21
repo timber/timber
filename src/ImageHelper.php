@@ -532,10 +532,29 @@ class ImageHelper
          * @param string                    $url  The URL pointing to an image.
          */
         $result = apply_filters('timber/image_helper/pre_analyze_url', null, $url);
-        if (null !== $result) {
-            return $result;
+        if (null === $result) {
+            $result = self::_analyze_url($url);
         }
 
+        /**
+         * Filters the array of anlayzed URL components.
+         *
+         * @since 2.0.0
+         *
+         * @param array<string, mixed> $info The URL components.
+         * @param string               $url  The URL pointing to an image.
+         */
+        return apply_filters('timber/image_helper/analyze_url', $result, $url);
+    }
+
+    /**
+     * Returns information about a URL.
+     *
+     * @param  string $url A URL (absolute or relative) pointing to an image.
+     * @return array<string, mixed> An array (see keys in code below).
+     */
+    private static function _analyze_url(string $url): array
+    {
         $result = [
             // the initial url
             'url' => $url,
@@ -585,15 +604,7 @@ class ImageHelper
         $result['extension'] = strtolower($parts['extension']);
         $result['basename'] = $parts['basename'];
 
-        /**
-         * Filters the array of anlayzed URL components.
-         *
-         * @since 2.0.0
-         *
-         * @param array<string, mixed> $info The URL components.
-         * @param string               $url  The URL pointing to an image.
-         */
-        return apply_filters('timber/image_helper/analyze_url', $result, $url);
+        return $result;
     }
 
     /**
