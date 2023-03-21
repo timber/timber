@@ -517,7 +517,7 @@ class ImageHelper
      * @param  string $url A URL (absolute or relative) pointing to an image.
      * @return array<string, mixed> An array (see keys in code below).
      */
-    public static function analyze_url($url)
+    public static function analyze_url(string $url): array
     {
         /**
          * Filters whether to short-circuit the ImageHelper::analyze_url()
@@ -602,7 +602,7 @@ class ImageHelper
      * @param string  $src A URL (http://example.org/wp-content/themes/twentysixteen/images/home.jpg).
      * @return string Full path to the file in question.
      */
-    public static function theme_url_to_dir($src)
+    public static function theme_url_to_dir(string $src): string
     {
         /**
          * Filters whether to short-circuit the ImageHelper::theme_url_to_dir()
