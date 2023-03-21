@@ -20,6 +20,75 @@ class TestTimberImageHelper extends TimberAttachment_UnitTestCase
         $this->assertEquals('/2017/06', $info['subdir']);
     }
 
+    public function testAnalyzeFilter()
+    {
+        $src = 'https://example.org/wp-content/uploads/2017/06/dog.jpg';
+
+        $filter = function (array $info, string $url) use ($src) {
+            $this->assertEquals($url, $src);
+            $this->assertEquals('/2017/06', $info['subdir']);
+            return $info;
+        };
+
+        $this->add_filter_temporarily('timber/image_helper/analyze_url', $filter, 10, 2);
+
+        $info = Timber\ImageHelper::analyze_url($src);
+    }
+
+    public function testPreAnalyzeFilterReturnsNull()
+    {
+        $src = 'https://example.org/wp-content/uploads/2017/06/dog.jpg';
+
+        $pre_filter = function (?array $info, string $url) use ($src) {
+            $this->assertEquals($url, $src);
+            $this->assertNull($info);
+            return $info;
+        };
+
+        $this->add_filter_temporarily('timber/image_helper/pre_analyze_url', $pre_filter, 10, 2);
+
+        $filter = function (array $info, string $url) {
+            // Filter should be called
+            $this->assertTrue(true);
+            return $info;
+        };
+
+        $this->add_filter_temporarily('timber/image_helper/analyze_url', $filter, 10, 2);
+
+        $info = Timber\ImageHelper::analyze_url($src);
+        $this->assertEquals('dog', $info['filename']);
+    }
+
+    public function testPreAnalyzeFilterReturnsNotNull()
+    {
+        $src = 'https://example.org/wp-content/uploads/2017/06/dog.jpg';
+
+        $pre_filter = function (?array $info, string $url) {
+            return [
+                'url' => $url,
+                'absolute' => Timber\URLHelper::is_absolute($url),
+                'base' => Timber\ImageHelper::BASE_CONTENT,
+                'subdir' => '2017/06',
+                'filename' => 'cat',
+                'extension' => 'jpg',
+                'basename' => 'cat.jpg',
+            ];
+        };
+
+        $this->add_filter_temporarily('timber/image_helper/pre_analyze_url', $pre_filter, 10, 2);
+
+        $filter = function (array $info, string $url) {
+            // Filter should NOT be called
+            $this->assertTrue(false);
+            return $info;
+        };
+
+        $this->add_filter_temporarily('timber/image_helper/analyze_url', $filter, 10, 2);
+
+        $info = Timber\ImageHelper::analyze_url($src);
+        $this->assertEquals('cat', $info['filename']);
+    }
+
     public function testIsAnimatedGif()
     {
         $image = TestTimberImage::copyTestAttachment('robocop.gif');
