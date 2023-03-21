@@ -858,9 +858,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * @return array
      * @codeCoverageIgnore
      */
-    public function get_method_values()
+    public function get_method_values(): array
     {
-        $ret = parent::get_method_values();
         $ret['author'] = $this->author();
         $ret['categories'] = $this->categories();
         $ret['category'] = $this->category();

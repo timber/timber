@@ -1071,7 +1071,7 @@ class Timber
      * @param array                   $options Optional. None are currently supported.
      * @return array
      */
-    public static function get_comments(array $query = [], array $options = []): iterable
+    public static function get_comments($query = [], array $options = []): iterable
     {
         $factory = new CommentFactory();
         // TODO return a Collection type?
