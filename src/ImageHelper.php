@@ -604,6 +604,23 @@ class ImageHelper
      */
     public static function theme_url_to_dir($src)
     {
+        /**
+         * Filters whether to short-circuit the ImageHelper::theme_url_to_dir()
+         * file path of a URL located in a theme directory.
+         *
+         * Returning a non-null value from the filter will short-circuit
+         * ImageHelper::theme_url_to_dir(), returning that value.
+         *
+         * @since 2.0.0
+         *
+         * @param string|null $path Full path to short-circuit with. Default null.
+         * @param string      $src  The URL to be converted.
+         */
+        $path = apply_filters('timber/image_helper/pre_theme_url_to_dir', null, $src);
+        if (null !== $path) {
+            return $path;
+        }
+
         $site_root = trailingslashit(get_theme_root_uri()) . get_stylesheet();
         $tmp = str_replace($site_root, '', $src);
         //$tmp = trailingslashit(get_theme_root()).get_stylesheet().$tmp;
@@ -611,7 +628,16 @@ class ImageHelper
         if (realpath($tmp)) {
             return realpath($tmp);
         }
-        return $tmp;
+
+        /**
+         * Filters the raw file path of a URL located in a theme directory.
+         *
+         * @since 2.0.0
+         *
+         * @param string $path The resolved full path to $src.
+         * @param string $src  The URL that was converted.
+         */
+        return apply_filters('timber/image_helper/theme_url_to_dir', $tmp, $src);
     }
 
     /**
