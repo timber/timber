@@ -515,10 +515,27 @@ class ImageHelper
      * The image is expected to be either part of a theme, plugin, or an upload.
      *
      * @param  string $url A URL (absolute or relative) pointing to an image.
-     * @return array       An array (see keys in code below).
+     * @return array<string, mixed> An array (see keys in code below).
      */
     public static function analyze_url($url)
     {
+        /**
+         * Filters whether to short-circuit the ImageHelper::analyze_url()
+         * file path of a URL located in a theme directory.
+         *
+         * Returning a non-null value from the filter will short-circuit
+         * ImageHelper::analyze_url(), returning that value.
+         *
+         * @since 2.0.0
+         *
+         * @param array<string, mixed>|null $components The URL components array to short-circuit with. Default null.
+         * @param string                    $url        The URL pointing to an image.
+         */
+        $result = apply_filters('timber/image_helper/pre_analyze_url', null, $url);
+        if (null !== $result) {
+            return $result;
+        }
+
         $result = [
             // the initial url
             'url' => $url,
@@ -567,7 +584,16 @@ class ImageHelper
         $result['filename'] = $parts['filename'];
         $result['extension'] = strtolower($parts['extension']);
         $result['basename'] = $parts['basename'];
-        return $result;
+
+        /**
+         * Filters the array of anlayzed URL components.
+         *
+         * @since 2.0.0
+         *
+         * @param array<string, mixed> $components The URL components.
+         * @param string               $url        The URL pointing to an image.
+         */
+        return apply_filters('timber/image_helper/analyze_url', $result, $url);
     }
 
     /**
