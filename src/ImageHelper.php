@@ -37,7 +37,7 @@ class ImageHelper
         self::$home_url = get_home_url();
         add_action('delete_attachment', [__CLASS__, 'delete_attachment']);
         add_filter('wp_generate_attachment_metadata', [__CLASS__, 'generate_attachment_metadata'], 10, 2);
-        add_filter('upload_dir', [__CLASS__, 'add_relative_upload_dir_key'], 10, 2);
+        add_filter('upload_dir', [__CLASS__, 'add_relative_upload_dir_key']);
         return true;
     }
 
@@ -173,7 +173,7 @@ class ImageHelper
             return false;
         }
 
-        if (TextHelper::ends_with(strtolower($file_path), '.svg')) {
+        if (str_ends_with(strtolower($file_path), '.svg')) {
             return true;
         }
 
@@ -403,8 +403,8 @@ class ImageHelper
     /**
      * Downloads an external image to the server and stores it on the server.
      *
-     * External/sideloaded images are saved in a folder named **external** in the uploads folder.
-     * If you want to change the folder that is used for your sideloaded images, you can use the
+     * External/sideloaded images are saved in a folder named **external** in the uploads folder. If you want to change
+     * the folder that is used for your sideloaded images, you can use the
      * [`timber/sideload_image/subdir`](https://timber.github.io/docs/v2/hooks/filters/#timber/sideload_image/subdir)
      * filter. You can disable this behavior using the same filter.
      *
@@ -538,14 +538,14 @@ class ImageHelper
         ];
         $upload_dir = wp_upload_dir();
         $tmp = $url;
-        if (TextHelper::starts_with($tmp, ABSPATH) || TextHelper::starts_with($tmp, '/srv/www/')) {
+        if (str_starts_with($tmp, ABSPATH) || str_starts_with($tmp, '/srv/www/')) {
             // we've been given a dir, not an url
             $result['absolute'] = true;
-            if (TextHelper::starts_with($tmp, $upload_dir['basedir'])) {
+            if (str_starts_with($tmp, $upload_dir['basedir'])) {
                 $result['base'] = self::BASE_UPLOADS; // upload based
                 $tmp = URLHelper::remove_url_component($tmp, $upload_dir['basedir']);
             }
-            if (TextHelper::starts_with($tmp, WP_CONTENT_DIR)) {
+            if (str_starts_with($tmp, WP_CONTENT_DIR)) {
                 $result['base'] = self::BASE_CONTENT; // content based
                 $tmp = URLHelper::remove_url_component($tmp, WP_CONTENT_DIR);
             }

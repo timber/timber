@@ -484,6 +484,46 @@ class Comment extends CoreEntity
         return get_comment_reply_link($args, $this->ID, $this->post_id);
     }
 
+    /**
+     * Checks whether the current user can edit the comment.
+     *
+     * @api
+     * @example
+     * ```twig
+     * {% if comment.can_edit %}
+     *     <a href="{{ comment.edit_link }}">Edit</a>
+     * {% endif %}
+     * ```
+     * @return bool
+     */
+    public function can_edit(): bool
+    {
+        return current_user_can('edit_comment', $this->ID);
+    }
+
+    /**
+     * Gets the edit link for a comment if the current user has the correct rights.
+     *
+     * @api
+     * @since 2.0.0
+     * @example
+     * ```twig
+     * {% if comment.can_edit %}
+     *     <a href="{{ comment.edit_link }}">Edit</a>
+     * {% endif %}
+     * ```
+     * @return string|null The edit URL of a comment in the WordPress admin or null if the current user can’t edit the
+     *                     comment.
+     */
+    public function edit_link(): ?string
+    {
+        if (!$this->can_edit()) {
+            return null;
+        }
+
+        return get_edit_comment_link($this->ID);
+    }
+
     /* AVATAR Stuff
     ======================= */
 

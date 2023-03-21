@@ -593,4 +593,16 @@ class MenuItem extends CoreEntity
         $title = apply_filters('nav_menu_item_title', $this->title, $this->wp_object, $this->menu->args ? $this->menu->args : new \stdClass(), $this->level);
         return $title;
     }
+
+    /**
+     * Checks whether the current user can edit the menu item.
+     *
+     * @api
+     * @since 2.0.0
+     * @return bool
+     */
+    public function can_edit(): bool
+    {
+        return current_user_can('edit_theme_options');
+    }
 }

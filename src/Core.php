@@ -5,6 +5,7 @@ namespace Timber;
 /**
  * Class Core
  */
+#[\AllowDynamicProperties]
 abstract class Core
 {
     public $id;
@@ -166,30 +167,6 @@ abstract class Core
     {
         Helper::deprecated('Timber\Core::update()', 'update_metadata()', '2.0.0');
         update_metadata($this->object_type, $this->ID, $key, $value);
-    }
-
-    /**
-     * Can you edit this post/term/user? Well good for you. You're no better than me.
-     * @example
-     * ```twig
-     * {% if post.can_edit %}
-     * <a href="{{ post.edit_link }}">Edit</a>
-     * {% endif %}
-     * ```
-     * ```html
-     * <a href="http://example.org/wp-admin/edit.php?p=242">Edit</a>
-     * ```
-     * @return bool
-     */
-    public function can_edit()
-    {
-        if (!function_exists('current_user_can')) {
-            return false;
-        }
-        if (current_user_can('edit_post', $this->ID)) {
-            return true;
-        }
-        return false;
     }
 
     /**

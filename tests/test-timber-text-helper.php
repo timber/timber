@@ -6,13 +6,13 @@ class TestTimberTextHelper extends Timber_UnitTestCase
 
     public function testStartsWith()
     {
-        $maybe_starts_with = Timber\TextHelper::starts_with($this->gettysburg, 'Four score');
+        $maybe_starts_with = str_starts_with($this->gettysburg, 'Four score');
         $this->assertTrue($maybe_starts_with);
     }
 
     public function testDontStartWith()
     {
-        $maybe_starts_with = Timber\TextHelper::starts_with($this->gettysburg, "Can't get enough of that SugarCrisp");
+        $maybe_starts_with = str_starts_with($this->gettysburg, "Can't get enough of that SugarCrisp");
         $this->assertFalse($maybe_starts_with);
     }
 

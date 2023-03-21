@@ -34,7 +34,7 @@ class URLHelper
      */
     public static function get_scheme()
     {
-        return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+        return is_ssl() ? 'https' : 'http';
     }
 
     /**
@@ -566,5 +566,21 @@ class URLHelper
         }
 
         return $params[$i] ?? false;
+    }
+
+    /**
+     * Secures an URL based on the current environment.
+     *
+     * @param  string $url The URL to evaluate.
+     *
+     * @return string An URL with or without http/https, depending on what’s appropriate for server.
+     */
+    public static function maybe_secure_url($url)
+    {
+        if (is_ssl() && strpos($url, 'https') !== 0 && strpos($url, 'http') === 0) {
+            $url = 'https' . substr($url, strlen('http'));
+        }
+
+        return $url;
     }
 }

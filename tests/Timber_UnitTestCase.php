@@ -10,6 +10,11 @@ class Timber_UnitTestCase extends TestCase
     private $temporary_hook_removals = [];
 
     /**
+     * Backup variable for saving and restoring themes.
+     */
+    protected $backup_wp_theme_directories;
+
+    /**
      * Overload WP_UnitTestcase to ignore deprecated notices
      * thrown by use of wp_title() in Timber
      */
@@ -134,9 +139,20 @@ class Timber_UnitTestCase extends TestCase
     }
 
     /**
-         * Exactly the same as add_action, but automatically calls remove_action with the same
-         * arguments during tear_down().
-         */
+     * Same as remove_filter(), but re-adds the filter during set_up().
+     */
+    protected function remove_filter_temporarily(string $filter, callable $callback, int $pri = 10, int $count = 1)
+    {
+        remove_filter($filter, $callback, $pri);
+        $this->temporary_hook_removals[] = function () use ($filter, $callback, $pri, $count) {
+            add_filter($filter, $callback, $pri, $count);
+        };
+    }
+
+    /**
+     * Exactly the same as add_action, but automatically calls remove_action with the same
+     * arguments during tear_down().
+     */
     protected function add_action_temporarily(string $action, callable $callback, int $pri = 10, int $count = 1)
     {
         add_action($action, $callback, $pri, $count);
@@ -218,5 +234,32 @@ class Timber_UnitTestCase extends TestCase
         $method = $class->getMethod($name);
         $method->setAccessible(true);
         return $method->invokeArgs($obj, $args);
+    }
+
+    public function clean_themes_cache()
+    {
+        global $wp_theme_directories;
+
+        parent::set_up();
+
+        $this->backup_wp_theme_directories = $wp_theme_directories;
+        $wp_theme_directories = [WP_CONTENT_DIR . '/themes'];
+
+        wp_clean_themes_cache();
+        unset($GLOBALS['wp_themes']);
+    }
+
+    public function restore_themes()
+    {
+        if (!$this->backup_wp_theme_directories) {
+            return;
+        }
+
+        global $wp_theme_directories;
+
+        $wp_theme_directories = $this->backup_wp_theme_directories;
+
+        wp_clean_themes_cache();
+        unset($GLOBALS['wp_themes']);
     }
 }

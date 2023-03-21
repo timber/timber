@@ -679,7 +679,7 @@ class Helper
     }
 
     /**
-     * Converts a WP object (WP_Post, WP_Term) into his
+     * Converts a WP object (WP_Post, WP_Term) into its
      * equivalent Timber class (Timber\Post, Timber\Term).
      *
      * If no match is found the function will return the inital argument.
