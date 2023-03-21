@@ -528,8 +528,8 @@ class ImageHelper
          *
          * @since 2.0.0
          *
-         * @param array<string, mixed>|null $components The URL components array to short-circuit with. Default null.
-         * @param string                    $url        The URL pointing to an image.
+         * @param array<string, mixed>|null $info The URL components array to short-circuit with. Default null.
+         * @param string                    $url  The URL pointing to an image.
          */
         $result = apply_filters('timber/image_helper/pre_analyze_url', null, $url);
         if (null !== $result) {
@@ -590,8 +590,8 @@ class ImageHelper
          *
          * @since 2.0.0
          *
-         * @param array<string, mixed> $components The URL components.
-         * @param string               $url        The URL pointing to an image.
+         * @param array<string, mixed> $info The URL components.
+         * @param string               $url  The URL pointing to an image.
          */
         return apply_filters('timber/image_helper/analyze_url', $result, $url);
     }
