@@ -34,7 +34,7 @@ class URLHelper
      */
     public static function get_scheme()
     {
-        return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+        return \is_ssl() ? 'https' : 'http';
     }
 
     /**

@@ -4,11 +4,12 @@ namespace Timber;
 
 use Timber\Factory\CommentFactory;
 use Timber\Factory\MenuFactory;
-
 use Timber\Factory\PagesMenuFactory;
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
 use Timber\Factory\UserFactory;
+use Timber\Integration\IntegrationInterface;
+
 use WP_Comment;
 use WP_Post;
 use WP_Query;
@@ -91,17 +92,6 @@ class Timber
     {
     }
 
-    /**
-     * Tests whether we can use Timber
-     * @codeCoverageIgnore
-     */
-    protected function test_compatibility()
-    {
-        if (\is_admin() || $_SERVER['PHP_SELF'] == '/wp-login.php') {
-            return;
-        }
-    }
-
     protected function init_constants()
     {
         \defined("TIMBER_LOC") or \define("TIMBER_LOC", \realpath(\dirname(__DIR__)));
@@ -120,77 +110,15 @@ class Timber
         }
 
         $self = new self();
-
-        $self->test_compatibility();
         $self->init_constants();
 
         Twig::init();
         ImageHelper::init();
-        Admin::init();
 
-        \add_action('init', function () {
-            $integrations = [
-                Integration\AcfIntegration::class,
-                Integration\CoAuthorsPlusIntegration::class,
-                Integration\WpCliIntegration::class,
-                Integration\WpmlIntegration::class,
-            ];
+        \add_action('init', [__CLASS__, 'init_integrations']);
+        \add_action('admin_init', [Admin::class, 'init']);
 
-            /**
-             * Filters the integrations that should be initialized by Timber.
-             *
-             * @since 2.0.0
-             *
-             * @param array $integrations An array of PHP class names. Default: array of
-             *                            integrations that Timber initializes by default.
-             */
-            $integrations = \apply_filters('timber/integrations', $integrations);
-
-            foreach ($integrations as $integration) {
-                self::init_integration(new $integration());
-            }
-        });
-
-        // @todo find a more permanent home for this stuff, maybe in a QueryHelper class?
-        \add_action('pre_get_posts', function (WP_Query $query) {
-            $cat = $query->query['category'] ?? null;
-            if ($cat && !isset($query->query['cat'])) {
-                unset($query->query['category']);
-                $query->set('cat', $cat);
-            }
-        });
-
-        \add_action('pre_get_posts', function (WP_Query $query) {
-            $count = $query->query['numberposts'] ?? null;
-            if ($count && !isset($query->query['posts_per_page'])) {
-                $query->set('posts_per_page', $count);
-            }
-        });
-
-        \add_filter('timber/post/import_data', function ($data) {
-            if (!isset($_GET['preview']) || !isset($_GET['preview_id'])) {
-                return $data;
-            }
-
-            $preview = \wp_get_post_autosave($_GET['preview_id']);
-
-            if (\is_object($preview)) {
-                $preview = \sanitize_post($preview);
-
-                $data['post_content'] = $preview->post_content;
-                $data['post_title'] = $preview->post_title;
-                $data['post_excerpt'] = $preview->post_excerpt;
-
-                // @todo I think we can safely delete this?
-                // It was included in the old PostCollection method but not defined anywhere,
-                // so I think it was always just falling into a magic __call() and doing nothing.
-                // $post->import_custom($preview_id);
-
-                \add_filter('get_the_terms', '_wp_preview_terms_filter', 10, 3);
-            }
-
-            return $data;
-        });
+        \add_filter('timber/post/import_data', [__CLASS__, 'handle_preview'], 10, 2);
 
         /**
          * Make an alias for the Timber class.
@@ -204,16 +132,81 @@ class Timber
     }
 
     /**
-     * Initialize a single IntegrationInterface instance.
+     * Initializes Timber's integrations.
      *
-     * @internal
+     * @return void
      */
-    protected static function init_integration(
-        Integration\IntegrationInterface $integration
-    ): void {
-        if ($integration->should_init()) {
+    public static function init_integrations(): void
+    {
+        $integrations = [
+            new Integration\AcfIntegration(),
+            new Integration\CoAuthorsPlusIntegration(),
+            new Integration\WpCliIntegration(),
+            new Integration\WpmlIntegration(),
+        ];
+
+        /**
+         * Filters the integrations that should be initialized by Timber.
+         *
+         * @since 2.0.0
+         *
+         * @param IntegrationInterface[] $integrations An array of PHP class names. Default: array of
+         *                            integrations that Timber initializes by default.
+         */
+        $integrations = \apply_filters('timber/integrations', $integrations);
+
+        // Integration classes must implement the IntegrationInterface.
+        $integrations = \array_filter($integrations, static function ($integration) {
+            return $integration instanceof IntegrationInterface;
+        });
+
+        foreach ($integrations as $integration) {
+            if (!$integration->should_init()) {
+                continue;
+            }
             $integration->init();
         }
+    }
+
+    /**
+     * Handles previewing posts.
+     *
+     * @param array $data
+     * @param Post $post
+     * @return array
+     */
+    public static function handle_preview($data, $post)
+    {
+        if (!isset($_GET['preview']) || !isset($_GET['preview_id'])) {
+            return $data;
+        }
+
+        $preview_post_id = (int) $_GET['preview_id'];
+        $current_post_id = $post->ID ?? null;
+        // ⚠️ Don't filter imported data if the current post ID is not the preview post ID.
+        // You might alter every `Timber::get_post()`!
+        if ($current_post_id !== $preview_post_id) {
+            return $data;
+        }
+
+        $preview = \wp_get_post_autosave($preview_post_id);
+
+        if (\is_object($preview)) {
+            $preview = \sanitize_post($preview);
+
+            $data['post_content'] = $preview->post_content;
+            $data['post_title'] = $preview->post_title;
+            $data['post_excerpt'] = $preview->post_excerpt;
+
+            // @todo I think we can safely delete this?
+            // It was included in the old PostCollection method but not defined anywhere,
+            // so I think it was always just falling into a magic __call() and doing nothing.
+            // $post->import_custom($preview_id);
+
+            \add_filter('get_the_terms', '_wp_preview_terms_filter', 10, 3);
+        }
+
+        return $data;
     }
 
     /* Post Retrieval Routine
@@ -455,6 +448,14 @@ class Timber
             Helper::doing_it_wrong(
                 'Timber::get_posts()',
                 'The $return_collection parameter to control whether a post collection is returned in Timber::get_posts() was removed in Timber 2.0.',
+                '2.0.0'
+            );
+        }
+
+        if (\is_array($query) && isset($query['numberposts'])) {
+            Helper::doing_it_wrong(
+                'Timber::get_posts()',
+                'Using `numberposts` only works when using `get_posts()`, but not for Timber::get_posts(). Use `posts_per_page` instead.',
                 '2.0.0'
             );
         }
@@ -721,9 +722,9 @@ class Timber
      *                              taxonomies.
      * @param array        $options Optional. None are currently supported. Default empty array.
      *
-     * @return Iterable
+     * @return iterable
      */
-    public static function get_terms($args = null, array $options = []): Iterable
+    public static function get_terms($args = null, array $options = []): iterable
     {
         // default to all queryable taxonomies
         $args = $args ?? [
@@ -860,9 +861,9 @@ class Timber
      *                       parameter exists to prevent future breaking changes. Default empty
      *                       array `[]`.
      *
-     * @return \Iterable An array of users objects. Will be empty if no users were found.
+     * @return iterable An array of users objects. Will be empty if no users were found.
      */
-    public static function get_users(array $query = [], array $options = []): Iterable
+    public static function get_users(array $query = [], array $options = []): iterable
     {
         $factory = new UserFactory();
         // TODO return a Collection type?
@@ -1073,7 +1074,7 @@ class Timber
      * @param array   $options optional; none are currently supported
      * @return mixed
      */
-    public static function get_comments(array $query = [], array $options = []): Iterable
+    public static function get_comments(array $query = [], array $options = []): iterable
     {
         $factory = new CommentFactory();
         // TODO return a Collection type?

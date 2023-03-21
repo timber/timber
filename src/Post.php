@@ -998,7 +998,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         if (\is_array($post_type)) {
             $post_type = \implode('&post_type[]=', $post_type);
         }
-        $query = 'post_parent=' . $this->ID . '&post_type[]=' . $post_type . '&numberposts=-1&orderby=menu_order title&order=ASC&post_status[]=publish';
+        $query = 'post_parent=' . $this->ID . '&post_type[]=' . $post_type . '&posts_per_page=-1&orderby=menu_order title&order=ASC&post_status[]=publish';
         if ($this->post_status === 'publish') {
             $query .= '&post_status[]=inherit';
         }
@@ -1907,7 +1907,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         $audio = false;
 
         // Only get audio from the content if a playlist isn’t present.
-        if (false === \strpos($this->content(), 'wp-playlist-script')) {
+        if (!\str_contains($this->content(), 'wp-playlist-script')) {
             $audio = \get_media_embedded_in_content($this->content(), ['audio']);
         }
 
@@ -1929,7 +1929,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         $video = false;
 
         // Only get video from the content if a playlist isn't present.
-        if (false === \strpos($this->content(), 'wp-playlist-script')) {
+        if (!\str_contains($this->content(), 'wp-playlist-script')) {
             $video = \get_media_embedded_in_content($this->content(), ['video', 'object', 'embed', 'iframe']);
         }
 

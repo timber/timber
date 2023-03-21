@@ -65,7 +65,7 @@ class CommentFactory
         ));
     }
 
-    protected function from_wp_comment_query(WP_Comment_Query $query): Iterable
+    protected function from_wp_comment_query(WP_Comment_Query $query): iterable
     {
         return \array_map([$this, 'build'], $query->get_comments());
     }

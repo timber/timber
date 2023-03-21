@@ -88,7 +88,7 @@ class UserFactory
     }
 
     // @todo return a UserCollection instance?
-    protected function from_wp_user_query(WP_User_Query $query): Iterable
+    protected function from_wp_user_query(WP_User_Query $query): iterable
     {
         return \array_map([$this, 'build'], $query->get_results());
     }

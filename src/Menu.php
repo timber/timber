@@ -206,6 +206,28 @@ class Menu extends CoreEntity
          */
         $sorted_menu_items = \apply_filters('wp_nav_menu_objects', $sorted_menu_items, $args);
 
+        /**
+         * Filters the sorted list of menu item objects before creating the Menu object.
+         *
+         * @since 2.0.0
+         * @example
+         * ```
+         * add_filter( 'timber/menu/item_objects', function ( $items ) {
+         *     return array_map(function ($item) {
+         *         if ( is_object( $item ) && ! ( $item instanceof \WP_Post ) ) {
+         *             return new \WP_Post( get_object_vars( $item ) );
+         *         }
+         *
+         *         return $item;
+         *     }, $items);
+         * } );
+         * ```
+         *
+         * @param array<mixed> $item
+         * @param WP_Term $menu
+         */
+        $sorted_menu_items = \apply_filters('timber/menu/item_objects', $sorted_menu_items, $menu);
+
         // Create Menu object
         $nav_menu = new static($menu, (array) $args);
         $nav_menu->sorted_menu_items = $sorted_menu_items;
