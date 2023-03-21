@@ -10,6 +10,7 @@ class TestTimberImageHelper extends TimberAttachment_UnitTestCase
     {
         $url = 'http://example.org/wp-content/uploads/2017/06/dog.jpg';
         $info = Timber\ImageHelper::analyze_url($url);
+        $this->assertEquals(Timber\ImageHelper::BASE_UPLOADS, $info['base']);
         $this->assertEquals('/2017/06', $info['subdir']);
     }
 
@@ -17,15 +18,30 @@ class TestTimberImageHelper extends TimberAttachment_UnitTestCase
     {
         $url = 'https://example.org/wp-content/uploads/2017/06/dog.jpg';
         $info = Timber\ImageHelper::analyze_url($url);
+        $this->assertEquals(Timber\ImageHelper::BASE_UPLOADS, $info['base']);
         $this->assertEquals('/2017/06', $info['subdir']);
     }
 
-    public function testAnalyzeFilter()
+    /**
+     * Tests "pre_analyze_url" and "analyze_url" filters where
+     * "pre_analyze_url" IS NOT short-circuited which triggers
+     * the helper's default behaviour.
+     */
+    public function testAnalyzeFilters1()
     {
         $src = 'https://example.org/wp-content/uploads/2017/06/dog.jpg';
 
+        $pre_filter = function (?array $info, string $url) use ($src) {
+            $this->assertEquals($src, $url);
+            $this->assertNull($info);
+            return $info;
+        };
+
+        $this->add_filter_temporarily('timber/image_helper/pre_analyze_url', $pre_filter, 10, 2);
+
         $filter = function (array $info, string $url) use ($src) {
-            $this->assertEquals($url, $src);
+            $this->assertEquals($src, $url);
+            $this->assertSame(Timber\ImageHelper::BASE_UPLOADS, $info['base']);
             $this->assertEquals('/2017/06', $info['subdir']);
             return $info;
         };
@@ -35,31 +51,12 @@ class TestTimberImageHelper extends TimberAttachment_UnitTestCase
         $info = Timber\ImageHelper::analyze_url($src);
     }
 
-    public function testPreAnalyzeFilterReturnsNull()
-    {
-        $src = 'https://example.org/wp-content/uploads/2017/06/dog.jpg';
-
-        $pre_filter = function (?array $info, string $url) use ($src) {
-            $this->assertEquals($url, $src);
-            $this->assertNull($info);
-            return $info;
-        };
-
-        $this->add_filter_temporarily('timber/image_helper/pre_analyze_url', $pre_filter, 10, 2);
-
-        $filter = function (array $info, string $url) {
-            // Filter should be called
-            $this->assertTrue(true);
-            return $info;
-        };
-
-        $this->add_filter_temporarily('timber/image_helper/analyze_url', $filter, 10, 2);
-
-        $info = Timber\ImageHelper::analyze_url($src);
-        $this->assertEquals('dog', $info['filename']);
-    }
-
-    public function testPreAnalyzeFilterReturnsNotNull()
+    /**
+     * Tests "pre_analyze_url" and "analyze_url" filters where
+     * "pre_analyze_url" IS short-circuited which ignores
+     * the helper's default behaviour.
+     */
+    public function testAnalyzeFilters2()
     {
         $src = 'https://example.org/wp-content/uploads/2017/06/dog.jpg';
 
@@ -67,26 +64,25 @@ class TestTimberImageHelper extends TimberAttachment_UnitTestCase
             return [
                 'url' => $url,
                 'absolute' => Timber\URLHelper::is_absolute($url),
-                'base' => Timber\ImageHelper::BASE_CONTENT,
-                'subdir' => '2017/06',
-                'filename' => 'cat',
-                'extension' => 'jpg',
-                'basename' => 'cat.jpg',
+                'base' => -1,
+                'subdir' => '',
+                'filename' => '',
+                'extension' => '',
+                'basename' => '',
             ];
         };
 
         $this->add_filter_temporarily('timber/image_helper/pre_analyze_url', $pre_filter, 10, 2);
 
         $filter = function (array $info, string $url) {
-            // Filter should NOT be called
-            $this->assertTrue(false);
+            $this->assertSame(-1, $info['base']);
+            $this->assertEquals('', $info['subdir']);
             return $info;
         };
 
         $this->add_filter_temporarily('timber/image_helper/analyze_url', $filter, 10, 2);
 
         $info = Timber\ImageHelper::analyze_url($src);
-        $this->assertEquals('cat', $info['filename']);
     }
 
     public function testIsAnimatedGif()
