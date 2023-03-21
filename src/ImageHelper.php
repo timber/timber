@@ -520,21 +520,22 @@ class ImageHelper
     public static function analyze_url($url)
     {
         $result = [
-            'url' => $url,
             // the initial url
-            'absolute' => URLHelper::is_absolute($url),
+            'url' => $url,
             // is the url absolute or relative (to home_url)
-            'base' => 0,
+            'absolute' => URLHelper::is_absolute($url),
             // is the image in uploads dir, or in content dir (theme or plugin)
-            'subdir' => '',
+            'base' => 0,
             // the path between base (uploads or content) and file
-            'filename' => '',
+            'subdir' => '',
             // the filename, without extension
-            'extension' => '',
+            'filename' => '',
             // the file extension
-            'basename' => '',
+            'extension' => '',
             // full file name
+            'basename' => '',
         ];
+
         $upload_dir = wp_upload_dir();
         $tmp = $url;
         if (str_starts_with($tmp, ABSPATH) || str_starts_with($tmp, '/srv/www/')) {
