@@ -628,16 +628,8 @@ class ImageHelper
          * @param string      $src  The URL to be converted.
          */
         $path = apply_filters('timber/image_helper/pre_theme_url_to_dir', null, $src);
-        if (null !== $path) {
-            return $path;
-        }
-
-        $site_root = trailingslashit(get_theme_root_uri()) . get_stylesheet();
-        $tmp = str_replace($site_root, '', $src);
-        //$tmp = trailingslashit(get_theme_root()).get_stylesheet().$tmp;
-        $tmp = get_stylesheet_directory() . $tmp;
-        if (realpath($tmp)) {
-            return realpath($tmp);
+        if (null === $path) {
+            $path = self::_theme_url_to_dir($src);
         }
 
         /**
@@ -648,7 +640,25 @@ class ImageHelper
          * @param string $path The resolved full path to $src.
          * @param string $src  The URL that was converted.
          */
-        return apply_filters('timber/image_helper/theme_url_to_dir', $tmp, $src);
+        return apply_filters('timber/image_helper/theme_url_to_dir', $path, $src);
+    }
+
+    /**
+     * Converts a URL located in a theme directory into the raw file path.
+     *
+     * @param string  $src A URL (http://example.org/wp-content/themes/twentysixteen/images/home.jpg).
+     * @return string Full path to the file in question.
+     */
+    private static function _theme_url_to_dir(string $src): string
+    {
+        $site_root = trailingslashit(get_theme_root_uri()) . get_stylesheet();
+        $path = str_replace($site_root, '', $src);
+        //$path = trailingslashit(get_theme_root()).get_stylesheet().$path;
+        $path = get_stylesheet_directory() . $path;
+        if ($_path = realpath($path)) {
+            return $_path;
+        }
+        return $path;
     }
 
     /**
