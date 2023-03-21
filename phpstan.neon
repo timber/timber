@@ -1,5 +1,5 @@
 parameters:
-    level: 0 # Increase until "max"
+    level: 1 # Increase until "max"
     paths:
         - src/
     scanFiles:
