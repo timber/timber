@@ -6,6 +6,35 @@
  */
 class TestTimberImageHelper extends TimberAttachment_UnitTestCase
 {
+    public function set_up()
+    {
+        switch_theme('timber-test-theme');
+
+        parent::set_up();
+    }
+
+    public function tear_down()
+    {
+        $img_dir = get_stylesheet_directory_uri() . '/images';
+
+        if (file_exists($img_dir)) {
+            exec(sprintf("rm -rf %s", escapeshellarg($img_dir)));
+        }
+
+        $uploads = wp_upload_dir();
+        $files = glob($uploads['basedir'] . date('/Y/m/') . '*');
+
+        foreach ($files as $file) {
+            if (is_file($file)) {
+                unlink($file);
+            }
+        }
+
+        switch_theme('default');
+
+        parent::tear_down();
+    }
+
     public function testHTTPAnalyze()
     {
         $url = 'http://example.org/wp-content/uploads/2017/06/dog.jpg';
