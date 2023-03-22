@@ -85,6 +85,71 @@ class TestTimberImageHelper extends TimberAttachment_UnitTestCase
         $info = Timber\ImageHelper::analyze_url($src);
     }
 
+    /**
+     * Tests "pre_theme_url_to_dir" and "theme_url_to_dir" filters where
+     * "pre_theme_url_to_dir" IS NOT short-circuited which triggers
+     * the helper's default behaviour.
+     */
+    public function testThemeUrlToDirFilters1()
+    {
+        $dest = TestExternalImage::copy_image_to_stylesheet('assets/images');
+        $this->addFile($dest);
+        $this->assertFileExists($dest);
+
+        $image = Timber::get_external_image($dest);
+        $src = $image->src();
+
+        $pre_filter = function (?string $path, string $url) use ($src) {
+            $this->assertEquals($src, $url);
+            $this->assertNull($path);
+            return $path;
+        };
+
+        $this->add_filter_temporarily('timber/image_helper/pre_theme_url_to_dir', $pre_filter, 10, 2);
+
+        $filter = function (string $path, string $url) use ($dest, $src) {
+            $this->assertEquals($src, $url);
+            $this->assertEquals($dest, $path);
+            return $path;
+        };
+
+        $this->add_filter_temporarily('timber/image_helper/theme_url_to_dir', $filter, 10, 2);
+
+        $path = Timber\ImageHelper::theme_url_to_dir($src);
+        $this->assertEquals($dest, $path);
+    }
+
+    /**
+     * Tests "pre_theme_url_to_dir" and "theme_url_to_dir" filters where
+     * "pre_theme_url_to_dir" IS short-circuited which ignores
+     * the helper's default behaviour.
+     */
+    public function testThemeUrlToDirFilters2()
+    {
+        $dest = TestExternalImage::copy_image_to_stylesheet('assets/images');
+        $this->addFile($dest);
+        $this->assertFileExists($dest);
+
+        $image = Timber::get_external_image($dest);
+        $src = $image->src();
+
+        $pre_filter = function (?string $path, string $url) {
+            return '/path/to/' . basename($url);
+        };
+
+        $this->add_filter_temporarily('timber/image_helper/pre_theme_url_to_dir', $pre_filter, 10, 2);
+
+        $filter = function (string $path, string $url) {
+            $this->assertEquals('/path/to/' . basename($url), $path);
+            return $path;
+        };
+
+        $this->add_filter_temporarily('timber/image_helper/theme_url_to_dir', $filter, 10, 2);
+
+        $path = Timber\ImageHelper::theme_url_to_dir($src);
+        $this->assertEquals('/path/to/' . basename($src), $path);
+    }
+
     public function testIsAnimatedGif()
     {
         $image = TestTimberImage::copyTestAttachment('robocop.gif');
