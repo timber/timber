@@ -17,7 +17,6 @@ class WpmlIntegration implements IntegrationInterface
         \add_filter('timber/url_helper/file_system_to_url', [$this, 'file_system_to_url'], 10, 1);
         \add_filter('timber/url_helper/get_content_subdir/home_url', [$this, 'file_system_to_url'], 10, 1);
         \add_filter('timber/url_helper/url_to_file_system/path', [$this, 'file_system_to_url'], 10, 1);
-        \add_filter('timber/menu/id_from_location', [$this, 'menu_object_id_filter'], 10, 1);
         \add_filter('timber/menu/item_objects', [$this, 'menu_item_objects_filter'], 10, 1);
         \add_filter('timber/image_helper/_get_file_url/home_url', [$this, 'file_system_to_url'], 10, 1);
     }
@@ -28,11 +27,6 @@ class WpmlIntegration implements IntegrationInterface
             $url = \preg_replace('/(?<!:\/)\/' . ICL_LANGUAGE_CODE . '/', '', (string) $url);
         }
         return $url;
-    }
-
-    public function menu_object_id_filter($id)
-    {
-        return \wpml_object_id_filter($id, 'nav_menu');
     }
 
     public function menu_item_objects_filter(array $items)
