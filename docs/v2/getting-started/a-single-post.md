@@ -32,7 +32,7 @@ In this guide, we’re looking at a typical blog post. You can use most of the t
 
 In this example, you see that we can also use `post.author`, `post.date` and of course, `post.content` to actually display a post’s content.
 
-The `{{ post }}` variable in Twig is not an array, it’s a PHP object. More specifically, it’s an instance of [`Timber\Post`](https://timber.github.io/docs/reference/v2/timber-post/). When you look at the documentation for `Timber\Post`, you see what else you can access.
+The `{{ post }}` variable in Twig is not an array, it’s a PHP object. More specifically, it’s an instance of [`Timber\Post`](https://timber.github.io/docs/v2/reference/timber-post/). When you look at the documentation for `Timber\Post`, you see what else you can access.
 
 If you look for `title` in that post object in PHP, you will see that it’s actually not a property, but a function.
 
@@ -53,7 +53,7 @@ These are properties that a Timber post inherits from `WP_Post`. They are the ra
 
 Apart from the post title and content, we can also access the assigned author of a post through `{{ post.author }}`. The `author` is another Timber object. It’s not a post object though, but a [`Timber\User`](https://timber.github.io/docs/v2/reference/timber-user/) object. We can get the result of the `name` method through `{{ post.author.name }}`. This displays the name of the author.
 
-There’s also `{{ post.date }}`, but we won’t go into details about it here, because that’s a whole other chapter. You can read more about it in the [Date/Time Guide](https://timber.github.io/docs/guides/v2/date-time/).
+There’s also `{{ post.date }}`, but we won’t go into details about it here, because that’s a whole other chapter. You can read more about it in the [Date/Time Guide](https://timber.github.io/docs/v2/guides/date-time/).
 
 ## The featured image
 
