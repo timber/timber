@@ -3,7 +3,7 @@ title: "Custom Fields"
 order: "600"
 ---
 
-Timber tries to make it as easy as possible for you to retrieve custom meta data for Post, Term, User and Comment objects. And it works with a range of plugins that make it easier for you to create custom fields, like Advanced Custom Fields. While most of this guide applies to everything you do with custom fields, we have separate guides in the [Integrations section](https://timber.github.io/docs/v2/integrations/).
+Timber tries to make it as easy as possible for you to retrieve custom meta data for Post, Term, User and Comment objects. And it works with a range of plugins that make it easier for you to create custom fields, like Advanced Custom Fields. While most of this guide applies to everything you do with custom fields, we have a detailed guide for [ACF](https://timber.github.io/docs/v2/integrations/advanced-custom-fields/).
 
 ## Accessing custom values
 
@@ -175,7 +175,7 @@ This example that uses a [WP_Query](http://codex.wordpress.org/Class_Reference/W
 
 ```php
 $args = [
-    'numberposts' => -1,
+    'posts_per_page' => -1,
     'post_type' => 'post',
     'meta_key' => 'color',
     'meta_value' => 'red',

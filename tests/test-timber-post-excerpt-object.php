@@ -392,7 +392,7 @@ class TestTimberPostExcerptObject extends Timber_UnitTestCase
         $str = Timber::compile_string($template, [
             'post' => $post,
         ]);
-        $this->assertEquals('', $str);
+        $this->assertSame('', $str);
     }
 
     /**

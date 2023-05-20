@@ -61,6 +61,14 @@ class Menu extends CoreEntity
     public $name;
 
     /**
+     * Menu slug.
+     *
+     * @api
+     * @var string The menu slug.
+     */
+    public $slug;
+
+    /**
      * @api
      * @var string The name of the menu (ex: `Main Navigation`).
      */
@@ -94,6 +102,13 @@ class Menu extends CoreEntity
      * @var string The theme location of the menu, if available.
      */
     public $theme_location = null;
+
+    /**
+     * Sorted menu items.
+     *
+     * @var array
+     */
+    protected $sorted_menu_items = [];
 
     /**
      * @internal
@@ -205,6 +220,28 @@ class Menu extends CoreEntity
          */
         $sorted_menu_items = apply_filters('wp_nav_menu_objects', $sorted_menu_items, $args);
 
+        /**
+         * Filters the sorted list of menu item objects before creating the Menu object.
+         *
+         * @since 2.0.0
+         * @example
+         * ```
+         * add_filter( 'timber/menu/item_objects', function ( $items ) {
+         *     return array_map(function ($item) {
+         *         if ( is_object( $item ) && ! ( $item instanceof \WP_Post ) ) {
+         *             return new \WP_Post( get_object_vars( $item ) );
+         *         }
+         *
+         *         return $item;
+         *     }, $items);
+         * } );
+         * ```
+         *
+         * @param array<mixed> $item
+         * @param WP_Term $menu
+         */
+        $sorted_menu_items = apply_filters('timber/menu/item_objects', $sorted_menu_items, $menu);
+
         // Create Menu object
         $nav_menu = new static($menu, (array) $args);
         $nav_menu->sorted_menu_items = $sorted_menu_items;
@@ -252,7 +289,8 @@ class Menu extends CoreEntity
         }
 
         // Set theme location if available
-        $this->theme_location = array_flip(get_nav_menu_locations())[$term->term_id] ?? null;
+        $locations = array_flip(array_filter(get_nav_menu_locations(), fn ($location) => is_string($location) || is_int($location)));
+        $this->theme_location = $locations[$term->term_id] ?? null;
         if ($this->theme_location) {
             $this->args->theme_location = $this->theme_location;
         }
@@ -572,5 +610,17 @@ class Menu extends CoreEntity
         }
 
         return $nav_menu;
+    }
+
+    /**
+     * Checks whether the current user can edit the menu.
+     *
+     * @api
+     * @since 2.0.0
+     * @return bool
+     */
+    public function can_edit(): bool
+    {
+        return current_user_can('edit_theme_options');
     }
 }

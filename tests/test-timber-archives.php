@@ -16,8 +16,8 @@ class TestTimberArchives extends Timber_UnitTestCase
             'show_year' => false,
             'limit' => 3,
         ]);
-        $this->assertEquals(3, count($archives->items));
-        $this->assertEquals(2, $archives->items[1]['post_count']);
+        $this->assertSame(3, count($archives->items));
+        $this->assertSame(2, $archives->items[1]['post_count']);
     }
 
     public function testArchiveMonthly()
@@ -34,8 +34,8 @@ class TestTimberArchives extends Timber_UnitTestCase
             'show_year' => false,
         ]);
         $this->assertEquals('December', $archives->items[0]['name']);
-        $this->assertEquals(3, count($archives->items));
-        $this->assertEquals(2, $archives->items[1]['post_count']);
+        $this->assertSame(3, count($archives->items));
+        $this->assertSame(2, $archives->items[1]['post_count']);
         $archives = new Timber\Archives([
             'type' => 'monthly',
             'show_year' => true,
@@ -56,8 +56,8 @@ class TestTimberArchives extends Timber_UnitTestCase
             'type' => 'yearly',
             'show_year' => false,
         ]);
-        $this->assertEquals(3, count($archives->items));
-        $this->assertEquals(2, $archives->items[2]['post_count']);
+        $this->assertSame(3, count($archives->items));
+        $this->assertSame(2, $archives->items[2]['post_count']);
     }
 
     public function testArchiveDaily()
@@ -73,8 +73,8 @@ class TestTimberArchives extends Timber_UnitTestCase
         $archives = new Timber\Archives([
             'type' => 'daily',
         ]);
-        $this->assertEquals(5, count($archives->items));
-        $this->assertEquals(2, $archives->items[2]['post_count']);
+        $this->assertSame(5, count($archives->items));
+        $this->assertSame(2, $archives->items[2]['post_count']);
     }
 
     public function testArchiveYearlyMonthly()
@@ -90,15 +90,15 @@ class TestTimberArchives extends Timber_UnitTestCase
         $archives = new Timber\Archives([
             'type' => 'monthly-nested',
         ]);
-        $this->assertEquals(2, count($archives->items));
-        $this->assertEquals(4, $archives->items[1]['post_count']);
-        $this->assertEquals(2, $archives->items[1]['children'][1]['post_count']);
+        $this->assertSame(2, count($archives->items));
+        $this->assertSame(4, $archives->items[1]['post_count']);
+        $this->assertSame(2, $archives->items[1]['children'][1]['post_count']);
         $archives = new Timber\Archives([
             'type' => 'yearlymonthly',
         ]);
-        $this->assertEquals(2, count($archives->items));
-        $this->assertEquals(4, $archives->items[1]['post_count']);
-        $this->assertEquals(2, $archives->items[1]['children'][1]['post_count']);
+        $this->assertSame(2, count($archives->items));
+        $this->assertSame(4, $archives->items[1]['post_count']);
+        $this->assertSame(2, $archives->items[1]['children'][1]['post_count']);
     }
 
     public function testArchiveWeekly()
@@ -114,8 +114,8 @@ class TestTimberArchives extends Timber_UnitTestCase
         $archives = new Timber\Archives([
             'type' => 'weekly',
         ]);
-        $this->assertEquals(3, count($archives->items));
-        $this->assertEquals(3, $archives->items[0]['post_count']);
+        $this->assertSame(3, count($archives->items));
+        $this->assertSame(3, $archives->items[0]['post_count']);
     }
 
     public function testArchiveAlpha()
@@ -148,7 +148,7 @@ class TestTimberArchives extends Timber_UnitTestCase
         $archives = new Timber\Archives([
             'type' => 'alpha',
         ]);
-        $this->assertEquals(4, count($archives->items));
+        $this->assertSame(4, count($archives->items));
         $this->assertEquals('Quack Quack', $archives->items[3]['name']);
     }
 
@@ -173,11 +173,11 @@ class TestTimberArchives extends Timber_UnitTestCase
         $this->go_to('/');
         $archives = new Timber\Archives();
 
-        $this->assertEquals(2, count($archives->items));
+        $this->assertSame(2, count($archives->items));
         $archives = new Timber\Archives([
             'post_type' => 'book',
             'type' => 'monthly',
         ]);
-        $this->assertEquals(5, count($archives->items));
+        $this->assertSame(5, count($archives->items));
     }
 }

@@ -143,8 +143,7 @@ class TestTimberPost extends Timber_UnitTestCase
         $str = Timber::compile_string($template, [
             'post' => $post,
         ]);
-        $this->assertEquals('', $str);
-        //$this->assertFalse( $post->donkey() );
+        $this->assertSame('', $str);
     }
 
     public function testNext()
@@ -312,12 +311,24 @@ class TestTimberPost extends Timber_UnitTestCase
 
     public function testCanEdit()
     {
+        $subscriber_id = $this->factory->user->create([
+            'display_name' => 'Subscriber Sam',
+            'user_login' => 'subsam',
+            'role' => 'subscriber',
+        ]);
+
+        // Test admin role.
         wp_set_current_user(1);
         $post_id = $this->factory->post->create([
             'post_author' => 1,
         ]);
         $post = Timber::get_post($post_id);
         $this->assertTrue($post->can_edit());
+
+        // Test subscriber role.
+        wp_set_current_user($subscriber_id);
+        $this->assertFalse($post->can_edit());
+
         wp_set_current_user(0);
     }
 
@@ -640,7 +651,7 @@ class TestTimberPost extends Timber_UnitTestCase
             'post_parent' => $parent_id,
         ]);
         $parent = Timber::get_post($parent_id);
-        $this->assertEquals(8, count($parent->children()));
+        $this->assertSame(8, count($parent->children()));
     }
 
     public function testPostChildrenOfInheritStatus()
@@ -654,7 +665,7 @@ class TestTimberPost extends Timber_UnitTestCase
             'post_status' => 'inherit',
         ]);
         $parent = Timber::get_post($parent_id);
-        $this->assertEquals(8, count($parent->children()));
+        $this->assertSame(8, count($parent->children()));
     }
 
     public function testPostChildrenOfParentType()
@@ -670,7 +681,7 @@ class TestTimberPost extends Timber_UnitTestCase
             'post_type' => 'foo',
         ]);
         $parent = Timber::get_post($parent_id);
-        $this->assertEquals(4, count($parent->children('parent')));
+        $this->assertSame(4, count($parent->children('parent')));
     }
 
     public function testPostChildrenWithArray()
@@ -687,7 +698,7 @@ class TestTimberPost extends Timber_UnitTestCase
             'post_type' => 'foo',
         ]);
         $parent = Timber::get_post($parent_id);
-        $this->assertEquals(12, count($parent->children(['foo', 'bar'])));
+        $this->assertSame(12, count($parent->children(['foo', 'bar'])));
     }
 
     public function testPostNoConstructorArgument()
@@ -796,7 +807,7 @@ class TestTimberPost extends Timber_UnitTestCase
         $this->assertTrue($post->has_term('Patriots', 'team'));
 
         // 4 teams + 1 tag + default category (Uncategorized)
-        $this->assertEquals(6, count($post->terms()));
+        $this->assertSame(6, count($post->terms()));
 
         // test tags method - wrapper for $this->get_terms('tags')
         $this->assertEquals($post->tags(), $post->terms('post_tag'));
@@ -806,7 +817,7 @@ class TestTimberPost extends Timber_UnitTestCase
 
         // test using an array of taxonomies
         $post_tag_terms = $post->terms(['post_tag']);
-        $this->assertEquals(1, count($post_tag_terms));
+        $this->assertSame(1, count($post_tag_terms));
         $post_team_terms = $post->terms(['team']);
         $this->assertEquals(count($team_names), count($post_team_terms));
 
@@ -871,7 +882,7 @@ class TestTimberPost extends Timber_UnitTestCase
                 'taxonomy' => ['post_tag'],
             ],
         ]);
-        $this->assertEquals(1, count($post_tag_terms));
+        $this->assertSame(1, count($post_tag_terms));
         $post_team_terms = $post->terms([
             'query' => [
                 'taxonomy' => ['team'],
@@ -916,8 +927,8 @@ class TestTimberPost extends Timber_UnitTestCase
             ],
             'merge' => false,
         ]);
-        $this->assertEquals(4, count($team_and_book_terms['team']));
-        $this->assertEquals(3, count($team_and_book_terms['book']));
+        $this->assertSame(4, count($team_and_book_terms['team']));
+        $this->assertSame(3, count($team_and_book_terms['book']));
     }
 
     public function testPostTermQueryArgs()
@@ -1061,7 +1072,7 @@ class TestTimberPost extends Timber_UnitTestCase
         $pid = $this->factory->post->create();
         $post = Timber::get_post($pid);
 
-        $this->assertEquals(null, $post->gallery());
+        $this->assertSame(false, $post->gallery());
     }
 
     public function testPostWithoutAudio()
@@ -1158,14 +1169,8 @@ class TestTimberPost extends Timber_UnitTestCase
         update_option('home', 'http://example.org', true);
     }
 
-    /**
-     * @group failing
-     */
-    public function testEditUrl()
+    public function testEditLink()
     {
-        ini_set("log_errors", 1);
-        ini_set("error_log", "/tmp/php-error.log");
-
         global $current_user;
         $current_user = [];
 
@@ -1178,13 +1183,17 @@ class TestTimberPost extends Timber_UnitTestCase
         ]);
         $post = Timber::get_post($pid);
         $edit_url = $post->edit_link();
-        $this->assertEquals('', $edit_url);
+        $this->assertFalse($post->can_edit());
+        $this->assertNull($edit_url);
+
         $user = wp_set_current_user($uid);
         $user->add_role('administrator');
-        $data = get_userdata($uid);
+
         $this->assertTrue($post->can_edit());
-        $this->assertEquals('http://example.org/wp-admin/post.php?post=' . $pid . '&amp;action=edit', $post->edit_link());
-        //
+        $this->assertEquals(
+            'http://example.org/wp-admin/post.php?post=' . $pid . '&amp;action=edit',
+            $post->edit_link()
+        );
     }
 
     public function testPostThumbnailId()

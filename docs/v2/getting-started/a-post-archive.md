@@ -67,7 +67,7 @@ Your teaser could look like this. We used the markup for an [Inclusive Card](htt
 There are two new things that you see here:
 
 - `{{ post.slug }}` – This property is the same as `post.post_name`, which is the version of a post’s title that is safe to use in URLs and will be used for permalinks.
-- `{{ post.excerpt }}` – This is an advanced function that pulls in the excerpt of a post, if it exists. Otherwise, it will generate an excerpt from your post’s content. Check out the documentation for [`Timber\Post::excerpt()`](https://timber.github.io/docs/reference/v2/timber-post/#excerpt) to learn more about the parameters you can control the output with.
+- `{{ post.excerpt }}` – This is an advanced function that pulls in the excerpt of a post, if it exists. Otherwise, it will generate an excerpt from your post’s content. Check out the documentation for [`Timber\Post::excerpt()`](https://timber.github.io/docs/v2/reference/timber-post/#excerpt) to learn more about the parameters you can control the output with.
 
 ## Using custom queries
 

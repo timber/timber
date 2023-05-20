@@ -103,8 +103,16 @@ class Loader
         $output = false;
         if (false !== $expires) {
             ksort($data);
-            $key = md5($file . json_encode($data));
-            $output = $this->get_cache($key, self::CACHEGROUP, $cache_mode);
+            $encoded = json_encode($data);
+
+            /**
+             * The encoding might fail, e.g. when an object has a recursion. In that case, we’d rather not cache the
+             * data instead of possibly returning the wrong data.
+             */
+            if (false !== $encoded) {
+                $key = md5($file . $encoded);
+                $output = $this->get_cache($key, self::CACHEGROUP, $cache_mode);
+            }
         }
 
         if (false === $output || null === $output) {
