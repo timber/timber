@@ -137,7 +137,7 @@ You can now use all the above functions to transform your custom images in the s
 ## Limitations when working with a CDN
 
 Timber’s image functions may be somewhat limited when using a CDN.
-There are [differences between Pull CDN and Push CDN](https://cdn.net/push-vs-pull-cdn/).
+There are [differences between Pull CDN and Push CDN](https://medium.com/@ajin.sunny/push-cdn-vs-pull-cdn-a13145df5e13).
 
 ### Using a Pull CDN
 
