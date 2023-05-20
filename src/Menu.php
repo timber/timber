@@ -61,6 +61,14 @@ class Menu extends CoreEntity
     public $name;
 
     /**
+     * Menu slug.
+     *
+     * @api
+     * @var string The menu slug.
+     */
+    public $slug;
+
+    /**
      * @api
      * @var string The name of the menu (ex: `Main Navigation`).
      */
@@ -94,6 +102,13 @@ class Menu extends CoreEntity
      * @var string The theme location of the menu, if available.
      */
     public $theme_location = null;
+
+    /**
+     * Sorted menu items.
+     *
+     * @var array
+     */
+    protected $sorted_menu_items = [];
 
     /**
      * @internal

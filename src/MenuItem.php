@@ -102,6 +102,15 @@ class MenuItem extends CoreEntity
      */
     public $object_id = null;
 
+    /**
+     * Object type.
+     *
+     * @api
+     * @since 2.0.0
+     * @var string The underlying menu object type. E.g. a post type name, a taxonomy name or 'custom'.
+     */
+    public $object;
+
     protected $_name;
 
     protected $_menu_item_url;
