@@ -124,4 +124,4 @@ Timber::render('single.twig', $context);
 
 Now, you can head on to the next chapter about [Post Archives](https://timber.github.io/docs/v2/getting-started/a-post-archive/).
 
-If you want to know more about advanced methods to extend Timber, you can learn about it in the [Extending Timber Guide](https://timber.github.io/docs/guides/v2/extending-timber/).
+If you want to know more about advanced methods to extend Timber, you can learn about it in the [Extending Timber Guide](https://timber.github.io/docs/v2/guides/extending-timber/).
