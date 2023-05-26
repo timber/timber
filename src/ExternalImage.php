@@ -89,9 +89,9 @@ class ExternalImage implements ImageInterface
      *
      * @api
      * @since 2.0.0
-     * @var string|null A file extension.
+     * @var string A file extension.
      */
-    protected ?string $file_extension;
+    protected string $file_extension;
 
     /**
      * Absolute URL.
@@ -332,8 +332,7 @@ class ExternalImage implements ImageInterface
         if (isset($this->file_extension)) {
             return $this->file_extension;
         }
-        $file_info = wp_check_filetype($this->file());
-        return $this->file_extension = !empty($file_info['ext']) ? strtoupper($file_info['ext']) : null;
+        return $this->file_extension = pathinfo($this->file(), PATHINFO_EXTENSION);
     }
 
     /**

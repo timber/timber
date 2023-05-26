@@ -44,9 +44,9 @@ class Attachment extends Post
      *
      * @api
      * @since 2.0.0
-     * @var null|string A file extension.
+     * @var string A file extension.
      */
-    protected ?string $file_extension;
+    protected string $file_extension;
 
     /**
      * Absolute URL.
@@ -275,16 +275,14 @@ class Attachment extends Post
      * </a>
      * ```
      *
-     * @return string|null An uppercase extension string.
+     * @return string An uppercase extension string.
      */
-    public function extension(): ?string
+    public function extension(): string
     {
         if (isset($this->file_extension)) {
             return $this->file_extension;
         }
-        // TODO: why uppercase? should we really use wp_check_filetype()?
-        $file_info = wp_check_filetype($this->file());
-        return $this->file_extension = !empty($file_info['ext']) ? strtoupper($file_info['ext']) : null;
+        return $this->file_extension = pathinfo($this->file(), PATHINFO_EXTENSION);
     }
 
     /**
