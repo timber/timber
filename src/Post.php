@@ -1892,50 +1892,6 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         return apply_filters('get_post_gallery', $gallery, $this->ID, $galleries);
     }
 
-    /**
-     * Returns audio tags embedded in the post’s content.
-     *
-     * @api
-     * @example
-     * ```twig
-     * {{ post.audio }}
-     * ```
-     * @return bool|array A list of found HTML embeds.
-     */
-    public function audio()
-    {
-        $audio = false;
-
-        // Only get audio from the content if a playlist isn’t present.
-        if (!str_contains($this->content(), 'wp-playlist-script')) {
-            $audio = get_media_embedded_in_content($this->content(), ['audio']);
-        }
-
-        return $audio;
-    }
-
-    /**
-     * Returns video tags embedded in the post’s content.
-     *
-     * @api
-     * @example
-     * ```twig
-     * {{ post.video }}
-     * ```
-     * @return bool|array A list of found HTML embeds.
-     */
-    public function video()
-    {
-        $video = false;
-
-        // Only get video from the content if a playlist isn't present.
-        if (!str_contains($this->content(), 'wp-playlist-script')) {
-            $video = get_media_embedded_in_content($this->content(), ['video', 'object', 'embed', 'iframe']);
-        }
-
-        return $video;
-    }
-
     protected function get_entity_name()
     {
         return 'post';
