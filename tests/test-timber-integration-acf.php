@@ -48,7 +48,7 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
     public function testACFGetFieldTermCategory()
     {
         $tid = $this->factory->term->create();
-        update_field('color', 'blue', "category_${tid}");
+        update_field('color', 'blue', "category_{$tid}");
         $cat = Timber::get_term($tid);
         $this->assertEquals('blue', $cat->color);
         $str = '{{term.color}}';
@@ -106,6 +106,9 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
 
     public function testACFFormatValue()
     {
+        // Avoid deprecation warning on ACF 5.6.x
+        $this->remove_filter_temporarily('acf_the_content', 'wp_make_content_images_responsive');
+
         acf_add_local_field_group([
             'key' => 'group_1',
             'title' => 'Group 1',
@@ -455,8 +458,8 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
         $file = $post->meta($field_file_name, [
             'transform_value' => true,
         ]);
-        $this->assertEquals(false, $image);
-        $this->assertEquals(false, $file);
+        $this->assertSame(false, $image);
+        $this->assertSame(false, $file);
     }
 
     private function register_field($field_name, $field_type, $field_args = [])

@@ -65,30 +65,6 @@ class User extends CoreEntity
 
     /**
      * @api
-     * @var string The description from WordPress
-     */
-    public $description;
-
-    /**
-     * @api
-     * @var string
-     */
-    public $display_name = '';
-
-    /**
-     * @api
-     * @var string The first name of the user
-     */
-    public $first_name;
-
-    /**
-     * @api
-     * @var string The last name of the user
-     */
-    public $last_name;
-
-    /**
-     * @api
      * @var int The ID from WordPress
      */
     public $id;
@@ -98,6 +74,14 @@ class User extends CoreEntity
      * @var string
      */
     public $user_nicename;
+
+    /**
+     * User email address.
+     *
+     * @api
+     * @var string
+     */
+    public $user_email;
 
     /**
      * The roles the user is part of.
@@ -374,6 +358,7 @@ class User extends CoreEntity
      * @since 1.8.5
      *
      * @param string $capability The capability to check.
+     * @param mixed ...$args Additional arguments to pass to the user_can function
      *
      * @example
      * Give moderation users another CSS class to style them differently.
@@ -384,11 +369,81 @@ class User extends CoreEntity
      * </span>
      * ```
      *
+     * @example
+     * ```twig
+     * {# Show edit link for posts that a user can edit. #}
+     * {% if user.can('edit_post', post.id) %}
+     *     <a href="{{post.edit_link}}">Edit Post</a>
+     * {% endif %}
+     *
+     * {% if user.can('edit_term', term.id) %}
+     *     {# do something with privileges #}
+     * {% endif %}
+     *
+     * {% if user.can('edit_user', user.id) %}
+     *     {# do something with privileges #}
+     * {% endif %}
+     *
+     * {% if user.can('edit_comment', comment.id) %}
+     *     {# do something with privileges #}
+     * {% endif %}
+     * ```
+     *
      * @return bool Whether the user has the capability.
      */
-    public function can($capability)
+    public function can($capability, ...$args)
     {
-        return user_can($this->ID, $capability);
+        return user_can($this->wp_object, $capability, ...$args);
+    }
+
+    /**
+     * Checks whether the current user can edit the post.
+     *
+     * @api
+     * @example
+     * ```twig
+     * {% if user.can_edit %}
+     *     <a href="{{ user.edit_link }}">Edit</a>
+     * {% endif %}
+     * ```
+     * @return bool
+     */
+    public function can_edit(): bool
+    {
+        return current_user_can('edit_user', $this->ID);
+    }
+
+    /**
+     * Gets the edit link for a user if the current user has the correct rights or the profile link for the current
+     * user.
+     *
+     * @api
+     * @since 2.0.0
+     * @example
+     * ```twig
+     * {% if user.can_edit %}
+     *     <a href="{{ user.edit_link }}">Edit</a>
+     * {% endif %}
+     * ```
+     *
+     * Get the profile URL for the current user:
+     *
+     * ```twig
+     * {# Assuming user is the current user. #}
+     * {% if user %}
+     *     <a href="{{ user.edit_link }}">My profile</a>
+     * {% endif %}
+     * ```
+     * @return string|null The edit URL of a user in the WordPress admin or the profile link if the user object is for
+     *                     the current user. Null if the current user can’t edit the user.
+     */
+    public function edit_link(): ?string
+    {
+        if (!$this->can_edit()) {
+            return null;
+        }
+
+        return get_edit_user_link($this->ID);
     }
 
     /**

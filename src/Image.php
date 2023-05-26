@@ -48,7 +48,7 @@ namespace Timber;
  * </article>
  * ```
  */
-class Image extends Attachment
+class Image extends Attachment implements ImageInterface
 {
     /**
      * Representation.
@@ -70,10 +70,9 @@ class Image extends Attachment
      * Image dimensions.
      *
      * @internal
-     * @var array An index array of image dimensions, where the first is the width and the second
-     *            item is the height of the image in pixels.
+     * @var ImageDimensions stores Image Dimensions in a structured way.
      */
-    protected $dimensions;
+    protected ImageDimensions $image_dimensions;
 
     /**
      * @return string the src of the file
@@ -87,6 +86,25 @@ class Image extends Attachment
     }
 
     /**
+     * Gets the Image information.
+     *
+     * @internal
+     *
+     * @param array $data Data to update.
+     * @return array
+     */
+    protected function get_info(array $data): array
+    {
+        $data = parent::get_info($data);
+
+        if (isset($data['file_loc'])) {
+            $data['image_dimensions'] = new ImageDimensions($data['file_loc']);
+        }
+
+        return $data;
+    }
+
+    /**
      * Processes an image's dimensions.
      * @deprecated 2.0.0, use `{{ image.width }}` or `{{ image.height }}` in Twig
      * @internal
@@ -96,11 +114,11 @@ class Image extends Attachment
     protected function get_dimensions($dim)
     {
         Helper::deprecated(
-            'Image::get_dimensions',
-            'Image::get_dimension',
+            'Image::get_dimensions()',
+            'Image::get_width() | Image::get_height()',
             '2.0.0'
         );
-        return [$this->width(), $this->height()];
+        return [$this->image_dimensions->width(), $this->image_dimensions->height()];
     }
 
     /**
@@ -112,46 +130,12 @@ class Image extends Attachment
     protected function get_dimensions_loaded($dim)
     {
         Helper::deprecated(
-            'Image::get_dimensions',
-            'Image::get_dimension',
+            'Image::get_dimensions()',
+            'Image::get_width() or Image::get_height()',
             '2.0.0'
         );
-        $dim = strtolower($dim);
-        if ($dim == 'h' || $dim == 'height') {
-            return $this->height();
-        }
-        return $this->width();
-    }
 
-    /**
-     * Retrieve dimensions from SVG file
-     *
-     * @internal
-     * @param string $svg SVG Path
-     * @return array
-     */
-    protected function get_dimensions_svg($svg)
-    {
-        $svg = simplexml_load_file($svg);
-        $width = '0';
-        $height = '0';
-
-        if (false !== $svg) {
-            $attributes = $svg->attributes();
-            if (isset($attributes->viewBox)) {
-                $viewbox = explode(' ', $attributes->viewBox);
-                $width = $viewbox[2];
-                $height = $viewbox[3];
-            } elseif ($attributes->width && $attributes->height) {
-                $width = (string) $attributes->width;
-                $height = (string) $attributes->height;
-            }
-        }
-
-        return (object) [
-            'width' => $width,
-            'height' => $height,
-        ];
+        return $this->image_dimensions->get_dimension($dim);
     }
 
     /**
@@ -193,16 +177,12 @@ class Image extends Attachment
      * @param string $size Optional. The requested image size. This can be a size that was in
      *                     WordPress. Example: `medium` or `large`. Default `full`.
      *
-     * @return bool|string The src URL for the image.
+     * @return string|bool The src URL for the image.
      */
     public function src($size = 'full')
     {
         if (isset($this->abs_url)) {
-            return $this->maybe_secure_url($this->abs_url);
-        }
-
-        if (!$this->is_image()) {
-            return wp_get_attachment_url($this->ID);
+            return URLHelper::maybe_secure_url($this->abs_url);
         }
 
         $src = wp_get_attachment_image_src($this->ID, $size);
@@ -250,7 +230,7 @@ class Image extends Attachment
      */
     public function width()
     {
-        return $this->get_dimension('width');
+        return $this->image_dimensions->width();
     }
 
     /**
@@ -269,7 +249,7 @@ class Image extends Attachment
      */
     public function height()
     {
-        return $this->get_dimension('height');
+        return $this->image_dimensions->height();
     }
 
     /**
@@ -290,10 +270,7 @@ class Image extends Attachment
      */
     public function aspect()
     {
-        $w = intval($this->width());
-        $h = intval($this->height());
-
-        return $w / $h;
+        return $this->image_dimensions->aspect();
     }
 
     /**
@@ -314,7 +291,7 @@ class Image extends Attachment
      *
      * @return string Alt text stored in WordPress.
      */
-    public function alt()
+    public function alt(): string
     {
         $alt = $this->meta('_wp_attachment_image_alt');
         return trim(wp_strip_all_tags($alt));
@@ -322,7 +299,7 @@ class Image extends Attachment
 
     /**
      * Gets dimension for an image.
-     *
+     * @deprecated 2.0.0, use `{{ image.width }}` or `{{ image.height }}` in Twig
      * @internal
      *
      * @param string $dimension The requested dimension. Either `width` or `height`.
@@ -330,27 +307,12 @@ class Image extends Attachment
      */
     protected function get_dimension($dimension)
     {
-        // Load from internal cache.
-        if (isset($this->dimensions)) {
-            return $this->get_dimension_loaded($dimension);
-        }
-
-        // Load dimensions.
-        if (file_exists($this->file_loc) && filesize($this->file_loc)) {
-            if (ImageHelper::is_svg($this->file_loc)) {
-                $svg_size = $this->get_dimensions_svg($this->file_loc);
-                $this->dimensions = [$svg_size->width, $svg_size->height];
-            } else {
-                list($width, $height) = getimagesize($this->file_loc);
-
-                $this->dimensions = [];
-                $this->dimensions[0] = $width;
-                $this->dimensions[1] = $height;
-            }
-            return $this->get_dimension_loaded($dimension);
-        }
-
-        return null;
+        Helper::deprecated(
+            'Image::get_dimension()',
+            'Image::get_width() or Image::get_height()',
+            '2.0.0'
+        );
+        return $this->image_dimensions->get_dimension($dimension);
     }
 
     /**
@@ -363,17 +325,12 @@ class Image extends Attachment
      */
     protected function get_dimension_loaded($dim = null)
     {
-        $dim = strtolower($dim);
-
-        if ('h' === $dim || 'height' === $dim) {
-            return $this->dimensions[1];
-        }
-
-        return $this->dimensions[0];
+        return $this->image_dimensions->get_dimension($dim);
     }
 
     /**
-     * @param string $size a size known to WordPress (like "medium")
+     * Gets the srcset attribute for an image based on a WordPress image size.
+     *
      * @api
      * @example
      * ```twig
@@ -383,19 +340,18 @@ class Image extends Attachment
      * ```html
      * <img src="http://example.org/wp-content/uploads/2018/10/pic.jpg" srcset="http://example.org/wp-content/uploads/2018/10/pic.jpg 1024w, http://example.org/wp-content/uploads/2018/10/pic-600x338.jpg 600w, http://example.org/wp-content/uploads/2018/10/pic-300x169.jpg 300w" />
      * ```
-     *	@return bool|string
+     * @param string $size An image size known to WordPress (like "medium").
+     *
+     * @return string|null
      */
-    public function srcset($size = "full")
+    public function srcset(string $size = 'full'): ?string
     {
-        if ($this->is_image()) {
-            return wp_get_attachment_image_srcset($this->ID, $size);
-        }
-
-        return false;
+        return wp_get_attachment_image_srcset($this->ID, $size) ?: null;
     }
 
     /**
-     * @param string $size a size known to WordPress (like "medium")
+     * Gets the sizes attribute for an image based on a WordPress image size.
+     *
      * @api
      * @example
      * ```twig
@@ -405,36 +361,11 @@ class Image extends Attachment
      * ```html
      * <img src="http://example.org/wp-content/uploads/2018/10/pic.jpg" srcset="http://example.org/wp-content/uploads/2018/10/pic.jpg 1024w, http://example.org/wp-content/uploads/2018/10/pic-600x338.jpg 600w, http://example.org/wp-content/uploads/2018/10/pic-300x169.jpg 300w sizes="(max-width: 1024px) 100vw, 102" />
      * ```
-     *	@return bool|string
+     *	@param string $size An image size known to WordPress (like "medium").
+     * @return string|null
      */
-    public function img_sizes($size = "full")
+    public function img_sizes(string $size = 'full'): ?string
     {
-        if ($this->is_image()) {
-            return wp_get_attachment_image_sizes($this->ID, $size);
-        }
-
-        return false;
-    }
-
-    /**
-     * Checks whether the image is really an image.
-     *
-     * @internal
-     * @return bool Whether the attachment is really an image.
-     */
-    protected function is_image()
-    {
-        $src = wp_get_attachment_url($this->ID);
-        $check = wp_check_filetype(PathHelper::basename($src), null);
-        $image_exts = apply_filters('timber/post/image_extensions', [
-            'jpg',
-            'jpeg',
-            'jpe',
-            'gif',
-            'png',
-            'webp',
-        ]);
-
-        return in_array($check['ext'], $image_exts);
+        return wp_get_attachment_image_sizes($this->ID, $size) ?: null;
     }
 }

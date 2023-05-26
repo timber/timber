@@ -17,7 +17,7 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase
             'force' => true,
         ]);
 
-        $this->assertEquals(1, substr_count((string) $excerpt, '&hellip;'));
+        $this->assertSame(1, substr_count((string) $excerpt, '&hellip;'));
     }
 
     public function testReadMoreClassFilter()

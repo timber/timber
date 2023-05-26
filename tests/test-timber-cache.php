@@ -308,7 +308,7 @@ class TestTimberCache extends Timber_UnitTestCase
         global $wpdb;
         $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
         $wpdb->query($query);
-        $this->assertEquals(0, $wpdb->num_rows);
+        $this->assertSame(0, $wpdb->num_rows);
     }
 
     public function testTimberLoaderCacheObject()
@@ -365,7 +365,7 @@ class TestTimberCache extends Timber_UnitTestCase
         global $wpdb;
         $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
         $data = $wpdb->get_results($query);
-        $this->assertEquals(1, $wpdb->num_rows);
+        $this->assertSame(1, $wpdb->num_rows);
     }
 
     public function testTimberLoaderCacheTransientsAdminLoggedIn()
@@ -387,6 +387,37 @@ class TestTimberCache extends Timber_UnitTestCase
         ], [600, false]);
         $this->assertNotEquals($str_old, $str_new);
         self::_unswapFiles();
+    }
+
+    public function testTimberTransientCacheWithMultiplePosts()
+    {
+        $post_ids = $this->factory->post->create_many(3);
+
+        // Cache the first post.
+        $this->go_to(get_permalink($post_ids[0]));
+        $context = Timber::context();
+
+        ob_start();
+        Timber::render('assets/single-post-cached.twig', $context, 60);
+        $result = trim(ob_get_clean());
+
+        $this->assertEquals($post_ids[0], $result);
+
+        // Get second post.
+        $this->go_to(get_permalink($post_ids[1]));
+        $context = Timber::context();
+
+        ob_start();
+        Timber::render('assets/single-post-cached.twig', $context, 60);
+        $result = trim(ob_get_clean());
+
+        $this->assertEquals($post_ids[1], $result);
+
+        // Check if two transients exists.
+        global $wpdb;
+        $query = "SELECT * FROM {$wpdb->options} WHERE option_name LIKE '_transient_timberloader_%'";
+        $wpdb->get_results($query);
+        $this->assertSame(2, $wpdb->num_rows);
     }
 
     public function _swapFiles()
@@ -482,7 +513,7 @@ class TestTimberCache extends Timber_UnitTestCase
         global $wpdb;
         $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
         $data = $wpdb->get_results($query);
-        $this->assertEquals(0, $wpdb->num_rows);
+        $this->assertSame(0, $wpdb->num_rows);
         $_wp_using_ext_object_cache = false;
     }
 
@@ -509,7 +540,7 @@ class TestTimberCache extends Timber_UnitTestCase
         global $wpdb;
         $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
         $data = $wpdb->get_results($query);
-        $this->assertEquals(2, $wpdb->num_rows);
+        $this->assertSame(2, $wpdb->num_rows);
         $this->assertEquals('foo', get_transient('random_600'));
     }
 }

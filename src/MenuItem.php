@@ -102,6 +102,15 @@ class MenuItem extends CoreEntity
      */
     public $object_id = null;
 
+    /**
+     * Object type.
+     *
+     * @api
+     * @since 2.0.0
+     * @var string The underlying menu object type. E.g. a post type name, a taxonomy name or 'custom'.
+     */
+    public $object;
+
     protected $_name;
 
     protected $_menu_item_url;
@@ -581,5 +590,17 @@ class MenuItem extends CoreEntity
          */
         $title = apply_filters('nav_menu_item_title', $this->title, $this->wp_object, $this->menu->args ? $this->menu->args : new \stdClass(), $this->level);
         return $title;
+    }
+
+    /**
+     * Checks whether the current user can edit the menu item.
+     *
+     * @api
+     * @since 2.0.0
+     * @return bool
+     */
+    public function can_edit(): bool
+    {
+        return current_user_can('edit_theme_options');
     }
 }
