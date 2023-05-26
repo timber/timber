@@ -5,9 +5,9 @@
 By
 [Jared Novack](https://github.com/jarednova) ([@jarednova](https://twitter.com/jarednova)),
 [Lukas Gächter](https://github.com/gchtr) ([@lgaechter](https://twitter.com/lgaechter)),
+[Nicolas Lemoine](https://github.com/nlemoine) ([@nlemoine](https://niconico.fr/)),
+[Erik van der Bas](https://github.com/Levdbas) ([website](https://basedonline.nl/)),
 [Coby Tamayo](https://github.com/acobster) ([@cobytamayo](https://keybase.io/acobster)),
-[Maciej Palmowski](https://github.com/palmiak) ([@palmiak_fp](https://twitter.com/palmiak_fp)),
-[Nicolas Lemoine](https://github.com/nlemoine) ([@nlemoine](https://niconico.fr/))
 [Upstatement](https://twitter.com/upstatement) and [hundreds of other GitHub contributors](https://github.com/timber/timber/graphs/contributors)
 
 [![Build Status](https://github.com/timber/timber/actions/workflows/test.yml/badge.svg)](https://github.com/timber/timber/actions/workflows/test.yml)
