@@ -516,8 +516,8 @@ class Helper {
 	 *
 	 * If no match is found the function will return the inital argument.
 	 *
-	 * @param mix $obj WP Object
-	 * @return mix Instance of equivalent Timber object, or the argument if no match is found
+	 * @param mixed $obj WP Object
+	 * @return mixed Instance of equivalent Timber object, or the argument if no match is found
 	 */
 	public static function convert_wp_object( $obj ) {
 		if ( $obj instanceof \WP_Post ) {
