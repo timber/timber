@@ -83,7 +83,7 @@ class Term extends CoreEntity
      * @param \WP_Term the vanilla WP term object to build from
      * @return \Timber\Term
      */
-    public static function build(WP_Term $wp_term, array $_options = []): self
+    public static function build(WP_Term $wp_term): self
     {
         $term = new static();
         $term->init($wp_term);
