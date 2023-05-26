@@ -185,10 +185,6 @@ class Image extends Attachment implements ImageInterface
             return URLHelper::maybe_secure_url($this->abs_url);
         }
 
-        if (!$this->is_image()) {
-            return wp_get_attachment_url($this->ID);
-        }
-
         $src = wp_get_attachment_image_src($this->ID, $size);
         $src = $src[0];
 
@@ -350,11 +346,7 @@ class Image extends Attachment implements ImageInterface
      */
     public function srcset(string $size = 'full'): ?string
     {
-        if ($this->is_image()) {
-            return wp_get_attachment_image_srcset($this->ID, $size) ?: null;
-        }
-
-        return null;
+        return wp_get_attachment_image_srcset($this->ID, $size) ?: null;
     }
 
     /**
@@ -374,32 +366,6 @@ class Image extends Attachment implements ImageInterface
      */
     public function img_sizes(string $size = 'full'): ?string
     {
-        if ($this->is_image()) {
-            return wp_get_attachment_image_sizes($this->ID, $size) ?: null;
-        }
-
-        return null;
-    }
-
-    /**
-     * Checks whether the image is really an image.
-     *
-     * @internal
-     * @return bool Whether the attachment is really an image.
-     */
-    protected function is_image()
-    {
-        $src = wp_get_attachment_url($this->ID);
-        $check = wp_check_filetype(PathHelper::basename($src), null);
-        $image_exts = apply_filters('timber/post/image_extensions', [
-            'jpg',
-            'jpeg',
-            'jpe',
-            'gif',
-            'png',
-            'webp',
-        ]);
-
-        return in_array($check['ext'], $image_exts);
+        return wp_get_attachment_image_sizes($this->ID, $size) ?: null;
     }
 }

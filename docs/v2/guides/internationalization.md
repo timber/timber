@@ -99,9 +99,3 @@ Alternatively, you can use a custom parser for Python instead. This will throw a
 #### Use Twig Gettext Extractor
 
 Another solution is [Twig Gettext Extractor](https://github.com/umpirsky/Twig-Gettext-Extractor), a special Twig parser for Poedit. The linked page contains instructions on how to set it up.
-
-### Use a gulp script
-
-You can use [a gulp script to generate POT files](https://gist.github.com/luism-s/ebca42b8b8d70e81f8917f675a784060) instead of using Poedit. The script will convert gettext functions in Twig into PHP tags and save each file as a PHP file in a cache folder. It will then iterate over these cached files (including other PHP files in your project) and generate a POT file. This approach will also consider strings in HTML attributes.
-
-You can find installation instructions in the comments of the gulpfile in the linked gist. Basic understanding of NPM is required.

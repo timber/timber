@@ -9,6 +9,7 @@ use Timber\Factory\PostFactory;
  *
  * As the name suggests these are helpers for Timber (and you!) when developing. You can find additional
  * (mainly internally-focused helpers) in Timber\URLHelper.
+ * @api
  */
 class Helper
 {

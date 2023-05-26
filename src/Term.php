@@ -74,7 +74,7 @@ class Term extends CoreEntity
     /**
      * @internal
      */
-    protected function __construct()
+    final protected function __construct()
     {
     }
 
@@ -86,7 +86,7 @@ class Term extends CoreEntity
      *
      * @return \Timber\Term
      */
-    public static function build(WP_Term $wp_term, array $options = []): self
+    public static function build(WP_Term $wp_term): self
     {
         $term = new static();
         $term->init($wp_term);

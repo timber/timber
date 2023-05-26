@@ -90,7 +90,7 @@ To initiate your new `MenuPrimary` menu that will hold `MenuItemPrimary` objects
 $menu = Timber::get_menu('primary');
 ```
 
-In the same way that you [can’t instantiate post objects directly](https://timber.github.io/docs/guides/posts/#extending-timber-post), you **can’t** instantiate `Timber\Menu` or `Timber\MenuItem` objects or an object that extends this class with a constructor. Timber will use the [Menu Class Map](https://timber.github.io/docs/guides/class-maps/#the-menu-class-map) and the [MenuItem Class Map](https://timber.github.io/docs/guides/class-maps/#the-menuitem-class-map) to sort out which class it should use.
+In the same way that you [can’t instantiate post objects directly](https://timber.github.io/docs/v2/guides/posts/#extending-timber-post), you **can’t** instantiate `Timber\Menu` or `Timber\MenuItem` objects or an object that extends this class with a constructor. Timber will use the [Menu Class Map](https://timber.github.io/docs/v2/guides/class-maps/#the-menu-class-map) and the [MenuItem Class Map](https://timber.github.io/docs/v2/guides/class-maps/#the-menuitem-class-map) to sort out which class it should use.
 
 ## Pages Menu
 
@@ -111,7 +111,7 @@ class ExtendedPagesMenu extends \Timber\PagesMenu
 }
 ```
 
-There’s a special [PagesMenu Class Map](https://timber.github.io/docs/guides/class-maps/#the-pages-menu-class-map) which you can use to make Timber use your custom class.
+There’s a special [PagesMenu Class Map](https://timber.github.io/docs/v2/guides/class-maps/#the-pages-menu-class-map) which you can use to make Timber use your custom class.
 
 ## Setting up a menu globally
 
