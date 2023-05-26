@@ -1039,8 +1039,8 @@ class TestTimberMeta extends Timber_UnitTestCase
             'post_content' => 'Cool content bro!',
             'post_date' => '2020-02-07 08:03:00',
         ]);
-        update_post_meta('_time', 'I am custom time', $pid);
-        update_post_meta('time', 'I am custom time', $pid);
+        update_post_meta($pid, '_time', 'I am custom time');
+        update_post_meta($pid, 'time', 'I am custom time');
         $str = '{{ post.time }}';
         $post = Timber::get_post($pid);
         $str = Timber::compile_string($str, [
