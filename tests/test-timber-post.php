@@ -573,16 +573,11 @@ class TestTimberPost extends Timber_UnitTestCase
         global $wpdb;
         $query = "DELETE from $wpdb->users WHERE ID > 1";
         $wpdb->query($query);
-        $query = "truncate $wpdb->term_relationships";
-        $wpdb->query($query);
-        $query = "truncate $wpdb->term_taxonomy";
-        $wpdb->query($query);
-        $query = "truncate $wpdb->terms";
-        $wpdb->query($query);
-        $query = "truncate $wpdb->termmeta";
-        $wpdb->query($query);
-        $query = "truncate $wpdb->posts";
-        $wpdb->query($query);
+        $this->truncate('term_relationships');
+        $this->truncate('term_taxonomy');
+        $this->truncate('terms');
+        $this->truncate('termmeta');
+        $this->truncate('posts');
     }
 
     public function testPostFormat()
