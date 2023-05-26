@@ -5,6 +5,7 @@ namespace Timber;
 use Timber\Image;
 use Timber\Image\Operation\ToJpg;
 use Timber\Image\Operation\ToWebp;
+use Timber\Image\Operation\ToAvif;
 use Timber\Image\Operation\Resize;
 use Timber\Image\Operation\Retina;
 use Timber\Image\Operation\Letterbox;
@@ -215,6 +216,20 @@ class ImageHelper {
      */
     public static function img_to_webp( $src, $quality = 80, $force = false ) {
         $op = new Image\Operation\ToWebp($quality);
+        return self::_operate($src, $op, $force);
+    }
+
+    /**
+     * Generates a new image by converting the source into AVIF if supported by the server
+     *
+     * @param string  $src      a url or path to the image (http://example.org/wp-content/uploads/2014/image.avif)
+     *							or (/wp-content/uploads/2014/image.jpg)
+     *							If avif is not supported, a jpeg image will be generated
+	 * @param int     $quality  ranges from 0 (worst quality, smaller file) to 100 (best quality, biggest file)
+     * @param bool    $force
+     */
+    public static function img_to_avif( $src, $quality = 80, $force = false ) {
+        $op = new Image\Operation\ToAvif($quality);
         return self::_operate($src, $op, $force);
     }
 

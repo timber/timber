@@ -83,6 +83,19 @@ Similar to the `|tojpg` filter, there’s a `|towebp` filter.
 </picture>
 ```
 
+### Using AVIF images
+
+Similar to the `|towebp` filter, there’s a `|toavif` filter.
+
+```twig
+<picture>
+   <source srcset="{{ post.thumbnail.src|toavif }}" type="image/avif">
+   <source srcset="{{ post.thumbnail.src|towebp }}" type="image/webp">
+   <source srcset="{{ post.thumbnail.src|tojpg }}" type="image/jpeg">
+   <img src="{{ post.thumbnail.src|tojpg }}" alt="{{ post.title }}">
+</picture>
+```
+
 ## Generating retina sizes
 
 You can use Timber to generate @2x image sizes for retina devices. For example, using `srcset`:
