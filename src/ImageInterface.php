@@ -25,26 +25,13 @@ interface ImageInterface
     public function caption(): string;
 
     /**
-     * Gets filesize in a human-readable format.
-     *
-     * This can be useful if you want to display the human-readable filesize for a file. It’s
-     * easier to read «16 KB» than «16555 bytes» or «1 MB» than «1048576 bytes».
-     *
-     * @api
-     * @since 2.0.0
-     * @return string|null The filesize string in a human-readable format or null if the
-     *                    filesize can’t be read.
-     */
-    public function size(): ?string;
-
-    /**
      * Gets filesize in bytes.
      *
      * @api
      * @since 2.0.0
-     * @return int|false The filesize string in bytes, or false if the filesize can’t be read.
+     * @return int|null The filesize string in bytes, or null if the filesize can’t be read.
      */
-    public function size_raw();
+    public function size(): ?int;
 
     /**
      * Gets the extension of the attached file.
@@ -60,7 +47,7 @@ interface ImageInterface
      *
      * @return string The src of the file.
      */
-    public function __toString();
+    public function __toString(): string;
 
     /**
      * Gets the source URL for the image.
@@ -73,9 +60,9 @@ interface ImageInterface
      * @param string $size Optional. The requested image size. This can be a size that was in
      *                     WordPress. Example: `medium` or `large`. Default `full`.
      *
-     * @return string|bool The src URL for the image.
+     * @return string The src URL for the image.
      */
-    public function src($size = 'full');
+    public function src($size = 'full'): string;
 
     /**
      * Gets the width of the image in pixels.

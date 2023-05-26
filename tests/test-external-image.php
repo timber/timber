@@ -184,8 +184,7 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
 
         $image = Timber::get_external_image($dest);
 
-        $this->assertSame('54&nbsp;KB', $image->size());
-        $this->assertSame(54996, $image->size_raw());
+        $this->assertSame(54996, $image->size());
     }
 
     public function testExternalImageExtension()

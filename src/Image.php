@@ -64,7 +64,7 @@ class Image extends Attachment implements ImageInterface
      * @api
      * @var array An array of available sizes for the image.
      */
-    public $sizes = [];
+    protected array $sizes;
 
     /**
      * Image dimensions.
@@ -73,17 +73,6 @@ class Image extends Attachment implements ImageInterface
      * @var ImageDimensions stores Image Dimensions in a structured way.
      */
     protected ImageDimensions $image_dimensions;
-
-    /**
-     * @return string the src of the file
-     */
-    public function __toString()
-    {
-        if ($src = $this->src()) {
-            return $src;
-        }
-        return '';
-    }
 
     /**
      * Gets the Image information.
@@ -97,8 +86,8 @@ class Image extends Attachment implements ImageInterface
     {
         $data = parent::get_info($data);
 
-        if (isset($data['file_loc'])) {
-            $data['image_dimensions'] = new ImageDimensions($data['file_loc']);
+        if ($this->file_loc()) {
+            $data['image_dimensions'] = new ImageDimensions($this->file_loc());
         }
 
         return $data;
@@ -177,9 +166,9 @@ class Image extends Attachment implements ImageInterface
      * @param string $size Optional. The requested image size. This can be a size that was in
      *                     WordPress. Example: `medium` or `large`. Default `full`.
      *
-     * @return string|bool The src URL for the image.
+     * @return string The src URL for the image.
      */
-    public function src($size = 'full')
+    public function src($size = 'full'): string
     {
         if (isset($this->abs_url)) {
             return URLHelper::maybe_secure_url($this->abs_url);
@@ -212,6 +201,20 @@ class Image extends Attachment implements ImageInterface
         );
 
         return $src;
+    }
+
+    /**
+     * Get image sizes.
+     *
+     * @return array
+     */
+    public function sizes(): array
+    {
+        if (isset($this->sizes)) {
+            return $this->sizes;
+        }
+
+        return $this->sizes = (array) $this->metadata('sizes');
     }
 
     /**

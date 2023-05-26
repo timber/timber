@@ -371,6 +371,11 @@ class Twig
                 },
             ],
 
+            // Numbers filters
+            'format_bytes' => [
+                'callable' => 'size_format',
+            ],
+
             // Actions and filters.
             'apply_filters' => [
                 'callable' => function () {
