@@ -177,7 +177,18 @@ class Pagination
                 ];
                 $dots = true;
             } else {
-                if ($args['show_all'] || ($n <= $args['start_size'] || ($args['current'] && $n >= $args['current'] - $args['mid_size'] && $n <= $args['current'] + $args['mid_size']) || $n > $args['total'] - $args['end_size'])) {
+                if (
+                    $args['show_all']
+                    || (
+                        $n <= (int) $args['start_size']
+                        || (
+                            $args['current']
+                            && $n >= (int) $args['current'] - (int) $args['mid_size']
+                            && $n <= (int) $args['current'] + (int) $args['mid_size']
+                        )
+                        || $n > (int) $args['total'] - (int) $args['end_size']
+                    )
+                ) {
                     $link = str_replace('%_%', 1 == $n ? '' : $args['format'], $args['base']);
                     $link = str_replace('%#%', $n, $link);
 

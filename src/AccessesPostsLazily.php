@@ -29,12 +29,14 @@ trait AccessesPostsLazily
     private $factory;
 
     /**
+     * Realizes a lazy collection of posts.
+     *
      * For better performance, Post Collections do not instantiate `Timber\Post` objects
      * at query time. They instantiate each `Timber\Post` only as needed, i.e. while
      * iterating or for direct array access (`$coll[$i]`). Since specific `Timber\Post`
      * implementations may have expensive `::setup()` operations, this is usually
      * what you want, but not always. For example, you may want to force eager
-     * instantiation to front-load a collection to be cached. To eagerly instantiate
+     * instantiation to front-load a collection of posts to be cached. To eagerly instantiate
      * a lazy collection of objects is to "realize" that collection.
      *
      * @api
@@ -47,7 +49,7 @@ trait AccessesPostsLazily
      * }, HOUR_IN_SECONDS);
      *
      * foreach ($lazy_posts as $post) {
-     *   // This will incur the performance cost of Post::setup()
+     *   // This will incur the performance cost of Post::setup().
      * }
      *
      * // Contrast with:
@@ -64,7 +66,7 @@ trait AccessesPostsLazily
      *   // No additional overhead here.
      * }
      * ```
-     * @return \Timber\PostCollectionInterface the realized PostQuery
+     * @return \Timber\PostCollectionInterface The realized PostQuery.
      */
     public function realize(): self
     {

@@ -858,9 +858,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * @return array
      * @codeCoverageIgnore
      */
-    public function get_method_values()
+    public function get_method_values(): array
     {
-        $ret = parent::get_method_values();
         $ret['author'] = $this->author();
         $ret['categories'] = $this->categories();
         $ret['category'] = $this->category();
@@ -958,9 +957,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     }
 
     /**
-     * Returns a category attached to a post
+     * Gets a category attached to a post.
      *
-     * If multiple categories are set, it will return just the first one
+     * If multiple categories are set, it will return just the first one.
      *
      * @api
      * @return \Timber\Term|null
@@ -971,6 +970,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         if (count($cats) && isset($cats[0])) {
             return $cats[0];
         }
+
+        return null;
     }
 
     /**
@@ -1724,11 +1725,10 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     }
 
     /**
-     * Finds any WP_Post objects and converts them to Timber\Posts
+     * Finds any WP_Post objects and converts them to Timber\Post objects.
      *
      * @api
-     * @param array|WP_Post $data
-     * @param string $class
+     * @param array|\WP_Post $data
      */
     public function convert($data)
     {
@@ -1853,6 +1853,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         if ($tid) {
             return $this->factory()->from($tid);
         }
+
+        return null;
     }
 
     /**
