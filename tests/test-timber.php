@@ -12,12 +12,6 @@ use Timber\PostArrayObject;
  */
 class TestTimberMainClass extends Timber_UnitTestCase
 {
-    public function testSample()
-    {
-        // replace this with some actual testing code
-        $this->assertTrue(true);
-    }
-
     public function testGetPostNumeric()
     {
         $post_id = $this->factory->post->create();
@@ -394,39 +388,6 @@ class TestTimberMainClass extends Timber_UnitTestCase
 
         $this->assertInstanceOf(TimberPortfolio::class, Timber::get_post($portfolio_id));
         $this->assertInstanceOf(TimberAlert::class, Timber::get_post($alert_id));
-    }
-
-
-
-    /* Terms API */
-
-    public function testGetTerm()
-    {
-        // @todo #2087
-        $this->markTestSkipped();
-    }
-
-    public function testGetTermWithTaxonomyParam()
-    {
-        // @todo #2087
-        $this->markTestSkipped();
-    }
-
-    public function testGetTermWithObject()
-    {
-        // @todo #2087
-        $this->markTestSkipped();
-    }
-
-    public function testGetTermWithSlug()
-    {
-        // @todo #2087
-        $this->markTestSkipped();
-        $term_id = $this->factory->term->create([
-            'name' => 'New England Patriots',
-        ]);
-        $term = Timber::get_term('new-england-patriots');
-        $this->assertEquals($term->ID, $term_id);
     }
 
     public function testGetTerms()
