@@ -47,7 +47,6 @@ use WP_Post;
  *     </div>
  * </article>
  * ```
- * @todo implement JsonSerializable?
  */
 class Post extends CoreEntity implements DatedInterface, Setupable
 {
