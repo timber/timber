@@ -165,7 +165,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     public $slug;
 
     /**
-     * @var string Stores the PostType object for the Post
+     * @var string Stores the PostType object for the post.
      */
     protected $__type;
 

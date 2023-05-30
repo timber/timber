@@ -853,10 +853,7 @@ class TestTimberMainClass extends Timber_UnitTestCase
         }
     }
 
-    /**
-     * @todo will this behavior change?
-     */
-    public function testCustomPostTypeOsnSinglePage()
+    public function testCustomPostTypeOnSinglePage()
     {
         register_post_type('job');
 
@@ -1043,8 +1040,4 @@ class TestTimberMainClass extends Timber_UnitTestCase
 
         $this->assertCount(3, $posts);
     }
-
-    /*
-     * @todo add more test coverage here...
-     */
 }
