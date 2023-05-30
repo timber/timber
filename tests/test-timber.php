@@ -859,48 +859,6 @@ class TestTimberMainClass extends Timber_UnitTestCase
         $this->assertSame(3, $the_post_count);
     }
 
-    public function testGetAttachment()
-    {
-        $this->markTestSkipped('@todo seems like a lot of what gets tested here is core WP file mgmt. Is that what we want?');
-
-        // Create an attachment and a post to attach it to.
-        $upload_dir = wp_upload_dir();
-        $post_id = $this->factory->post->create();
-        $filename = TestTimberImage::copyTestAttachment('flag.png');
-        $destination_url = str_replace(ABSPATH, 'http://' . $_SERVER['HTTP_HOST'] . '/', $filename);
-        $wp_filetype = wp_check_filetype(basename($filename), null);
-        $attachment = [
-            'post_mime_type' => $wp_filetype['type'],
-            'post_title' => preg_replace('/\.[^.]+$/', '', basename($filename)),
-            'post_content' => '',
-            'post_status' => 'inherit',
-        ];
-        $attach_id = wp_insert_attachment($attachment, $filename, $post_id);
-        add_post_meta($post_id, '_thumbnail_id', $attach_id, true);
-
-        $data = [
-            'post' => Timber::get_post($post_id),
-            'size' => [
-                'width' => 100,
-                'height' => 50,
-            ],
-            'crop' => 'default',
-        ];
-
-        Timber::compile('assets/thumb-test.twig', $data);
-        $exists = file_exists($filename);
-        $this->assertTrue($exists);
-        $resized_path = $upload_dir['path'] . '/flag-' . $data['size']['width'] . 'x' . $data['size']['height'] . '-c-' . $data['crop'] . '.png';
-        $exists = file_exists($resized_path);
-        $this->assertTrue(file_exists());
-
-        $attachments = Timber::get_posts([
-            'post_type' => 'attachment',
-            'post_status' => 'inherit',
-        ]);
-        $this->assertGreaterThan(0, count($attachments));
-    }
-
     public function testGetPostsDefault()
     {
         $this->factory->post->create_many(15);
