@@ -540,22 +540,6 @@ class TestTimberMainClass extends Timber_UnitTestCase
     }
 
     /**
-     * @expectedDeprecated Timber\Timber::query_post()
-     */
-    public function testQueryPost()
-    {
-        // The old PostGetter::query_post() method calls ::current() on the Collection
-        // it gets back from ::query_posts(). Is that what we want here?
-        $this->markTestSkipped('@todo remove?');
-        $posts = $this->factory->post->create_many(6);
-        $post = Timber::get_post($posts[3]);
-        $this->go_to(home_url('/?p=' . $posts[2]));
-        $this->assertNotEquals(get_the_ID(), $post->ID);
-        $post = Timber::query_post($posts[3]);
-        $this->assertEquals(get_the_ID(), $post->ID);
-    }
-
-    /**
      * @expectedDeprecated Timber::query_post()
      */
     public function testBlankQueryPost()
@@ -731,16 +715,6 @@ class TestTimberMainClass extends Timber_UnitTestCase
 
         $this->assertEmpty($collection);
         $this->assertEquals([], $collection->to_array());
-    }
-
-    public function testFromFalse()
-    {
-        // We don't actually test this directly in TestTimberPostGetter::testGettingWithFalse();
-        // that test directly instantiates a collection.
-        $this->markTestSkipped('@todo what should this be?');
-        $pids = $this->factory->post->create_many(15);
-
-        $this->assertFalse(Timber::get_posts(false));
     }
 
     public function testFromArray()
