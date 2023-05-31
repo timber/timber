@@ -31,7 +31,7 @@ You can then loop over your posts with a [for-loop in Twig](https://twig.symfony
         <ul>
     {% endif %}
 
-	{{ include('pagination.twig') }}
+    {{ include('pagination.twig') }}
 {% endblock %}
 ```
 
@@ -45,6 +45,9 @@ Your teaser could look like this. We used the markup for an [Inclusive Card](htt
 <img
     src="{{ post.thumbnail.src('medium') }}"
     alt="{{ post.thumbnail.alt }}"
+    width="{{ post.thumbnail.width }}"
+    height="{{ post.thumbnail.height }}"
+    loading="lazy"
 >
 
 <h2>
@@ -71,7 +74,7 @@ There are two new things that you see here:
 
 ## Using custom queries
 
-Sometimes you’ll want to use your own queries for archive pages or to display a list of posts in other places. For that, you can use `Timber::get_posts()`. Here’s an example for a more complex query, that selects posts that have certain movie genre and actor terms assigned. The parameters you use are the same as those for [WP_Query](https://developer.wordpress.org/reference/classes/wp_query/).
+Sometimes you’ll want to use your own queries for archive pages or to display a list of posts in other places. For that, you can use `Timber::get_posts()`. Here’s an example for a more complex query, that selects posts that have certain movie genres and actor terms assigned. The parameters you use are the same as those for [WP_Query](https://developer.wordpress.org/reference/classes/wp_query/).
 
 ```php
 $args = [
@@ -111,6 +114,7 @@ $post = $context['post'];
 $context['related_posts'] = Timber::get_posts([
     'post_type' => 'post',
     'posts_per_page' => 3,
+    'no_found_rows' => true,
     'orderby' => 'date',
     'order' => 'DESC',
     'post__not_in' => [$post->ID],
