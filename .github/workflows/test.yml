@@ -151,7 +151,7 @@ jobs:
         if: matrix.php < '8.0'
         run: |
             composer require ergebnis/composer-normalize:2.28.3
-            composer require wp-cli/wp-cli:2.7.1
+            composer require wp-cli/wp-cli:dev-main
             composer run lint-composer:fix
 
       - name: Lint composer.json
