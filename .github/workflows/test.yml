@@ -147,6 +147,12 @@ jobs:
             composer update yoast/wp-test-utils -W --dev
             composer update composer/installers -W
 
+      - name: Fix WP CLI for PHP < 8.0
+        if: matrix.php < '8.0'
+        run: |
+            composer require ergebnis/composer-normalize:2.28.3
+            composer require wp-cli/wp-cli:2.7.1
+
       - name: Lint composer.json
         run: composer run lint-composer
 
