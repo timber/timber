@@ -14,11 +14,11 @@ class WpmlIntegration implements IntegrationInterface
 
     public function init(): void
     {
+        \add_filter('theme_mod_nav_menu_locations', [$this, 'theme_mod_nav_menu_locations'], 10, 1);
         \add_filter('timber/url_helper/file_system_to_url', [$this, 'file_system_to_url'], 10, 1);
         \add_filter('timber/url_helper/get_content_subdir/home_url', [$this, 'file_system_to_url'], 10, 1);
         \add_filter('timber/url_helper/url_to_file_system/path', [$this, 'file_system_to_url'], 10, 1);
         \add_filter('timber/menu/item_objects', [$this, 'menu_item_objects_filter'], 10, 1);
-        \add_filter('timber/menu_helper/menu_locations', [$this, 'menu_locations_filter'], 10, 1);
         \add_filter('timber/image_helper/_get_file_url/home_url', [$this, 'file_system_to_url'], 10, 1);
     }
 
@@ -38,8 +38,12 @@ class WpmlIntegration implements IntegrationInterface
         );
     }
 
-    public function menu_locations_filter(array $locations)
+    public function theme_mod_nav_menu_locations($locations)
     {
+        if (!\is_array($locations)) {
+            return $locations;
+        }
+
         return \array_map(
             fn ($id) => \wpml_object_id_filter($id, 'nav_menu'),
             $locations
