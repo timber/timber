@@ -142,8 +142,9 @@ class URLHelper
      */
     public static function is_local($url)
     {
-        $host = self::get_host();
-        if (!empty($host) && strstr($url, $host)) {
+        $host = wp_parse_url($url, PHP_URL_HOST);
+        $wp_host = self::get_host();
+        if (!empty($wp_host) && strstr($host, $wp_host)) {
             return true;
         }
         return false;
@@ -439,8 +440,7 @@ class URLHelper
     public static function is_external($url)
     {
         $has_http = strstr(strtolower($url), 'http') || strstr(strtolower($url), '//');
-        $on_domain = strstr($url, self::get_host());
-        if ($has_http && !$on_domain) {
+        if ($has_http && !self::is_local($url)) {
             return true;
         }
         return false;
