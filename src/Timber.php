@@ -1056,6 +1056,39 @@ class Timber
         return $menu;
     }
 
+    /**
+     * Get the navigation menu location assigned to the given menu.
+     *
+     * @param  WP_Term|int $term The menu to find; either a WP_Term object or a Term ID.
+     * @return string|null
+     */
+    public static function get_menu_location($term): ?string
+    {
+        if ($term instanceof WP_Term) {
+            $term_id = $term->term_id;
+        } elseif (\is_int($term)) {
+            $term_id = $term;
+        } else {
+            return null;
+        }
+
+        $locations = \array_flip(static::get_menu_locations());
+        return $locations[$term->term_id] ?? null;
+    }
+
+    /**
+     * Get the navigation menu locations with assigned menus.
+     *
+     * @return array<string, (int|string)>
+     */
+    public static function get_menu_locations(): array
+    {
+        return \array_filter(
+            \get_nav_menu_locations(),
+            fn ($location) => \is_string($location) || \is_int($location)
+        );
+    }
+
     /* Comment Retrieval
     ================================ */
 

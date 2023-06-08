@@ -5,7 +5,7 @@ namespace Timber\Factory;
 use InvalidArgumentException;
 use Timber\CoreInterface;
 use Timber\Menu;
-use Timber\MenuHelper;
+use Timber\Timber;
 use WP_Term;
 
 /**
@@ -83,7 +83,7 @@ class MenuFactory
      */
     public function from_location(string $location, array $args = []): ?Menu
     {
-        $locations = MenuHelper::get_menu_locations();
+        $locations = Timber::get_menu_locations();
         if (!isset($locations[$location])) {
             return null;
         }
@@ -208,7 +208,7 @@ class MenuFactory
          */
         $classmap = \apply_filters('timber/menu/classmap', []);
 
-        $location = MenuHelper::get_menu_location($term);
+        $location = Timber::get_menu_location($term);
 
         $class = $classmap[$location] ?? null;
 
