@@ -1,7 +1,6 @@
 <?php
 
 use Timber\DateTimeHelper;
-use Timber\Post;
 use Timber\Timber;
 
 /**
@@ -76,6 +75,54 @@ class TestTimberDates extends Timber_UnitTestCase
         );
 
         $this->assertEquals($current_ago, $str);
+    }
+
+    /**
+     * @ticket https://github.com/timber/timber/issues/2737
+     * @return void
+     */
+    public function testTimeAgoWithPostDateTwigFilterTimezoneAustralia()
+    {
+        $timezone_backup = get_option('timezone_string');
+
+        // Set timezone to Australia/Adelaide.
+        update_option('timezone_string', 'Australia/Adelaide');
+
+        $current_time = current_datetime();
+        // Subtract 3 hours to get a time in the past.
+        $post_date = $current_time->sub(new \DateInterval('PT3H'));
+
+        $post_id = $this->factory->post->create([
+            'post_date' => $post_date->format('Y-m-d H:i:s'),
+        ]);
+        $post = Timber::get_post($post_id);
+
+        $diff1 = Timber::compile_string(
+            "{{ post.date('U')|time_ago }}",
+            [
+                'post' => $post,
+            ]
+        );
+
+        $diff2 = Timber::compile_string(
+            "{{ post.date(constant('DATE_ATOM'))|time_ago }}",
+            [
+                'post' => $post,
+            ]
+        );
+
+        $diff3 = Timber::compile_string(
+            "{{ post.date('Y-m-d H:i:s')|time_ago }}",
+            [
+                'post' => $post,
+            ]
+        );
+
+        $this->assertEquals('3 hours ago', $diff1);
+        $this->assertEquals('3 hours ago', $diff2);
+        $this->assertEquals('3 hours ago', $diff3);
+
+        update_option('timezone_string', $timezone_backup);
     }
 
     public function testTimeAgoLabels()
