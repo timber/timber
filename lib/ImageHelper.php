@@ -437,7 +437,7 @@ class ImageHelper {
 		$parts = PathHelper::pathinfo($tmp);
 		$result['subdir'] = ($parts['dirname'] === '/') ? '' : $parts['dirname'];
 		$result['filename'] = $parts['filename'];
-		$result['extension'] = strtolower($parts['extension']);
+		$result['extension'] = (isset($parts['extension']) ? strtolower($parts['extension']) : '');
 		$result['basename'] = $parts['basename'];
 		return $result;
 	}
@@ -581,7 +581,7 @@ class ImageHelper {
 		if ( $allow_fs_write === false ) {
 			return $src;
 		}
-		
+
 		$external = false;
 		// if external image, load it first
 		if ( URLHelper::is_external_content($src) ) {
