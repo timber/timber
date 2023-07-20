@@ -1307,6 +1307,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * [`get_the_date`](https://developer.wordpress.org/reference/hooks/get_the_date/) filter to the
      * output.
      *
+     * If you use {{ post.date }} with the |time_ago filter, then make sure that you use a time
+     * format including the full time and not just the date.
+     *
      * @api
      * @example
      * ```twig
@@ -1314,12 +1317,18 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * Published on {{ post.date }}
      * OR
      * Published on {{ post.date('F jS') }}
+     * which was
+     * {{ post.date('U')|time_ago }}
+     * {{ post.date('Y-m-d H:i:s')|time_ago }}
+     * {{ post.date(constant('DATE_ATOM'))|time_ago }}
      * ```
      *
      * ```html
      * Published on January 12, 2015
      * OR
      * Published on Jan 12th
+     * which was
+     * 8 years ago
      * ```
      *
      * @param string|null $date_format Optional. PHP date format. Will use the `date_format` option
