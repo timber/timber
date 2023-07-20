@@ -2,6 +2,7 @@
 
 namespace Timber;
 
+use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 
@@ -89,12 +90,12 @@ class DateTimeHelper
         }
 
         $to = $to ?? \time();
-        $to = is_numeric($to)
-            ? new \DateTimeImmutable('@' . $to, wp_timezone())
-            : new \DateTimeImmutable($to, wp_timezone());
-        $from = is_numeric($from)
-            ? new \DateTimeImmutable('@' . $from, wp_timezone())
-            : new \DateTimeImmutable($from, wp_timezone());
+        $to = \is_numeric($to)
+            ? new DateTimeImmutable('@' . $to, \wp_timezone())
+            : new DateTimeImmutable($to, \wp_timezone());
+        $from = \is_numeric($from)
+            ? new DateTimeImmutable('@' . $from, \wp_timezone())
+            : new DateTimeImmutable($from, \wp_timezone());
 
         if ($from < $to) {
             return \sprintf($format_past, \human_time_diff($from->getTimestamp(), $to->getTimestamp()));

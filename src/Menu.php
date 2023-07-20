@@ -270,7 +270,7 @@ class Menu extends CoreEntity
      *
      * @api
      *
-     * @param \WP_Term|null $term A menu slug, the term ID of the menu, the full name from the admin
+     * @param WP_Term|null $term A menu slug, the term ID of the menu, the full name from the admin
      *                            menu, the slug of the registered location or nothing. Passing
      *                            nothing is good if you only have one menu. Timber will grab what
      *                            it finds.

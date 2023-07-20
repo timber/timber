@@ -796,7 +796,7 @@ class ImageHelper
     }
 
     // -- the below methods are just used for unit testing the URL generation code
-//
+    //
     /**
      * @internal
      */

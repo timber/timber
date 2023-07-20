@@ -29,7 +29,7 @@ class CoAuthorsPlusUser extends User
     protected function init($coauthor = false)
     {
         /**
-         * @var \stdClass $coauthor
+         * @var stdClass $coauthor
          */
         parent::init($coauthor);
 

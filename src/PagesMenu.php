@@ -196,7 +196,7 @@ class PagesMenu extends Menu
      *
      * @param WP_Post $post A post object.
      *
-     * @return \WP_Post Updated post object.
+     * @return WP_Post Updated post object.
      */
     protected function pre_setup_nav_menu_item($post)
     {

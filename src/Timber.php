@@ -11,6 +11,7 @@ use Timber\Factory\UserFactory;
 use Timber\Integration\IntegrationInterface;
 
 use WP_Comment;
+use WP_Comment_Query;
 use WP_Post;
 use WP_Query;
 use WP_Term;
@@ -1070,7 +1071,7 @@ class Timber
      * @api
      * @since 2.0.0
      *
-     * @param array|\WP_Comment_Query $query
+     * @param array|WP_Comment_Query $query
      * @param array                   $options Optional. None are currently supported.
      * @return array
      */
