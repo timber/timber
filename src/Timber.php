@@ -1070,11 +1070,11 @@ class Timber
      * @api
      * @since 2.0.0
      *
-     * @param array   $query
-     * @param array   $options optional; none are currently supported
-     * @return mixed
+     * @param array|\WP_Comment_Query $query
+     * @param array                   $options Optional. None are currently supported.
+     * @return array
      */
-    public static function get_comments(array $query = [], array $options = []): iterable
+    public static function get_comments($query = [], array $options = []): iterable
     {
         $factory = new CommentFactory();
         // TODO return a Collection type?

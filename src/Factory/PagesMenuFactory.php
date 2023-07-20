@@ -4,7 +4,6 @@ namespace Timber\Factory;
 
 use Timber\CoreInterface;
 use Timber\PagesMenu;
-use WP_Term;
 
 /**
  * Internal API class for instantiating Menus
@@ -64,7 +63,6 @@ class PagesMenuFactory
     /**
      * Build menu
      *
-     * @param WP_Term $term
      * @param array $args Optional. Args for get_pages().
      * @return CoreInterface
      */

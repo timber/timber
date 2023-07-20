@@ -210,7 +210,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      *
      * @internal
      */
-    protected function __construct()
+    final protected function __construct()
     {
     }
 
@@ -858,9 +858,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * @return array
      * @codeCoverageIgnore
      */
-    public function get_method_values()
+    public function get_method_values(): array
     {
-        $ret = parent::get_method_values();
         $ret['author'] = $this->author();
         $ret['categories'] = $this->categories();
         $ret['category'] = $this->category();
@@ -958,9 +957,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     }
 
     /**
-     * Returns a category attached to a post
+     * Gets a category attached to a post.
      *
-     * If multiple categories are set, it will return just the first one
+     * If multiple categories are set, it will return just the first one.
      *
      * @api
      * @return \Timber\Term|null
@@ -971,6 +970,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         if (\count($cats) && isset($cats[0])) {
             return $cats[0];
         }
+
+        return null;
     }
 
     /**
@@ -1306,6 +1307,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * [`get_the_date`](https://developer.wordpress.org/reference/hooks/get_the_date/) filter to the
      * output.
      *
+     * If you use {{ post.date }} with the |time_ago filter, then make sure that you use a time
+     * format including the full time and not just the date.
+     *
      * @api
      * @example
      * ```twig
@@ -1313,12 +1317,18 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * Published on {{ post.date }}
      * OR
      * Published on {{ post.date('F jS') }}
+     * which was
+     * {{ post.date('U')|time_ago }}
+     * {{ post.date('Y-m-d H:i:s')|time_ago }}
+     * {{ post.date(constant('DATE_ATOM'))|time_ago }}
      * ```
      *
      * ```html
      * Published on January 12, 2015
      * OR
      * Published on Jan 12th
+     * which was
+     * 8 years ago
      * ```
      *
      * @param string|null $date_format Optional. PHP date format. Will use the `date_format` option
@@ -1724,11 +1734,10 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     }
 
     /**
-     * Finds any WP_Post objects and converts them to Timber\Posts
+     * Finds any WP_Post objects and converts them to Timber\Post objects.
      *
      * @api
-     * @param array|WP_Post $data
-     * @param string $class
+     * @param array|\WP_Post $data
      */
     public function convert($data)
     {
@@ -1853,6 +1862,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         if ($tid) {
             return $this->factory()->from($tid);
         }
+
+        return null;
     }
 
     /**
@@ -1890,50 +1901,6 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         $gallery = \reset($galleries);
 
         return \apply_filters('get_post_gallery', $gallery, $this->ID, $galleries);
-    }
-
-    /**
-     * Returns audio tags embedded in the post’s content.
-     *
-     * @api
-     * @example
-     * ```twig
-     * {{ post.audio }}
-     * ```
-     * @return bool|array A list of found HTML embeds.
-     */
-    public function audio()
-    {
-        $audio = false;
-
-        // Only get audio from the content if a playlist isn’t present.
-        if (!\str_contains($this->content(), 'wp-playlist-script')) {
-            $audio = \get_media_embedded_in_content($this->content(), ['audio']);
-        }
-
-        return $audio;
-    }
-
-    /**
-     * Returns video tags embedded in the post’s content.
-     *
-     * @api
-     * @example
-     * ```twig
-     * {{ post.video }}
-     * ```
-     * @return bool|array A list of found HTML embeds.
-     */
-    public function video()
-    {
-        $video = false;
-
-        // Only get video from the content if a playlist isn't present.
-        if (!\str_contains($this->content(), 'wp-playlist-script')) {
-            $video = \get_media_embedded_in_content($this->content(), ['video', 'object', 'embed', 'iframe']);
-        }
-
-        return $video;
     }
 
     protected function get_entity_name()

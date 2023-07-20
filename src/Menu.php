@@ -62,6 +62,14 @@ class Menu extends CoreEntity
     public $name;
 
     /**
+     * Menu slug.
+     *
+     * @api
+     * @var string The menu slug.
+     */
+    public $slug;
+
+    /**
      * @api
      * @var string The name of the menu (ex: `Main Navigation`).
      */
@@ -97,8 +105,15 @@ class Menu extends CoreEntity
     public $theme_location = null;
 
     /**
+     * Sorted menu items.
+     *
+     * @var array
+     */
+    protected $sorted_menu_items = [];
+
+    /**
      * @internal
-     * @param WP_Term   $wp_term the vanilla WP term object to build from
+     * @param WP_Term   $menu The vanilla WordPress term object to build from.
      * @param array      $args Optional. Right now, only the `depth` is
      *                            supported which says how many levels of hierarchy should be
      *                            included in the menu. Default `0`, which is all levels.
@@ -255,20 +270,23 @@ class Menu extends CoreEntity
      *
      * @api
      *
-     * @param int|string $slug    A menu slug, the term ID of the menu, the full name from the admin
+     * @param \WP_Term|null $term A menu slug, the term ID of the menu, the full name from the admin
      *                            menu, the slug of the registered location or nothing. Passing
      *                            nothing is good if you only have one menu. Timber will grab what
      *                            it finds.
-     * @param array      $args Optional. Right now, only the `depth` is
-     *                            supported which says how many levels of hierarchy should be
-     *                            included in the menu. Default `0`, which is all levels.
+     * @param array $args         Optional. Right now, only the `depth` is supported which says how
+     *                            many levels of hierarchy should be included in the menu. Default
+     *                            `0`, which is all levels.
      */
-    protected function __construct(?WP_term $term, array $args)
+    final protected function __construct(?WP_term $term, array $args = [])
     {
         // For future enhancements?
         $this->raw_args = $args;
         $this->args = (object) $args;
-        $this->depth = (int) $this->args->depth;
+
+        if (isset($this->args->depth)) {
+            $this->depth = (int) $this->args->depth;
+        }
 
         if (!$term) {
             return;
@@ -305,7 +323,7 @@ class Menu extends CoreEntity
     /**
      * Convert menu items into MenuItem objects
      *
-     * @param array $items
+     * @param array $menu_items
      * @return MenuItem[]
      */
     protected function convert_menu_items(array $menu_items): array

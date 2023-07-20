@@ -573,16 +573,11 @@ class TestTimberPost extends Timber_UnitTestCase
         global $wpdb;
         $query = "DELETE from $wpdb->users WHERE ID > 1";
         $wpdb->query($query);
-        $query = "truncate $wpdb->term_relationships";
-        $wpdb->query($query);
-        $query = "truncate $wpdb->term_taxonomy";
-        $wpdb->query($query);
-        $query = "truncate $wpdb->terms";
-        $wpdb->query($query);
-        $query = "truncate $wpdb->termmeta";
-        $wpdb->query($query);
-        $query = "truncate $wpdb->posts";
-        $wpdb->query($query);
+        $this->truncate('term_relationships');
+        $this->truncate('term_taxonomy');
+        $this->truncate('terms');
+        $this->truncate('termmeta');
+        $this->truncate('posts');
     }
 
     public function testPostFormat()
@@ -1073,74 +1068,6 @@ class TestTimberPost extends Timber_UnitTestCase
         $post = Timber::get_post($pid);
 
         $this->assertSame(false, $post->gallery());
-    }
-
-    public function testPostWithoutAudio()
-    {
-        $pid = $this->factory->post->create();
-        $post = Timber::get_post($pid);
-
-        $this->assertEquals([], $post->audio());
-    }
-
-    public function testPostWithAudio()
-    {
-        $quote = 'Named must your fear be before banish it you can.';
-        $quote .= '[embed]http://www.noiseaddicts.com/samples_1w72b820/280.mp3[/embed]';
-        $quote .= "No, try not. Do or do not. There is no try.";
-
-        $pid = $this->factory->post->create([
-            'post_content' => $quote,
-        ]);
-        $post = Timber::get_post($pid);
-        $expected = 'http://www.noiseaddicts.com/samples_1w72b820/280.mp3';
-
-        $this->assertStringContainsString($expected, $post->audio()[0]);
-        $this->assertStringStartsWith('<audio', $post->audio()[0]);
-    }
-
-    public function testPostWithAudioCustomField()
-    {
-        $quote = 'Named must your fear be before banish it you can.';
-        $quote .= '[embed]http://www.noiseaddicts.com/samples_1w72b820/280.mp3[/embed]';
-        $quote .= "No, try not. Do or do not. There is no try.";
-
-        $pid = $this->factory->post->create([
-            'post_content' => $quote,
-        ]);
-        update_post_meta($pid, 'audio', 'foo');
-        $expected = 'http://www.noiseaddicts.com/samples_1w72b820/280.mp3';
-        $post = Timber::get_post($pid);
-        $this->assertStringContainsString($expected, $post->audio()[0]);
-        $this->assertStringStartsWith('<audio', $post->audio()[0]);
-    }
-
-    public function testPostWithoutVideo()
-    {
-        $pid = $this->factory->post->create();
-        $post = Timber::get_post($pid);
-
-        $this->assertEquals([], $post->video());
-    }
-
-    public function testPostWithVideo()
-    {
-        $quote = 'Named must your fear be before banish it you can.';
-        $quote .= '[embed]https://www.youtube.com/watch?v=Jf37RalsnEs[/embed]';
-        $quote .= "No, try not. Do or do not. There is no try.";
-
-        $pid = $this->factory->post->create([
-            'post_content' => $quote,
-        ]);
-        $post = Timber::get_post($pid);
-
-        $video = $post->video();
-        if (is_array($video)) {
-            $video = array_shift($video);
-        }
-        $expected = '/<iframe [^>]+ src="https:\/\/www\.youtube\.com\/embed\/Jf37RalsnEs\?feature=oembed" [^>]+>/i';
-        $this->assertMatchesRegularExpression($expected, $video);
-        ;
     }
 
     public function testPathAndLinkWithPort()

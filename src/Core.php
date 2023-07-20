@@ -170,16 +170,4 @@ abstract class Core
         Helper::deprecated('Timber\Core::update()', 'update_metadata()', '2.0.0');
         \update_metadata($this->object_type, $this->ID, $key, $value);
     }
-
-    /**
-     *
-     *
-     * @return array
-     */
-    public function get_method_values()
-    {
-        $ret = [];
-        $ret['can_edit'] = $this->can_edit();
-        return $ret;
-    }
 }

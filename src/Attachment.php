@@ -80,23 +80,6 @@ class Attachment extends Post
     protected $_wp_attached_file;
 
     /**
-     * File types.
-     *
-     * @var array An array of supported relative file types.
-     */
-    private $image_file_types = [
-        'jpg',
-        'jpeg',
-        'png',
-        'svg',
-        'bmp',
-        'ico',
-        'gif',
-        'tiff',
-        'pdf',
-    ];
-
-    /**
      * Gets the src for an attachment.
      *
      * @api

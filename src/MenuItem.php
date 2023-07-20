@@ -103,6 +103,15 @@ class MenuItem extends CoreEntity
      */
     public $object_id = null;
 
+    /**
+     * Object type.
+     *
+     * @api
+     * @since 2.0.0
+     * @var string The underlying menu object type. E.g. a post type name, a taxonomy name or 'custom'.
+     */
+    public $object;
+
     protected $_name;
 
     protected $_menu_item_url;
@@ -123,12 +132,14 @@ class MenuItem extends CoreEntity
      * @param WP_Post $data
      * @param \Timber\Menu $menu The `Timber\Menu` object the menu item is associated with.
      */
-    protected function __construct(WP_Post $data, $menu = null)
+    final protected function __construct(WP_Post $data, $menu = null)
     {
         $this->wp_object = $data;
         $this->menu = $menu;
 
-        $data = (object) $data;
+        /**
+         * @property string $title The nav menu item title.
+         */
         $this->title = $data->title;
 
         $this->import($data);
