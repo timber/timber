@@ -25,6 +25,7 @@ jobs:
       mysql:
         image: mariadb:latest
         env:
+          MYSQL_USER: root
           MYSQL_ALLOW_EMPTY_PASSWORD: true
           MYSQL_ROOT_PASSWORD: ''
           MYSQL_DATABASE: wordpress_test
