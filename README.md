@@ -8,13 +8,16 @@ By
 [Nicolas Lemoine](https://github.com/nlemoine) ([@nlemoine](https://niconico.fr/)),
 [Erik van der Bas](https://github.com/Levdbas) ([website](https://basedonline.nl/)),
 [Coby Tamayo](https://github.com/acobster) ([@cobytamayo](https://keybase.io/acobster)),
-[Upstatement](https://twitter.com/upstatement) and [hundreds of other GitHub contributors](https://github.com/timber/timber/graphs/contributors)
+[Upstatement](https://twitter.com/upstatement) and [hundreds of other GitHub contributors](https://github.com/timber/timber/graphs/contributors):
+
+[![](https://opencollective.com/timber/contributors.svg?width=900&button=false)](https://github.com/timber/timber/graphs/contributors)
 
 [![Build Status](https://img.shields.io/travis/timber/timber/master?style=flat-square)](https://app.travis-ci.com/github/timber/timber/branches)
 [![Coverage Status](https://img.shields.io/coveralls/timber/timber.svg?style=flat-square)](https://coveralls.io/github/timber/timber)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/timber/timber.svg?style=flat-square)](https://scrutinizer-ci.com/g/timber/timber/?branch=master)
 [![Latest Stable Version](https://img.shields.io/packagist/v/timber/timber.svg?style=flat-square)](https://packagist.org/packages/timber/timber)
 [![WordPress Rating](https://img.shields.io/wordpress/plugin/r/timber-library.svg?style=flat-square)](https://wordpress.org/support/plugin/timber-library/reviews/)
+[![!Financial Contributors](https://opencollective.com/timber/tiers/badge.svg)](https://opencollective.com/timber/)
 
 ### Because WordPress is awesome, but the_loop isn't
 Timber helps you create fully-customized WordPress themes faster with more sustainable code. With Timber, you write your HTML using the [Twig Template Engine](https://twig.symfony.com/) separate from your PHP files.
@@ -105,14 +108,12 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * [**Timmy**](https://github.com/MINDKomm/Timmy) Advanced image manipulation for Timber
 
 
-
 #### Projects that use Timber
 * [**Branch**](https://github.com/JeyKeu/branch/) Bootstrap 3 + Timber = Branch starter theme!
 * [**Flynt**](https://flyntwp.com/) a component based WordPress starter theme built on Timber and ACF Pro
 * [**Gantry5**](https://wordpress.org/plugins/gantry5/) a framework for theme development
 * [**Hozokit**](https://github.com/csalmeida/hozokit) a component based starter theme
 * [**Seedling**](https://github.com/maxdmyers/seedling) a starter theme using Bootstrap 4
-
 
 #### Helpful Links
 * [**CSS Tricks**](https://css-tricks.com/timber-and-twig-reignited-my-love-for-wordpress/) introduction to Timber by [@tjFogarty](https://github.com/tjFogarty)
@@ -124,10 +125,38 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 Please post on [StackOverflow under the "Timber" tag](http://stackoverflow.com/questions/tagged/timber). Please use GitHub issues _only_ for specific bugs, feature requests and other types of issues.
 
 #### Should I use it?
-It's MIT-licensed, so please use in personal or commercial work. Just don't re-sell it. Timber is used on [tens of thousands of sites](https://www.upstatement.com/timber/#showcase) (and tons more we don't know about)
+Timber is MIT-licensed, so please use in personal or commercial work. Just don't re-sell it. Timber is used on [tens of thousands of sites](https://www.upstatement.com/timber/#showcase) (and tons more we don't know about)
 
 #### Contributing & Community
 We love PRs! Read the [Contributor Guidelines](https://github.com/timber/timber/blob/master/CONTRIBUTING.md) for more info. Say hello, share your tips/work, and spread the love on Twitter at [@TimberWP](https://twitter.com/TimberWP).
+
+## Sponsor us
+
+Timber wouldn’t be here without the help of countless contributors.
+
+Are you a WordPress pro who relies on Timber? Keep the magic alive by [becoming a sponsor](https://opencollective.com/timber)! Your support helps us enhance and maintain the library. This will benefit developers worldwide.
+
+![](https://opencollective.com/timber/tiers/bronze-sponsor.svg?avatarHeight=36&limit=0&button=true)
+
+### Gold Sponsors
+
+![](https://opencollective.com/timber/tiers/gold-sponsor.svg?avatarHeight=36&button=false)
+
+<!-- Enable when available.
+### Silver Sponsors
+
+![](https://opencollective.com/timber/tiers/sponsors.svg?avatarHeight=36?avatarHeight=36&button=false)
+-->
+
+<!-- Enable when available.
+### Basic Sponsors
+
+![](https://opencollective.com/timber/tiers/bronze-sponsor.svg?avatarHeight=36&button=false)
+-->
+
+### Our backers
+
+![](https://opencollective.com/timber/tiers/backers.svg?avatarHeight=36&button=false)
 
 ## Documentation
 
