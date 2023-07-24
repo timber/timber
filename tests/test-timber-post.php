@@ -178,25 +178,20 @@ class TestTimberPost extends Timber_UnitTestCase
 
     public function testNextCustomTax()
     {
-        $v = get_bloginfo('version');
-        if (version_compare($v, '3.8', '<')) {
-            $this->markTestSkipped('Custom taxonomy prev/next not supported until 3.8');
-        } else {
-            register_taxonomy('pizza', 'post');
-            $posts = [];
-            for ($i = 0; $i < 4; $i++) {
-                $j = $i + 1;
-                $posts[] = $this->factory->post->create([
-                    'post_date' => '2014-02-0' . $j . ' 12:00:00',
-                ]);
-            }
-            wp_set_object_terms($posts[0], 'Cheese', 'pizza', false);
-            wp_set_object_terms($posts[2], 'Cheese', 'pizza', false);
-            wp_set_object_terms($posts[3], 'Mushroom', 'pizza', false);
-            $firstPost = Timber::get_post($posts[0]);
-            $nextPost = Timber::get_post($posts[2]);
-            $this->assertEquals($firstPost->next('pizza')->ID, $nextPost->ID);
+        register_taxonomy('pizza', 'post');
+        $posts = [];
+        for ($i = 0; $i < 4; $i++) {
+            $j = $i + 1;
+            $posts[] = $this->factory->post->create([
+                'post_date' => '2014-02-0' . $j . ' 12:00:00',
+            ]);
         }
+        wp_set_object_terms($posts[0], 'Cheese', 'pizza', false);
+        wp_set_object_terms($posts[2], 'Cheese', 'pizza', false);
+        wp_set_object_terms($posts[3], 'Mushroom', 'pizza', false);
+        $firstPost = Timber::get_post($posts[0]);
+        $nextPost = Timber::get_post($posts[2]);
+        $this->assertEquals($firstPost->next('pizza')->ID, $nextPost->ID);
     }
 
     public function testPrev()
@@ -215,25 +210,20 @@ class TestTimberPost extends Timber_UnitTestCase
 
     public function testPrevCustomTax()
     {
-        $v = get_bloginfo('version');
-        if (version_compare($v, '3.8', '<')) {
-            $this->markTestSkipped('Custom taxonomy prev/next not supported until 3.8');
-        } else {
-            register_taxonomy('pizza', 'post');
-            $posts = [];
-            for ($i = 0; $i < 3; $i++) {
-                $j = $i + 1;
-                $posts[] = $this->factory->post->create([
-                    'post_date' => '2014-02-0' . $j . ' 12:00:00',
-                    'post_title' => "Pizza $j is so good!",
-                ]);
-            }
-            $cat = wp_insert_term('Cheese', 'pizza');
-            self::set_object_terms($posts[0], $cat, 'pizza', false);
-            self::set_object_terms($posts[2], $cat, 'pizza', false);
-            $lastPost = Timber::get_post($posts[2]);
-            $this->assertEquals($posts[0], $lastPost->prev('pizza')->ID);
+        register_taxonomy('pizza', 'post');
+        $posts = [];
+        for ($i = 0; $i < 3; $i++) {
+            $j = $i + 1;
+            $posts[] = $this->factory->post->create([
+                'post_date' => '2014-02-0' . $j . ' 12:00:00',
+                'post_title' => "Pizza $j is so good!",
+            ]);
         }
+        $cat = wp_insert_term('Cheese', 'pizza');
+        self::set_object_terms($posts[0], $cat, 'pizza', false);
+        self::set_object_terms($posts[2], $cat, 'pizza', false);
+        $lastPost = Timber::get_post($posts[2]);
+        $this->assertEquals($posts[0], $lastPost->prev('pizza')->ID);
     }
 
     public function testPrevCategory()

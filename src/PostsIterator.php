@@ -45,7 +45,6 @@ class PostsIterator extends ArrayIterator
         $wp_post = parent::current();
 
         // Lazily instantiate a Timber\Post instance exactly once.
-        // @todo maybe improve performance by caching the instantiated post.
         $post = $factory->from($wp_post);
         $post->setup();
 

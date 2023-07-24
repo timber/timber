@@ -357,8 +357,6 @@ class Twig
 
             /**
              * Date and Time filters.
-             *
-             * @todo copy this formatting to other functions
              */
             'date' => [
                 'callable' => [$this, 'twig_date_format_filter'],

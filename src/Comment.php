@@ -564,7 +564,6 @@ class Comment extends CoreEntity
 
     /**
      * @internal
-     * @todo  what if it's relative?
      * @param string $default
      * @param string $email
      * @param string $size

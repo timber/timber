@@ -164,14 +164,13 @@ class TestTimberPostArrayObject extends Timber_UnitTestCase
             'post_date' => '2020-01-03',
         ]);
 
-        // @todo once the Posts API uses Factories, simplify this to Timber::get_posts([...])
-        $wp_query = new WP_Query('post_type=post');
+        $posts = Timber::get_posts([
+            'post_type' => 'post',
+        ]);
 
-        $collection = new PostArrayObject($wp_query->posts);
-
-        $this->assertEquals('Post 0', $collection[0]->title());
-        $this->assertEquals('Post 1', $collection[1]->title());
-        $this->assertEquals('Post 2', $collection[2]->title());
+        $this->assertEquals('Post 0', $posts[0]->title());
+        $this->assertEquals('Post 1', $posts[1]->title());
+        $this->assertEquals('Post 2', $posts[2]->title());
     }
 
     public function testIterationWithClassMaps()

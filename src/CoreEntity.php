@@ -145,7 +145,6 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
                 $args
             );
 
-            // @todo Remove when deprecated filters will be gone
             if ($object_type !== 'term') {
                 /**
                  * Filters the value for a post meta field before it is fetched from the database.
@@ -236,7 +235,6 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
                 $args
             );
 
-            // @todo Remove when deprecated filters will be gone
             if ($object_type === 'term') {
                 /**
                  * Filters the value for a term meta field.

@@ -199,7 +199,7 @@ class Loader
         /**
          * Filters …
          *
-         * @todo       Add summary
+         * @todo Add summary
          *
          * @deprecated 2.0.0, use `timber/output`
          */
@@ -588,7 +588,6 @@ class Loader
         $twig = $this->get_twig();
 
         // Get the configured cache location.
-        // @todo What if this is a custom caching implementation?
         $cache_location = $twig->getCache(true);
 
         // Cache not activated.
@@ -597,7 +596,6 @@ class Loader
         }
 
         if (\is_string($cache_location) && \is_dir($cache_location)) {
-            // @todo What if not all files could be deleted?
             self::rrmdir($cache_location);
             return true;
         }
