@@ -23,7 +23,7 @@ jobs:
 
     services:
       mysql:
-        image: mariadb:10
+        image: mariadb:latest
         env:
           MYSQL_USER: root
           MYSQL_ALLOW_EMPTY_PASSWORD: true
@@ -31,7 +31,7 @@ jobs:
           MYSQL_DATABASE: wordpress_test
         ports:
           - 3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: --health-cmd="healthcheck.sh --connect --innodb_initialized" --health-interval=10s --health-timeout=5s --health-retries=3
 
     continue-on-error: ${{ matrix.experimental }}
     strategy:
