@@ -90,8 +90,7 @@ class TestTimberTerm extends Timber_UnitTestCase
             'name' => 'Zong',
             'taxonomy' => 'arts',
         ]);
-        // @todo #2087 get this to work w/o $taxonomy param
-        $term = Timber::get_term($term_id, '');
+        $term = Timber::get_term($term_id);
         $this->assertEquals('Zong', $term->title());
         $template = '{% set zp_term = get_term("' . $term->ID . '", "arts") %}{{ zp_term.name }}';
         $string = Timber::compile_string($template);
@@ -552,8 +551,7 @@ class TestTimberTerm extends Timber_UnitTestCase
             'taxonomy' => 'category',
         ]);
 
-        // @todo #2087 get this to work w/o $taxonomy param
-        $term = Timber::get_term($parent_id, '');
+        $term = Timber::get_term($parent_id);
         $children = $term->children();
         $this->assertSame(2, count($children));
         $this->assertEquals('Local', $children[0]->name);
@@ -569,8 +567,7 @@ class TestTimberTerm extends Timber_UnitTestCase
             'taxonomy' => 'category',
         ]);
         add_term_meta($tid, 'foo', 'bar');
-        // @todo #2087 get this to work w/o $taxonomy param
-        $term = Timber::get_term($tid, '');
+        $term = Timber::get_term($tid);
         $template = '{{term.foo}}';
         $compiled = Timber::compile_string($template, [
             'term' => $term,
@@ -588,8 +585,7 @@ class TestTimberTerm extends Timber_UnitTestCase
             'taxonomy' => 'category',
         ]);
         add_term_meta($tid, 'foo', false);
-        // @todo #2087 get this to work w/o $taxonomy param
-        $term = Timber::get_term($tid, '');
+        $term = Timber::get_term($tid);
         $this->assertSame('', $term->meta('foo'));
     }
 
@@ -611,8 +607,7 @@ class TestTimberTerm extends Timber_UnitTestCase
         $valid_wp_native_value = get_term_meta($tid, 'bar', true);
         $valid_acf_native_value = get_field('bar', 'category_' . $tid);
 
-        // @todo #2087 get this to work w/o $taxonomy param
-        $term = Timber::get_term($tid, '');
+        $term = Timber::get_term($tid);
 
         //test baseline "bar" data
         $this->assertEquals('qux', $valid_wp_native_value);
@@ -633,8 +628,7 @@ class TestTimberTerm extends Timber_UnitTestCase
             'name' => 'News',
             'taxonomy' => 'category',
         ]);
-        // @todo #2087 get this to work w/o $taxonomy param
-        $term = Timber::get_term($tid, '');
+        $term = Timber::get_term($tid);
         $links = [];
 
         $links[] = 'http://example.org/wp-admin/term.php?taxonomy=category&tag_ID=' . $tid . '&post_type=post';

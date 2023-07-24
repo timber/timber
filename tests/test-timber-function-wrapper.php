@@ -56,18 +56,6 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase
         $this->assertEquals('bar!', trim($str));
     }
 
-    public function testSoloFunctionUsingWrapper()
-    {
-        if (version_compare(Timber::$version, 2.0, '>=')) {
-            return $this->markTestSkipped(
-                'This functionality is disabled in Timber 2.0'
-            );
-        }
-        new Timber\FunctionWrapper('my_boo');
-        $str = Timber::compile_string("{{ my_boo() }}");
-        $this->assertEquals('bar!', trim($str));
-    }
-
     public function testNakedSoloFunction()
     {
         add_filter('timber/twig', function ($twig) {
