@@ -187,10 +187,10 @@ class PostExcerpt
          *                         when you look at the `$options` parameter for
          *                        [PostExcerpt::__construct()](https://timber.github.io/docs/v2/reference/timber-postexcerpt/#__construct).
          */
-        $defaults = apply_filters('timber/post/excerpt/defaults', $defaults);
+        $defaults = \apply_filters('timber/post/excerpt/defaults', $defaults);
 
         // Set up excerpt defaults.
-        $options = wp_parse_args($options, $defaults);
+        $options = \wp_parse_args($options, $defaults);
 
         // Set excerpt properties
         $this->length = $options['words'];
@@ -338,16 +338,16 @@ class PostExcerpt
      */
     protected function assemble($text, $args = [])
     {
-        $text = trim($text);
-        $last = $text[strlen($text) - 1];
+        $text = \trim($text);
+        $last = $text[\strlen($text) - 1];
         $last_p_tag = null;
         if ($last != '.' && ($this->always_add_end || $args['add_end'])) {
             $text .= $this->end;
         }
         if (!$this->strip) {
-            $last_p_tag = strrpos($text, '</p>');
+            $last_p_tag = \strrpos($text, '</p>');
             if ($last_p_tag !== false) {
-                $text = substr($text, 0, $last_p_tag);
+                $text = \substr($text, 0, $last_p_tag);
             }
             if ($last != '.' && ($this->always_add_end || $args['add_end'])) {
                 $text .= $this->end . ' ';
@@ -370,7 +370,7 @@ class PostExcerpt
              *
              * @param string $class The CSS class to use for the excerpt link. Default `read-more`.
              */
-            $read_more_class = apply_filters('timber/post/excerpt/read_more_class', 'read-more');
+            $read_more_class = \apply_filters('timber/post/excerpt/read_more_class', 'read-more');
 
             /**
              * Filters the CSS class used for excerpt links.
@@ -378,16 +378,16 @@ class PostExcerpt
              * @deprecated 2.0.0
              * @since 1.0.4
              */
-            $read_more_class = apply_filters_deprecated(
+            $read_more_class = \apply_filters_deprecated(
                 'timber/post/preview/read_more_class',
                 [$read_more_class],
                 '2.0.0',
                 'timber/post/excerpt/read_more_class'
             );
 
-            $linktext = trim($this->read_more);
+            $linktext = \trim($this->read_more);
 
-            $link = sprintf(
+            $link = \sprintf(
                 ' <a href="%1$s" class="%2$s">%3$s</a>',
                 $this->post->link(),
                 $read_more_class,
@@ -403,7 +403,7 @@ class PostExcerpt
              * @param string       $linktext        The link text.
              * @param string       $read_more_class The CSS class name.
              */
-            $link = apply_filters(
+            $link = \apply_filters(
                 'timber/post/excerpt/read_more_link',
                 $link,
                 $this->post,
@@ -418,7 +418,7 @@ class PostExcerpt
              * @since 1.1.3
              * @ticket #1142
              */
-            $link = apply_filters_deprecated(
+            $link = \apply_filters_deprecated(
                 'timber/post/get_preview/read_more_link',
                 [$link],
                 '2.0.0',
@@ -428,26 +428,26 @@ class PostExcerpt
             $text .= $link;
         }
 
-        if (!$this->strip && $last_p_tag && (strpos($text, '<p>') > -1 || strpos($text, '<p '))) {
+        if (!$this->strip && $last_p_tag && (\strpos($text, '<p>') > -1 || \strpos($text, '<p '))) {
             $text .= '</p>';
         }
-        return trim($text);
+        return \trim($text);
     }
 
     protected function run()
     {
-        $allowable_tags = ($this->strip && is_string($this->strip)) ? $this->strip : false;
+        $allowable_tags = ($this->strip && \is_string($this->strip)) ? $this->strip : false;
         $readmore_matches = [];
         $text = '';
         $add_read_more = false;
         $add_end = false;
 
         // A user-specified excerpt is authoritative, so check that first.
-        if (isset($this->post->post_excerpt) && strlen($this->post->post_excerpt)) {
+        if (isset($this->post->post_excerpt) && \strlen($this->post->post_excerpt)) {
             $text = $this->post->post_excerpt;
             if ($this->force) {
                 if ($allowable_tags) {
-                    $text = TextHelper::trim_words($text, $this->length, false, strtr($allowable_tags, '<>', '  '));
+                    $text = TextHelper::trim_words($text, $this->length, false, \strtr($allowable_tags, '<>', '  '));
                 } else {
                     $text = TextHelper::trim_words($text, $this->length, false);
                 }
@@ -462,8 +462,8 @@ class PostExcerpt
         }
 
         // Check for <!-- more --> tag in post content.
-        if (empty($text) && preg_match('/<!--\s?more(.*?)?-->/', $this->post->post_content, $readmore_matches)) {
-            $pieces = explode($readmore_matches[0], $this->post->post_content);
+        if (empty($text) && \preg_match('/<!--\s?more(.*?)?-->/', $this->post->post_content, $readmore_matches)) {
+            $pieces = \explode($readmore_matches[0], $this->post->post_content);
             $text = $pieces[0];
 
             $add_read_more = true;
@@ -476,12 +476,12 @@ class PostExcerpt
              * not a duck.
              */
             if (!empty($readmore_matches[1])) {
-                $this->read_more = trim($readmore_matches[1]);
+                $this->read_more = \trim($readmore_matches[1]);
             }
 
             if ($this->force) {
                 if ($allowable_tags) {
-                    $text = TextHelper::trim_words($text, $this->length, false, strtr($allowable_tags, '<>', '  '));
+                    $text = TextHelper::trim_words($text, $this->length, false, \strtr($allowable_tags, '<>', '  '));
                 } else {
                     $text = TextHelper::trim_words($text, $this->length, false);
                 }
@@ -492,41 +492,41 @@ class PostExcerpt
                 $add_end = true;
             }
 
-            $text = do_shortcode($text);
+            $text = \do_shortcode($text);
         }
 
         // Build an excerpt text from the post’s content.
         if (empty($text)) {
             $text = $this->post->content();
             $text = TextHelper::remove_tags($text, $this->destroy_tags);
-            $text_before_trim = trim($text);
+            $text_before_trim = \trim($text);
             $text_before_char_trim = '';
 
             if ($allowable_tags) {
-                $text = TextHelper::trim_words($text, $this->length, false, strtr($allowable_tags, '<>', '  '));
+                $text = TextHelper::trim_words($text, $this->length, false, \strtr($allowable_tags, '<>', '  '));
             } else {
                 $text = TextHelper::trim_words($text, $this->length, false);
             }
 
             if ($this->char_length !== false) {
-                $text_before_char_trim = trim($text);
+                $text_before_char_trim = \trim($text);
                 $text = TextHelper::trim_characters($text, $this->char_length, false);
             }
 
-            $has_trimmed_words = strlen($text) < strlen($text_before_trim);
+            $has_trimmed_words = \strlen($text) < \strlen($text_before_trim);
             $has_trimmed_chars = !empty($text_before_char_trim)
-                && strlen($text) < strlen($text_before_char_trim);
+                && \strlen($text) < \strlen($text_before_char_trim);
 
             if ($has_trimmed_words || $has_trimmed_chars) {
                 $add_end = true;
                 $add_read_more = true;
             }
         }
-        if (empty(trim($text))) {
-            return trim($text);
+        if (empty(\trim($text))) {
+            return \trim($text);
         }
         if ($this->strip) {
-            $text = trim(strip_tags($text, $allowable_tags));
+            $text = \trim(\strip_tags($text, $allowable_tags));
         }
         if (!empty($text)) {
             return $this->assemble($text, [
@@ -535,6 +535,6 @@ class PostExcerpt
             ]);
         }
 
-        return trim($text);
+        return \trim($text);
     }
 }

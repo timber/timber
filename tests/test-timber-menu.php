@@ -1052,7 +1052,7 @@ class TestTimberMenu extends Timber_UnitTestCase
         $this->go_to(home_url('/child-page'));
 
         // To check if the filter is applied
-        $this->add_filter_temporarily('nav_menu_item_title', function ($title, \WP_Post $item) {
+        $this->add_filter_temporarily('nav_menu_item_title', function ($title, WP_Post $item) {
             if ($item->title !== 'Home') {
                 return $title;
             }

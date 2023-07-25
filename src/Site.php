@@ -35,7 +35,7 @@ class Site extends Core implements CoreInterface
      *
      * @since 2.0.0
      *
-     * @var \WP_Site|null Will only be filled in multisite environments. Otherwise `null`.
+     * @var WP_Site|null Will only be filled in multisite environments. Otherwise `null`.
      */
     protected ?WP_Site $wp_object;
 
@@ -162,11 +162,11 @@ class Site extends Core implements CoreInterface
      */
     public function __construct($site_name_or_id = null)
     {
-        if (is_multisite()) {
+        if (\is_multisite()) {
             $blog_id = self::switch_to_blog($site_name_or_id);
             $this->init();
             $this->init_as_multisite($blog_id);
-            restore_current_blog();
+            \restore_current_blog();
         } else {
             $this->init();
             $this->init_as_singlesite();
@@ -178,7 +178,7 @@ class Site extends Core implements CoreInterface
      *
      * @since 2.0.0
      *
-     * @return \WP_Site|null Will only return a `WP_Site` object in multisite environments. Otherwise `null`.
+     * @return WP_Site|null Will only return a `WP_Site` object in multisite environments. Otherwise `null`.
      */
     public function wp_object(): ?WP_Site
     {
@@ -194,10 +194,10 @@ class Site extends Core implements CoreInterface
     protected static function switch_to_blog($site_name_or_id)
     {
         if ($site_name_or_id === null) {
-            $site_name_or_id = get_current_blog_id();
+            $site_name_or_id = \get_current_blog_id();
         }
-        $info = get_blog_details($site_name_or_id);
-        switch_to_blog($info->blog_id);
+        $info = \get_blog_details($site_name_or_id);
+        \switch_to_blog($info->blog_id);
         return $info->blog_id;
     }
 
@@ -207,7 +207,7 @@ class Site extends Core implements CoreInterface
      */
     protected function init_as_multisite($site_id)
     {
-        $wp_site = get_blog_details($site_id);
+        $wp_site = \get_blog_details($site_id);
         $this->import($wp_site);
         $this->ID = $wp_site->blog_id;
         $this->id = $this->ID;
@@ -215,10 +215,10 @@ class Site extends Core implements CoreInterface
         $this->wp_object = $wp_site ?: null;
         $this->name = $this->blogname;
         $this->title = $this->blogname;
-        $theme_slug = get_blog_option($wp_site->blog_id, 'stylesheet');
+        $theme_slug = \get_blog_option($wp_site->blog_id, 'stylesheet');
         $this->theme = new Theme($theme_slug);
-        $this->description = get_blog_option($wp_site->blog_id, 'blogdescription');
-        $this->admin_email = get_blog_option($wp_site->blog_id, 'admin_email');
+        $this->description = \get_blog_option($wp_site->blog_id, 'blogdescription');
+        $this->admin_email = \get_blog_option($wp_site->blog_id, 'admin_email');
         $this->multisite = true;
     }
 
@@ -231,10 +231,10 @@ class Site extends Core implements CoreInterface
         // No WP_Site object available in single site environments.
         $this->wp_object = null;
 
-        $this->admin_email = get_bloginfo('admin_email');
-        $this->name = get_bloginfo('name');
+        $this->admin_email = \get_bloginfo('admin_email');
+        $this->name = \get_bloginfo('name');
         $this->title = $this->name;
-        $this->description = get_bloginfo('description');
+        $this->description = \get_bloginfo('description');
         $this->theme = new Theme();
         $this->multisite = false;
     }
@@ -245,16 +245,16 @@ class Site extends Core implements CoreInterface
      */
     protected function init()
     {
-        $this->url = home_url();
+        $this->url = \home_url();
         $this->home_url = $this->url;
-        $this->site_url = site_url();
-        $this->rdf = get_bloginfo('rdf_url');
-        $this->rss = get_bloginfo('rss_url');
-        $this->rss2 = get_bloginfo('rss2_url');
-        $this->atom = get_bloginfo('atom_url');
-        $this->language = get_locale();
-        $this->charset = get_bloginfo('charset');
-        $this->pingback = $this->pingback_url = get_bloginfo('pingback_url');
+        $this->site_url = \site_url();
+        $this->rdf = \get_bloginfo('rdf_url');
+        $this->rss = \get_bloginfo('rss_url');
+        $this->rss2 = \get_bloginfo('rss2_url');
+        $this->atom = \get_bloginfo('atom_url');
+        $this->language = \get_locale();
+        $this->charset = \get_bloginfo('charset');
+        $this->pingback = $this->pingback_url = \get_bloginfo('pingback_url');
     }
 
     /**
@@ -263,7 +263,7 @@ class Site extends Core implements CoreInterface
      */
     public function language_attributes()
     {
-        return get_language_attributes();
+        return \get_language_attributes();
     }
 
     /**
@@ -282,10 +282,10 @@ class Site extends Core implements CoreInterface
     public function __get($option)
     {
         if (!isset($this->$option)) {
-            if (is_multisite()) {
-                $this->$option = get_blog_option($this->ID, $option);
+            if (\is_multisite()) {
+                $this->$option = \get_blog_option($this->ID, $option);
             } else {
-                $this->$option = get_option($option);
+                $this->$option = \get_option($option);
             }
         }
 
@@ -329,10 +329,10 @@ class Site extends Core implements CoreInterface
      */
     public function icon()
     {
-        if (is_multisite()) {
+        if (\is_multisite()) {
             return $this->icon_multisite($this->ID);
         }
-        $iid = get_option('site_icon');
+        $iid = \get_option('site_icon');
         if ($iid) {
             return Timber::get_post($iid);
         }
@@ -344,11 +344,11 @@ class Site extends Core implements CoreInterface
     {
         $image = null;
         $blog_id = self::switch_to_blog($site_id);
-        $iid = get_blog_option($blog_id, 'site_icon');
+        $iid = \get_blog_option($blog_id, 'site_icon');
         if ($iid) {
             $image = Timber::get_post($iid);
         }
-        restore_current_blog();
+        \restore_current_blog();
         return $image;
     }
 
@@ -397,7 +397,7 @@ class Site extends Core implements CoreInterface
          * @param int          $site_id The site ID.
          * @param \Timber\Site $site    The site object.
          */
-        $value = apply_filters('timber/site/update_option', $value, $key, $this->ID, $this);
+        $value = \apply_filters('timber/site/update_option', $value, $key, $this->ID, $this);
 
         /**
          * Filters a value before it is updated in the site options.
@@ -405,17 +405,17 @@ class Site extends Core implements CoreInterface
          * @deprecated 2.0.0, use `timber/site/update_option`
          * @since 0.20.0
          */
-        $value = apply_filters_deprecated(
+        $value = \apply_filters_deprecated(
             'timber_site_set_meta',
             [$value, $key, $this->ID, $this],
             '2.0.0',
             'timber/site/update_option'
         );
 
-        if (is_multisite()) {
-            update_blog_option($this->ID, $key, $value);
+        if (\is_multisite()) {
+            \update_blog_option($this->ID, $key, $value);
         } else {
-            update_option($key, $value);
+            \update_option($key, $value);
         }
         $this->$key = $value;
     }

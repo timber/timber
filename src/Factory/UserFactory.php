@@ -2,9 +2,10 @@
 
 namespace Timber\Factory;
 
+use InvalidArgumentException;
 use Timber\CoreInterface;
-use Timber\User;
 
+use Timber\User;
 use WP_User;
 use WP_User_Query;
 
@@ -36,7 +37,7 @@ class UserFactory
      */
     public function from($params)
     {
-        if (is_int($params) || is_string($params) && is_numeric($params)) {
+        if (\is_int($params) || \is_string($params) && \is_numeric($params)) {
             return $this->from_id($params);
         }
 
@@ -44,17 +45,17 @@ class UserFactory
             return $this->from_wp_user_query($params);
         }
 
-        if (is_object($params)) {
+        if (\is_object($params)) {
             // assume we have some kind of WP user object, Timber or otherwise
             return $this->from_user_object($params);
         }
 
         if ($this->is_numeric_array($params)) {
             // we have a numeric array of objects and/or IDs
-            return array_map([$this, 'from'], $params);
+            return \array_map([$this, 'from'], $params);
         }
 
-        if (is_array($params)) {
+        if (\is_array($params)) {
             // we have a query array to be passed to WP_User_Query::__construct()
             return $this->from_wp_user_query(new WP_User_Query($params));
         }
@@ -64,7 +65,7 @@ class UserFactory
 
     protected function from_id(int $id)
     {
-        $wp_user = get_user_by('id', $id);
+        $wp_user = \get_user_by('id', $id);
 
         return $wp_user ? $this->build($wp_user) : null;
     }
@@ -80,15 +81,15 @@ class UserFactory
             return $this->build($obj);
         }
 
-        throw new \InvalidArgumentException(sprintf(
+        throw new InvalidArgumentException(\sprintf(
             'Expected an instance of Timber\CoreInterface or WP_User, got %s',
-            get_class($obj)
+            \get_class($obj)
         ));
     }
 
     protected function from_wp_user_query(WP_User_Query $query): iterable
     {
-        return array_map([$this, 'build'], $query->get_results());
+        return \array_map([$this, 'build'], $query->get_results());
     }
 
     protected function build(WP_User $user): CoreInterface
@@ -118,21 +119,21 @@ class UserFactory
          * ```
          *
          * @param string   $class The name of the class. Default `Timber\User`.
-         * @param \WP_User $user  The `WP_User` object that is used as the base for the
+         * @param WP_User $user  The `WP_User` object that is used as the base for the
          *                        `Timber\User` object.
          */
-        $class = apply_filters('timber/user/class', User::class, $user);
+        $class = \apply_filters('timber/user/class', User::class, $user);
 
         return $class::build($user);
     }
 
     protected function is_numeric_array($arr)
     {
-        if (!is_array($arr)) {
+        if (!\is_array($arr)) {
             return false;
         }
-        foreach (array_keys($arr) as $k) {
-            if (!is_int($k)) {
+        foreach (\array_keys($arr) as $k) {
+            if (!\is_int($k)) {
                 return false;
             }
         }

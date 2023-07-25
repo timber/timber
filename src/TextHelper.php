@@ -28,8 +28,8 @@ class TextHelper
      */
     public static function trim_characters($text, $num_chars = 60, $more = '&hellip;')
     {
-        $text = wp_strip_all_tags($text);
-        $text = mb_strimwidth($text, 0, $num_chars, $more);
+        $text = \wp_strip_all_tags($text);
+        $text = \mb_strimwidth($text, 0, $num_chars, $more);
         return $text;
     }
 
@@ -44,7 +44,7 @@ class TextHelper
     public static function trim_words($text, $num_words = 55, $more = null, $allowed_tags = 'p a span b i br blockquote')
     {
         if (null === $more) {
-            $more = __('&hellip;');
+            $more = \__('&hellip;');
         }
         $original_text = $text;
 
@@ -61,36 +61,36 @@ class TextHelper
          * @param string $allowed_tags Allowed tags, separated by one whitespace.
          *                             Default `p a span b i br blockquote`.
          */
-        $allowed_tags_array = explode(' ', apply_filters('timber/trim_words/allowed_tags', $allowed_tags));
-        $allowed_tags_array = array_filter($allowed_tags_array, function ($value) {
+        $allowed_tags_array = \explode(' ', \apply_filters('timber/trim_words/allowed_tags', $allowed_tags));
+        $allowed_tags_array = \array_filter($allowed_tags_array, function ($value) {
             return $value !== '';
         });
-        $allowed_tag_string = '<' . implode('><', $allowed_tags_array) . '>';
+        $allowed_tag_string = '<' . \implode('><', $allowed_tags_array) . '>';
 
-        $text = strip_tags($text, $allowed_tag_string);
+        $text = \strip_tags($text, $allowed_tag_string);
         /*
         * translators: If your word count is based on single characters (e.g. East Asian characters),
         * enter 'characters_excluding_spaces' or 'characters_including_spaces'. Otherwise, enter 'words'.
         * Do not translate into your own language.
         */
-        if ('characters' == _x('words', 'Word count type. Do not translate!') && preg_match('/^utf\-?8$/i', get_option('blog_charset'))) {
-            $text = trim(preg_replace("/[\n\r\t ]+/", ' ', $text), ' ');
-            preg_match_all('/./u', $text, $words_array);
-            $words_array = array_slice($words_array[0], 0, $num_words + 1);
+        if ('characters' == \_x('words', 'Word count type. Do not translate!') && \preg_match('/^utf\-?8$/i', \get_option('blog_charset'))) {
+            $text = \trim(\preg_replace("/[\n\r\t ]+/", ' ', $text), ' ');
+            \preg_match_all('/./u', $text, $words_array);
+            $words_array = \array_slice($words_array[0], 0, $num_words + 1);
             $sep = '';
         } else {
-            $words_array = preg_split("/[\n\r\t ]+/", $text, $num_words + 1, PREG_SPLIT_NO_EMPTY);
+            $words_array = \preg_split("/[\n\r\t ]+/", $text, $num_words + 1, PREG_SPLIT_NO_EMPTY);
             $sep = ' ';
         }
-        if (count($words_array) > $num_words) {
-            array_pop($words_array);
-            $text = implode($sep, $words_array);
+        if (\count($words_array) > $num_words) {
+            \array_pop($words_array);
+            $text = \implode($sep, $words_array);
             $text = $text . $more;
         } else {
-            $text = implode($sep, $words_array);
+            $text = \implode($sep, $words_array);
         }
         $text = self::close_tags($text);
-        return apply_filters('wp_trim_words', $text, $num_words, $more, $original_text);
+        return \apply_filters('wp_trim_words', $text, $num_words, $more, $original_text);
     }
 
     /**
@@ -103,7 +103,7 @@ class TextHelper
      */
     public static function remove_tags($string, $tags = [])
     {
-        return preg_replace('#<(' . implode('|', $tags) . ')(?:[^>]+)?>.*?</\1>#s', '', $string);
+        return \preg_replace('#<(' . \implode('|', $tags) . ')(?:[^>]+)?>.*?</\1>#s', '', $string);
     }
 
     /**
@@ -115,27 +115,27 @@ class TextHelper
     public static function close_tags($html)
     {
         //put all opened tags into an array
-        preg_match_all('#<([a-z]+)(?: .*)?(?<![/|/ ])>#iU', $html, $result);
+        \preg_match_all('#<([a-z]+)(?: .*)?(?<![/|/ ])>#iU', $html, $result);
         $openedtags = $result[1];
         //put all closed tags into an array
-        preg_match_all('#</([a-z]+)>#iU', $html, $result);
+        \preg_match_all('#</([a-z]+)>#iU', $html, $result);
         $closedtags = $result[1];
-        $len_opened = count($openedtags);
+        $len_opened = \count($openedtags);
         // all tags are closed
-        if (count($closedtags) == $len_opened) {
+        if (\count($closedtags) == $len_opened) {
             return $html;
         }
-        $openedtags = array_reverse($openedtags);
+        $openedtags = \array_reverse($openedtags);
         // close tags
         for ($i = 0; $i < $len_opened; $i++) {
-            if (!in_array($openedtags[$i], $closedtags)) {
+            if (!\in_array($openedtags[$i], $closedtags)) {
                 $html .= '</' . $openedtags[$i] . '>';
             } else {
-                unset($closedtags[array_search($openedtags[$i], $closedtags)]);
+                unset($closedtags[\array_search($openedtags[$i], $closedtags)]);
             }
         }
-        $html = str_replace(['</br>', '</hr>', '</wbr>'], '', $html);
-        $html = str_replace(['<br>', '<hr>', '<wbr>'], ['<br />', '<hr />', '<wbr />'], $html);
+        $html = \str_replace(['</br>', '</hr>', '</wbr>'], '', $html);
+        $html = \str_replace(['<br>', '<hr>', '<wbr>'], ['<br />', '<hr />', '<wbr />'], $html);
         return $html;
     }
 }

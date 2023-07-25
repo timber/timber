@@ -34,21 +34,21 @@ class PathHelper
         $options = PATHINFO_DIRNAME |
         PATHINFO_BASENAME | PATHINFO_EXTENSION | PATHINFO_FILENAME
     ) {
-        $info = pathinfo(
-            str_replace(
+        $info = \pathinfo(
+            \str_replace(
                 ['%2F', '%5C'],
                 ['/', '\\'],
-                rawurlencode($path)
+                \rawurlencode($path)
             ),
             $options
         );
 
-        if (is_array($info)) {
+        if (\is_array($info)) {
             // Decode all keys in the array.
-            return array_map('rawurldecode', $info);
+            return \array_map('rawurldecode', $info);
         } else {
             // Decode the string when requesting a single path component.
-            return rawurldecode($info);
+            return \rawurldecode($info);
         }
     }
 
@@ -70,9 +70,9 @@ class PathHelper
      */
     public static function basename($path, $suffix = '')
     {
-        return rawurldecode(
-            basename(
-                str_replace(['%2F', '%5C'], '/', rawurlencode($path)),
+        return \rawurldecode(
+            \basename(
+                \str_replace(['%2F', '%5C'], '/', \rawurlencode($path)),
                 $suffix
             )
         );

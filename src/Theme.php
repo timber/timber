@@ -77,7 +77,7 @@ class Theme extends Core implements JsonSerializable
     public $uri;
 
     /**
-     * @var \WP_Theme the underlying WordPress native Theme object
+     * @var WP_Theme the underlying WordPress native Theme object
      */
     private $theme;
 
@@ -117,7 +117,7 @@ class Theme extends Core implements JsonSerializable
      */
     protected function init($slug = null)
     {
-        $this->theme = wp_get_theme($slug);
+        $this->theme = \wp_get_theme($slug);
         $this->name = $this->theme->get('Name');
         $this->version = $this->theme->get('Version');
         $this->slug = $this->theme->get_stylesheet();
@@ -160,7 +160,7 @@ class Theme extends Core implements JsonSerializable
      */
     public function theme_mod($name, $default = false)
     {
-        return get_theme_mod($name, $default);
+        return \get_theme_mod($name, $default);
     }
 
     /**
@@ -169,7 +169,7 @@ class Theme extends Core implements JsonSerializable
      */
     public function theme_mods()
     {
-        return get_theme_mods();
+        return \get_theme_mods();
     }
 
     /**

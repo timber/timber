@@ -48,7 +48,7 @@ class Letterbox extends ImageOperation
         if (!$color) {
             $color = 'trans';
         }
-        $color = str_replace('#', '', $color);
+        $color = \str_replace('#', '', $color);
         $newbase = $src_filename . '-lbox-' . $this->w . 'x' . $this->h . '-' . $color;
         $new_name = $newbase . '.' . $src_extension;
         return $new_name;
@@ -74,18 +74,18 @@ class Letterbox extends ImageOperation
         $w = $this->w;
         $h = $this->h;
 
-        $bg = imagecreatetruecolor($w, $h);
+        $bg = \imagecreatetruecolor($w, $h);
         if (!$this->color) {
-            imagesavealpha($bg, true);
-            $bgColor = imagecolorallocatealpha($bg, 0, 0, 0, 127);
+            \imagesavealpha($bg, true);
+            $bgColor = \imagecolorallocatealpha($bg, 0, 0, 0, 127);
         } else {
             $c = self::hexrgb($this->color);
-            $bgColor = imagecolorallocate($bg, $c['red'], $c['green'], $c['blue']);
+            $bgColor = \imagecolorallocate($bg, $c['red'], $c['green'], $c['blue']);
         }
 
-        imagefill($bg, 0, 0, $bgColor);
-        $image = wp_get_image_editor($load_filename);
-        if (!is_wp_error($image)) {
+        \imagefill($bg, 0, 0, $bgColor);
+        $image = \wp_get_image_editor($load_filename);
+        if (!\is_wp_error($image)) {
             $current_size = $image->get_size();
             $quality = $image->get_quality();
             $ow = $current_size['width'];
@@ -120,14 +120,14 @@ class Letterbox extends ImageOperation
                 $save_func = 'imagepng';
                 if ($quality > 9) {
                     $quality = $quality / 10;
-                    $quality = round(10 - $quality);
+                    $quality = \round(10 - $quality);
                 }
             } elseif ($ext == 'webp') {
                 $func = 'imagecreatefromwebp';
                 $save_func = 'imagewebp';
             }
             $image = $func($save_filename);
-            imagecopy($bg, $image, round($x), round($y), 0, 0, round($owt), round($oht));
+            \imagecopy($bg, $image, \round($x), \round($y), 0, 0, \round($owt), \round($oht));
             if ($save_func === 'imagegif') {
                 return $save_func($bg, $save_filename);
             }
