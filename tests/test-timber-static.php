@@ -68,20 +68,22 @@ class TestTimberStaticPages extends Timber_UnitTestCase
 
     public function testStaticPostPage()
     {
-        $this->markTestSkipped('@todo Undefined offset: 0 - do we need merge_default for this?');
         $this->clearPosts();
         $page_id = $this->factory->post->create([
             'post_title' => 'Gobbles',
             'post_type' => 'page',
         ]);
-        update_option('page_for_posts', $page_id);
-        $this->go_to(home_url('/?p=' . $page_id));
-        $children = $this->factory->post->create_many(10, [
+        $posts = $this->factory->post->create_many(10, [
             'post_title' => 'Timmy',
         ]);
+
+        update_option('show_on_front', 'page');
+        update_option('page_for_posts', $page_id);
+        $this->go_to(get_permalink($page_id));
+
         $posts = Timber::get_posts();
-        $first_post = $posts[0];
-        $this->assertEquals('Timmy', $first_post->title());
+
+        $this->assertEquals('Timmy', $posts[0]->title());
     }
 
     public function testOtherPostOnStaticPostPage()
