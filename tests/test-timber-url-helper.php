@@ -330,7 +330,7 @@ class TestTimberURLHelper extends Timber_UnitTestCase
         $protocol_relative = '//upstatement.com';
 
         $this->assertFalse(Timber\URLHelper::is_external($local));
-        $this->assertFalse(Timber\URLHelper::is_external($subdomain));
+        $this->assertTrue(Timber\URLHelper::is_external($subdomain));
         $this->assertTrue(Timber\URLHelper::is_external($external));
         $this->assertTrue(Timber\URLHelper::is_external($protocol_relative));
         $this->assertTrue(Timber\URLHelper::is_external('http://example.com/' . $_SERVER['HTTP_HOST']));
