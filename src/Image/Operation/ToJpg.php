@@ -67,6 +67,11 @@ class ToJpg extends ImageOperation
 
         $input = $imagecreate_function($load_filename);
 
+        if (!$input) {
+            Helper::error_log('The function ' . $imagecreate_function . ' failed to create a valid image from ' . $load_filename . '.');
+            return false;
+        }
+
         list($width, $height) = getimagesize($load_filename);
         $output = imagecreatetruecolor($width, $height);
         $c = self::hexrgb($this->color);
