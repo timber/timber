@@ -135,12 +135,14 @@ class URLHelper
     }
 
     /**
+     * Checks whether a URL is local.
+     *
      * @api
      *
-     * @param string $url
+     * @param string $url The URL to check.
      * @return bool
      */
-    public static function is_local($url)
+    public static function is_local($url): bool
     {
         $host = wp_parse_url($url, PHP_URL_HOST);
         $wp_host = self::get_host();
@@ -428,16 +430,16 @@ class URLHelper
     }
 
     /**
-     * Determines if URL is an external URL.
+     * Checks whether an URL is external.
      *
-     * True if `$url` is an external url or subdomain (http://cdn.example.org = true). False if
-     * relative or local true if it's a subdomain
+     * True if the URL is an external URL or subdomain (http://cdn.example.org = true). False if
+     * the URL is relative or local, true if it’s a subdomain.
      *
      * @api
      * @param  string $url to evalute.
      * @return bool
      */
-    public static function is_external($url)
+    public static function is_external($url): bool
     {
         $has_http = strstr(strtolower($url), 'http') || strstr(strtolower($url), '//');
         if ($has_http && !self::is_local($url)) {
