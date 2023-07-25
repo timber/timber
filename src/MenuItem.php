@@ -2,6 +2,7 @@
 
 namespace Timber;
 
+use stdClass;
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
 use WP_Post;
@@ -18,7 +19,7 @@ class MenuItem extends CoreEntity
      *
      * @since 2.0.0
      *
-     * @var \WP_Post|null
+     * @var WP_Post|null
      */
     protected ?WP_Post $wp_object;
 
@@ -155,7 +156,7 @@ class MenuItem extends CoreEntity
          * @see Menu::init_as_page_menu
          */
         if (!isset($this->object_id)) {
-            $this->object_id = (int) get_post_meta($this->ID, '_menu_item_object_id', true);
+            $this->object_id = (int) \get_post_meta($this->ID, '_menu_item_object_id', true);
         }
     }
 
@@ -164,7 +165,7 @@ class MenuItem extends CoreEntity
      *
      * @since 2.0.0
      *
-     * @return \WP_Post|null
+     * @return WP_Post|null
      */
     public function wp_object(): ?WP_Post
     {
@@ -179,7 +180,7 @@ class MenuItem extends CoreEntity
     public function add_class(string $class_name)
     {
         // Class name is already there
-        if (!in_array($class_name, $this->classes, true)) {
+        if (!\in_array($class_name, $this->classes, true)) {
             return;
         }
         $this->classes[] = $class_name;
@@ -194,10 +195,10 @@ class MenuItem extends CoreEntity
     public function remove_class(string $class_name)
     {
         // Class name is already there
-        if (!in_array($class_name, $this->classes, true)) {
+        if (!\in_array($class_name, $this->classes, true)) {
             return;
         }
-        $class_key = array_search($class_name, $this->classes, true);
+        $class_key = \array_search($class_name, $this->classes, true);
         unset($this->classes[$class_key]);
         $this->update_class();
     }
@@ -207,7 +208,7 @@ class MenuItem extends CoreEntity
      */
     protected function update_class()
     {
-        $this->class = trim(implode(' ', $this->classes));
+        $this->class = \trim(\implode(' ', $this->classes));
     }
 
     /**
@@ -286,7 +287,7 @@ class MenuItem extends CoreEntity
                 $factory = new TermFactory();
                 break;
             case 'post_type_archive':
-                return get_post_type_object($this->object);
+                return \get_post_type_object($this->object);
             default:
                 $factory = null;
                 break;
@@ -306,7 +307,7 @@ class MenuItem extends CoreEntity
     {
         $this->children[] = $item;
         $item->level = $this->level + 1;
-        if (count($this->children)) {
+        if (\count($this->children)) {
             $this->update_child_levels();
         }
     }
@@ -319,7 +320,7 @@ class MenuItem extends CoreEntity
      */
     public function update_child_levels()
     {
-        if (is_array($this->children)) {
+        if (\is_array($this->children)) {
             foreach ($this->children as $child) {
                 $child->level = $this->level + 1;
                 $child->update_child_levels();
@@ -337,13 +338,13 @@ class MenuItem extends CoreEntity
      */
     public function import_classes($data)
     {
-        if (is_array($data)) {
+        if (\is_array($data)) {
             $data = (object) $data;
         }
-        $this->classes = array_unique(array_merge($this->classes, $data->classes ?? []));
-        $this->classes = array_values(array_filter($this->classes));
+        $this->classes = \array_unique(\array_merge($this->classes, $data->classes ?? []));
+        $this->classes = \array_values(\array_filter($this->classes));
 
-        $args = new \stdClass();
+        $args = new stdClass();
         if (isset($this->menu->args)) {
             // The args need to be an object.
             $args = $this->menu->args;
@@ -352,7 +353,7 @@ class MenuItem extends CoreEntity
         /**
          * @see Walker_Nav_Menu
          */
-        $this->classes = apply_filters(
+        $this->classes = \apply_filters(
             'nav_menu_css_class',
             $this->classes,
             $this->wp_object,
@@ -590,7 +591,7 @@ class MenuItem extends CoreEntity
         /**
          * @see Walker_Nav_Menu::start_el()
          */
-        $title = apply_filters('nav_menu_item_title', $this->title, $this->wp_object, $this->menu->args ? $this->menu->args : new \stdClass(), $this->level);
+        $title = \apply_filters('nav_menu_item_title', $this->title, $this->wp_object, $this->menu->args ? $this->menu->args : new stdClass(), $this->level);
         return $title;
     }
 
@@ -603,6 +604,6 @@ class MenuItem extends CoreEntity
      */
     public function can_edit(): bool
     {
-        return current_user_can('edit_theme_options');
+        return \current_user_can('edit_theme_options');
     }
 }
