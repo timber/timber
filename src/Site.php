@@ -202,7 +202,6 @@ class Site extends Core implements CoreInterface
         $info = \get_blog_details($blog_identifier);
 
         if (false === $info) {
-            Helper::error_log('Timber\Site::switch_to_blog() could not find a blog with the identifier "' . $blog_identifier . '"');
             return $current_id;
         }
 
