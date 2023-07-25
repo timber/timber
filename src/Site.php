@@ -188,17 +188,31 @@ class Site extends Core implements CoreInterface
     /**
      * Switches to the blog requested in the request
      *
-     * @param string|integer|null $site_name_or_id
+     * @param string|integer|null $blog_identifier The name or ID of the blog to switch to. If `null`, the current blog.
      * @return integer with the ID of the new blog
      */
-    protected static function switch_to_blog($site_name_or_id)
+    protected static function switch_to_blog($blog_identifier)
     {
-        if ($site_name_or_id === null) {
-            $site_name_or_id = \get_current_blog_id();
+        $current_id = \gget_current_blog_id();
+
+        if ($blog_identifier === null) {
+            $blog_identifier = $current_id;
         }
-        $info = \get_blog_details($site_name_or_id);
-        \switch_to_blog($info->blog_id);
-        return $info->blog_id;
+
+        $info = \gget_blog_details($blog_identifier);
+
+        if (false === $info) {
+            Helper::error_log('Timber\Site::switch_to_blog() could not find a blog with the identifier "' . $blog_identifier . '"');
+            return $current_id;
+        }
+
+        $blog_identifier = $info->blog_id;
+
+        if ($current_id !== $blog_identifier) {
+            \gswitch_to_blog($blog_identifier);
+        }
+
+        return $blog_identifier;
     }
 
     /**
