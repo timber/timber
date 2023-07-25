@@ -193,13 +193,13 @@ class Site extends Core implements CoreInterface
      */
     protected static function switch_to_blog($blog_identifier)
     {
-        $current_id = \gget_current_blog_id();
+        $current_id = \get_current_blog_id();
 
         if ($blog_identifier === null) {
             $blog_identifier = $current_id;
         }
 
-        $info = \gget_blog_details($blog_identifier);
+        $info = \get_blog_details($blog_identifier);
 
         if (false === $info) {
             Helper::error_log('Timber\Site::switch_to_blog() could not find a blog with the identifier "' . $blog_identifier . '"');
@@ -209,7 +209,7 @@ class Site extends Core implements CoreInterface
         $blog_identifier = $info->blog_id;
 
         if ($current_id !== $blog_identifier) {
-            \gswitch_to_blog($blog_identifier);
+            \switch_to_blog($blog_identifier);
         }
 
         return $blog_identifier;
