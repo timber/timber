@@ -171,10 +171,6 @@ class TestTimberPostContent extends Timber_UnitTestCase
      */
     public function testGutenbergExcerptOption()
     {
-        global $wp_version;
-        if ($wp_version < 5.0) {
-            $this->markTestSkipped('Only applies to Block editor which is avaialble in WP 5.x');
-        }
         $content_1 = '<!-- wp:paragraph -->
 <p>Heres the start to a thing</p>
 <!-- /wp:paragraph -->
