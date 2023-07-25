@@ -155,6 +155,7 @@ jobs:
         run: composer run lint
 
       - name: Check CS
+        if: ${{ matrix.dependency-version == 'highest' || matrix.dependency-version == 'prefer-stable' }}
         run: composer run cs
 
       - name: Downgrade PHPUnit to ^7.5 when WP < 5.9
