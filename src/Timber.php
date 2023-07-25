@@ -195,11 +195,6 @@ class Timber
             $data['post_title'] = $preview->post_title;
             $data['post_excerpt'] = $preview->post_excerpt;
 
-            // @todo I think we can safely delete this?
-            // It was included in the old PostCollection method but not defined anywhere,
-            // so I think it was always just falling into a magic __call() and doing nothing.
-            // $post->import_custom($preview_id);
-
             add_filter('get_the_terms', '_wp_preview_terms_filter', 10, 3);
         }
 
@@ -318,7 +313,6 @@ class Timber
     {
         $post = static::get_post($query, $options);
 
-        // @todo make this determination at the Factory level.
         // No need to instantiate a Post we're not going to use.
         return ($post instanceof Attachment) ? $post : null;
     }
@@ -344,7 +338,6 @@ class Timber
     {
         $post = static::get_post($query, $options);
 
-        // @todo make this determination at the Factory level.
         // No need to instantiate a Post we're not going to use.
         return ($post instanceof Image) ? $post : null;
     }
@@ -457,9 +450,6 @@ class Timber
             );
         }
 
-        /**
-         * @todo Are there any more default options to support?
-         */
         $options = wp_parse_args($options, [
             'merge_default' => false,
         ]);
@@ -863,7 +853,7 @@ class Timber
     public static function get_users(array $query = [], array $options = []): iterable
     {
         $factory = new UserFactory();
-        // TODO return a Collection type?
+
         return $factory->from($query);
     }
 
@@ -903,11 +893,6 @@ class Timber
      */
     public static function get_user($user = null)
     {
-        /*
-         * TODO in the interest of time, I'm implementing this logic here. If there's
-         * a better place to do this or something that already implements this, let me know
-         * and I'll switch over to that.
-         */
         $user = $user ?: get_current_user_id();
 
         $factory = new UserFactory();
@@ -1067,14 +1052,14 @@ class Timber
      * @api
      * @since 2.0.0
      *
-     * @param array   $query
-     * @param array   $options optional; none are currently supported
-     * @return mixed
+     * @param array|\WP_Comment_Query $query
+     * @param array                   $options Optional. None are currently supported.
+     * @return array
      */
-    public static function get_comments(array $query = [], array $options = []): iterable
+    public static function get_comments($query = [], array $options = []): iterable
     {
         $factory = new CommentFactory();
-        // TODO return a Collection type?
+
         return $factory->from($query);
     }
 

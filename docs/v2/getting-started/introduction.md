@@ -89,7 +89,7 @@ See how there’s no HTML in our PHP file? And do you see how we fetch the data 
 
 In Timber, we prepare a lot for you in the background, so you don’t have to remember function names like `get_the_title()`.
 
-Most of Timber’s templates look like this:
+Most Timber templates look like this:
 
 **index.php**
 

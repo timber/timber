@@ -80,10 +80,13 @@ class Term extends CoreEntity
 
     /**
      * @internal
-     * @param \WP_Term the vanilla WP term object to build from
+     *
+     * @param \WP_Term $wp_term The vanilla WordPress term object to build from.
+     * @param array    $options Optional. Unused. An array of options.
+     *
      * @return \Timber\Term
      */
-    public static function build(WP_Term $wp_term, array $_options = []): self
+    public static function build(WP_Term $wp_term): self
     {
         $term = new static();
         $term->init($wp_term);
@@ -110,7 +113,7 @@ class Term extends CoreEntity
      *
      * @return static
      */
-    public static function from($tid, $taxonomy)
+    public static function from($tid, $taxonomy = null)
     {
         Helper::deprecated(
             "Term::from()",
@@ -119,7 +122,7 @@ class Term extends CoreEntity
         );
 
         $termFactory = new TermFactory();
-        return $termFactory->from($tid, $taxonomy);
+        return $termFactory->from($tid);
     }
 
     /* Setup
@@ -477,21 +480,21 @@ class Term extends CoreEntity
      * </ul>
      * ```
      *
-     * @param int|array $numberposts_or_args Optional. Either the number of posts or an array of
-     *                                       arguments for the post query to be performed.
-     *                                       Default is an empty array, the equivalent of:
-     *                                       ```php
-     *                                       [
-     *                                         'posts_per_page' => get_option('posts_per_page'),
-     *                                         'post_type'      => 'any',
-     *                                         'tax_query'      => [ ...tax query for this Term... ]
-     *                                       ]
-     *                                       ```
-     * @param string $post_type_or_class     Deprecated. Before Timber 2.x this was a post_type to be
-     *                                       used for querying posts OR the Timber\Post subclass to
-     *                                       instantiate for each post returned. As of Timber 2.0.0,
-     *                                       specify `post_type` in the `$query` array argument. To
-     *                                       specify the class, use Class Maps.
+     * @param int|array $query           Optional. Either the number of posts or an array of
+     *                                   arguments for the post query to be performed.
+     *                                   Default is an empty array, the equivalent of:
+     *                                   ```php
+     *                                   [
+     *                                     'posts_per_page' => get_option('posts_per_page'),
+     *                                     'post_type'      => 'any',
+     *                                     'tax_query'      => [ ...tax query for this Term... ]
+     *                                   ]
+     *                                   ```
+     * @param string $post_type_or_class Deprecated. Before Timber 2.x this was a post_type to be
+     *                                   used for querying posts OR the Timber\Post subclass to
+     *                                   instantiate for each post returned. As of Timber 2.0.0,
+     *                                   specify `post_type` in the `$query` array argument. To
+     *                                   specify the class, use Class Maps.
      * @see https://timber.github.io/docs/v2/guides/posts/
      * @see https://timber.github.io/docs/v2/guides/class-maps/
      * @return \Timber\PostQuery

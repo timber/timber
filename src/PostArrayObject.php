@@ -2,6 +2,7 @@
 
 namespace Timber;
 
+use ArrayObject;
 use JsonSerializable;
 
 /**
@@ -10,7 +11,7 @@ use JsonSerializable;
  *
  * @api
  */
-class PostArrayObject extends \ArrayObject implements PostCollectionInterface, JsonSerializable
+class PostArrayObject extends ArrayObject implements PostCollectionInterface, JsonSerializable
 {
     use AccessesPostsLazily;
 

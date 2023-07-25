@@ -223,7 +223,7 @@ class Resize extends ImageOperation
                 Helper::error_log('Error resizing image');
                 Helper::error_log($result);
                 return false;
-            // @codeCoverageIgnoreEnd
+                // @codeCoverageIgnoreEnd
             } else {
                 return true;
             }
@@ -238,5 +238,7 @@ class Resize extends ImageOperation
             }
             // @codeCoverageIgnoreEnd
         }
+
+        return false;
     }
 }

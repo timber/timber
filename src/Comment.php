@@ -564,7 +564,6 @@ class Comment extends CoreEntity
 
     /**
      * @internal
-     * @todo  what if it's relative?
      * @param string $default
      * @param string $email
      * @param string $size
@@ -587,7 +586,7 @@ class Comment extends CoreEntity
         }
         if ('mystery' == $default) {
             $default = $host . '/avatar/ad516503a11cd5ca435acc9bb6523536?s=' . $size;
-        // ad516503a11cd5ca435acc9bb6523536 == md5('unknown@gravatar.com')
+            // ad516503a11cd5ca435acc9bb6523536 == md5('unknown@gravatar.com')
         } elseif ('blank' == $default) {
             $default = $email ? 'blank' : includes_url('images/blank.gif');
         } elseif (!empty($email) && 'gravatar_default' == $default) {
