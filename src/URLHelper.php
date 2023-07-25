@@ -148,6 +148,10 @@ class URLHelper
     public static function is_local($url): bool
     {
         $host = \wp_parse_url($url, \PHP_URL_HOST);
+        if (null === $host || false === $host) {
+            $host = $url;
+        }
+
         $wp_host = self::get_host();
 
         return $wp_host && $wp_host === $host;
