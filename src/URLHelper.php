@@ -147,7 +147,7 @@ class URLHelper
         $host = wp_parse_url($url, PHP_URL_HOST);
         $wp_host = self::get_host();
 
-        return $wp_host && $wp_host === $host['host'];
+        return $wp_host && $wp_host === $host;
     }
 
     /**
