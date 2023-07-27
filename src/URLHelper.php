@@ -135,7 +135,7 @@ class URLHelper
     }
 
     /**
-     * Checks whether a URL is local.
+     * Checks whether a URL or domain is local.
      *
      * True if `$url` has a host name matching the server’s host name. False if
      * a relative URL or if it’s a subdomain.
@@ -435,11 +435,10 @@ class URLHelper
     }
 
     /**
-     * Checks whether a URL is external.
+     * Checks whether a URL or domain is external.
      *
-     * True if `$url` starts with a scheme (`http`) or double slash (`//`)
-     * and the host name does not match the server’s host name. Otherwise,
-     * false.
+     * True if the `$url` host name does not match the server’s host name.
+     * Otherwise, false.
      *
      * @api
      * @param  string $url URL to evalute.
