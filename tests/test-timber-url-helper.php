@@ -257,10 +257,24 @@ class TestTimberURLHelper extends Timber_UnitTestCase
 
     public function testIsLocal()
     {
+        // Local.
+        $this->assertTrue(Timber\URLHelper::is_local($_SERVER['HTTP_HOST']));
+        $this->assertTrue(Timber\URLHelper::is_local('example.org'));
+        $this->assertTrue(Timber\URLHelper::is_local('//example.org'));
+        $this->assertTrue(Timber\URLHelper::is_local('http://example.org'));
+        $this->assertTrue(Timber\URLHelper::is_local('https://example.org'));
+        $this->assertTrue(Timber\URLHelper::is_local('https://example.org/'));
+        $this->assertTrue(Timber\URLHelper::is_local('https://example.org/example'));
+
+        // External.
+        $this->assertFalse(Timber\URLHelper::is_local('wordpress.org'));
+        $this->assertFalse(Timber\URLHelper::is_local('//wordpress.org'));
+        $this->assertFalse(Timber\URLHelper::is_local('//wordpress.org/example.org'));
         $this->assertFalse(Timber\URLHelper::is_local('http://wordpress.org'));
+        $this->assertFalse(Timber\URLHelper::is_local('https://wordpress.org'));
+        $this->assertFalse(Timber\URLHelper::is_local('https://example.com/example.org'));
         $this->assertFalse(Timber\URLHelper::is_local('http://example.com/' . $_SERVER['HTTP_HOST']));
         $this->assertFalse(Timber\URLHelper::is_local('http://foo' . $_SERVER['HTTP_HOST'] . '/' . $_SERVER['HTTP_HOST']));
-        $this->assertTrue(Timber\URLHelper::is_local($_SERVER['HTTP_HOST']));
     }
 
     public function testCurrentURLWithServerPort()
@@ -324,17 +338,29 @@ class TestTimberURLHelper extends Timber_UnitTestCase
 
     public function testIsExternal()
     {
-        $local = 'http://example.org';
-        $subdomain = 'http://cdn.example.org';
-        $external = 'http://upstatement.com';
-        $protocol_relative = '//upstatement.com';
+        // Local.
+        $this->assertFalse(Timber\URLHelper::is_external('example.org'));
+        $this->assertFalse(Timber\URLHelper::is_external('//example.org'));
+        $this->assertFalse(Timber\URLHelper::is_external('http://example.org'));
+        $this->assertFalse(Timber\URLHelper::is_external('https://example.org/'));
+        $this->assertFalse(Timber\URLHelper::is_external('https://example.org/example.com'));
+        $this->assertFalse(Timber\URLHelper::is_external('https://example.org/example'));
 
-        $this->assertFalse(Timber\URLHelper::is_external($local));
-        $this->assertTrue(Timber\URLHelper::is_external($subdomain));
-        $this->assertTrue(Timber\URLHelper::is_external($external));
-        $this->assertTrue(Timber\URLHelper::is_external($protocol_relative));
-        $this->assertTrue(Timber\URLHelper::is_external('http://example.com/' . $_SERVER['HTTP_HOST']));
-        $this->assertTrue(Timber\URLHelper::is_external('http://foo' . $_SERVER['HTTP_HOST'] . '/' . $_SERVER['HTTP_HOST']));
+        // Subdomain.
+        $this->assertTrue(Timber\URLHelper::is_external('//cdn.example.org'));
+        $this->assertTrue(Timber\URLHelper::is_external('http://cdn.example.org'));
+        $this->assertTrue(Timber\URLHelper::is_external('https://cdn.example.org'));
+        $this->assertTrue(Timber\URLHelper::is_external('cdn.example.org'));
+
+        // External.
+        $this->assertTrue(Timber\URLHelper::is_external('upstatement.com'));
+        $this->assertTrue(Timber\URLHelper::is_external('//upstatement.com'));
+        $this->assertTrue(Timber\URLHelper::is_external('http://upstatement.com'));
+        $this->assertTrue(Timber\URLHelper::is_external('https://upstatement.com'));
+
+        // Other.
+        $this->assertTrue(Timber\URLHelper::is_external('https://example.com/' . $_SERVER['HTTP_HOST']));
+        $this->assertTrue(Timber\URLHelper::is_external('https://foo' . $_SERVER['HTTP_HOST'] . '/' . $_SERVER['HTTP_HOST']));
     }
 
     public function testIsExternalContent()

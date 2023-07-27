@@ -447,9 +447,14 @@ class URLHelper
      */
     public static function is_external($url): bool
     {
-        $has_http = \str_starts_with($url, '//') || \wp_parse_url($url, \PHP_URL_SCHEME);
+        $has_scheme = \str_starts_with($url, '//') || \wp_parse_url($url, \PHP_URL_SCHEME);
 
-        return $has_http && !self::is_local($url);
+        if ($has_scheme) {
+            return !self::is_local($url);
+        }
+
+        // Check with added scheme.
+        return !self::is_local('//' . $url);
     }
 
     /**
