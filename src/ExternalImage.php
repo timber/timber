@@ -68,14 +68,6 @@ class ExternalImage implements ImageInterface
     public static $representation = 'image';
 
     /**
-     * File.
-     *
-     * @api
-     * @var string
-     */
-    protected string $file;
-
-    /**
      * File location.
      *
      * @api
@@ -227,19 +219,7 @@ class ExternalImage implements ImageInterface
      */
     public function path(): string
     {
-        return URLHelper::get_rel_path($this->file);
-    }
-
-    /**
-     * Gets the relative path to the uploads folder of an attachment.
-     *
-     * @api
-     *
-     * @return string
-     */
-    public function file(): string
-    {
-        return $this->file;
+        return URLHelper::get_rel_path($this->file_loc());
     }
 
     /**
@@ -254,7 +234,7 @@ class ExternalImage implements ImageInterface
         if (isset($this->file_loc)) {
             return $this->file_loc;
         }
-        return null;
+        return '';
     }
 
     /**
@@ -332,7 +312,7 @@ class ExternalImage implements ImageInterface
         if (isset($this->file_extension)) {
             return $this->file_extension;
         }
-        return $this->file_extension = \pathinfo($this->file(), PATHINFO_EXTENSION);
+        return $this->file_extension = \pathinfo($this->file_loc(), PATHINFO_EXTENSION);
     }
 
     /**
@@ -429,7 +409,6 @@ class ExternalImage implements ImageInterface
 
         $this->abs_url = $url;
         $this->file_loc = $file_path;
-        $this->file = $file_path;
         $this->image_dimensions = new ImageDimensions($file_path);
     }
 
@@ -446,7 +425,6 @@ class ExternalImage implements ImageInterface
 
         $this->abs_url = \home_url($relative_path);
         $this->file_loc = $file_path;
-        $this->file = $file_path;
         $this->image_dimensions = new ImageDimensions($file_path);
     }
 
@@ -466,9 +444,6 @@ class ExternalImage implements ImageInterface
         $this->abs_url = $url;
 
         if (URLHelper::is_local($url)) {
-            $this->file = URLHelper::remove_double_slashes(
-                ABSPATH . URLHelper::get_rel_url($url)
-            );
             $this->file_loc = URLHelper::remove_double_slashes(
                 ABSPATH . URLHelper::get_rel_url($url)
             );
