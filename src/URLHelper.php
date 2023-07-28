@@ -292,7 +292,7 @@ class URLHelper
      */
     public static function get_rel_path($src)
     {
-        if (strstr($src, ABSPATH)) {
+        if (str_contains($src, ABSPATH)) {
             return str_replace(ABSPATH, '', $src);
         }
         // its outside the WordPress directory, alternate setups:

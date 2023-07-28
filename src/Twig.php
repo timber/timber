@@ -370,7 +370,7 @@ class Twig
             ],
 
             // Numbers filters
-            'format_bytes' => [
+            'size_format' => [
                 'callable' => 'size_format',
             ],
 

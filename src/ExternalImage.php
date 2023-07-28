@@ -65,7 +65,7 @@ class ExternalImage implements ImageInterface
      *
      * @var string What does this class represent in WordPress terms?
      */
-    public static $representation = 'attachment';
+    public static $representation = 'image';
 
     /**
      * File.
@@ -80,7 +80,7 @@ class ExternalImage implements ImageInterface
      *
      * @api
      * @var string The absolute path to the attachmend file in the filesystem
-     *             (Example: `/var/www/htdocs/wp-content/uploads/2015/08/my-pic.jpg`)
+     *             (Example: `/var/www/htdocs/wp-content/themes/my-theme/images/`)
      */
     protected string $file_loc;
 
@@ -163,12 +163,12 @@ class ExternalImage implements ImageInterface
             $external_image->caption = (string) $args['caption'];
         }
 
-        if (strstr($url, '://')) {
+        if (str_contains($url, '://')) {
             // Assume URL.
             $external_image->init_with_url($url);
 
             return $external_image;
-        } elseif (strstr($url, ABSPATH)) {
+        } elseif (str_contains($url, ABSPATH)) {
             // Assume absolute path.
             $external_image->init_with_file_path($url);
 
@@ -177,7 +177,7 @@ class ExternalImage implements ImageInterface
             // Check for image file types.
             foreach ($external_image->image_file_types as $type) {
                 // Assume a relative path.
-                if (strstr(strtolower($url), $type)) {
+                if (str_contains(strtolower($url), $type)) {
                     $external_image->init_with_relative_path($url);
 
                     return $external_image;
@@ -243,7 +243,7 @@ class ExternalImage implements ImageInterface
     }
 
     /**
-     * Gets the absolute path to an attachment.
+     * Gets the absolute path to the image.
      *
      * @api
      *

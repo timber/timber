@@ -1,4 +1,5 @@
 parameters:
+    editorUrl: 'vscode://file/%%file%%:%%line%%'
     level: 2 # Increase until "max"
     paths:
         - src/

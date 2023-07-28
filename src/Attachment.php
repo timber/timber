@@ -78,7 +78,7 @@ class Attachment extends Post
      */
     public function __toString(): string
     {
-        return (string) $this->src();
+        return $this->src();
     }
 
     /**

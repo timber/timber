@@ -286,7 +286,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase
         $result = Timber::compile_string($str, [
             'post' => $iid,
         ]);
-        $this->assertEquals('PDF', $result);
+        $this->assertEquals('pdf', $result);
     }
 
     /**

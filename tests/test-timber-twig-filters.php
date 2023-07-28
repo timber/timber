@@ -37,8 +37,8 @@ class TestTimberTermTwigFilters extends Timber_UnitTestCase
 
     public function testTimberFormatBytes()
     {
-        $str1 = Timber::compile_string('{{ 1200|format_bytes }}');
-        $str2 = Timber::compile_string('{{ 1500|format_bytes(2) }}');
+        $str1 = Timber::compile_string('{{ 1200|size_format }}');
+        $str2 = Timber::compile_string('{{ 1500|size_format(2) }}');
         $this->assertSame('1 KB', $str1);
         $this->assertSame('1.46 KB', $str2);
     }
