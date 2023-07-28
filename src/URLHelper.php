@@ -135,18 +135,26 @@ class URLHelper
     }
 
     /**
+     * Checks whether a URL or domain is local.
+     *
+     * True if `$url` has a host name matching the server’s host name. False if
+     * a relative URL or if it’s a subdomain.
+     *
      * @api
      *
-     * @param string $url
+     * @param string $url URL to check.
      * @return bool
      */
-    public static function is_local($url)
+    public static function is_local(string $url): bool
     {
-        $host = self::get_host();
-        if (!empty($host) && \strstr($url, $host)) {
-            return true;
+        $host = \wp_parse_url($url, \PHP_URL_HOST);
+        if (null === $host || false === $host) {
+            $host = $url;
         }
-        return false;
+
+        $wp_host = self::get_host();
+
+        return $wp_host && $wp_host === $host;
     }
 
     /**
@@ -427,23 +435,25 @@ class URLHelper
     }
 
     /**
-     * Determines if URL is an external URL.
+     * Checks whether a URL or domain is external.
      *
-     * True if `$url` is an external url or subdomain (http://cdn.example.org = true). False if
-     * relative or local true if it's a subdomain
+     * True if the `$url` host name does not match the server’s host name.
+     * Otherwise, false.
      *
      * @api
-     * @param  string $url to evalute.
+     * @param  string $url URL to evalute.
      * @return bool
      */
-    public static function is_external($url)
+    public static function is_external(string $url): bool
     {
-        $has_http = \strstr(\strtolower($url), 'http') || \strstr(\strtolower($url), '//');
-        $on_domain = \strstr($url, self::get_host());
-        if ($has_http && !$on_domain) {
-            return true;
+        $has_scheme = \str_starts_with($url, '//') || \wp_parse_url($url, \PHP_URL_SCHEME);
+
+        if ($has_scheme) {
+            return !self::is_local($url);
         }
-        return false;
+
+        // Check with added scheme.
+        return !self::is_local('//' . $url);
     }
 
     /**
