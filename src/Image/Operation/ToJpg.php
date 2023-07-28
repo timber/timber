@@ -2,7 +2,6 @@
 
 namespace Timber\Image\Operation;
 
-use GdImage;
 use Timber\Image\Operation as ImageOperation;
 use Timber\ImageHelper;
 
@@ -68,7 +67,7 @@ class ToJpg extends ImageOperation
 
         $input = $imagecreate_function($load_filename);
 
-        if (!$input instanceof GdImage) {
+        if ($input === false) {
             return false;
         }
 

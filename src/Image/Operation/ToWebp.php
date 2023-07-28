@@ -2,7 +2,6 @@
 
 namespace Timber\Image\Operation;
 
-use GdImage;
 use Timber\Helper;
 use Timber\Image\Operation as ImageOperation;
 use Timber\ImageHelper;
@@ -69,7 +68,7 @@ class ToWebp extends ImageOperation
 
         $input = $imagecreate_function($load_filename);
 
-        if (!$input instanceof GdImage) {
+        if ($input === false) {
             return false;
         }
 
