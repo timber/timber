@@ -138,11 +138,6 @@ Through the collaborative efforts of both our dedicated team and countless contr
 
 Are you a WordPress pro or part of an agency who relies on Timber? Keep the magic alive by [becoming a sponsor](https://opencollective.com/timber)! By becoming a sponsor, you contribute to the continuous maintenance and enhancement of Timber, ultimately benefiting developers worldwide.
 
-
-Timber wouldn’t be here without the help of countless contributors.
-
-Are you a WordPress pro who relies on Timber? Keep the magic alive by [becoming a sponsor](https://opencollective.com/timber)! Your support helps us enhance and maintain the library. This will benefit developers worldwide.
-
 ![](https://opencollective.com/timber/tiers/bronze-sponsor.svg?avatarHeight=36&limit=0&button=true)
 
 ### Gold Sponsors
