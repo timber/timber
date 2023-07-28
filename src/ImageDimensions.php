@@ -121,13 +121,13 @@ class ImageDimensions
         if (\file_exists($this->file_loc) && \filesize($this->file_loc)) {
             if (ImageHelper::is_svg($this->file_loc)) {
                 $svg_size = $this->get_dimensions_svg($this->file_loc);
-                $this->dimensions = [$svg_size->width, $svg_size->height];
+                $this->dimensions = [(int) \round($svg_size->width), (int) \round($svg_size->height)];
             } else {
                 list($width, $height) = \getimagesize($this->file_loc);
 
                 $this->dimensions = [];
-                $this->dimensions[0] = $width;
-                $this->dimensions[1] = $height;
+                $this->dimensions[0] = (int) $width;
+                $this->dimensions[1] = (int) $height;
             }
 
             return $this->get_dimension_loaded($dimension);
