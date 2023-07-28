@@ -22,11 +22,11 @@ class MenuItemFactory
      */
     public function from($item, Menu $menu): ?MenuItem
     {
-        if (is_numeric($item)) {
-            $item = get_post($item);
+        if (\is_numeric($item)) {
+            $item = \get_post($item);
         }
 
-        if (is_object($item) && $item instanceof WP_Post) {
+        if (\is_object($item) && $item instanceof WP_Post) {
             return $this->build($item, $menu);
         }
 
@@ -66,12 +66,12 @@ class MenuItemFactory
          *                        the location and the value the name of the class to use for this
          *                        menu item or a callback that determines the class to use.
          */
-        $classmap = apply_filters('timber/menuitem/classmap', []);
+        $classmap = \apply_filters('timber/menuitem/classmap', []);
 
         $class = $classmap[$menu->theme_location] ?? null;
 
         // If class is a callable, call it to get the actual class name
-        if (is_callable($class)) {
+        if (\is_callable($class)) {
             $class = $class($item, $menu);
         }
 
@@ -97,7 +97,7 @@ class MenuItemFactory
          * @param WP_Post $item The menu item.
          * @param Menu $menu The menu object.
          */
-        $class = apply_filters('timber/menuitem/class', $class, $item, $menu);
+        $class = \apply_filters('timber/menuitem/class', $class, $item, $menu);
         return $class;
     }
 }

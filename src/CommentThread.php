@@ -2,6 +2,7 @@
 
 namespace Timber;
 
+use ArrayObject;
 use Timber\Factory\CommentFactory;
 
 /**
@@ -44,7 +45,7 @@ use Timber\Factory\CommentFactory;
  * </li>
  * ```
  */
-class CommentThread extends \ArrayObject
+class CommentThread extends ArrayObject
 {
     public $post_id;
 
@@ -63,7 +64,7 @@ class CommentThread extends \ArrayObject
     {
         parent::__construct();
         $this->post_id = $post_id;
-        if ($args || is_array($args)) {
+        if ($args || \is_array($args)) {
             $this->init($args);
         }
     }
@@ -74,7 +75,7 @@ class CommentThread extends \ArrayObject
     protected function fetch_comments($args = [])
     {
         $args['post_id'] = $this->post_id;
-        $comments = get_comments($args);
+        $comments = \get_comments($args);
         return $comments;
     }
 
@@ -85,7 +86,7 @@ class CommentThread extends \ArrayObject
      */
     public function mecount()
     {
-        return get_comments_number($this->post_id);
+        return \get_comments_number($this->post_id);
     }
 
     protected function merge_args($args)
@@ -94,7 +95,7 @@ class CommentThread extends \ArrayObject
             'status' => 'approve',
             'order' => $this->_order,
         ];
-        return array_merge($base, $args);
+        return \array_merge($base, $args);
     }
 
     /**
@@ -129,8 +130,8 @@ class CommentThread extends \ArrayObject
         $args = self::merge_args($args);
         $comments = $this->fetch_comments($args);
         $tcs = [];
-        if ('' == get_query_var('cpage') && get_option('page_comments')) {
-            set_query_var('cpage', 'newest' == get_option('default_comments_page') ? get_comment_pages_count() : 1);
+        if ('' == \get_query_var('cpage') && \get_option('page_comments')) {
+            \set_query_var('cpage', 'newest' == \get_option('default_comments_page') ? \get_comment_pages_count() : 1);
             $overridden_cpage = true;
         }
         foreach ($comments as $key => &$comment) {

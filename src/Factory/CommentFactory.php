@@ -2,9 +2,10 @@
 
 namespace Timber\Factory;
 
+use InvalidArgumentException;
 use Timber\Comment;
-use Timber\CoreInterface;
 
+use Timber\CoreInterface;
 use WP_Comment;
 use WP_Comment_Query;
 
@@ -15,7 +16,7 @@ class CommentFactory
 {
     public function from($params)
     {
-        if (is_int($params) || is_string($params) && is_numeric($params)) {
+        if (\is_int($params) || \is_string($params) && \is_numeric($params)) {
             return $this->from_id((int) $params);
         }
 
@@ -23,22 +24,22 @@ class CommentFactory
             return $this->from_wp_comment_query($params);
         }
 
-        if (is_object($params)) {
+        if (\is_object($params)) {
             return $this->from_comment_object($params);
         }
 
         if ($this->is_numeric_array($params)) {
-            return array_map([$this, 'from'], $params);
+            return \array_map([$this, 'from'], $params);
         }
 
-        if (is_array($params)) {
+        if (\is_array($params)) {
             return $this->from_wp_comment_query(new WP_Comment_Query($params));
         }
     }
 
     protected function from_id(int $id)
     {
-        $wp_comment = get_comment($id);
+        $wp_comment = \get_comment($id);
 
         if (!$wp_comment) {
             return null;
@@ -58,26 +59,26 @@ class CommentFactory
             return $this->build($comment);
         }
 
-        throw new \InvalidArgumentException(sprintf(
+        throw new InvalidArgumentException(\sprintf(
             'Expected an instance of Timber\CoreInterface or WP_Comment, got %s',
-            get_class($comment)
+            \get_class($comment)
         ));
     }
 
     protected function from_wp_comment_query(WP_Comment_Query $query): iterable
     {
-        return array_map([$this, 'build'], $query->get_comments());
+        return \array_map([$this, 'build'], $query->get_comments());
     }
 
     protected function get_comment_class(WP_Comment $comment): string
     {
         // Get the user-configured Class Map
-        $map = apply_filters('timber/comment/classmap', []);
+        $map = \apply_filters('timber/comment/classmap', []);
 
-        $type = get_post_type($comment->comment_post_ID);
+        $type = \get_post_type($comment->comment_post_ID);
         $class = $map[$type] ?? null;
 
-        if (is_callable($class)) {
+        if (\is_callable($class)) {
             $class = $class($comment);
         }
 
@@ -103,7 +104,7 @@ class CommentFactory
          * @param string $class The class to use.
          * @param WP_Comment $comment The comment object.
          */
-        $class = apply_filters('timber/comment/class', $class, $comment);
+        $class = \apply_filters('timber/comment/class', $class, $comment);
 
         return $class;
     }
@@ -117,11 +118,11 @@ class CommentFactory
 
     protected function is_numeric_array($arr)
     {
-        if (!is_array($arr)) {
+        if (!\is_array($arr)) {
             return false;
         }
-        foreach (array_keys($arr) as $k) {
-            if (!is_int($k)) {
+        foreach (\array_keys($arr) as $k) {
+            if (!\is_int($k)) {
                 return false;
             }
         }
