@@ -204,7 +204,7 @@ class ExternalImage implements ImageInterface
     }
 
     /**
-     * Gets the relative path to an attachment.
+     * Gets the relative path to the file.
      *
      * @api
      * @example
@@ -215,7 +215,7 @@ class ExternalImage implements ImageInterface
      * <img src="/wp-content/uploads/2015/08/pic.jpg" />
      * ```
      *
-     * @return string The relative path to an attachment.
+     * @return string The relative path to the image file.
      */
     public function path(): string
     {
