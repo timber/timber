@@ -191,7 +191,7 @@ class Site extends Core implements CoreInterface
      * @param string|integer|null $blog_identifier The name or ID of the blog to switch to. If `null`, the current blog.
      * @return integer with the ID of the new blog
      */
-    protected static function switch_to_blog($blog_identifier)
+    protected static function switch_to_blog($blog_identifier = null): int
     {
         $current_id = \get_current_blog_id();
 
@@ -205,13 +205,13 @@ class Site extends Core implements CoreInterface
             return $current_id;
         }
 
-        $blog_identifier = $info->blog_id;
+        (int) $blog_identifier = $info->blog_id;
 
-        if ($current_id !== $blog_identifier) {
+        if ($current_id !== (int) $blog_identifier) {
             \switch_to_blog($blog_identifier);
         }
 
-        return $blog_identifier;
+        return (int) $blog_identifier;
     }
 
     /**
