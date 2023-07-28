@@ -199,7 +199,7 @@ class Site extends Core implements CoreInterface
             $blog_identifier = $current_id;
         }
 
-        $info = \get_blog_details($blog_identifier);
+        $info = \get_blog_details($blog_identifier, false);
 
         if (false === $info) {
             return $current_id;
