@@ -2,8 +2,9 @@
 
 namespace Timber;
 
-use Timber\Factory\PostFactory;
+use ReturnTypeWillChange;
 
+use Timber\Factory\PostFactory;
 use WP_Post;
 
 /**
@@ -75,7 +76,7 @@ trait AccessesPostsLazily
             // Since arbitrary array index access may have happened previously,
             // leverage that to ensure each Post is instantiated exactly once.
             // We call parent::getArrayCopy() to avoid infinite mutual recursion.
-            foreach (array_keys(parent::getArrayCopy()) as $k) {
+            foreach (\array_keys(parent::getArrayCopy()) as $k) {
                 $this->offsetGet($k);
             }
             $this->realized = true;
@@ -110,7 +111,7 @@ trait AccessesPostsLazily
      */
     public function get_posts(): array
     {
-        Helper::deprecated(sprintf('%s::get_posts()', static::class), sprintf('%s::to_array()', static::class), '2.0.0');
+        Helper::deprecated(\sprintf('%s::get_posts()', static::class), \sprintf('%s::to_array()', static::class), '2.0.0');
         return $this->getArrayCopy();
     }
 
@@ -119,7 +120,7 @@ trait AccessesPostsLazily
      *
      * @internal
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         $post = parent::offsetGet($offset);

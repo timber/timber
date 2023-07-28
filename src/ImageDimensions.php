@@ -93,8 +93,8 @@ class ImageDimensions
      */
     public function aspect(): ?float
     {
-        $w = intval($this->width());
-        $h = intval($this->height());
+        $w = \intval($this->width());
+        $h = \intval($this->height());
 
         if ($w and $h > 0) {
             return $w / $h;
@@ -118,12 +118,12 @@ class ImageDimensions
         }
 
         // Load dimensions.
-        if (file_exists($this->file_loc) && filesize($this->file_loc)) {
+        if (\file_exists($this->file_loc) && \filesize($this->file_loc)) {
             if (ImageHelper::is_svg($this->file_loc)) {
                 $svg_size = $this->get_dimensions_svg($this->file_loc);
                 $this->dimensions = [(int) round($svg_size->width), (int) round($svg_size->height)];
             } else {
-                list($width, $height) = getimagesize($this->file_loc);
+                list($width, $height) = \getimagesize($this->file_loc);
 
                 $this->dimensions = [];
                 $this->dimensions[0] = (int) $width;
@@ -145,7 +145,7 @@ class ImageDimensions
      */
     protected function get_dimension_loaded($dim = null): int
     {
-        $dim = strtolower($dim);
+        $dim = \strtolower($dim);
 
         if ('h' === $dim || 'height' === $dim) {
             return $this->dimensions[1];
@@ -163,14 +163,14 @@ class ImageDimensions
      */
     protected function get_dimensions_svg($svg)
     {
-        $svg = simplexml_load_file($svg);
+        $svg = \simplexml_load_file($svg);
         $width = 0;
         $height = 0;
 
         if (false !== $svg) {
             $attributes = $svg->attributes();
             if (isset($attributes->viewBox)) {
-                $viewbox = explode(' ', $attributes->viewBox);
+                $viewbox = \explode(' ', $attributes->viewBox);
                 $width = $viewbox[2];
                 $height = $viewbox[3];
             } elseif ($attributes->width && $attributes->height) {

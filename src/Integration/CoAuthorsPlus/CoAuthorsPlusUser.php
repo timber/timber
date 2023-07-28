@@ -2,6 +2,7 @@
 
 namespace Timber\Integration\CoAuthorsPlus;
 
+use stdclass;
 use Timber\User;
 
 class CoAuthorsPlusUser extends User
@@ -13,7 +14,7 @@ class CoAuthorsPlusUser extends User
      */
     protected $thumbnail;
 
-    public static function from_guest_author(\stdClass $coauthor)
+    public static function from_guest_author(stdclass $coauthor)
     {
         $user = new static();
         $user->init($coauthor);
@@ -28,7 +29,7 @@ class CoAuthorsPlusUser extends User
     protected function init($coauthor = false)
     {
         /**
-         * @var \stdClass $coauthor
+         * @var stdClass $coauthor
          */
         parent::init($coauthor);
 
@@ -38,7 +39,7 @@ class CoAuthorsPlusUser extends User
         $this->user_nicename = $coauthor->user_nicename;
         $this->description = $coauthor->description;
         $this->display_name = $coauthor->display_name;
-        $this->_link = get_author_posts_url(null, $coauthor->user_nicename);
+        $this->_link = \get_author_posts_url(null, $coauthor->user_nicename);
     }
 
     /**
@@ -49,15 +50,15 @@ class CoAuthorsPlusUser extends User
      */
     public function avatar($args = null)
     {
-        $prefer_gravatar = apply_filters(
+        $prefer_gravatar = \apply_filters(
             'timber/co_authors_plus/prefer_gravatar',
             false
         );
         if ($prefer_gravatar) {
-            return get_avatar_url($this->user_email, $args);
+            return \get_avatar_url($this->user_email, $args);
         } else {
             // 96 is the default wordpress avatar size
-            return get_the_post_thumbnail_url($this->id, 96);
+            return \get_the_post_thumbnail_url($this->id, 96);
         }
     }
 }

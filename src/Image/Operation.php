@@ -43,11 +43,11 @@ abstract class Operation
      */
     public static function hexrgb($hexstr)
     {
-        $hexstr = str_replace('#', '', $hexstr);
-        if (strlen($hexstr) == 3) {
+        $hexstr = \str_replace('#', '', $hexstr);
+        if (\strlen($hexstr) == 3) {
             $hexstr = $hexstr[0] . $hexstr[0] . $hexstr[1] . $hexstr[1] . $hexstr[2] . $hexstr[2];
         }
-        $int = hexdec($hexstr);
+        $int = \hexdec($hexstr);
         return [
             "red" => 0xFF & ($int >> 0x10),
             "green" => 0xFF & ($int >> 0x8),
@@ -57,6 +57,6 @@ abstract class Operation
 
     public static function rgbhex($r, $g, $b)
     {
-        return '#' . sprintf('%02x', $r) . sprintf('%02x', $g) . sprintf('%02x', $b);
+        return '#' . \sprintf('%02x', $r) . \sprintf('%02x', $g) . \sprintf('%02x', $b);
     }
 }

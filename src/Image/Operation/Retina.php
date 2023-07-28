@@ -59,8 +59,8 @@ class Retina extends ImageOperation
         if (ImageHelper::is_svg($load_filename)) {
             return false;
         }
-        $image = wp_get_image_editor($load_filename);
-        if (!is_wp_error($image)) {
+        $image = \wp_get_image_editor($load_filename);
+        if (!\is_wp_error($image)) {
             $current_size = $image->get_size();
             $src_w = $current_size['width'];
             $src_h = $current_size['height'];
@@ -69,7 +69,7 @@ class Retina extends ImageOperation
             $h = $src_h * $this->factor;
             $image->crop(0, 0, $src_w, $src_h, $w, $h);
             $result = $image->save($save_filename);
-            if (is_wp_error($result)) {
+            if (\is_wp_error($result)) {
                 // @codeCoverageIgnoreStart
                 Helper::error_log('Error resizing image');
                 Helper::error_log($result);

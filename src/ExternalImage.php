@@ -136,11 +136,11 @@ class ExternalImage implements ImageInterface
      */
     public static function build($url, array $args = [])
     {
-        if (!is_string($url) || is_numeric($url)) {
+        if (!\is_string($url) || \is_numeric($url)) {
             return null;
         }
 
-        $args = wp_parse_args($args, [
+        $args = \wp_parse_args($args, [
             'alt' => '',
         ]);
 
@@ -154,12 +154,12 @@ class ExternalImage implements ImageInterface
             $external_image->set_caption($args['caption']);
         }
 
-        if (strstr($url, '://')) {
+        if (\strstr($url, '://')) {
             // Assume URL.
             $external_image->init_with_url($url);
 
             return $external_image;
-        } elseif (strstr($url, ABSPATH)) {
+        } elseif (\strstr($url, ABSPATH)) {
             // Assume absolute path.
             $external_image->init_with_file_path($url);
 
@@ -168,7 +168,7 @@ class ExternalImage implements ImageInterface
             // Check for image file types.
             foreach ($external_image->image_file_types as $type) {
                 // Assume a relative path.
-                if (strstr(strtolower($url), $type)) {
+                if (\strstr(\strtolower($url), $type)) {
                     $external_image->init_with_relative_path($url);
 
                     return $external_image;
@@ -308,10 +308,10 @@ class ExternalImage implements ImageInterface
     public function extension(): ?string
     {
         if (!$this->file_extension) {
-            $file_info = wp_check_filetype($this->file);
+            $file_info = \wp_check_filetype($this->file);
 
             if (!empty($file_info['ext'])) {
-                $this->file_extension = strtoupper($file_info['ext']);
+                $this->file_extension = \strtoupper($file_info['ext']);
             }
         }
 
@@ -428,7 +428,7 @@ class ExternalImage implements ImageInterface
     {
         $file_path = URLHelper::get_full_path($relative_path);
 
-        $this->abs_url = home_url($relative_path);
+        $this->abs_url = \home_url($relative_path);
         $this->file_loc = $file_path;
         $this->file = $file_path;
         $this->image_dimensions = new ImageDimensions($file_path);

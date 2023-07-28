@@ -111,8 +111,8 @@ class Archives extends Core
     protected function get_archives_link($url, $text, $post_count = 0)
     {
         $ret = [];
-        $ret['text'] = $ret['title'] = $ret['name'] = wptexturize($text);
-        $ret['url'] = $ret['link'] = esc_url(URLHelper::prepend_to_url($url, $this->base));
+        $ret['text'] = $ret['title'] = $ret['name'] = \wptexturize($text);
+        $ret['url'] = $ret['link'] = \esc_url(URLHelper::prepend_to_url($url, $this->base));
         if ($post_count) {
             $ret['post_count'] = (int) $post_count;
         }
@@ -134,16 +134,16 @@ class Archives extends Core
         global $wpdb;
         $output = [];
         $query = "SELECT YEAR(post_date) AS `year`, count(ID) as posts FROM {$wpdb->posts} $join $where GROUP BY YEAR(post_date) ORDER BY post_date $order $limit";
-        $key = md5($query);
+        $key = \md5($query);
         $key = "wp_get_archives:$key:$last_changed";
-        if (!$results = wp_cache_get($key, 'posts')) {
+        if (!$results = \wp_cache_get($key, 'posts')) {
             $results = $wpdb->get_results($query);
-            wp_cache_set($key, $results, 'posts');
+            \wp_cache_set($key, $results, 'posts');
         }
         if ($results) {
             foreach ((array) $results as $result) {
-                $url = get_year_link($result->year);
-                $text = sprintf('%d', $result->year);
+                $url = \get_year_link($result->year);
+                $text = \sprintf('%d', $result->year);
                 $output[] = $this->get_archives_link($url, $text, $result->posts);
             }
         }
@@ -168,24 +168,24 @@ class Archives extends Core
         $defaults = [
             'show_year' => false,
         ];
-        $r = wp_parse_args($args, $defaults);
+        $r = \wp_parse_args($args, $defaults);
 
         $show_year = $r['show_year'];
         //will need to specify which year we're looking for
         $query = "SELECT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, count(ID) as posts "
             . "FROM $wpdb->posts $join $where GROUP BY YEAR(post_date), MONTH(post_date) "
             . "ORDER BY post_date $order $limit";
-        $key = md5($query);
+        $key = \md5($query);
         $key = "wp_get_archives:$key:$last_changed";
-        if (!$results = wp_cache_get($key, 'posts')) {
+        if (!$results = \wp_cache_get($key, 'posts')) {
             $results = $wpdb->get_results($query);
-            wp_cache_set($key, $results, 'posts');
+            \wp_cache_set($key, $results, 'posts');
         }
         if ($results) {
             foreach ((array) $results as $result) {
-                $url = get_month_link($result->year, $result->month);
+                $url = \get_month_link($result->year, $result->month);
                 if ($show_year && !$nested) {
-                    $text = sprintf(__('%1$s %2$d'), $wp_locale->get_month($result->month), $result->year);
+                    $text = \sprintf(\__('%1$s %2$d'), $wp_locale->get_month($result->month), $result->year);
                 } else {
                     $text = $wp_locale->get_month($result->month);
                 }
@@ -202,7 +202,7 @@ class Archives extends Core
                 $out2[] = [
                     'name' => $year,
                     'children' => $months,
-                    'post_count' => array_sum(array_column($months, 'post_count')),
+                    'post_count' => \array_sum(\array_column($months, 'post_count')),
                 ];
             }
             return $out2;
@@ -248,7 +248,7 @@ class Archives extends Core
             $args = $this->args;
         }
 
-        $args = wp_parse_args($args, $defaults);
+        $args = \wp_parse_args($args, $defaults);
         $post_type = $args['post_type'];
         $order = $args['order'];
         $nested = $args['nested'];
@@ -262,10 +262,10 @@ class Archives extends Core
         }
 
         if (!empty($args['limit'])) {
-            $limit = absint($args['limit']);
+            $limit = \absint($args['limit']);
             $limit = ' LIMIT ' . $limit;
         }
-        $order = strtoupper($order);
+        $order = \strtoupper($order);
         if ($order !== 'ASC') {
             $order = 'DESC';
         }
@@ -284,9 +284,9 @@ class Archives extends Core
         $archive_week_end_date_format = 'Y/m/d';
 
         if (!$archive_date_format_over_ride) {
-            $archive_day_date_format = get_option('date_format');
-            $archive_week_start_date_format = get_option('date_format');
-            $archive_week_end_date_format = get_option('date_format');
+            $archive_day_date_format = \get_option('date_format');
+            $archive_week_start_date_format = \get_option('date_format');
+            $archive_week_end_date_format = \get_option('date_format');
         }
 
         $where = $wpdb->prepare('WHERE post_type = "%s" AND post_status = "publish"', $post_type);
@@ -294,18 +294,18 @@ class Archives extends Core
         /**
          * @link https://developer.wordpress.org/reference/hooks/getarchives_where/
          */
-        $where = apply_filters('getarchives_where', $where, $args);
+        $where = \apply_filters('getarchives_where', $where, $args);
 
         /**
          * @link https://developer.wordpress.org/reference/hooks/getarchives_join/
          */
-        $join = apply_filters('getarchives_join', '', $args);
+        $join = \apply_filters('getarchives_join', '', $args);
 
         $output = [];
-        $last_changed = wp_cache_get('last_changed', 'posts');
+        $last_changed = \wp_cache_get('last_changed', 'posts');
         if (!$last_changed) {
-            $last_changed = microtime();
-            wp_cache_set('last_changed', $last_changed, 'posts');
+            $last_changed = \microtime();
+            \wp_cache_set('last_changed', $last_changed, 'posts');
         }
         if ('monthly' == $type) {
             $output = $this->get_items_monthly($args, $last_changed, $join, $where, $order, $limit, $nested);
@@ -315,31 +315,31 @@ class Archives extends Core
             $output = $this->get_items_monthly($args, $last_changed, $join, $where, $order, $limit);
         } elseif ('daily' == $type) {
             $query = "SELECT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, DAYOFMONTH(post_date) AS `dayofmonth`, count(ID) as posts FROM $wpdb->posts $join $where GROUP BY YEAR(post_date), MONTH(post_date), DAYOFMONTH(post_date) ORDER BY post_date $order $limit";
-            $key = md5($query);
+            $key = \md5($query);
             $key = "wp_get_archives:$key:$last_changed";
-            if (!$results = wp_cache_get($key, 'posts')) {
+            if (!$results = \wp_cache_get($key, 'posts')) {
                 $results = $wpdb->get_results($query);
                 $cache = [];
                 $cache[$key] = $results;
-                wp_cache_set($key, $results, 'posts');
+                \wp_cache_set($key, $results, 'posts');
             }
             if ($results) {
                 foreach ((array) $results as $result) {
-                    $url = get_day_link($result->year, $result->month, $result->dayofmonth);
-                    $date = sprintf('%1$d-%2$02d-%3$02d 00:00:00', $result->year, $result->month, $result->dayofmonth);
-                    $text = mysql2date($archive_day_date_format, $date);
+                    $url = \get_day_link($result->year, $result->month, $result->dayofmonth);
+                    $date = \sprintf('%1$d-%2$02d-%3$02d 00:00:00', $result->year, $result->month, $result->dayofmonth);
+                    $text = \mysql2date($archive_day_date_format, $date);
                     $output[] = $this->get_archives_link($url, $text, $result->posts);
                 }
             }
         } elseif ('weekly' == $type) {
-            $week = _wp_mysql_week('`post_date`');
+            $week = \_wp_mysql_week('`post_date`');
             $query = "SELECT DISTINCT $week AS `week`, YEAR( `post_date` ) AS `yr`, DATE_FORMAT( `post_date`, '%Y-%m-%d' ) AS `yyyymmdd`, "
                 . "count( `ID` ) AS `posts` FROM `$wpdb->posts` $join $where GROUP BY $week, YEAR( `post_date` ) ORDER BY `post_date` $order $limit";
-            $key = md5($query);
+            $key = \md5($query);
             $key = "wp_get_archives:$key:$last_changed";
-            if (!$results = wp_cache_get($key, 'posts')) {
+            if (!$results = \wp_cache_get($key, 'posts')) {
                 $results = $wpdb->get_results($query);
-                wp_cache_set($key, $results, 'posts');
+                \wp_cache_set($key, $results, 'posts');
             }
             $arc_w_last = '';
             if ($results) {
@@ -347,10 +347,10 @@ class Archives extends Core
                     if ($result->week != $arc_w_last) {
                         $arc_year = $result->yr;
                         $arc_w_last = $result->week;
-                        $arc_week = get_weekstartend($result->yyyymmdd, get_option('start_of_week'));
-                        $arc_week_start = date_i18n($archive_week_start_date_format, $arc_week['start']);
-                        $arc_week_end = date_i18n($archive_week_end_date_format, $arc_week['end']);
-                        $url = sprintf('%1$s/%2$s%3$sm%4$s%5$s%6$sw%7$s%8$d', home_url(), '', '?', '=', $arc_year, '&amp;', '=', $result->week);
+                        $arc_week = \get_weekstartend($result->yyyymmdd, \get_option('start_of_week'));
+                        $arc_week_start = \date_i18n($archive_week_start_date_format, $arc_week['start']);
+                        $arc_week_end = \date_i18n($archive_week_end_date_format, $arc_week['end']);
+                        $url = \sprintf('%1$s/%2$s%3$sm%4$s%5$s%6$sw%7$s%8$d', \home_url(), '', '?', '=', $arc_year, '&amp;', '=', $result->week);
                         $text = $arc_week_start . $archive_week_separator . $arc_week_end;
                         $output[] = $this->get_archives_link($url, $text, $result->posts);
                     }
@@ -359,20 +359,20 @@ class Archives extends Core
         } elseif ('postbypost' == $type || 'alpha' == $type) {
             $orderby = 'alpha' == $type ? 'post_title ASC ' : 'post_date DESC ';
             $query = "SELECT * FROM $wpdb->posts $join $where ORDER BY $orderby $limit";
-            $key = md5($query);
+            $key = \md5($query);
             $key = "wp_get_archives:$key:$last_changed";
-            if (!$results = wp_cache_get($key, 'posts')) {
+            if (!$results = \wp_cache_get($key, 'posts')) {
                 $results = $wpdb->get_results($query);
-                wp_cache_set($key, $results, 'posts');
+                \wp_cache_set($key, $results, 'posts');
             }
             if ($results) {
                 foreach ((array) $results as $result) {
                     if ($result->post_date != '0000-00-00 00:00:00') {
-                        $url = get_permalink($result);
+                        $url = \get_permalink($result);
                         $text = $result->ID;
                         if ($result->post_title) {
                             /** This filter is documented in wp-includes/post-template.php */
-                            $text = strip_tags(apply_filters('the_title', $result->post_title, $result->ID));
+                            $text = \strip_tags(\apply_filters('the_title', $result->post_title, $result->ID));
                         }
                         $output[] = $this->get_archives_link($url, $text);
                     }
