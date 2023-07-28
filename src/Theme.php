@@ -3,6 +3,7 @@
 namespace Timber;
 
 use JsonSerializable;
+use WP_Theme;
 
 /**
  * Class Theme

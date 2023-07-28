@@ -6,6 +6,7 @@ use SimpleXMLElement;
 
 use Timber\Factory\PostFactory;
 use Timber\Factory\UserFactory;
+use WP_Post;
 
 /**
  * Class Post
@@ -55,9 +56,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      *
      * @since 2.0.0
      *
-     * @var \WP_Post|null
+     * @var WP_Post|null
      */
-    protected ?\WP_Post $wp_object;
+    protected ?WP_Post $wp_object;
 
     /**
      * @var string What does this class represent in WordPress terms?
@@ -175,7 +176,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * @internal
      * @return \Timber\Post
      */
-    public static function build(\WP_Post $wp_post): self
+    public static function build(WP_Post $wp_post): self
     {
         $post = new static();
 
@@ -267,7 +268,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      *
      * @return WP_Post|null
      */
-    public function wp_object(): ?\WP_Post
+    public function wp_object(): ?WP_Post
     {
         return $this->wp_object;
     }
@@ -1736,7 +1737,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * Finds any WP_Post objects and converts them to Timber\Post objects.
      *
      * @api
-     * @param array|\WP_Post $data
+     * @param array|WP_Post $data
      */
     public function convert($data)
     {
