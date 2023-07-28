@@ -132,6 +132,13 @@ We love PRs! Read the [Contributor Guidelines](https://github.com/timber/timber/
 
 ## Sponsor us
 
+Since 2013 our goal at Timber is to create a library to that helps you create fully-customized WordPress themes _faster_ with more _sustainable code_.
+
+Through the collaborative efforts of both our dedicated team and countless contributors, we have invested numerous hours in maintaining and enhancing Timber. To keep doing that, we rely on the invaluable support of our sponsors.
+
+Are you a WordPress pro or part of an agency who relies on Timber? Keep the magic alive by [becoming a sponsor](https://opencollective.com/timber)! By becoming a sponsor, you contribute to the continuous maintenance and enhancement of Timber, ultimately benefiting developers worldwide.
+
+
 Timber wouldn’t be here without the help of countless contributors.
 
 Are you a WordPress pro who relies on Timber? Keep the magic alive by [becoming a sponsor](https://opencollective.com/timber)! Your support helps us enhance and maintain the library. This will benefit developers worldwide.
