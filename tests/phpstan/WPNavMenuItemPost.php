@@ -5,6 +5,7 @@ namespace TimberPHPStan;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\PropertiesClassReflectionExtension;
 use PHPStan\Reflection\PropertyReflection;
+use WP_Post;
 
 class WPNavMenuItemPost implements PropertiesClassReflectionExtension
 {
@@ -17,7 +18,7 @@ class WPNavMenuItemPost implements PropertiesClassReflectionExtension
             'type',
         ];
 
-        return $classReflection->is(\WP_Post::class) && in_array($propertyName, $nav_menu_item_properties, true);
+        return $classReflection->is(WP_Post::class) && \in_array($propertyName, $nav_menu_item_properties, true);
     }
 
     public function getProperty(ClassReflection $classReflection, string $propertyName): PropertyReflection

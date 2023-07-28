@@ -2,9 +2,11 @@
 
 namespace Timber\Image\Operation;
 
+use Imagick;
 use Timber\Helper;
 use Timber\Image\Operation as ImageOperation;
 use Timber\ImageHelper;
+use WP_Image_Editor;
 
 /**
  * Changes image to new size, by shrinking/enlarging
@@ -34,7 +36,7 @@ class Resize extends ImageOperation
         $this->h = $h;
         // Sanitize crop position
         $allowed_crop_positions = ['default', 'center', 'top', 'bottom', 'left', 'right', 'top-center', 'bottom-center'];
-        if ($crop !== false && !in_array($crop, $allowed_crop_positions)) {
+        if ($crop !== false && !\in_array($crop, $allowed_crop_positions)) {
             $crop = $allowed_crop_positions[0];
         }
         $this->crop = $crop;
@@ -67,22 +69,22 @@ class Resize extends ImageOperation
      *
      * @param string           $load_filename the name of the file to resize.
      * @param string           $save_filename the desired name of the file to save.
-     * @param \WP_Image_Editor $editor the image editor we're using.
+     * @param WP_Image_Editor $editor the image editor we're using.
      * @return bool
      */
-    protected function run_animated_gif($load_filename, $save_filename, \WP_Image_Editor $editor)
+    protected function run_animated_gif($load_filename, $save_filename, WP_Image_Editor $editor)
     {
         $w = $this->w;
         $h = $this->h;
-        if (!class_exists('Imagick') || (defined('TEST_NO_IMAGICK') && TEST_NO_IMAGICK)) {
+        if (!\class_exists('Imagick') || (\defined('TEST_NO_IMAGICK') && TEST_NO_IMAGICK)) {
             Helper::warn('Cannot resize GIF, Imagick is not installed');
             return false;
         }
-        $image = new \Imagick($load_filename);
+        $image = new Imagick($load_filename);
         $image = $image->coalesceImages();
         $crop = $this->get_target_sizes($editor);
         foreach ($image as $frame) {
-            $frame->cropImage($crop['src_w'], $crop['src_h'], round($crop['x']), round($crop['y']));
+            $frame->cropImage($crop['src_w'], $crop['src_h'], \round($crop['x']), \round($crop['y']));
             $frame->thumbnailImage($w, $h);
             $frame->setImagePage($w, $h, 0, 0);
         }
@@ -91,9 +93,9 @@ class Resize extends ImageOperation
     }
 
     /**
-     * @param \WP_Image_Editor $image
+     * @param WP_Image_Editor $image
      */
-    protected function get_target_sizes(\WP_Image_Editor $image)
+    protected function get_target_sizes(WP_Image_Editor $image)
     {
         $w = $this->w;
         $h = $this->h;
@@ -104,11 +106,11 @@ class Resize extends ImageOperation
         $src_h = $current_size['height'];
         $src_ratio = $src_w / $src_h;
         if (!$h) {
-            $h = round($w / $src_ratio);
+            $h = \round($w / $src_ratio);
         }
         if (!$w) {
             //the user wants to resize based on constant height
-            $w = round($h * $src_ratio);
+            $w = \round($h * $src_ratio);
         }
 
         if (!$crop || $crop === 'default') {
@@ -131,8 +133,8 @@ class Resize extends ImageOperation
         switch ($crop) {
             case 'center':
                 // Get source x and y
-                $src_x = round(($src_w - $src_wt) / 2);
-                $src_y = round(($src_h - $src_ht) / 2);
+                $src_x = \round(($src_w - $src_wt) / 2);
+                $src_y = \round(($src_h - $src_ht) / 2);
                 break;
 
             case 'top':
@@ -144,11 +146,11 @@ class Resize extends ImageOperation
                 break;
 
             case 'top-center':
-                $src_y = round(($src_h - $src_ht) / 4);
+                $src_y = \round(($src_h - $src_ht) / 4);
                 break;
 
             case 'bottom-center':
-                $src_y = $src_h - $src_ht - round(($src_h - $src_ht) / 4);
+                $src_y = $src_h - $src_ht - \round(($src_h - $src_ht) / 4);
                 break;
 
             case 'left':
@@ -195,8 +197,8 @@ class Resize extends ImageOperation
         if (ImageHelper::is_svg($load_filename)) {
             return false;
         }
-        $image = wp_get_image_editor($load_filename);
-        if (!is_wp_error($image)) {
+        $image = \wp_get_image_editor($load_filename);
+        if (!\is_wp_error($image)) {
             //should be resized by gif resizer
             if (ImageHelper::is_animated_gif($load_filename)) {
                 //attempt to resize, return if successful proceed if not
@@ -215,10 +217,10 @@ class Resize extends ImageOperation
                 $crop['target_w'],
                 $crop['target_h']
             );
-            $quality = apply_filters('wp_editor_set_quality', 82, 'image/jpeg');
+            $quality = \apply_filters('wp_editor_set_quality', 82, 'image/jpeg');
             $image->set_quality($quality);
             $result = $image->save($save_filename);
-            if (is_wp_error($result)) {
+            if (\is_wp_error($result)) {
                 // @codeCoverageIgnoreStart
                 Helper::error_log('Error resizing image');
                 Helper::error_log($result);
@@ -231,7 +233,7 @@ class Resize extends ImageOperation
             // @codeCoverageIgnoreStart
             Helper::error_log('Error loading ' . $image->error_data['error_loading_image']);
         } else {
-            if (!extension_loaded('gd')) {
+            if (!\extension_loaded('gd')) {
                 Helper::error_log('Can not resize image, please install php-gd');
             } else {
                 Helper::error_log($image);

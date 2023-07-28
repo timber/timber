@@ -105,7 +105,7 @@ class Attachment extends Post
             return $this->abs_url;
         }
 
-        return get_permalink($this->ID);
+        return \get_permalink($this->ID);
     }
 
     /**
@@ -139,7 +139,7 @@ class Attachment extends Post
         if (isset($this->file)) {
             return $this->file;
         }
-        return $this->file = (string) get_post_meta($this->ID, '_wp_attached_file', true);
+        return $this->file = (string) \get_post_meta($this->ID, '_wp_attached_file', true);
     }
 
     /**
@@ -154,7 +154,7 @@ class Attachment extends Post
         if (isset($this->file_loc)) {
             return $this->file_loc;
         }
-        return $this->file_loc = (string) get_attached_file($this->ID);
+        return $this->file_loc = (string) \get_attached_file($this->ID);
     }
 
     /**
@@ -173,7 +173,7 @@ class Attachment extends Post
      */
     public function src(): string
     {
-        return (string) wp_get_attachment_url($this->ID);
+        return (string) \wp_get_attachment_url($this->ID);
     }
 
     /**
@@ -205,7 +205,7 @@ class Attachment extends Post
          * @param string $caption Caption for the given attachment.
          * @param int    $post_id Attachment ID.
          */
-        return apply_filters('wp_get_attachment_caption', $this->post_excerpt, $this->ID);
+        return \apply_filters('wp_get_attachment_caption', $this->post_excerpt, $this->ID);
     }
 
     /**
@@ -242,7 +242,7 @@ class Attachment extends Post
          * @see https://make.wordpress.org/core/2022/05/02/media-storing-file-size-as-part-of-metadata/
          */
         $size = $this->metadata('filesize');
-        if ($size !== null && is_numeric($size)) {
+        if ($size !== null && \is_numeric($size)) {
             return $this->size = (int) $size;
         }
 
@@ -254,7 +254,7 @@ class Attachment extends Post
          *
          * @see https://developer.wordpress.org/reference/functions/wp_filesize/
          */
-        $size = filesize($this->file_loc());
+        $size = \filesize($this->file_loc());
         return $this->size = $size === false ? null : (int) $size;
     }
 
@@ -282,7 +282,7 @@ class Attachment extends Post
         if (isset($this->file_extension)) {
             return $this->file_extension;
         }
-        return $this->file_extension = pathinfo($this->file(), PATHINFO_EXTENSION);
+        return $this->file_extension = \pathinfo($this->file(), PATHINFO_EXTENSION);
     }
 
     /**
@@ -349,7 +349,7 @@ class Attachment extends Post
         // We haven't retrived the metadata yet because it's wasn't needed until now.
         if (!isset($this->metadata)) {
             // Cache it so we don't have to retrieve it again.
-            $this->metadata = (array) wp_get_attachment_metadata($this->ID);
+            $this->metadata = (array) \wp_get_attachment_metadata($this->ID);
         }
 
         if ($key === null) {

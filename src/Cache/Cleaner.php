@@ -152,7 +152,7 @@ class Cleaner
 
         // Delete transients from multisite, if configured as such
 
-        if (is_multisite() && is_main_network()) {
+        if (\is_multisite() && \is_main_network()) {
             $records .= self::delete_transients_multisite();
         }
         return $records;

@@ -138,8 +138,8 @@ class Image extends Attachment implements ImageInterface
             "{{ image.meta('my_field') }}",
             '2.0.0'
         );
-        $pc = get_post_custom($iid);
-        if (is_bool($pc)) {
+        $pc = \get_post_custom($iid);
+        if (\is_bool($pc)) {
             return [];
         }
         return $pc;
@@ -174,7 +174,7 @@ class Image extends Attachment implements ImageInterface
             return URLHelper::maybe_secure_url($this->abs_url);
         }
 
-        $src = wp_get_attachment_image_src($this->ID, $size);
+        $src = \wp_get_attachment_image_src($this->ID, $size);
         $src = $src[0];
 
         /**
@@ -186,14 +186,14 @@ class Image extends Attachment implements ImageInterface
          * @param string $src The image src.
          * @param int    $id  The image ID.
          */
-        $src = apply_filters('timber/image/src', $src, $this->ID);
+        $src = \apply_filters('timber/image/src', $src, $this->ID);
 
         /**
          * Filters the src URL for a `Timber\Image`.
          *
          * @deprecated 2.0.0, use `timber/image/src`
          */
-        $src = apply_filters_deprecated(
+        $src = \apply_filters_deprecated(
             'timber_image_src',
             [$src, $this->ID],
             '2.0.0',
@@ -297,7 +297,7 @@ class Image extends Attachment implements ImageInterface
     public function alt(): string
     {
         $alt = $this->meta('_wp_attachment_image_alt');
-        return trim(wp_strip_all_tags($alt));
+        return \trim(\wp_strip_all_tags($alt));
     }
 
     /**
@@ -349,7 +349,7 @@ class Image extends Attachment implements ImageInterface
      */
     public function srcset(string $size = 'full'): ?string
     {
-        return wp_get_attachment_image_srcset($this->ID, $size) ?: null;
+        return \wp_get_attachment_image_srcset($this->ID, $size) ?: null;
     }
 
     /**
@@ -369,6 +369,6 @@ class Image extends Attachment implements ImageInterface
      */
     public function img_sizes(string $size = 'full'): ?string
     {
-        return wp_get_attachment_image_sizes($this->ID, $size) ?: null;
+        return \wp_get_attachment_image_sizes($this->ID, $size) ?: null;
     }
 }

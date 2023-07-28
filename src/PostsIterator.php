@@ -2,12 +2,14 @@
 
 namespace Timber;
 
+use ArrayIterator;
+use ReturnTypeWillChange;
 use Timber\Factory\PostFactory;
 
 /**
  * Class PostsIterator
  */
-class PostsIterator extends \ArrayIterator
+class PostsIterator extends ArrayIterator
 {
     /**
      * @var \Timber\Post The last post that was returned by the iterator. Used
@@ -23,7 +25,7 @@ class PostsIterator extends \ArrayIterator
      *
      * @return mixed
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function current()
     {
         static $factory;
@@ -37,7 +39,7 @@ class PostsIterator extends \ArrayIterator
              * compatibility improvements live there, because they also need to work for singular
              * templates, where there’s no loop.
              */
-            do_action_ref_array('loop_start', [&$GLOBALS['wp_query']]);
+            \do_action_ref_array('loop_start', [&$GLOBALS['wp_query']]);
         }
 
         $wp_post = parent::current();
@@ -76,8 +78,8 @@ class PostsIterator extends \ArrayIterator
              * compatibility improvements live there, because they also need to work for singular
              * templates, where there’s no loop.
              */
-            do_action_ref_array('loop_end', [&$GLOBALS['wp_query']]);
-            wp_reset_postdata();
+            \do_action_ref_array('loop_end', [&$GLOBALS['wp_query']]);
+            \wp_reset_postdata();
         }
 
         parent::next();

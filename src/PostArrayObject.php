@@ -4,6 +4,8 @@ namespace Timber;
 
 use ArrayObject;
 use JsonSerializable;
+use ReturnTypeWillChange;
+use WP_Post;
 
 /**
  * PostArrayObject class for dealing with arbitrary collections of Posts
@@ -20,7 +22,7 @@ class PostArrayObject extends ArrayObject implements PostCollectionInterface, Js
      * Timber\Post instances.
      *
      * @api
-     * @param \WP_Post[] $posts an array of WP_Post objects
+     * @param WP_Post[] $posts an array of WP_Post objects
      */
     public function __construct(array $posts)
     {
@@ -45,7 +47,7 @@ class PostArrayObject extends ArrayObject implements PostCollectionInterface, Js
     public function __debugInfo(): array
     {
         return [
-            'info' => sprintf(
+            'info' => \sprintf(
                 '
 ********************************************************************************
 
@@ -71,7 +73,7 @@ class PostArrayObject extends ArrayObject implements PostCollectionInterface, Js
      *
      * @internal
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return $this->getArrayCopy();
