@@ -35,6 +35,14 @@ class TestTimberTermTwigFilters extends Timber_UnitTestCase
         $this->assertEquals('6', trim($str));
     }
 
+    public function testTimberFormatBytes()
+    {
+        $str1 = Timber::compile_string('{{ 1200|size_format }}');
+        $str2 = Timber::compile_string('{{ 1500|size_format(2) }}');
+        $this->assertSame('1 KB', $str1);
+        $this->assertSame('1.46 KB', $str2);
+    }
+
     public function testTwigFilterList()
     {
         $data['authors'] = ['Tom', 'Rick', 'Harry', 'Mike'];

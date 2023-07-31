@@ -1010,7 +1010,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase
 
     public function testImageNoParent()
     {
-        $this->assertFalse($this->get_timber_attachment_object()->parent());
+        $this->assertNull($this->get_timber_attachment_object()->parent());
     }
 
     public function testImageParent()

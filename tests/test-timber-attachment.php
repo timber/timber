@@ -266,23 +266,16 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase
     {
         $pid = $this->factory->post->create();
         $iid = self::get_attachment($pid, 'dummy-pdf.pdf');
-        $str = '{{ get_post(post).size }}';
-        $result = Timber::compile_string($str, [
-            'post' => $iid,
-        ]);
-        $this->assertEquals('16&nbsp;KB', $result);
+        $attachment = Timber::get_post($iid);
+        $this->assertSame(16555, $attachment->size());
     }
 
-    public function testFileSizeRaw()
+    public function testFileSizeMissingInMetadata()
     {
         $pid = $this->factory->post->create();
-        $iid = self::get_attachment($pid, 'dummy-pdf.pdf');
-        $str = '{{ get_post(post).size_raw }}';
-        $result = Timber::compile_string($str, [
-            'post' => $iid,
-        ]);
-        $this->assertEquals('16555', $result);
-        $this->assertFalse(Timber::get_post($iid)->is_image());
+        $iid = self::get_attachment($pid, 'dummy-pdf.pdf', false);
+        $attachment = Timber::get_post($iid);
+        $this->assertSame(16555, $attachment->size());
     }
 
     public function testFileExtension()
@@ -293,7 +286,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase
         $result = Timber::compile_string($str, [
             'post' => $iid,
         ]);
-        $this->assertEquals('PDF', $result);
+        $this->assertEquals('pdf', $result);
     }
 
     /**

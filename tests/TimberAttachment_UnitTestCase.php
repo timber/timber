@@ -84,7 +84,7 @@ class TimberAttachment_UnitTestCase extends Timber_UnitTestCase
         return "$url?lang=en";
     }
 
-    public static function get_attachment($pid = 0, $file = 'arch.jpg')
+    public static function get_attachment($pid = 0, $file = 'arch.jpg', $create_metadata = true)
     {
         $filename = self::copyTestAttachment($file);
         $filetype = wp_check_filetype(basename($filename), null);
@@ -94,6 +94,9 @@ class TimberAttachment_UnitTestCase extends Timber_UnitTestCase
             'post_mime_type' => $filetype['type'],
         ];
         $iid = wp_insert_attachment($attachment, $filename, $pid);
+        if (!is_wp_error($iid) && $create_metadata) {
+            wp_update_attachment_metadata($iid, wp_generate_attachment_metadata($iid, $filename));
+        }
         return $iid;
     }
 
