@@ -67,6 +67,10 @@ class ToJpg extends ImageOperation
 
         $input = $imagecreate_function($load_filename);
 
+        if ($input === false) {
+            return false;
+        }
+
         list($width, $height) = \getimagesize($load_filename);
         $output = \imagecreatetruecolor($width, $height);
         $c = self::hexrgb($this->color);

@@ -68,6 +68,10 @@ class ToWebp extends ImageOperation
 
         $input = $imagecreate_function($load_filename);
 
+        if ($input === false) {
+            return false;
+        }
+
         if (!\imageistruecolor($input)) {
             \imagepalettetotruecolor($input);
         }
