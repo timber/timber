@@ -207,7 +207,7 @@ class Site extends Core implements CoreInterface
 
         $blog_identifier = $info->blog_id;
 
-        if ($current_id !== (int) $blog_identifier) {
+        if ((int) $current_id !== (int) $blog_identifier) {
             \switch_to_blog($blog_identifier);
         }
 
