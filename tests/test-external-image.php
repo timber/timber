@@ -184,8 +184,7 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
 
         $image = Timber::get_external_image($dest);
 
-        $this->assertSame('54&nbsp;KB', $image->size());
-        $this->assertSame(54996, $image->size_raw());
+        $this->assertSame(54996, $image->size());
     }
 
     public function testExternalImageExtension()
@@ -196,7 +195,7 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
 
         $image = Timber::get_external_image($dest);
 
-        $this->assertSame('JPG', $image->extension());
+        $this->assertSame('jpg', $image->extension());
     }
 
     public function testExternalImageDimensions()
@@ -233,9 +232,9 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
 
         $image = Timber::get_external_image($dest);
 
-        $this->assertSame(530, $image->width());
+        $this->assertSame(531, $image->width());
         $this->assertSame(158, $image->height());
-        $this->assertSame(3.3544303797468356, $image->aspect());
+        $this->assertSame(3.3607594936708862, $image->aspect());
     }
 
     public function testExternalImageAlt()

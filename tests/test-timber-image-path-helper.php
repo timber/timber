@@ -43,6 +43,7 @@ class TestTimberImagePathHelper extends TimberAttachment_UnitTestCase
             'image' => $image,
         ]);
         $upload_dir = wp_upload_dir();
-        $this->assertEquals('<img src="' . $upload_dir['url'] . '/' . $image->sizes['medium']['file'] . '" />', trim($result));
+
+        $this->assertEquals('<img src="' . $upload_dir['url'] . '/' . $image->sizes()['medium']['file'] . '" />', trim($result));
     }
 }

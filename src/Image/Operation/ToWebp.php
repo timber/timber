@@ -45,7 +45,7 @@ class ToWebp extends ImageOperation
      */
     public function run($load_filename, $save_filename)
     {
-        if (!is_file($load_filename)) {
+        if (!\is_file($load_filename)) {
             return false;
         }
 
@@ -54,29 +54,33 @@ class ToWebp extends ImageOperation
             return false;
         }
 
-        $ext = wp_check_filetype($load_filename);
+        $ext = \wp_check_filetype($load_filename);
         if (isset($ext['ext'])) {
             $ext = $ext['ext'];
         }
-        $ext = strtolower($ext);
-        $ext = str_replace('jpg', 'jpeg', $ext);
+        $ext = \strtolower($ext);
+        $ext = \str_replace('jpg', 'jpeg', $ext);
 
         $imagecreate_function = 'imagecreatefrom' . $ext;
-        if (!function_exists($imagecreate_function)) {
+        if (!\function_exists($imagecreate_function)) {
             return false;
         }
 
         $input = $imagecreate_function($load_filename);
 
-        if (!imageistruecolor($input)) {
-            imagepalettetotruecolor($input);
+        if ($input === false) {
+            return false;
         }
 
-        if (!function_exists('imagewebp')) {
+        if (!\imageistruecolor($input)) {
+            \imagepalettetotruecolor($input);
+        }
+
+        if (!\function_exists('imagewebp')) {
             Helper::error_log('The function imagewebp does not exist on this server to convert image to ' . $save_filename . '.');
             return false;
         }
 
-        return imagewebp($input, $save_filename, $this->quality);
+        return \imagewebp($input, $save_filename, $this->quality);
     }
 }

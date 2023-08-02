@@ -50,32 +50,40 @@ class ExternalImage implements ImageInterface
      * @api
      * @var string
      */
-    private $alt_text;
+    protected string $alt_text;
 
     /**
-     * Caption.
+     * Alt text.
      *
      * @api
      * @var string
      */
-    private $caption = '';
+    protected string $caption;
 
     /**
-     * File.
+     * Representation.
      *
-     * @api
-     * @var mixed
+     * @var string What does this class represent in WordPress terms?
      */
-    public $file;
+    public static $representation = 'image';
 
     /**
      * File location.
      *
      * @api
      * @var string The absolute path to the attachmend file in the filesystem
-     *             (Example: `/var/www/htdocs/wp-content/themes/my-theme/images/my-pic.jpg`)
+     *             (Example: `/var/www/htdocs/wp-content/themes/my-theme/images/`)
      */
-    public $file_loc;
+    protected string $file_loc;
+
+    /**
+     * File extension.
+     *
+     * @api
+     * @since 2.0.0
+     * @var string A file extension.
+     */
+    protected string $file_extension;
 
     /**
      * Absolute URL.
@@ -85,22 +93,11 @@ class ExternalImage implements ImageInterface
     public $abs_url;
 
     /**
-     * File extension.
+     * Size.
      *
-     * @api
-     * @since 2.0.0
-     * @var null|string A file extension.
+     * @var integer|null
      */
-    public $file_extension = null;
-
-    /**
-     * Formatted file size.
-     *
-     * @api
-     * @since 2.0.0
-     * @var FileSize File size string.
-     */
-    private FileSize $file_size;
+    protected ?int $size;
 
     /**
      * File types.
@@ -127,6 +124,10 @@ class ExternalImage implements ImageInterface
      */
     protected ?ImageDimensions $image_dimensions;
 
+    final protected function __construct()
+    {
+    }
+
     /**
      * Inits the ExternalImage object.
      *
@@ -134,32 +135,32 @@ class ExternalImage implements ImageInterface
      * @param $url string URL or path to load the image from.
      * @param $args array An array of arguments for the image.
      */
-    public static function build($url, array $args = [])
+    public static function build($url, array $args = []): ?ExternalImage
     {
-        if (!is_string($url) || is_numeric($url)) {
+        if (!\is_string($url) || \is_numeric($url)) {
             return null;
         }
 
-        $args = wp_parse_args($args, [
+        $args = \wp_parse_args($args, [
             'alt' => '',
         ]);
 
         $external_image = new static();
 
         if (!empty($args['alt'])) {
-            $external_image->set_alt($args['alt']);
+            $external_image->alt_text = (string) $args['alt'];
         }
 
         if (!empty($args['caption'])) {
-            $external_image->set_caption($args['caption']);
+            $external_image->caption = (string) $args['caption'];
         }
 
-        if (strstr($url, '://')) {
+        if (\str_contains($url, '://')) {
             // Assume URL.
             $external_image->init_with_url($url);
 
             return $external_image;
-        } elseif (strstr($url, ABSPATH)) {
+        } elseif (\str_contains($url, ABSPATH)) {
             // Assume absolute path.
             $external_image->init_with_file_path($url);
 
@@ -168,7 +169,7 @@ class ExternalImage implements ImageInterface
             // Check for image file types.
             foreach ($external_image->image_file_types as $type) {
                 // Assume a relative path.
-                if (strstr(strtolower($url), $type)) {
+                if (\str_contains(\strtolower($url), $type)) {
                     $external_image->init_with_relative_path($url);
 
                     return $external_image;
@@ -197,13 +198,13 @@ class ExternalImage implements ImageInterface
      *
      * @return string The src URL for the image.
      */
-    public function src($size = 'full')
+    public function src($size = 'full'): string
     {
         return URLHelper::maybe_secure_url($this->abs_url);
     }
 
     /**
-     * Gets the relative path to an attachment.
+     * Gets the relative path to the file.
      *
      * @api
      * @example
@@ -214,11 +215,26 @@ class ExternalImage implements ImageInterface
      * <img src="/wp-content/uploads/2015/08/pic.jpg" />
      * ```
      *
-     * @return string The relative path to an attachment.
+     * @return string The relative path to the image file.
      */
     public function path(): string
     {
-        return URLHelper::get_rel_path($this->file);
+        return URLHelper::get_rel_path($this->file_loc());
+    }
+
+    /**
+     * Gets the absolute path to the image.
+     *
+     * @api
+     *
+     * @return string
+     */
+    public function file_loc(): string
+    {
+        if (isset($this->file_loc)) {
+            return $this->file_loc;
+        }
+        return '';
     }
 
     /**
@@ -239,38 +255,24 @@ class ExternalImage implements ImageInterface
      * </a>
      * ```
      *
-     * @return string The filesize string in a human-readable format or null if the
-     *                filesize can’t be read.
+     * @return null|int Filsize or null if the filesize couldn't be determined.
      */
-    public function size(): string
+    public function size(): ?int
     {
-        return $this->file_size->size();
-    }
+        if (isset($this->size)) {
+            return $this->size;
+        }
 
-    /**
-     * Gets filesize in bytes.
-     *
-     * @api
-     * @since 2.0.0
-     * @example
-     *
-     * ```twig
-     * <table>
-     *     {% for attachment in Attachment(attachment_ids) %}
-     *         <tr>
-     *             <td>{{ attachment.title }}</td>
-     *             <td>{{ attachment.extension }}</td>
-     *             <td>{{ attachment.size_raw }} bytes</td>
-     *         </tr>
-     *     {% endfor %}
-     * </table>
-     * ```
-     *
-     * @return int|null The filesize number in bytes, or null if the filesize can’t be read.
-     */
-    public function size_raw()
-    {
-        return $this->file_size->size_raw();
+        /**
+         * Filesize wasn't found in the metadata, so we'll try to get it from the file itself.
+         *
+         * We could have used `wp_filesize()` here, but it returns 0 when the file doesn't exist. Which is a perfectly valid filesize
+         * and prevents us from telling the difference between a file that doesn't exist and a file that has a filesize of 0.
+         *
+         * @see https://developer.wordpress.org/reference/functions/wp_filesize/
+         */
+        $size = \filesize($this->file_loc());
+        return $this->size = $size === false ? null : (int) $size;
     }
 
     /**
@@ -280,7 +282,7 @@ class ExternalImage implements ImageInterface
      *
      * @return string The src of the attachment.
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->src();
     }
@@ -307,15 +309,10 @@ class ExternalImage implements ImageInterface
      */
     public function extension(): ?string
     {
-        if (!$this->file_extension) {
-            $file_info = wp_check_filetype($this->file);
-
-            if (!empty($file_info['ext'])) {
-                $this->file_extension = strtoupper($file_info['ext']);
-            }
+        if (isset($this->file_extension)) {
+            return $this->file_extension;
         }
-
-        return $this->file_extension;
+        return $this->file_extension = \pathinfo($this->file_loc(), PATHINFO_EXTENSION);
     }
 
     /**
@@ -412,9 +409,7 @@ class ExternalImage implements ImageInterface
 
         $this->abs_url = $url;
         $this->file_loc = $file_path;
-        $this->file = $file_path;
         $this->image_dimensions = new ImageDimensions($file_path);
-        $this->file_size = new FileSize($file_path);
     }
 
     /**
@@ -428,11 +423,9 @@ class ExternalImage implements ImageInterface
     {
         $file_path = URLHelper::get_full_path($relative_path);
 
-        $this->abs_url = home_url($relative_path);
+        $this->abs_url = \home_url($relative_path);
         $this->file_loc = $file_path;
-        $this->file = $file_path;
         $this->image_dimensions = new ImageDimensions($file_path);
-        $this->file_size = new FileSize($file_path);
     }
 
     /**
@@ -451,14 +444,10 @@ class ExternalImage implements ImageInterface
         $this->abs_url = $url;
 
         if (URLHelper::is_local($url)) {
-            $this->file = URLHelper::remove_double_slashes(
-                ABSPATH . URLHelper::get_rel_url($url)
-            );
             $this->file_loc = URLHelper::remove_double_slashes(
                 ABSPATH . URLHelper::get_rel_url($url)
             );
             $this->image_dimensions = new ImageDimensions($this->file_loc);
-            $this->file_size = new FileSize($this->file_loc);
         }
     }
 

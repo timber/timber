@@ -4,6 +4,7 @@ namespace Timber;
 
 use ArrayObject;
 use JsonSerializable;
+use ReturnTypeWillChange;
 use WP_Query;
 
 /**
@@ -44,7 +45,7 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
     /**
      * The internal WP_Query instance that this object is wrapping.
      *
-     * @var \WP_Query
+     * @var WP_Query
      */
     protected $wp_query = null;
 
@@ -120,7 +121,7 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
      */
     public function pagination($prefs = [])
     {
-        if (!$this->pagination && $this->wp_query instanceof \WP_Query) {
+        if (!$this->pagination && $this->wp_query instanceof WP_Query) {
             $this->pagination = new Pagination($prefs, $this->wp_query);
         }
 
@@ -161,7 +162,7 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
     public function __debugInfo(): array
     {
         return [
-            'info' => sprintf(
+            'info' => \sprintf(
                 '
 ********************************************************************************
 
@@ -190,7 +191,7 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
      *
      * @internal
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return $this->getArrayCopy();

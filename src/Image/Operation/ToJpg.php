@@ -44,7 +44,7 @@ class ToJpg extends ImageOperation
      */
     public function run($load_filename, $save_filename)
     {
-        if (!file_exists($load_filename)) {
+        if (!\file_exists($load_filename)) {
             return false;
         }
 
@@ -53,27 +53,31 @@ class ToJpg extends ImageOperation
             return false;
         }
 
-        $ext = wp_check_filetype($load_filename);
+        $ext = \wp_check_filetype($load_filename);
         if (isset($ext['ext'])) {
             $ext = $ext['ext'];
         }
-        $ext = strtolower($ext);
-        $ext = str_replace('jpg', 'jpeg', $ext);
+        $ext = \strtolower($ext);
+        $ext = \str_replace('jpg', 'jpeg', $ext);
 
         $imagecreate_function = 'imagecreatefrom' . $ext;
-        if (!function_exists($imagecreate_function)) {
+        if (!\function_exists($imagecreate_function)) {
             return false;
         }
 
         $input = $imagecreate_function($load_filename);
 
-        list($width, $height) = getimagesize($load_filename);
-        $output = imagecreatetruecolor($width, $height);
+        if ($input === false) {
+            return false;
+        }
+
+        list($width, $height) = \getimagesize($load_filename);
+        $output = \imagecreatetruecolor($width, $height);
         $c = self::hexrgb($this->color);
-        $color = imagecolorallocate($output, $c['red'], $c['green'], $c['blue']);
-        imagefilledrectangle($output, 0, 0, $width, $height, $color);
-        imagecopy($output, $input, 0, 0, 0, 0, $width, $height);
-        imagejpeg($output, $save_filename);
+        $color = \imagecolorallocate($output, $c['red'], $c['green'], $c['blue']);
+        \imagefilledrectangle($output, 0, 0, $width, $height, $color);
+        \imagecopy($output, $input, 0, 0, 0, 0, $width, $height);
+        \imagejpeg($output, $save_filename);
         return true;
     }
 }

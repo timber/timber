@@ -2,8 +2,9 @@
 
 namespace Timber;
 
-use Timber\Factory\PostFactory;
+use ReturnTypeWillChange;
 
+use Timber\Factory\PostFactory;
 use WP_Post;
 
 /**
@@ -29,12 +30,14 @@ trait AccessesPostsLazily
     private $factory;
 
     /**
+     * Realizes a lazy collection of posts.
+     *
      * For better performance, Post Collections do not instantiate `Timber\Post` objects
      * at query time. They instantiate each `Timber\Post` only as needed, i.e. while
      * iterating or for direct array access (`$coll[$i]`). Since specific `Timber\Post`
      * implementations may have expensive `::setup()` operations, this is usually
      * what you want, but not always. For example, you may want to force eager
-     * instantiation to front-load a collection to be cached. To eagerly instantiate
+     * instantiation to front-load a collection of posts to be cached. To eagerly instantiate
      * a lazy collection of objects is to "realize" that collection.
      *
      * @api
@@ -47,7 +50,7 @@ trait AccessesPostsLazily
      * }, HOUR_IN_SECONDS);
      *
      * foreach ($lazy_posts as $post) {
-     *   // This will incur the performance cost of Post::setup()
+     *   // This will incur the performance cost of Post::setup().
      * }
      *
      * // Contrast with:
@@ -64,7 +67,7 @@ trait AccessesPostsLazily
      *   // No additional overhead here.
      * }
      * ```
-     * @return \Timber\PostCollectionInterface the realized PostQuery
+     * @return \Timber\PostCollectionInterface The realized PostQuery.
      */
     public function realize(): self
     {
@@ -73,7 +76,7 @@ trait AccessesPostsLazily
             // Since arbitrary array index access may have happened previously,
             // leverage that to ensure each Post is instantiated exactly once.
             // We call parent::getArrayCopy() to avoid infinite mutual recursion.
-            foreach (array_keys(parent::getArrayCopy()) as $k) {
+            foreach (\array_keys(parent::getArrayCopy()) as $k) {
                 $this->offsetGet($k);
             }
             $this->realized = true;
@@ -108,7 +111,7 @@ trait AccessesPostsLazily
      */
     public function get_posts(): array
     {
-        Helper::deprecated(sprintf('%s::get_posts()', static::class), sprintf('%s::to_array()', static::class), '2.0.0');
+        Helper::deprecated(\sprintf('%s::get_posts()', static::class), \sprintf('%s::to_array()', static::class), '2.0.0');
         return $this->getArrayCopy();
     }
 
@@ -117,7 +120,7 @@ trait AccessesPostsLazily
      *
      * @internal
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         $post = parent::offsetGet($offset);

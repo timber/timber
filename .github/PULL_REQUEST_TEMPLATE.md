@@ -3,9 +3,14 @@ First off, hello!
 
 Thanks for submitting a PR. We love/welcome PRs (especially if it's your first).
 Have any questions? Read this section in CONTRIBUTING.md: https://github.com/timber/timber/blob/master/CONTRIBUTING.md#pull-requests.
---> 
+-->
 
-**Ticket**: # <!-- Ignore this if not relevant -->
+<!-- Remove this if no related tickets exist. -->
+<!-- You can add the related ticket numbers here using #. Example: #2471 -->
+Related:
+
+- Ticket 1
+- Ticket 2
 
 ## Issue
 <!-- Description of the problem that this code change is solving -->

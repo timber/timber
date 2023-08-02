@@ -2,6 +2,7 @@
 
 namespace Timber\Factory;
 
+use InvalidArgumentException;
 use Timber\Attachment;
 use Timber\CoreInterface;
 use Timber\Helper;
@@ -9,8 +10,8 @@ use Timber\Image;
 use Timber\PathHelper;
 use Timber\Post;
 use Timber\PostArrayObject;
-use Timber\PostQuery;
 
+use Timber\PostQuery;
 use WP_Post;
 use WP_Query;
 
@@ -21,7 +22,7 @@ class PostFactory
 {
     public function from($params)
     {
-        if (is_int($params) || is_string($params) && is_numeric($params)) {
+        if (\is_int($params) || \is_string($params) && \is_numeric($params)) {
             return $this->from_id((int) $params);
         }
 
@@ -29,19 +30,19 @@ class PostFactory
             return $this->from_wp_query($params);
         }
 
-        if (is_object($params)) {
+        if (\is_object($params)) {
             return $this->from_post_object($params);
         }
 
         if ($this->is_numeric_array($params)) {
-            return new PostArrayObject(array_map([$this, 'from'], $params));
+            return new PostArrayObject(\array_map([$this, 'from'], $params));
         }
 
-        if (is_array($params) && !empty($params['ID'])) {
+        if (\is_array($params) && !empty($params['ID'])) {
             return $this->from_id($params['ID']);
         }
 
-        if (is_array($params)) {
+        if (\is_array($params)) {
             return $this->from_wp_query(new WP_Query($params));
         }
 
@@ -50,7 +51,7 @@ class PostFactory
 
     protected function from_id(int $id): ?Post
     {
-        $wp_post = get_post($id);
+        $wp_post = \get_post($id);
 
         if (!$wp_post) {
             return null;
@@ -69,9 +70,9 @@ class PostFactory
             return $this->build($obj);
         }
 
-        throw new \InvalidArgumentException(sprintf(
+        throw new InvalidArgumentException(\sprintf(
             'Expected an instance of Timber\CoreInterface or WP_Post, got %s',
-            get_class($obj)
+            \get_class($obj)
         ));
     }
 
@@ -87,7 +88,7 @@ class PostFactory
          *
          * @deprecated 2.0.0, use `timber/post/classmap`
          */
-        if ('deprecated' !== apply_filters('Timber\PostClassMap', 'deprecated')) {
+        if ('deprecated' !== \apply_filters('Timber\PostClassMap', 'deprecated')) {
             Helper::doing_it_wrong(
                 'The `Timber\PostClassMap` filter',
                 'Use the `timber/post/classmap` filter instead.',
@@ -126,7 +127,7 @@ class PostFactory
          *                        the post type and the value the name of the class to use for this
          *                        post type or a callback that determines the class to use.
          */
-        $classmap = apply_filters('timber/post/classmap', [
+        $classmap = \apply_filters('timber/post/classmap', [
             'post' => Post::class,
             'page' => Post::class,
             // Apply special logic for attachments.
@@ -138,7 +139,7 @@ class PostFactory
         $class = $classmap[$post->post_type] ?? null;
 
         // If class is a callable, call it to get the actual class name
-        if (is_callable($class)) {
+        if (\is_callable($class)) {
             $class = $class($post);
         }
 
@@ -165,21 +166,21 @@ class PostFactory
          * @param string $class The class to use.
          * @param WP_Post $post The post object.
          */
-        $class = apply_filters('timber/post/class', $class, $post);
+        $class = \apply_filters('timber/post/class', $class, $post);
 
         return $class;
     }
 
     protected function is_image(WP_Post $post)
     {
-        $src = wp_get_attachment_url($post->ID);
-        $mimes = wp_get_mime_types();
+        $src = \get_attached_file($post->ID);
+        $mimes = \wp_get_mime_types();
         // Add mime types that Timber recongizes as images, regardless of config
         $mimes['svg'] = 'image/svg+xml';
         $mimes['webp'] = 'image/webp';
-        $check = wp_check_filetype(PathHelper::basename($src), $mimes);
+        $check = \wp_check_filetype(PathHelper::basename($src), $mimes);
 
-        $extensions = apply_filters('timber/post/image_extensions', [
+        $extensions = \apply_filters('timber/post/image_extensions', [
             'jpg',
             'jpeg',
             'jpe',
@@ -189,7 +190,7 @@ class PostFactory
             'webp',
         ]);
 
-        return in_array($check['ext'], $extensions);
+        return \in_array($check['ext'], $extensions);
     }
 
     protected function build(WP_Post $post): CoreInterface
@@ -201,11 +202,11 @@ class PostFactory
 
     protected function is_numeric_array($arr)
     {
-        if (!is_array($arr)) {
+        if (!\is_array($arr)) {
             return false;
         }
-        foreach (array_keys($arr) as $k) {
-            if (!is_int($k)) {
+        foreach (\array_keys($arr) as $k) {
+            if (!\is_int($k)) {
                 return false;
             }
         }

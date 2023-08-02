@@ -3,6 +3,7 @@
 namespace Timber;
 
 use JsonSerializable;
+use WP_Theme;
 
 /**
  * Class Theme
@@ -66,18 +67,18 @@ class Theme extends Core implements JsonSerializable
 
     /**
      * @api
-     * @var string the slug of the theme (ex: `my-super-theme`)
+     * @var string the slug of the theme (ex: `my-timber-theme`)
      */
     public $slug;
 
     /**
      * @api
-     * @var string
+     * @var string Retrieves template directory URI for the active (parent) theme. (ex: `http://example.org/wp-content/themes/my-timber-theme`).
      */
     public $uri;
 
     /**
-     * @var \WP_Theme the underlying WordPress native Theme object
+     * @var WP_Theme the underlying WordPress native Theme object
      */
     private $theme;
 
@@ -91,7 +92,7 @@ class Theme extends Core implements JsonSerializable
      * @example
      * ```php
      * <?php
-     *     $theme = new Timber\Theme("my-theme");
+     *     $theme = new Timber\Theme("my-timber-theme");
      *     $context['theme_stuff'] = $theme;
      *     Timber::render('single.twig', $context);
      * ```
@@ -110,14 +111,14 @@ class Theme extends Core implements JsonSerializable
     }
 
     /**
-     * Initalizes the Theme object
+     * Initializes the Theme object
      *
      * @internal
-     * @param string $slug of theme (eg 'twentysixteen').
+     * @param string $slug of theme (eg 'my-timber-theme').
      */
     protected function init($slug = null)
     {
-        $this->theme = wp_get_theme($slug);
+        $this->theme = \wp_get_theme($slug);
         $this->name = $this->theme->get('Name');
         $this->version = $this->theme->get('Version');
         $this->slug = $this->theme->get_stylesheet();
@@ -134,7 +135,7 @@ class Theme extends Core implements JsonSerializable
 
     /**
      * @api
-     * @return string the absolute path to the theme (ex: `http://example.org/wp-content/themes/my-timber-theme`)
+     * @return string Retrieves template directory URI for the active (child) theme. (ex: `http://example.org/wp-content/themes/my-timber-theme`).
      */
     public function link()
     {
@@ -143,7 +144,7 @@ class Theme extends Core implements JsonSerializable
 
     /**
      * @api
-     * @return  string the relative path to the theme (ex: `/wp-content/themes/my-timber-theme`)
+     * @return string The relative path to the theme (ex: `/wp-content/themes/my-timber-theme`).
      */
     public function path()
     {
@@ -160,7 +161,7 @@ class Theme extends Core implements JsonSerializable
      */
     public function theme_mod($name, $default = false)
     {
-        return get_theme_mod($name, $default);
+        return \get_theme_mod($name, $default);
     }
 
     /**
@@ -169,7 +170,7 @@ class Theme extends Core implements JsonSerializable
      */
     public function theme_mods()
     {
-        return get_theme_mods();
+        return \get_theme_mods();
     }
 
     /**

@@ -1,0 +1,70 @@
+name: 🐞 Bug report
+description: File a bug/issue to help us improve
+title: "[BUG] Your title"
+body:
+- type: markdown
+  attributes:
+    value: |
+      Thanks for taking the time to fill out the issue form. We can help best if you provide as much information as possible.
+
+      Is this a support or usage question? Please post it to [Discussions](https://github.com/timber/timber/discussions) or on Stack Overflow (http://stackoverflow.com/questions/tagged/timber) using the *Timber* tag.
+- type: textarea
+  attributes:
+    label: Expected Behavior
+    description: Please describe what output you expect to see from Timber.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Actual behavior
+    description: Please describe what you see instead. If you can, please provide samples of HTML output or screenshots.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Steps to reproduce behavior
+    description: Please include complete code samples in-line or linked from [GitHub Gists](https://gist.github.com/).
+    value: |
+      1.
+      2.
+      3.
+      ...
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Notes
+    description: Anything else you want to tell us.
+  validations:
+    required: false
+- type: input
+  id: version
+  attributes:
+    label: What version of Timber are you using?
+    placeholder: "Example: Timber 1.22.1"
+  validations:
+    required: true
+- type: input
+  id: wordpress
+  attributes:
+    label: What version of WordPress are you using?
+    placeholder: "Example: WordPress 6.2"
+  validations:
+    required: false
+- type: input
+  id: php
+  attributes:
+    label: What version of PHP are you using?
+    placeholder: "Example: PHP 8.0"
+  validations:
+    required: false
+- type: dropdown
+  id: download
+  attributes:
+    label: How did you install Timber?
+    options:
+      - Installed or updated the Timber plugin from the WordPress plugin repository
+      - Installed or updated Timber through Composer
+      - Other (see notes)
+  validations:
+    required: false

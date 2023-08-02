@@ -49,7 +49,7 @@ class Term extends CoreEntity
      *
      * @since 2.0.0
      *
-     * @var \WP_Term|null
+     * @var WP_Term|null
      */
     protected ?WP_Term $wp_object;
 
@@ -74,16 +74,17 @@ class Term extends CoreEntity
     /**
      * @internal
      */
-    protected function __construct()
+    final protected function __construct()
     {
     }
 
     /**
      * @internal
-     * @param \WP_Term the vanilla WP term object to build from
+     *
+     * @param WP_Term      $wp_term The vanilla WordPress term object to build from.
      * @return \Timber\Term
      */
-    public static function build(WP_Term $wp_term, array $_options = []): self
+    public static function build(WP_Term $wp_term): self
     {
         $term = new static();
         $term->init($wp_term);
@@ -110,7 +111,7 @@ class Term extends CoreEntity
      *
      * @return static
      */
-    public static function from($tid, $taxonomy)
+    public static function from($tid, $taxonomy = null)
     {
         Helper::deprecated(
             "Term::from()",
@@ -119,7 +120,7 @@ class Term extends CoreEntity
         );
 
         $termFactory = new TermFactory();
-        return $termFactory->from($tid, $taxonomy);
+        return $termFactory->from($tid);
     }
 
     /* Setup
@@ -127,7 +128,7 @@ class Term extends CoreEntity
 
     /**
      * @internal
-     * @param \WP_Term $term
+     * @param WP_Term $term
      */
     protected function init(WP_Term $term)
     {
@@ -144,16 +145,16 @@ class Term extends CoreEntity
      */
     protected function get_term($tid)
     {
-        if (is_object($tid) || is_array($tid)) {
+        if (\is_object($tid) || \is_array($tid)) {
             return $tid;
         }
         $tid = self::get_tid($tid);
 
-        if (is_array($tid)) {
+        if (\is_array($tid)) {
             //there's more than one matching $term_id, let's figure out which is correct
-            if (isset($this->taxonomy) && strlen($this->taxonomy)) {
+            if (isset($this->taxonomy) && \strlen($this->taxonomy)) {
                 foreach ($tid as $term_id) {
-                    $maybe_term = get_term($term_id, $this->taxonomy);
+                    $maybe_term = \get_term($term_id, $this->taxonomy);
                     if ($maybe_term) {
                         return $maybe_term;
                     }
@@ -162,15 +163,15 @@ class Term extends CoreEntity
             $tid = $tid[0];
         }
 
-        if (isset($this->taxonomy) && strlen($this->taxonomy)) {
-            return get_term($tid, $this->taxonomy);
+        if (isset($this->taxonomy) && \strlen($this->taxonomy)) {
+            return \get_term($tid, $this->taxonomy);
         } else {
             global $wpdb;
             $query = $wpdb->prepare("SELECT taxonomy FROM $wpdb->term_taxonomy WHERE term_id = %d LIMIT 1", $tid);
             $tax = $wpdb->get_var($query);
-            if (isset($tax) && strlen($tax)) {
+            if (isset($tax) && \strlen($tax)) {
                 $this->taxonomy = $tax;
-                return get_term($tid, $tax);
+                return \get_term($tid, $tax);
             }
         }
         return null;
@@ -184,20 +185,20 @@ class Term extends CoreEntity
     protected static function get_tid($tid)
     {
         global $wpdb;
-        if (is_numeric($tid)) {
+        if (\is_numeric($tid)) {
             return $tid;
         }
-        if (gettype($tid) === 'object') {
+        if (\gettype($tid) === 'object') {
             $tid = $tid->term_id;
         }
-        if (is_numeric($tid)) {
+        if (\is_numeric($tid)) {
             $query = $wpdb->prepare("SELECT term_id FROM $wpdb->terms WHERE term_id = %d", $tid);
         } else {
             $query = $wpdb->prepare("SELECT term_id FROM $wpdb->terms WHERE slug = %s", $tid);
         }
         $result = $wpdb->get_col($query);
         if ($result) {
-            if (count($result) == 1) {
+            if (\count($result) == 1) {
                 return $result[0];
             }
             return $result;
@@ -255,7 +256,7 @@ class Term extends CoreEntity
     public function children()
     {
         if (!isset($this->_children)) {
-            $children = get_term_children($this->ID, $this->taxonomy);
+            $children = \get_term_children($this->ID, $this->taxonomy);
             foreach ($children as &$child) {
                 $child = Timber::get_term($child);
             }
@@ -273,12 +274,12 @@ class Term extends CoreEntity
     public function description()
     {
         $prefix = '<p>';
-        $desc = term_description($this->ID, $this->taxonomy);
-        if (substr($desc, 0, strlen($prefix)) == $prefix) {
-            $desc = substr($desc, strlen($prefix));
+        $desc = \term_description($this->ID, $this->taxonomy);
+        if (\substr($desc, 0, \strlen($prefix)) == $prefix) {
+            $desc = \substr($desc, \strlen($prefix));
         }
-        $desc = preg_replace('/' . preg_quote('</p>', '/') . '$/', '', $desc);
-        return trim($desc);
+        $desc = \preg_replace('/' . \preg_quote('</p>', '/') . '$/', '', $desc);
+        return \trim($desc);
     }
 
     /**
@@ -295,7 +296,7 @@ class Term extends CoreEntity
      */
     public function can_edit(): bool
     {
-        return current_user_can('edit_term', $this->ID);
+        return \current_user_can('edit_term', $this->ID);
     }
 
     /**
@@ -317,7 +318,7 @@ class Term extends CoreEntity
             return null;
         }
 
-        return get_edit_term_link($this->ID, $this->taxonomy);
+        return \get_edit_term_link($this->ID, $this->taxonomy);
     }
 
     /**
@@ -333,7 +334,7 @@ class Term extends CoreEntity
      */
     public function link()
     {
-        $link = get_term_link($this->wp_object);
+        $link = \get_term_link($this->wp_object);
 
         /**
          * Filters the link to the term archive page.
@@ -344,14 +345,14 @@ class Term extends CoreEntity
          * @param string       $link The link.
          * @param \Timber\Term $term The term object.
          */
-        $link = apply_filters('timber/term/link', $link, $this);
+        $link = \apply_filters('timber/term/link', $link, $this);
 
         /**
          * Filters the link to the term archive page.
          *
          * @deprecated 0.21.9, use `timber/term/link`
          */
-        $link = apply_filters_deprecated(
+        $link = \apply_filters_deprecated(
             'timber_term_link',
             [$link, $this],
             '2.0.0',
@@ -408,14 +409,14 @@ class Term extends CoreEntity
          * @param string       $rel  The relative link.
          * @param \Timber\Term $term The term object.
          */
-        $rel = apply_filters('timber/term/path', $rel, $this);
+        $rel = \apply_filters('timber/term/path', $rel, $this);
 
         /**
          * Filters the relative link (path) to a term archive page.
          *
          * @deprecated 2.0.0, use `timber/term/path`
          */
-        $rel = apply_filters_deprecated(
+        $rel = \apply_filters_deprecated(
             'timber_term_path',
             [$rel, $this],
             '2.0.0',
@@ -477,28 +478,28 @@ class Term extends CoreEntity
      * </ul>
      * ```
      *
-     * @param int|array $numberposts_or_args Optional. Either the number of posts or an array of
-     *                                       arguments for the post query to be performed.
-     *                                       Default is an empty array, the equivalent of:
-     *                                       ```php
-     *                                       [
-     *                                         'posts_per_page' => get_option('posts_per_page'),
-     *                                         'post_type'      => 'any',
-     *                                         'tax_query'      => [ ...tax query for this Term... ]
-     *                                       ]
-     *                                       ```
-     * @param string $post_type_or_class     Deprecated. Before Timber 2.x this was a post_type to be
-     *                                       used for querying posts OR the Timber\Post subclass to
-     *                                       instantiate for each post returned. As of Timber 2.0.0,
-     *                                       specify `post_type` in the `$query` array argument. To
-     *                                       specify the class, use Class Maps.
+     * @param int|array $query           Optional. Either the number of posts or an array of
+     *                                   arguments for the post query to be performed.
+     *                                   Default is an empty array, the equivalent of:
+     *                                   ```php
+     *                                   [
+     *                                     'posts_per_page' => get_option('posts_per_page'),
+     *                                     'post_type'      => 'any',
+     *                                     'tax_query'      => [ ...tax query for this Term... ]
+     *                                   ]
+     *                                   ```
+     * @param string $post_type_or_class Deprecated. Before Timber 2.x this was a post_type to be
+     *                                   used for querying posts OR the Timber\Post subclass to
+     *                                   instantiate for each post returned. As of Timber 2.0.0,
+     *                                   specify `post_type` in the `$query` array argument. To
+     *                                   specify the class, use Class Maps.
      * @see https://timber.github.io/docs/v2/guides/posts/
      * @see https://timber.github.io/docs/v2/guides/class-maps/
      * @return \Timber\PostQuery
      */
     public function posts($query = [], $post_type_or_class = null)
     {
-        if (is_string($query)) {
+        if (\is_string($query)) {
             Helper::doing_it_wrong(
                 'Passing a query string to Term::posts()',
                 'Pass a query array instead: e.g. `"posts_per_page=3"` should be replaced with `["posts_per_page" => 3]`',
@@ -508,7 +509,7 @@ class Term extends CoreEntity
             return false;
         }
 
-        if (is_int($query)) {
+        if (\is_int($query)) {
             $query = [
                 'posts_per_page' => $query,
                 'post_type' => 'any',
@@ -526,7 +527,7 @@ class Term extends CoreEntity
             $query['post_type'] = $query['post_type'] ?? $post_type_or_class;
         }
 
-        if (func_num_args() > 2) {
+        if (\func_num_args() > 2) {
             Helper::doing_it_wrong(
                 'Passing a post class',
                 'Use Class Maps instead: https://timber.github.io/docs/v2/guides/class-maps/',
@@ -545,7 +546,7 @@ class Term extends CoreEntity
         ];
 
         // Merge a clause for this Term into any user-specified tax_query clauses.
-        $query['tax_query'] = array_merge($query['tax_query'] ?? [], $tax_query);
+        $query['tax_query'] = \array_merge($query['tax_query'] ?? [], $tax_query);
 
         return Timber::get_posts($query);
     }
@@ -608,7 +609,7 @@ class Term extends CoreEntity
          *
          * @deprecated 2.0.0 with no replacement
          */
-        $value = apply_filters_deprecated(
+        $value = \apply_filters_deprecated(
             'timber_term_set_meta',
             [$value, $key, $this->ID, $this],
             '2.0.0',
@@ -623,7 +624,7 @@ class Term extends CoreEntity
          *
          * @deprecated 2.0.0, with no replacement
          */
-        $value = apply_filters_deprecated(
+        $value = \apply_filters_deprecated(
             'timber/term/meta/set',
             [$value, $key, $this->ID, $this],
             '2.0.0',

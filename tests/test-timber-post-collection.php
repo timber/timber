@@ -226,8 +226,10 @@ class TestTimberPostQuery extends Timber_UnitTestCase
     {
         $this->factory->post->create_many(10);
 
-        // @todo once the Posts API uses Factories, simplify this to Timber::get_posts([...])
-        $query = new PostQuery(new WP_Query('post_type=post&posts_per_page=3'));
+        $query = Timber::get_posts([
+            'post_type' => 'post',
+            'posts_per_page' => 3,
+        ]);
 
         $this->assertCount(3, $query);
         $this->assertSame(10, $query->found_posts);
@@ -249,12 +251,13 @@ class TestTimberPostQuery extends Timber_UnitTestCase
             'post_date' => '2020-01-03',
         ]);
 
-        // @todo once the Posts API uses Factories, simplify this to Timber::get_posts([...])
-        $query = new PostQuery(new WP_Query('post_type=post'));
+        $posts = Timber::get_posts([
+            'post_type' => 'post',
+        ]);
 
-        $this->assertEquals('Post 0', $query[0]->title());
-        $this->assertEquals('Post 1', $query[1]->title());
-        $this->assertEquals('Post 2', $query[2]->title());
+        $this->assertEquals('Post 0', $posts[0]->title());
+        $this->assertEquals('Post 1', $posts[1]->title());
+        $this->assertEquals('Post 2', $posts[2]->title());
     }
 
     public function testIterationWithClassMaps()

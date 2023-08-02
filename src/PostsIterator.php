@@ -2,13 +2,21 @@
 
 namespace Timber;
 
+use ArrayIterator;
+use ReturnTypeWillChange;
 use Timber\Factory\PostFactory;
 
 /**
  * Class PostsIterator
  */
-class PostsIterator extends \ArrayIterator
+class PostsIterator extends ArrayIterator
 {
+    /**
+     * @var \Timber\Post The last post that was returned by the iterator. Used
+     *                   to skip the logic in `current()`.
+     */
+    protected Post $last_post;
+
     /**
      * Prepares the state before working on a post.
      *
@@ -17,7 +25,7 @@ class PostsIterator extends \ArrayIterator
      *
      * @return mixed
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function current()
     {
         static $factory;
@@ -25,19 +33,22 @@ class PostsIterator extends \ArrayIterator
 
         // Fire action when the loop has just started.
         if (0 === $this->key()) {
-            do_action_ref_array('loop_start', [&$GLOBALS['wp_query']]);
+            /**
+             * The `loop_start` action is not the only thing we do to improve compatibility with
+             * WordPress. There’s more going on in the Timber\Post::setup() function. The
+             * compatibility improvements live there, because they also need to work for singular
+             * templates, where there’s no loop.
+             */
+            \do_action_ref_array('loop_start', [&$GLOBALS['wp_query']]);
         }
 
-        /**
-         * The `loop_start` action is not the only thing we do to improve compatibility. There’s
-         * more going on in the Timber\Post::setup() function. The compabitibility improvements live
-         * there, because they also need to work for singular templates, where there’s no loop.
-         */
         $wp_post = parent::current();
+
         // Lazily instantiate a Timber\Post instance exactly once.
-        // @todo maybe improve performance by caching the instantiated post.
         $post = $factory->from($wp_post);
         $post->setup();
+
+        $this->last_post = $post;
 
         return $post;
     }
@@ -53,17 +64,22 @@ class PostsIterator extends \ArrayIterator
     public function next(): void
     {
         /**
-         * The `loop_end` action is not the only thing we do to improve compatibility. There’s
-         * more going on in the Timber\Post::teardown() function. The compabitibility improvements
-         * live there, because they also need to work for singular templates, where there’s no loop.
+         * Load from $last_post instead of $this->current(), because $this->current() would call
+         * $post->setup() again.
          */
-        $post = $this->current();
+        $post = $this->last_post;
         $post->teardown();
 
         // Fire action when the loop has ended.
         if ($this->key() === $this->count() - 1) {
-            do_action_ref_array('loop_end', [&$GLOBALS['wp_query']]);
-            wp_reset_postdata();
+            /**
+             * The `loop_end` action is not the only thing we do to improve compatibility with
+             * WordPress. There’s more going on in the Timber\Post::teardown() function. The
+             * compatibility improvements live there, because they also need to work for singular
+             * templates, where there’s no loop.
+             */
+            \do_action_ref_array('loop_end', [&$GLOBALS['wp_query']]);
+            \wp_reset_postdata();
         }
 
         parent::next();

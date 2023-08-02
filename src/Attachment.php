@@ -26,9 +26,9 @@ class Attachment extends Post
      * File.
      *
      * @api
-     * @var mixed
+     * @var string
      */
-    public $file;
+    protected string $file;
 
     /**
      * File location.
@@ -37,25 +37,16 @@ class Attachment extends Post
      * @var string The absolute path to the attachmend file in the filesystem
      *             (Example: `/var/www/htdocs/wp-content/uploads/2015/08/my-pic.jpg`)
      */
-    public $file_loc;
-
-    /**
-     * Formatted file size.
-     *
-     * @api
-     * @since 2.0.0
-     * @var FileSize File size string.
-     */
-    public $file_size = null;
+    protected string $file_loc;
 
     /**
      * File extension.
      *
      * @api
      * @since 2.0.0
-     * @var null|string A file extension.
+     * @var string A file extension.
      */
-    public $file_extension = null;
+    protected string $file_extension;
 
     /**
      * Absolute URL.
@@ -65,36 +56,18 @@ class Attachment extends Post
     public $abs_url;
 
     /**
-     * Attachment ID.
+     * Attachement metadata.
      *
-     * @api
-     * @var integer The attachment ID.
+     * @var array Attachment metadata.
      */
-    public $id;
+    protected array $metadata;
 
     /**
-     * Attached file.
+     * Size.
      *
-     * @var array The file as stored in the WordPress database.
+     * @var integer|null
      */
-    protected $_wp_attached_file;
-
-    /**
-     * File types.
-     *
-     * @var array An array of supported relative file types.
-     */
-    private $image_file_types = [
-        'jpg',
-        'jpeg',
-        'png',
-        'svg',
-        'bmp',
-        'ico',
-        'gif',
-        'tiff',
-        'pdf',
-    ];
+    protected ?int $size;
 
     /**
      * Gets the src for an attachment.
@@ -103,39 +76,9 @@ class Attachment extends Post
      *
      * @return string The src of the attachment.
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->src();
-    }
-
-    /**
-     * Gets the attachment information.
-     *
-     * @internal
-     *
-     * @param array $data Data to update.
-     * @return array Attachment info as an array.
-     */
-    protected function get_info(array $data): array
-    {
-        $post_data = parent::get_info($data);
-        $image_info = wp_get_attachment_metadata($this->wp_object->ID) ?: [];
-        $meta_values = $this->raw_meta();
-
-        $data = array_merge($post_data, $image_info, $meta_values);
-
-        $basedir = wp_get_upload_dir()['basedir'];
-
-        if (isset($data['file'])) {
-            $data['file_loc'] = $basedir . DIRECTORY_SEPARATOR . $data['file'];
-        } elseif (isset($data['_wp_attached_file'])) {
-            $data['file'] = $data['_wp_attached_file'];
-            $data['file_loc'] = $basedir . DIRECTORY_SEPARATOR . $data['file'];
-        }
-
-        $data['file_size'] = new FileSize($data['file_loc']);
-
-        return $data;
     }
 
     /**
@@ -162,7 +105,7 @@ class Attachment extends Post
             return $this->abs_url;
         }
 
-        return get_permalink($this->ID);
+        return \get_permalink($this->ID);
     }
 
     /**
@@ -185,6 +128,36 @@ class Attachment extends Post
     }
 
     /**
+     * Gets the relative path to the uploads folder of an attachment.
+     *
+     * @api
+     *
+     * @return string
+     */
+    public function file(): string
+    {
+        if (isset($this->file)) {
+            return $this->file;
+        }
+        return $this->file = (string) \get_post_meta($this->ID, '_wp_attached_file', true);
+    }
+
+    /**
+     * Gets the absolute path to an attachment.
+     *
+     * @api
+     *
+     * @return string
+     */
+    public function file_loc(): string
+    {
+        if (isset($this->file_loc)) {
+            return $this->file_loc;
+        }
+        return $this->file_loc = (string) \get_attached_file($this->ID);
+    }
+
+    /**
      * Gets the source URL for an attachment.
      *
      * @api
@@ -196,15 +169,11 @@ class Attachment extends Post
      * <a href="http://example.org/wp-content/uploads/2015/08/job-ad-5noe2304i.pdf" download>
      * ```
      *
-     * @return bool|string
+     * @return string
      */
-    public function src()
+    public function src(): string
     {
-        if (isset($this->abs_url)) {
-            return URLHelper::maybe_secure_url($this->abs_url) ?: null;
-        }
-
-        return wp_get_attachment_url($this->ID) ?: null;
+        return (string) \wp_get_attachment_url($this->ID);
     }
 
     /**
@@ -236,7 +205,7 @@ class Attachment extends Post
          * @param string $caption Caption for the given attachment.
          * @param int    $post_id Attachment ID.
          */
-        return apply_filters('wp_get_attachment_caption', $this->post_excerpt, $this->ID);
+        return \apply_filters('wp_get_attachment_caption', $this->post_excerpt, $this->ID);
     }
 
     /**
@@ -258,38 +227,35 @@ class Attachment extends Post
      * </a>
      * ```
      *
-     * @return string|null The filesize string in a human-readable format or null if the
+     * @return int|null The filesize string in a human-readable format or null if the
      *                     filesize can’t be read.
      */
-    public function size(): ?string
+    public function size(): ?int
     {
-        return $this->file_size->size();
-    }
+        if (isset($this->size)) {
+            return $this->size;
+        }
 
-    /**
-     * Gets filesize in bytes.
-     *
-     * @api
-     * @since 2.0.0
-     * @example
-     *
-     * ```twig
-     * <table>
-     *     {% for attachment in Attachment(attachment_ids) %}
-     *         <tr>
-     *             <td>{{ attachment.title }}</td>
-     *             <td>{{ attachment.extension }}</td>
-     *             <td>{{ attachment.size_raw }} bytes</td>
-     *         </tr>
-     *     {% endfor %}
-     * </table>
-     * ```
-     *
-     * @return int|false The filesize string in bytes, or false if the filesize can’t be read.
-     */
-    public function size_raw()
-    {
-        return $this->file_size->size_raw();
+        /**
+         * Since 6.0.0, the filesize is stored in the attachment metadata.
+         *
+         * @see https://make.wordpress.org/core/2022/05/02/media-storing-file-size-as-part-of-metadata/
+         */
+        $size = $this->metadata('filesize');
+        if ($size !== null && \is_numeric($size)) {
+            return $this->size = (int) $size;
+        }
+
+        /**
+         * Filesize wasn't found in the metadata, so we'll try to get it from the file itself.
+         *
+         * We could have used `wp_filesize()` here, but it returns 0 when the file doesn't exist. Which is a perfectly valid filesize
+         * and prevents us from telling the difference between a file that doesn't exist and a file that has a filesize of 0.
+         *
+         * @see https://developer.wordpress.org/reference/functions/wp_filesize/
+         */
+        $size = \filesize($this->file_loc());
+        return $this->size = $size === false ? null : (int) $size;
     }
 
     /**
@@ -309,19 +275,14 @@ class Attachment extends Post
      * </a>
      * ```
      *
-     * @return string|null An uppercase extension string.
+     * @return string An uppercase extension string.
      */
-    public function extension(): ?string
+    public function extension(): string
     {
-        if (!$this->file_extension) {
-            $file_info = wp_check_filetype($this->file);
-
-            if (!empty($file_info['ext'])) {
-                $this->file_extension = strtoupper($file_info['ext']);
-            }
+        if (isset($this->file_extension)) {
+            return $this->file_extension;
         }
-
-        return $this->file_extension;
+        return $this->file_extension = \pathinfo($this->file(), PATHINFO_EXTENSION);
     }
 
     /**
@@ -335,13 +296,13 @@ class Attachment extends Post
      * This image is assigned to {{ image.parent.title }}
      * ```
      *
-     * @return false|\Timber\Post Parent object as a `Timber\Post`. Returns `false` if no parent
+     * @return null|\Timber\Post Parent object as a `Timber\Post`. Returns `false` if no parent
      *                            object is defined.
      */
-    public function parent()
+    public function parent(): ?Post
     {
         if (!$this->post_parent) {
-            return false;
+            return null;
         }
 
         $factory = new PostFactory();
@@ -362,7 +323,7 @@ class Attachment extends Post
             "{{ image.pathinfo }}",
             '2.0.0'
         );
-        return PathHelper::pathinfo($this->file);
+        return PathHelper::pathinfo($this->file());
     }
 
     /**
@@ -372,6 +333,29 @@ class Attachment extends Post
      */
     public function pathinfo()
     {
-        return PathHelper::pathinfo($this->file);
+        return PathHelper::pathinfo($this->file());
+    }
+
+    /**
+     * Get attachment metadata the lazy way.
+     *
+     * This method is used to retrieve the attachment metadata only when it's needed.
+     *
+     * @param string|null $key
+     * @return array|string|int|null
+     */
+    protected function metadata(?string $key = null)
+    {
+        // We haven't retrived the metadata yet because it's wasn't needed until now.
+        if (!isset($this->metadata)) {
+            // Cache it so we don't have to retrieve it again.
+            $this->metadata = (array) \wp_get_attachment_metadata($this->ID);
+        }
+
+        if ($key === null) {
+            return $this->metadata;
+        }
+
+        return $this->metadata[$key] ?? null;
     }
 }

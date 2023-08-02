@@ -44,9 +44,8 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase
 
     public function testWPHead()
     {
-        return $this->markTestSkipped('@todo Twig\Error\RuntimeError: An exception has been thrown during the rendering of a template ("readfile(/srv/www/wordpress-trunk/public_html/src/wp-includes/js/wp-emoji-loader.js): failed to open stream: No such file or directory")');
         $context = Timber::context();
-        $str = Timber::compile_string('{{ function("wp_head") }}', $context);
+        $str = Timber::compile_string("{{ function('wp_head') }}", $context);
         $this->assertMatchesRegularExpression('/<title>Test Blog/', trim($str));
     }
 
@@ -54,18 +53,6 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase
     {
         $context = Timber::context();
         $str = Timber::compile_string("{{ function('my_boo') }}", $context);
-        $this->assertEquals('bar!', trim($str));
-    }
-
-    public function testSoloFunctionUsingWrapper()
-    {
-        if (version_compare(Timber::$version, 2.0, '>=')) {
-            return $this->markTestSkipped(
-                'This functionality is disabled in Timber 2.0'
-            );
-        }
-        new Timber\FunctionWrapper('my_boo');
-        $str = Timber::compile_string("{{ my_boo() }}");
         $this->assertEquals('bar!', trim($str));
     }
 

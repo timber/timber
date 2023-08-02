@@ -262,7 +262,7 @@ DateTimeHelper::time_ago($post->date());
 **Twig**
 
 ```twig
-{{ post.date|time_ago }}
+{{ post.date('U')|time_ago }}
 ```
 
 **HTML**

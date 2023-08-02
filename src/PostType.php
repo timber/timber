@@ -2,11 +2,13 @@
 
 namespace Timber;
 
+use AllowDynamicProperties;
+
 /**
  * Wrapper for the post_type object provided by WordPress
  * @since 1.0.4
 */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class PostType
 {
     /**
@@ -30,10 +32,10 @@ class PostType
 
     protected function init($post_type)
     {
-        $obj = get_post_type_object($post_type);
+        $obj = \get_post_type_object($post_type);
         if (!empty($obj)) {
-            foreach (get_object_vars($obj) as $key => $value) {
-                if ($key === '' || ord($key[0]) === 0) {
+            foreach (\get_object_vars($obj) as $key => $value) {
+                if ($key === '' || \ord($key[0]) === 0) {
                     continue;
                 }
                 $this->$key = $value;

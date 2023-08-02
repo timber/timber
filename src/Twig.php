@@ -2,11 +2,15 @@
 
 namespace Timber;
 
+use DateInterval;
+use DateTime;
+use DateTimeInterface;
+use Exception;
+
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
 use Twig\Environment;
 use Twig\Extension\CoreExtension;
-
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 
@@ -24,11 +28,11 @@ class Twig
     {
         $self = new self();
 
-        add_filter('timber/twig', [$self, 'add_timber_functions']);
-        add_filter('timber/twig', [$self, 'add_timber_filters']);
-        add_filter('timber/twig', [$self, 'add_timber_escapers']);
+        \add_filter('timber/twig', [$self, 'add_timber_functions']);
+        \add_filter('timber/twig', [$self, 'add_timber_filters']);
+        \add_filter('timber/twig', [$self, 'add_timber_escapers']);
 
-        add_filter('timber/loader/twig', [$self, 'set_defaults']);
+        \add_filter('timber/loader/twig', [$self, 'set_defaults']);
     }
 
     /**
@@ -44,7 +48,7 @@ class Twig
         $functions = [
             'action' => [
                 'callable' => function ($action_name, ...$args) {
-                    do_action_ref_array($action_name, $args);
+                    \do_action_ref_array($action_name, $args);
                 },
             ],
             'function' => [
@@ -235,7 +239,7 @@ class Twig
          *
          * @param array $functions
          */
-        $functions = apply_filters('timber/twig/functions', $functions);
+        $functions = \apply_filters('timber/twig/functions', $functions);
 
         return $functions;
     }
@@ -291,7 +295,7 @@ class Twig
             'get_class' => [
                 'callable' => function ($obj) {
                     Helper::deprecated('{{ my_object | get_class }}', "{{ function('get_class', my_object) }}", '2.0.0');
-                    return get_class($obj);
+                    return \get_class($obj);
                 },
                 'options' => [
                     'deprecated' => true,
@@ -300,7 +304,7 @@ class Twig
             'print_r' => [
                 'callable' => function ($arr) {
                     Helper::deprecated('{{ my_object | print_r }}', '{{ dump(my_object) }}', '2.0.0');
-                    return print_r($arr, true);
+                    return \print_r($arr, true);
                 },
                 'options' => [
                     'deprecated' => true,
@@ -353,8 +357,6 @@ class Twig
 
             /**
              * Date and Time filters.
-             *
-             * @todo copy this formatting to other functions
              */
             'date' => [
                 'callable' => [$this, 'twig_date_format_filter'],
@@ -371,13 +373,18 @@ class Twig
                 },
             ],
 
+            // Numbers filters
+            'size_format' => [
+                'callable' => 'size_format',
+            ],
+
             // Actions and filters.
             'apply_filters' => [
                 'callable' => function () {
-                    $args = func_get_args();
-                    $tag = current(array_splice($args, 1, 1));
+                    $args = \func_get_args();
+                    $tag = \current(\array_splice($args, 1, 1));
 
-                    return apply_filters_ref_array($tag, $args);
+                    return \apply_filters_ref_array($tag, $args);
                 },
             ],
         ];
@@ -416,7 +423,7 @@ class Twig
          *
          * @param array $filters
          */
-        $filters = apply_filters('timber/twig/filters', $filters);
+        $filters = \apply_filters('timber/twig/filters', $filters);
 
         return $filters;
     }
@@ -451,23 +458,23 @@ class Twig
      */
     public function add_timber_escapers($twig)
     {
-        $esc_url = function (\Twig\Environment $env, $string) {
-            return esc_url($string);
+        $esc_url = function (Environment $env, $string) {
+            return \esc_url($string);
         };
 
-        $wp_kses_post = function (\Twig\Environment $env, $string) {
-            return wp_kses_post($string);
+        $wp_kses_post = function (Environment $env, $string) {
+            return \wp_kses_post($string);
         };
 
-        $esc_html = function (\Twig\Environment $env, $string) {
-            return esc_html($string);
+        $esc_html = function (Environment $env, $string) {
+            return \esc_html($string);
         };
 
-        $esc_js = function (\Twig\Environment $env, $string) {
-            return esc_js($string);
+        $esc_js = function (Environment $env, $string) {
+            return \esc_js($string);
         };
 
-        if (class_exists('Twig\Extension\EscaperExtension')) {
+        if (\class_exists('Twig\Extension\EscaperExtension')) {
             $escaper_extension = $twig->getExtension('Twig\Extension\EscaperExtension');
             $escaper_extension->setEscaper('esc_url', $esc_url);
             $escaper_extension->setEscaper('wp_kses_post', $wp_kses_post);
@@ -492,8 +499,8 @@ class Twig
      */
     public function set_defaults(Environment $twig)
     {
-        $twig->getExtension(CoreExtension::class)->setDateFormat(get_option('date_format'), '%d days');
-        $twig->getExtension(CoreExtension::class)->setTimezone(wp_timezone_string());
+        $twig->getExtension(CoreExtension::class)->setDateFormat(\get_option('date_format'), '%d days');
+        $twig->getExtension(CoreExtension::class)->setTimezone(\wp_timezone_string());
 
         /** @see https://developer.wordpress.org/reference/functions/number_format_i18n/ */
         global $wp_locale;
@@ -512,10 +519,10 @@ class Twig
      * @see  twig_date_format_filter()
      * @link https://twig.symfony.com/doc/2.x/filters/date.html
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @param \Twig\Environment         $env      Twig Environment.
-     * @param null|string|int|\DateTime $date     A date.
+     * @param null|string|int|DateTime $date     A date.
      * @param null|string               $format   Optional. PHP date format. Will return the
      *                                            current date as a DateTimeImmutable object by
      *                                            default.
@@ -528,7 +535,7 @@ class Twig
     public function twig_date_format_filter(Environment $env, $date = null, $format = null, $timezone = null)
     {
         // Support for DateInterval.
-        if ($date instanceof \DateInterval) {
+        if ($date instanceof DateInterval) {
             if (null === $format) {
                 $format = $env->getExtension(CoreExtension::class)->getDateFormat()[1];
             }
@@ -544,8 +551,8 @@ class Twig
          * If a string is given and it’s not a timestamp (e.g. "2010-01-28T15:00:00+04:00", try creating a DateTime
          * object and read the timezone from that string.
          */
-        if (is_string($date) && !ctype_digit($date)) {
-            $date_obj = date_create($date);
+        if (\is_string($date) && !\ctype_digit($date)) {
+            $date_obj = \date_create($date);
 
             if ($date_obj) {
                 $date = $date_obj;
@@ -557,7 +564,7 @@ class Twig
          *
          * @link https://twig.symfony.com/doc/2.x/filters/date.html#timezone
          */
-        if (false === $timezone && $date instanceof \DateTimeInterface) {
+        if (false === $timezone && $date instanceof DateTimeInterface) {
             $timezone = $date->getTimezone();
         }
 
@@ -572,7 +579,7 @@ class Twig
      */
     public function to_array($arr)
     {
-        if (is_array($arr)) {
+        if (\is_array($arr)) {
             return $arr;
         }
         $arr = [$arr];
@@ -587,12 +594,12 @@ class Twig
      */
     public function exec_function($function_name)
     {
-        $args = func_get_args();
-        array_shift($args);
-        if (is_string($function_name)) {
-            $function_name = trim($function_name);
+        $args = \func_get_args();
+        \array_shift($args);
+        if (\is_string($function_name)) {
+            $function_name = \trim($function_name);
         }
-        return call_user_func_array($function_name, ($args));
+        return \call_user_func_array($function_name, ($args));
     }
 
     /**
@@ -603,7 +610,7 @@ class Twig
      */
     public function twig_pretags($content)
     {
-        return preg_replace_callback('|<pre.*>(.*)</pre|isU', [&$this, 'convert_pre_entities'], $content);
+        return \preg_replace_callback('|<pre.*>(.*)</pre|isU', [&$this, 'convert_pre_entities'], $content);
     }
 
     /**
@@ -614,7 +621,7 @@ class Twig
      */
     public function convert_pre_entities($matches)
     {
-        return str_replace($matches[1], htmlentities($matches[1]), $matches[0]);
+        return \str_replace($matches[1], \htmlentities($matches[1]), $matches[0]);
     }
 
     /**
@@ -624,7 +631,7 @@ class Twig
      *
      * @param null|string|false    $format Optional. PHP date format. Will use the `date_format`
      *                                     option as a default.
-     * @param string|int|\DateTime $date   A date.
+     * @param string|int|DateTime $date   A date.
      *
      * @return string
      */
@@ -670,7 +677,7 @@ class Twig
      */
     public function add_list_separators($arr, $first_delimiter = ',', $second_delimiter = ' and')
     {
-        $length = count($arr);
+        $length = \count($arr);
         $list = '';
         foreach ($arr as $index => $item) {
             if ($index < $length - 2) {

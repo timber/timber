@@ -53,4 +53,4 @@ In the WordPress admin, a new entry will be added in your page’s list of avail
 ![](http://codex.wordpress.org/images/thumb/a/a3/page-templates-pulldown-screenshot.png/180px-page-templates-pulldown-screenshot.png)
 
 * Name it something like **/wp-content/themes/my-theme/template-my-custom-page.php**.
-* Do **NOT** name it something beginning with `page-` or [WordPress will get very confused](http://jespervanengelen.com/page-templates-in-wordpress-template-hierarchy/).
+* Do **NOT** prefix the filename with `page-` or WordPress will get very confused due to [WordPress template hierarchy](https://developer.wordpress.org/themes/basics/template-hierarchy/#single-page).

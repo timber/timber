@@ -2,6 +2,7 @@
 
 namespace Timber;
 
+use InvalidArgumentException;
 use Timber\Cache\Cleaner;
 use Twig\CacheExtension;
 use Twig\Environment;
@@ -61,14 +62,14 @@ class Loader
          *                           `Timber\Loader::CACHE_USE_DEFAULT`.
          *                           Default `Timber\Loader::CACHE_TRANSIENT`.
          */
-        $this->cache_mode = apply_filters('timber/cache/mode', $this->cache_mode);
+        $this->cache_mode = \apply_filters('timber/cache/mode', $this->cache_mode);
 
         /**
          * Filters the cache mode.
          *
          * @deprecated 2.0.0, use `timber/cache/mode`
          */
-        $this->cache_mode = apply_filters_deprecated(
+        $this->cache_mode = \apply_filters_deprecated(
             'timber_cache_mode',
             [$this->cache_mode],
             '2.0.0',
@@ -86,9 +87,9 @@ class Loader
     public function render($file, $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT)
     {
         // Different $expires if user is anonymous or logged in
-        if (is_array($expires)) {
+        if (\is_array($expires)) {
             /** @var array $expires */
-            if (is_user_logged_in() && isset($expires[1])) {
+            if (\is_user_logged_in() && isset($expires[1])) {
                 $expires = $expires[1];
             } else {
                 $expires = $expires[0];
@@ -102,22 +103,22 @@ class Loader
         $key = null;
         $output = false;
         if (false !== $expires) {
-            ksort($data);
-            $encoded = json_encode($data);
+            \ksort($data);
+            $encoded = \json_encode($data);
 
             /**
              * The encoding might fail, e.g. when an object has a recursion. In that case, we’d rather not cache the
              * data instead of possibly returning the wrong data.
              */
             if (false !== $encoded) {
-                $key = md5($file . $encoded);
+                $key = \md5($file . $encoded);
                 $output = $this->get_cache($key, self::CACHEGROUP, $cache_mode);
             }
         }
 
         if (false === $output || null === $output) {
             $twig = $this->get_twig();
-            if (strlen($file)) {
+            if (\strlen($file)) {
                 $loader = $this->get_loader();
                 $result = $loader->getCacheKey($file);
 
@@ -128,7 +129,7 @@ class Loader
                  *
                  * @param string $result
                  */
-                do_action('timber/loader/render_file', $result);
+                \do_action('timber/loader/render_file', $result);
 
                 /**
                  * Fires after …
@@ -139,7 +140,7 @@ class Loader
                  *
                  * @deprecated 2.0.0, use `timber/loader/render_file`
                  */
-                do_action_deprecated(
+                \do_action_deprecated(
                     'timber_loader_render_file',
                     [$result],
                     '2.0.0',
@@ -157,7 +158,7 @@ class Loader
              * @param array  $data
              * @param string $file
              */
-            $data = apply_filters('timber/loader/render_data', $data, $file);
+            $data = \apply_filters('timber/loader/render_data', $data, $file);
 
             /**
              * Filters …
@@ -166,7 +167,7 @@ class Loader
              *
              * @deprecated 2.0.0, use `timber/loader/render_data`
              */
-            $data = apply_filters_deprecated(
+            $data = \apply_filters_deprecated(
                 'timber_loader_render_data',
                 [$data],
                 '2.0.0',
@@ -193,16 +194,16 @@ class Loader
          * @param array  $data
          * @param string $file
          */
-        $output = apply_filters('timber/output', $output, $data, $file);
+        $output = \apply_filters('timber/output', $output, $data, $file);
 
         /**
          * Filters …
          *
-         * @todo       Add summary
+         * @todo Add summary
          *
          * @deprecated 2.0.0, use `timber/output`
          */
-        $output = apply_filters_deprecated('timber_output', [$output], '2.0.0', 'timber/output');
+        $output = \apply_filters_deprecated('timber_output', [$output], '2.0.0', 'timber/output');
 
         return $output;
     }
@@ -221,7 +222,7 @@ class Loader
     public function choose_template($templates)
     {
         // Change $templates into array, if needed
-        if (!is_array($templates)) {
+        if (!\is_array($templates)) {
             $templates = (array) $templates;
         }
 
@@ -231,7 +232,7 @@ class Loader
         // Run through template array
         foreach ($templates as $template) {
             // Remove any whitespace around the template name
-            $template = trim($template);
+            $template = \trim($template);
             // Use the Twig loader to test for existance
             if ($loader->exists($template)) {
                 // Return name of existing template
@@ -259,14 +260,14 @@ class Loader
          *
          * @param array $paths
          */
-        $paths = apply_filters_deprecated(
+        $paths = \apply_filters_deprecated(
             'timber/loader/paths',
             [$paths],
             '2.0.0',
             'timber/locations'
         );
 
-        $open_basedir = ini_get('open_basedir');
+        $open_basedir = \ini_get('open_basedir');
         $rootPath = '/';
         if ($open_basedir) {
             $rootPath = null;
@@ -275,9 +276,9 @@ class Loader
         $fs = new FilesystemLoader([], $rootPath);
 
         foreach ($paths as $namespace => $path_locations) {
-            if (is_array($path_locations)) {
-                array_map(function ($path) use ($fs, $namespace) {
-                    if (is_string($namespace)) {
+            if (\is_array($path_locations)) {
+                \array_map(function ($path) use ($fs, $namespace) {
+                    if (\is_string($namespace)) {
                         $fs->addPath($path, $namespace);
                     } else {
                         $fs->addPath($path, Loader::MAIN_NAMESPACE);
@@ -301,7 +302,7 @@ class Loader
          * @link https://github.com/timber/timber/pull/1254
          * @since 1.1.11
          */
-        $fs = apply_filters('timber/loader/loader', $fs);
+        $fs = \apply_filters('timber/loader/loader', $fs);
 
         return $fs;
     }
@@ -353,7 +354,7 @@ class Loader
          *
          * @param array $environment_options An array of Twig environment options.
          */
-        $environment_options = apply_filters(
+        $environment_options = \apply_filters(
             'timber/twig/environment/options',
             $environment_options
         );
@@ -418,15 +419,15 @@ class Loader
              * @param string $twig_cache_loc Full path to the cache location. Default `/cache/twig`
              *                               in the Timber root folder.
              */
-            $twig_cache_loc = apply_filters_deprecated(
+            $twig_cache_loc = \apply_filters_deprecated(
                 'timber/cache/location',
                 [$twig_cache_loc],
                 '2.0.0',
                 'timber/twig/environment/options'
             );
 
-            if (!file_exists($twig_cache_loc)) {
-                mkdir($twig_cache_loc, 0777, true);
+            if (!\file_exists($twig_cache_loc)) {
+                \mkdir($twig_cache_loc, 0777, true);
             }
 
             $environment_options['cache'] = $twig_cache_loc;
@@ -449,9 +450,9 @@ class Loader
          * @since 2.0.0
          * @param bool $enable_cache_extension Whether to enable the cache extension.
          */
-        $enable_cache_extension = apply_filters('timber/cache/enable_extension', true);
+        $enable_cache_extension = \apply_filters('timber/cache/enable_extension', true);
 
-        if ($enable_cache_extension && class_exists('\Twig\CacheExtension\Extension')) {
+        if ($enable_cache_extension && \class_exists('\Twig\CacheExtension\Extension')) {
             $twig->addExtension($this->_get_cache_extension());
         }
 
@@ -464,14 +465,14 @@ class Loader
          *
          * @param \Twig\Environment $twig The Twig environment you can add functionality to.
          */
-        $twig = apply_filters('timber/loader/twig', $twig);
+        $twig = \apply_filters('timber/loader/twig', $twig);
 
         /**
          * Filters …
          *
          * @deprecated 2.0.0, use `timber/twig`
          */
-        $twig = apply_filters_deprecated('twig_apply_filters', [$twig], '2.0.0', 'timber/twig');
+        $twig = \apply_filters_deprecated('twig_apply_filters', [$twig], '2.0.0', 'timber/twig');
 
         /**
          * Filters the Twig environment used in the global context.
@@ -503,14 +504,14 @@ class Loader
          *
          * @param \Twig\Environment $twig The Twig environment.
          */
-        $twig = apply_filters('timber/twig', $twig);
+        $twig = \apply_filters('timber/twig', $twig);
 
         /**
          * Filters the Twig environment used in the global context.
          *
          * @deprecated 2.0.0
          */
-        $twig = apply_filters_deprecated('get_twig', [$twig], '2.0.0', 'timber/twig');
+        $twig = \apply_filters_deprecated('get_twig', [$twig], '2.0.0', 'timber/twig');
 
         return $twig;
     }
@@ -569,12 +570,12 @@ class Loader
         $items = $wp_object_cache->cache[self::CACHEGROUP];
 
         foreach ($items as $key => $value) {
-            if (is_multisite()) {
-                $key = preg_replace('/^(.*?):/', '', $key);
+            if (\is_multisite()) {
+                $key = \preg_replace('/^(.*?):/', '', $key);
             }
 
             // If any cache couldn’t be deleted, the result will be false.
-            if (!wp_cache_delete($key, self::CACHEGROUP)) {
+            if (!\wp_cache_delete($key, self::CACHEGROUP)) {
                 $result = false;
             }
         }
@@ -587,7 +588,6 @@ class Loader
         $twig = $this->get_twig();
 
         // Get the configured cache location.
-        // @todo What if this is a custom caching implementation?
         $cache_location = $twig->getCache(true);
 
         // Cache not activated.
@@ -595,8 +595,7 @@ class Loader
             return true;
         }
 
-        if (is_string($cache_location) && is_dir($cache_location)) {
-            // @todo What if not all files could be deleted?
+        if (\is_string($cache_location) && \is_dir($cache_location)) {
             self::rrmdir($cache_location);
             return true;
         }
@@ -611,21 +610,21 @@ class Loader
      */
     public static function rrmdir($dirPath)
     {
-        if (!is_dir($dirPath)) {
-            throw new \InvalidArgumentException("$dirPath must be a directory");
+        if (!\is_dir($dirPath)) {
+            throw new InvalidArgumentException("$dirPath must be a directory");
         }
-        if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
+        if (\substr($dirPath, \strlen($dirPath) - 1, 1) != '/') {
             $dirPath .= '/';
         }
-        $files = glob($dirPath . '*', GLOB_MARK);
+        $files = \glob($dirPath . '*', GLOB_MARK);
         foreach ($files as $file) {
-            if (is_dir($file)) {
+            if (\is_dir($file)) {
                 self::rrmdir($file);
             } else {
-                unlink($file);
+                \unlink($file);
             }
         }
-        rmdir($dirPath);
+        \rmdir($dirPath);
     }
 
     /**
@@ -635,7 +634,7 @@ class Loader
     {
         $key_generator = new \Timber\Cache\KeyGenerator();
         $cache_provider = new \Timber\Cache\WPObjectCacheAdapter($this);
-        $cache_lifetime = apply_filters('timber/cache/extension/lifetime', 0);
+        $cache_lifetime = \apply_filters('timber/cache/extension/lifetime', 0);
         $cache_strategy = new CacheExtension\CacheStrategy\GenerationalCacheStrategy(
             $cache_provider,
             $key_generator,
@@ -656,14 +655,14 @@ class Loader
     {
         $cache_mode = $this->_get_cache_mode($cache_mode);
         $value = false;
-        $trans_key = substr($group . '_' . $key, 0, self::TRANS_KEY_LEN);
+        $trans_key = \substr($group . '_' . $key, 0, self::TRANS_KEY_LEN);
 
         if (self::CACHE_TRANSIENT === $cache_mode) {
-            $value = get_transient($trans_key);
+            $value = \get_transient($trans_key);
         } elseif (self::CACHE_SITE_TRANSIENT === $cache_mode) {
-            $value = get_site_transient($trans_key);
+            $value = \get_site_transient($trans_key);
         } elseif (self::CACHE_OBJECT === $cache_mode && $this->is_object_cache()) {
-            $value = wp_cache_get($key, $group);
+            $value = \wp_cache_get($key, $group);
         }
 
         return $value;
@@ -684,14 +683,14 @@ class Loader
         }
 
         $cache_mode = $this->_get_cache_mode($cache_mode);
-        $trans_key = substr($group . '_' . $key, 0, self::TRANS_KEY_LEN);
+        $trans_key = \substr($group . '_' . $key, 0, self::TRANS_KEY_LEN);
 
         if (self::CACHE_TRANSIENT === $cache_mode) {
-            set_transient($trans_key, $value, $expires);
+            \set_transient($trans_key, $value, $expires);
         } elseif (self::CACHE_SITE_TRANSIENT === $cache_mode) {
-            set_site_transient($trans_key, $value, $expires);
+            \set_site_transient($trans_key, $value, $expires);
         } elseif (self::CACHE_OBJECT === $cache_mode && $this->is_object_cache()) {
-            wp_cache_set($key, $value, $group, $expires);
+            \wp_cache_set($key, $value, $group, $expires);
         }
 
         return $value;
@@ -708,7 +707,7 @@ class Loader
         }
 
         // Fallback if self::$cache_mode did not get a valid value
-        if (!in_array($cache_mode, self::$cache_modes)) {
+        if (!\in_array($cache_mode, self::$cache_modes)) {
             $cache_mode = self::CACHE_OBJECT;
         }
 
@@ -723,6 +722,6 @@ class Loader
      */
     protected function is_object_cache()
     {
-        return isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']);
+        return isset($GLOBALS['wp_object_cache']) && \is_object($GLOBALS['wp_object_cache']);
     }
 }

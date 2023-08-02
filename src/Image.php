@@ -64,7 +64,7 @@ class Image extends Attachment implements ImageInterface
      * @api
      * @var array An array of available sizes for the image.
      */
-    public $sizes = [];
+    protected array $sizes;
 
     /**
      * Image dimensions.
@@ -73,17 +73,6 @@ class Image extends Attachment implements ImageInterface
      * @var ImageDimensions stores Image Dimensions in a structured way.
      */
     protected ImageDimensions $image_dimensions;
-
-    /**
-     * @return string the src of the file
-     */
-    public function __toString()
-    {
-        if ($src = $this->src()) {
-            return $src;
-        }
-        return '';
-    }
 
     /**
      * Gets the Image information.
@@ -97,8 +86,8 @@ class Image extends Attachment implements ImageInterface
     {
         $data = parent::get_info($data);
 
-        if (isset($data['file_loc'])) {
-            $data['image_dimensions'] = new ImageDimensions($data['file_loc']);
+        if ($this->file_loc()) {
+            $data['image_dimensions'] = new ImageDimensions($this->file_loc());
         }
 
         return $data;
@@ -149,8 +138,8 @@ class Image extends Attachment implements ImageInterface
             "{{ image.meta('my_field') }}",
             '2.0.0'
         );
-        $pc = get_post_custom($iid);
-        if (is_bool($pc)) {
+        $pc = \get_post_custom($iid);
+        if (\is_bool($pc)) {
             return [];
         }
         return $pc;
@@ -177,19 +166,15 @@ class Image extends Attachment implements ImageInterface
      * @param string $size Optional. The requested image size. This can be a size that was in
      *                     WordPress. Example: `medium` or `large`. Default `full`.
      *
-     * @return string|bool The src URL for the image.
+     * @return string The src URL for the image.
      */
-    public function src($size = 'full')
+    public function src($size = 'full'): string
     {
         if (isset($this->abs_url)) {
             return URLHelper::maybe_secure_url($this->abs_url);
         }
 
-        if (!$this->is_image()) {
-            return wp_get_attachment_url($this->ID);
-        }
-
-        $src = wp_get_attachment_image_src($this->ID, $size);
+        $src = \wp_get_attachment_image_src($this->ID, $size);
         $src = $src[0];
 
         /**
@@ -201,14 +186,14 @@ class Image extends Attachment implements ImageInterface
          * @param string $src The image src.
          * @param int    $id  The image ID.
          */
-        $src = apply_filters('timber/image/src', $src, $this->ID);
+        $src = \apply_filters('timber/image/src', $src, $this->ID);
 
         /**
          * Filters the src URL for a `Timber\Image`.
          *
          * @deprecated 2.0.0, use `timber/image/src`
          */
-        $src = apply_filters_deprecated(
+        $src = \apply_filters_deprecated(
             'timber_image_src',
             [$src, $this->ID],
             '2.0.0',
@@ -216,6 +201,20 @@ class Image extends Attachment implements ImageInterface
         );
 
         return $src;
+    }
+
+    /**
+     * Get image sizes.
+     *
+     * @return array
+     */
+    public function sizes(): array
+    {
+        if (isset($this->sizes)) {
+            return $this->sizes;
+        }
+
+        return $this->sizes = (array) $this->metadata('sizes');
     }
 
     /**
@@ -298,7 +297,7 @@ class Image extends Attachment implements ImageInterface
     public function alt(): string
     {
         $alt = $this->meta('_wp_attachment_image_alt');
-        return trim(wp_strip_all_tags($alt));
+        return \trim(\wp_strip_all_tags($alt));
     }
 
     /**
@@ -350,11 +349,7 @@ class Image extends Attachment implements ImageInterface
      */
     public function srcset(string $size = 'full'): ?string
     {
-        if ($this->is_image()) {
-            return wp_get_attachment_image_srcset($this->ID, $size) ?: null;
-        }
-
-        return null;
+        return \wp_get_attachment_image_srcset($this->ID, $size) ?: null;
     }
 
     /**
@@ -374,32 +369,6 @@ class Image extends Attachment implements ImageInterface
      */
     public function img_sizes(string $size = 'full'): ?string
     {
-        if ($this->is_image()) {
-            return wp_get_attachment_image_sizes($this->ID, $size) ?: null;
-        }
-
-        return null;
-    }
-
-    /**
-     * Checks whether the image is really an image.
-     *
-     * @internal
-     * @return bool Whether the attachment is really an image.
-     */
-    protected function is_image()
-    {
-        $src = wp_get_attachment_url($this->ID);
-        $check = wp_check_filetype(PathHelper::basename($src), null);
-        $image_exts = apply_filters('timber/post/image_extensions', [
-            'jpg',
-            'jpeg',
-            'jpe',
-            'gif',
-            'png',
-            'webp',
-        ]);
-
-        return in_array($check['ext'], $image_exts);
+        return \wp_get_attachment_image_sizes($this->ID, $size) ?: null;
     }
 }

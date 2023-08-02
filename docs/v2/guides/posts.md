@@ -120,7 +120,7 @@ $posts = Timber::get_posts([
 ]);
 ```
 
-The `Timber::get_posts()` function accepts a second parameter with options for the query. For example, with the `merge_default` option you can tell Timber that it should merge your query parameters with the default query parameters of the current template. You can check out `merge_default` and all the other options in the documentation for [`Timber::get_posts()`](https://timber.github.io/docs/v2/reference/timber/#get-posts).
+The `Timber::get_posts()` function accepts a second parameter with options for the query. For example, with the `merge_default` option you can tell Timber that it should merge your query parameters with the default query parameters of the current template. You can check out `merge_default` and all the other options in the documentation for [`Timber::get_posts()`](https://timber.github.io/docs/v2/reference/timber-timber/#get_posts).
 
 ```php
 $posts = Timber::get_posts($query, $options);
