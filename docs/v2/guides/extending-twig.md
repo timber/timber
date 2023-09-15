@@ -69,9 +69,9 @@ add_filter('timber/twig/filters', function ($functions) {
     ];
 
     // Remove a function.
-    unset($filters['get_image']);
+    unset($functions['get_image']);
 
-    return $filters;
+    return $functions;
 });
 ```
 
