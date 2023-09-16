@@ -19,6 +19,15 @@ By
 [![WordPress Rating](https://img.shields.io/wordpress/plugin/r/timber-library.svg?style=flat-square)](https://wordpress.org/support/plugin/timber-library/reviews/)
 [![!Financial Contributors](https://opencollective.com/timber/tiers/badge.svg)](https://opencollective.com/timber/)
 
+> ⚠️ **Important information about the Timber plugin**
+> With the upcoming release of Timber 2, we will stop releasing Timber as a plugin. We advice everyone to switch to the composer based install as soon as possible.
+
+Underneath this text you will find an extensive list with guides and the reasons why we are not going to release Timber 2 in plugin version anymore.
+
+* Guide: [How do I switch over from the plugin version to the composer based version of Timber?](https://timber.github.io/docs/getting-started/switch-to-composer/)
+* Backstory: [Why are we dropping support for the plugin in the first place](https://github.com/timber/timber/pull/2005)
+* Github issue: [Road to Timber 2.0](https://github.com/timber/timber/issues/2741)
+
 ### Because WordPress is awesome, but the_loop isn't
 Timber helps you create fully-customized WordPress themes faster with more sustainable code. With Timber, you write your HTML using the [Twig Template Engine](https://twig.symfony.com/) separate from your PHP files.
 

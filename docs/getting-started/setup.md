@@ -7,12 +7,20 @@ menu:
 ---
 
 ## Installation
+> ⚠️ **Important information**
+> With the upcoming release of Timber 2, we will stop releasing Timber as a plugin. We advice everyone to switch to the composer based install as soon as possible.
 
-### Via WordPress.org (easy)
+Underneath this text you will find an extensive list with guides and the reasons why we are not going to release Timber 2 in plugin version anymore.
+
+* Guide: [How do I switch over from the plugin version to the composer based version of Timber?](https://timber.github.io/docs/getting-started/switch-to-composer/)
+* Backstory: [Why are we dropping support for the plugin in the first place](https://github.com/timber/timber/pull/2005)
+* Github issue: [Road to Timber 2.0](https://github.com/timber/timber/issues/2741)
+
+### ~~Via WordPress.org (easy)~~
 
 You can grab the all-things-included plugin at [WordPress.org](http://wordpress.org/plugins/timber-library/) either through the WordPress site or through the Plugins menu in the backend. Then skip ahead to [using the starter theme](#use-the-starter-theme).
 
-### Via GitHub (for developers)
+### Via Composer (recommended)
 
 The GitHub version of Timber requires [Composer](https://getcomposer.org/download/). If you'd prefer one-click installation, you should use the [WordPress.org](https://wordpress.org/plugins/timber-library/) version.
 
