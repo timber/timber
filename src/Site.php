@@ -199,11 +199,7 @@ class Site extends Core implements CoreInterface
      */
     public function __call($option, $arguments)
     {
-        if (\method_exists($this, 'option') && $meta_value = $this->option($option)) {
-            return $meta_value;
-        }
-
-        return false;
+        return $this->option($option);
     }
 
     /**
