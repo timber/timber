@@ -12,13 +12,14 @@ With the upcoming release of Timber 2, we will stop releasing Timber as a plugin
 
 1. Get a local development version of your website up and running.
 2. Check if you are running the latest version of the Timber plugin. If not, update it and check if your website still runs as expected.
-
+3. Disable the Timber plugin
 4. Install the latest 1.x version of Timber via Composer
 5. Load the Composer autoloader and initialize Timber
-5. Load the composer autoloader and initialize Timber 
 6. Check if your website still runs as expected
 7. Deploy your changes to your live website
 
+
+### 1. Get a local development version of your website up and running
 We highly recommend doing these steps on a local development version of your website. If you don’t have one yet, you could use [Local by Flywheel](https://localbyflywheel.com/) to get one up and running in a few minutes.
 
 #### 1.1 How to install Composer
@@ -30,6 +31,8 @@ We want to make sure that you are running the latest version of the Timber plugi
 
 ### 3. Disable the Timber plugin
 Once you are sure that you are running the latest version of the Timber plugin, you can disable it. This will make sure that the plugin is not loaded anymore and does not interfere with the Composer based version of Timber.
+
+Please note that you website will throw erros at this point, as there is no Timber available. This will be fixed in the next two steps.
 
 ### 4. Install the latest 1.x version of Timber via Composer
 Now that the plugin is disabled, you can install the latest 1.x version of Timber via Composer. You can do this by navigating to your site's active theme folder inside your terminal and then running the following command:
@@ -50,15 +53,10 @@ it is safe to answer `y` to this question and press enter.
 Now that we have Timber installed via Composer, we need to load the Composer autoloader and initialize Timber. You can do this by adding the following code at the top of your **functions.php** file:
 
 ```php
-/**
- * If you are installing Timber as a Composer dependency in your theme, you'll need this block
- * to load your dependencies and initialize Timber.
- */
-$composer_autoload = __DIR__ . '/vendor/autoload.php';
-if ( file_exists( $composer_autoload ) ) {
-	require_once $composer_autoload;
-	$timber = new Timber\Timber();
-}
+// Load Composer dependencies.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$timber = new Timber\Timber();
 ```
 
 ### 6. Check if your website still runs as expected
