@@ -7,8 +7,8 @@ menu:
 ---
 
 ## Installation
-> ⚠️ **Important information**
-> With the upcoming release of Timber 2, we will stop releasing Timber as a plugin. We advice everyone to switch to the composer based install as soon as possible.
+> ⚠️ **Important information about the Timber plugin**
+> With the upcoming release of Timber 2.0, we will stop releasing Timber as a plugin. We advise everyone to **[switch to the Composer based install of Timber 1 as a first step](https://timber.github.io/docs/getting-started/switch-to-composer/)** as soon as possible. If you need PHP 8.2 support you will have to switch to Timber 2.0.
 
 Underneath this text you will find an extensive list with guides and the reasons why we are not going to release Timber 2 in plugin version anymore.
 
@@ -18,11 +18,11 @@ Underneath this text you will find an extensive list with guides and the reasons
 
 ### ~~Via WordPress.org (easy)~~
 
-You can grab the all-things-included plugin at [WordPress.org](http://wordpress.org/plugins/timber-library/) either through the WordPress site or through the Plugins menu in the backend. Then skip ahead to [using the starter theme](#use-the-starter-theme).
+~~You can grab the all-things-included plugin at [WordPress.org](http://wordpress.org/plugins/timber-library/) either through the WordPress site or through the Plugins menu in the backend. Then skip ahead to [using the starter theme](#use-the-starter-theme).~~
 
 ### Via Composer (recommended)
 
-The GitHub version of Timber requires [Composer](https://getcomposer.org/download/). If you'd prefer one-click installation, you should use the [WordPress.org](https://wordpress.org/plugins/timber-library/) version.
+The GitHub version of Timber requires [Composer](https://getcomposer.org/download/).
 
 Run the following Composer command from within your theme's root directory:
 
