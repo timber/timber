@@ -15,6 +15,7 @@ With the upcoming release of Timber 2.0, we will not release a 2.0 version and b
 You will find an extensive list with guides and the reasons why we are not going to release Timber 2.0 as a plugin anymore.
 
 ### Switching to the Composer based version
+* Announcement: [Dropping support for the plugin version of Timber](https://github.com/timber/timber/discussions/2804)
 * Guide: [How do I switch over from the plugin version to the Composer based version of Timber?](https://timber.github.io/docs/getting-started/switch-to-composer/)
 * Backstory: [Why are we dropping support for the plugin in the first place](https://github.com/timber/timber/pull/2005)
 * GitHub issue: [Roadmap for Timber 2.0](https://github.com/timber/timber/issues/2741)
