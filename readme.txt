@@ -17,7 +17,7 @@ You will find an extensive list with guides and the reasons why we are not going
 ### Switching to the Composer based version
 * Announcement: [Dropping support for the plugin version of Timber](https://github.com/timber/timber/discussions/2804)
 * Guide: [How do I switch over from the plugin version to the Composer based version of Timber?](https://timber.github.io/docs/getting-started/switch-to-composer/)
-* Backstory: [Why are we dropping support for the plugin in the first place](https://github.com/timber/timber/pull/2005)
+* Backstory: [Why we are dropping support for the plugin in the first place](https://github.com/timber/timber/pull/2005)
 * GitHub issue: [Roadmap for Timber 2.0](https://github.com/timber/timber/issues/2741)
 
 Timber helps you create fully-customized WordPress themes faster with more sustainable code. With Timber, you write your HTML using the [Twig Template Engine](http://twig.sensiolabs.org/) separate from your PHP files. This cleans up your theme code so, for example, your PHP file can focus on being the data/logic, while your Twig file can focus 100% on the HTML and display.
