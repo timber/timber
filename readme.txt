@@ -14,7 +14,7 @@ Helps you create themes faster with sustainable code. With Timber, you write HTM
 With the upcoming release of Timber 2.0, we will not release a 2.0 version and beyond as a plugin, but only as a Composer package. We advise everyone to switch to the Composer based install as soon as possible.
 You will find an extensive list with guides and the reasons why we are not going to release Timber 2.0 as a plugin anymore.
 
-### Switching to the composer based version
+### Switching to the Composer based version
 * Guide: [How do I switch over from the plugin version to the Composer based version of Timber?](https://timber.github.io/docs/getting-started/switch-to-composer/)
 * Backstory: [Why are we dropping support for the plugin in the first place](https://github.com/timber/timber/pull/2005)
 * GitHub issue: [Roadmap for Timber 2.0](https://github.com/timber/timber/issues/2741)
