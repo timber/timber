@@ -22,7 +22,7 @@ class Admin {
 	 */
 	public static function show_deprecation_warning($file, $plugin, $status)
 	{
-		echo '<td colspan="3" class="plugin-update colspanchange"><div class="update-message notice-error notice inline notice-warning notice-alt"><p>We recommend <a target="_blank" href="#">switching to the Composer based version of Timber</a>. <a href="#" target="_blank">Why you need to switch.</a></p></div></td>';
+		echo '<td colspan="3" class="plugin-update colspanchange"><div class="update-message notice-error notice inline notice-warning notice-alt"><p>We recommend <a target="_blank" href="https://timber.github.io/docs/getting-started/switch-to-composer/">switching to the Composer based version</a> of Timber. <a href="#" target="_blank">Why you need to switch.</a></p></div></td>';
 	}
 
 	/**
