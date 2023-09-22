@@ -1,6 +1,6 @@
 ---
 title: "Switch to Composer"
-description: "How to switch your plugin based Timber theme over to the composer based version."
+description: "How to switch your plugin based Timber theme over to the Composer based version."
 menu:
   main:
     parent: "getting-started"
