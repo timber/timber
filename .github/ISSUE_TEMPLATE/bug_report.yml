@@ -5,6 +5,16 @@ body:
 - type: markdown
   attributes:
     value: |
+      **⚠️ Your issue about Timber 1.x**
+
+      Support for [Timber 1.x has been dropped](https://github.com/timber/timber/discussions/2804).
+
+      This means that your issue will likely not be addressed. We encourage all Timber users to migrate to Timber 2.x (currently RC 1).
+
+      Please read the [migration guide](https://timber.github.io/docs/v2/upgrade-guides/2.0/) and maybe the [switch to Composer guide](https://timber.github.io/docs/v2/getting-started/switch-to-composer/) if you were using the plugin version.
+
+      **Your issue is about Timber 2.x**
+
       Thanks for taking the time to fill out the issue form. We can help best if you provide as much information as possible.
 
       Is this a support or usage question? Please post it to [Discussions](https://github.com/timber/timber/discussions) or on Stack Overflow (http://stackoverflow.com/questions/tagged/timber) using the *Timber* tag.
@@ -42,6 +52,7 @@ body:
   attributes:
     label: What version of Timber are you using?
     placeholder: "Example: Timber 1.22.1"
+    description: ⚠️ Timber 1.x is no longer supported. Please [upgrade to Timber 2.x](https://timber.github.io/docs/v2/upgrade-guides/2.0/).
   validations:
     required: true
 - type: input
