@@ -6,7 +6,7 @@ menu:
     parent: "getting-started"
 ---
 
-With the upcoming release of Timber 2, we will stop releasing Timber as a plugin. We advise everyone to switch to the Composer based install of Timber 1 as soon as possible as a first step towards upgrading to Timber 2.
+With the release of Timber 2.0, Composer is the only supported install method. We are unable to continue releasing or supporting Timber as a plugin on WordPress.org. We advise everyone to switch to the Composer based install of Timber 1 as soon as possible as a first step towards upgrading to Timber 2.
 
 ## Recommended upgrade path
 
