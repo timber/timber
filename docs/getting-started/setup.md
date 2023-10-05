@@ -8,7 +8,7 @@ menu:
 
 ## Installation
 > ⚠️ **Important information about the Timber plugin**
-> With the upcoming release of Timber 2.0, we will stop releasing Timber as a plugin. We advise everyone to **[switch to the Composer based install of Timber 1 as a first step](https://timber.github.io/docs/getting-started/switch-to-composer/)** as soon as possible. If you need PHP 8.2 support you will have to switch to Timber 2.0.
+> With the release of Timber 2.0, Composer is the only supported install method. We are unable to continue releasing or supporting Timber as a plugin on WordPress.org. We advise everyone to **[switch to the Composer based install of Timber 1 as a first step](https://timber.github.io/docs/getting-started/switch-to-composer/)** as soon as possible. If you need PHP 8.2 support you will have to switch to Timber 2.0.
 
 Underneath this text you will find an extensive list with guides and the reasons why we are not going to release Timber 2 in plugin version anymore.
 
