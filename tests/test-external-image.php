@@ -243,6 +243,9 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
         $this->addFile($dest);
         $this->assertFileExists($dest);
 
+        $image = Timber::get_external_image($dest);
+        $this->assertSame('', $image->alt());
+
         $image = Timber::get_external_image($dest, [
             'alt' => 'Cardinals logo',
         ]);
@@ -257,6 +260,9 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
         $dest = self::copy_image_to_stylesheet('assets/images');
         $this->addFile($dest);
         $this->assertFileExists($dest);
+
+        $image = Timber::get_external_image($dest);
+        $this->assertSame('', $image->caption());
 
         $image = Timber::get_external_image($dest, [
             'caption' => 'Cardinals logo',

@@ -143,17 +143,13 @@ class ExternalImage implements ImageInterface
 
         $args = \wp_parse_args($args, [
             'alt' => '',
+            'caption' => '',
         ]);
 
         $external_image = new static();
 
-        if (!empty($args['alt'])) {
-            $external_image->alt_text = (string) $args['alt'];
-        }
-
-        if (!empty($args['caption'])) {
-            $external_image->caption = (string) $args['caption'];
-        }
+        $external_image->alt_text = (string) $args['alt'];
+        $external_image->caption = (string) $args['caption'];
 
         if (\str_contains($url, '://')) {
             // Assume URL.
