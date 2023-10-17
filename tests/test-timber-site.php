@@ -91,6 +91,18 @@ class TestTimberSite extends Timber_UnitTestCase
         $this->assertEquals('bar', $site->foo);
     }
 
+    public function testSiteCall()
+    {
+        update_option('foo', 'barr');
+        $site = new Timber\Site();
+
+        $twig_string = '{{site.foo}}';
+        $result = Timber\Timber::compile_string($twig_string, [
+            'site' => $site,
+        ]);
+        $this->assertEquals('barr', $result);
+    }
+
     /**
      * @expectedDeprecated {{ site.meta() }}
      */
