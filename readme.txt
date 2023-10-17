@@ -11,6 +11,15 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Helps you create themes faster with sustainable code. With Timber, you write HTML using Twig Templates http://www.upstatement.com/timber/
 
 == Description ==
+With the upcoming release of Timber 2.0, we will not release a 2.0 version and beyond as a plugin, but only as a Composer package. We advise everyone to switch to the Composer based install as soon as possible.
+You will find an extensive list with guides and the reasons why we are not going to release Timber 2.0 as a plugin anymore.
+
+### Switching to the Composer based version
+* Announcement: [Dropping support for the plugin version of Timber](https://github.com/timber/timber/discussions/2804)
+* Guide: [How do I switch over from the plugin version to the Composer based version of Timber?](https://timber.github.io/docs/getting-started/switch-to-composer/)
+* Backstory: [Why we are dropping support for the plugin in the first place](https://github.com/timber/timber/pull/2005)
+* GitHub issue: [Roadmap for Timber 2.0](https://github.com/timber/timber/issues/2741)
+
 Timber helps you create fully-customized WordPress themes faster with more sustainable code. With Timber, you write your HTML using the [Twig Template Engine](http://twig.sensiolabs.org/) separate from your PHP files. This cleans up your theme code so, for example, your PHP file can focus on being the data/logic, while your Twig file can focus 100% on the HTML and display.
 
 Once Timber is installed and activated in your plugin directory, it gives any WordPress theme the ability to take advantage of the power of Twig and other Timber features.
