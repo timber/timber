@@ -32,7 +32,7 @@ runs:
         tools: ${{ format('composer,{0}', inputs.PHP_TOOLS) }}
 
     - name: Install Composer dependencies
+      if: ${{ inputs.INSTALL_DEPS == 'true' }}
       uses: ramsey/composer-install@v2
-      if: ${{ inputs.INSTALL_DEPS }}
       with:
         composer-options: ${{ inputs.COMPOSER_ARGS }}
