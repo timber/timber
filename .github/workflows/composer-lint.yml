@@ -2,11 +2,15 @@ name: Lint composer
 
 on:
   push:
+    branches:
+      - master
+      - 2.x
     paths:
       - '**composer.json'
-    branches:
-      - '*'
   pull_request:
+    branches:
+      - master
+      - 2.x
     paths:
       - '**composer.json'
     types:

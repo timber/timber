@@ -2,12 +2,16 @@ name: PHP lint
 
 on:
   push:
+    branches:
+      - master
+      - 2.x
     paths:
       - '**.php'
       - '**composer.json'
-    branches:
-      - '*'
   pull_request:
+    branches:
+      - master
+      - 2.x
     paths:
       - '**.php'
       - '**composer.json'

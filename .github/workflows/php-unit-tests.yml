@@ -2,14 +2,18 @@ name: PHP unit tests
 
 on:
   push:
+    branches:
+      - master
+      - 2.x
     paths:
       - '**workflows/php-unit-tests.yml'
       - '**.php'
       - '**composer.json'
       - '**phpunit.xml'
-    branches:
-      - '*'
   pull_request:
+    branches:
+      - master
+      - 2.x
     paths:
       - '**workflows/php-unit-tests.yml'
       - '**.php'
