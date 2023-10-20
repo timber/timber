@@ -1,8 +1,8 @@
 === Timber ===
 Contributors: jarednova
 Tags: template engine, templates, twig
-Tested up to: 6.1
-Stable tag: 1.22.1
+Tested up to: 6.3.2
+Stable tag: 1.23.0
 Requires PHP: 7.2.5
 Requires at least: 5.3.0
 License: GPLv2 or later
@@ -41,11 +41,22 @@ _Twig is the template language powering Timber; if you need a little background 
 
 == Changelog ==
 
-= Develop (next release) =
+= 1.23.0 =
 
-**Changes for Theme Developers**
+## What's Changed
+* Improve GitHub pull request template by @gchtr in https://github.com/timber/timber/pull/2641
+* Update bug report template and CODEOWNERS by @gchtr in https://github.com/timber/timber/pull/2711
+* Add Erik to Contributors List by @jarednova in https://github.com/timber/timber/pull/2735
+* Fix PHPDoc typo by @LogicEveryWhere in https://github.com/timber/timber/pull/2709
+* Add sponsorship information to Readme by @gchtr in https://github.com/timber/timber/pull/2777
+* doc: Add drop support notice to issue template by @nlemoine in https://github.com/timber/timber/pull/2810
+* Add documentation and plugin notice about the end of the plugin version by @Levdbas in https://github.com/timber/timber/pull/2800
+* Workflow: fix path to guide by @Levdbas in https://github.com/timber/timber/pull/2823
 
-**Fixes and improvements**
+## New Contributors
+* @LogicEveryWhere made their first contribution in https://github.com/timber/timber/pull/2709
+
+**Full Changelog**: https://github.com/timber/timber/compare/1.22.1...1.23.0
 
 = 1.22.1 =
 
