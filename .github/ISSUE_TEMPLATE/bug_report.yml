@@ -11,7 +11,7 @@ body:
 
       This means that your issue will likely not be addressed. We encourage all Timber users to migrate to Timber 2.x (currently RC 1).
 
-      Please read the [migration guide](https://timber.github.io/docs/v2/upgrade-guides/2.0/) and maybe the [switch to Composer guide](https://timber.github.io/docs/v2/getting-started/switch-to-composer/) if you were using the plugin version.
+      Please read the [migration guide](https://timber.github.io/docs/v2/upgrade-guides/2.0/) and maybe the [switch to Composer guide](https://timber.github.io/docs/getting-started/switch-to-composer/) if you were using the plugin version.
 
       **Your issue is about Timber 2.x**
 
