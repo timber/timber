@@ -3,16 +3,16 @@ name: Docs links checker
 on: [workflow_dispatch]
 
 jobs:
-  linkChecker:
+  links-check:
+    name: Link Checker
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
             ref: 2.x
 
-      - name: Link Checker
+      - uses: lycheeverse/lychee-action@v1.8.0
         id: lychee
-        uses: lycheeverse/lychee-action@v1.8.0
         with:
             args: --verbose './docs/**/*.md' --max-concurrency 1 --max-retries 0 --accept 200,429 --cache
         env:
