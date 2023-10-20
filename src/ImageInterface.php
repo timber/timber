@@ -20,9 +20,9 @@ interface ImageInterface
      *
      * @api
      * @since 2.0
-     * @return string
+     * @return string|null
      */
-    public function caption(): string;
+    public function caption(): ?string;
 
     /**
      * Gets filesize in bytes.
@@ -95,7 +95,7 @@ interface ImageInterface
      * empty.
      *
      * @api
-     * @return string Alt text stored in WordPress.
+     * @return string|null Alt text stored in WordPress.
      */
-    public function alt(): string;
+    public function alt(): ?string;
 }

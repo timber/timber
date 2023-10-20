@@ -141,15 +141,14 @@ class ExternalImage implements ImageInterface
             return null;
         }
 
-        $args = \wp_parse_args($args, [
-            'alt' => '',
-            'caption' => '',
-        ]);
-
         $external_image = new static();
 
-        $external_image->alt_text = (string) $args['alt'];
-        $external_image->caption = (string) $args['caption'];
+        if (!empty($args['alt'])) {
+            $external_image->alt_text = (string) $args['alt'];
+        }
+        if (!empty($args['caption'])) {
+            $external_image->caption = (string) $args['caption'];
+        }
 
         if (\str_contains($url, '://')) {
             // Assume URL.
@@ -467,13 +466,13 @@ class ExternalImage implements ImageInterface
      *
      * @return string Alt text stored in WordPress.
      */
-    public function alt(): string
+    public function alt(): ?string
     {
-        return $this->alt_text;
+        return $this->alt_text ?? null;
     }
 
-    public function caption(): string
+    public function caption(): ?string
     {
-        return $this->caption;
+        return $this->caption ?? null;
     }
 }

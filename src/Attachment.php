@@ -192,9 +192,9 @@ class Attachment extends Post
      * </figure>
      * ```
      *
-     * @return string
+     * @return string|null
      */
-    public function caption(): string
+    public function caption(): ?string
     {
         /**
          * Filters the attachment caption.

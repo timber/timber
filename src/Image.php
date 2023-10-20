@@ -292,9 +292,9 @@ class Image extends Attachment implements ImageInterface
      *     alt="You should always add alt texts to your images for better accessibility" />
      * ```
      *
-     * @return string Alt text stored in WordPress.
+     * @return string|null Alt text stored in WordPress.
      */
-    public function alt(): string
+    public function alt(): ?string
     {
         $alt = $this->meta('_wp_attachment_image_alt');
         return \trim(\wp_strip_all_tags($alt));
