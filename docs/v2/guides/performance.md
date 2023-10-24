@@ -15,7 +15,7 @@ You can still use plugins like [W3 Total Cache](https://wordpress.org/plugins/w3
 
 ## Cache the Entire Twig File and Data
 
-With Timber you can cache the full Timber render/compile calls. When you do this, the whole template you render and it's data will be cached. This results in faster page rendering by skipping queries and twig compilations. But here’s the cool part: Timber hashes the fields in the view context. This means that **as soon as the data changes, the cache is automatically invalidated**. Yay!
+With Timber you can cache the full Timber render/compile calls. When you do this, the whole template you render and its data will be cached. This results in faster page rendering by skipping queries and Twig compilations. But here’s the cool part: Timber hashes the fields in the view context. This means that **as soon as the data changes, the cache is automatically invalidated**. Yay!
 
 `Timber::render()` and `Timber::compile()` will use the default cache mode which by default is the transient cache mode.
 
@@ -162,7 +162,7 @@ $key = $generator->generateKey($posts);
 
 ### Extra: TimberKeyGeneratorInterface
 
-Instead of hashing a whole object, you can specify the cache key in the object itself. If the object implements `TimberKeyGeneratorInterface`, it can pass a unique key through the method `get_cache_key`. That way a class can for example simply pass `'last_updated'` as the unique key.
+Instead of hashing a whole object, you can specify the cache key in the object itself. If the object implements `TimberKeyGeneratorInterface`, it can pass a unique key through the method `get_cache_key()`. That way a class could for example pass a `'last_updated'` property as the unique key.
 If arrays contain the key `_cache_key`, that one is used as cache key.
 
 This may save yet another few processor cycles.
@@ -223,6 +223,6 @@ Timber::render('single.twig', $context, 600);
 // This reports the time diff by passing the $start time
 echo Timber\Helper::stop_timer($start);
 ```
-## Important notices
+## Important notes
 
 - Never use `{% spaceless %}` tags to minify your HTML output. These tags are only meant to control whitespace between html tags.
