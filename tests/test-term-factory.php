@@ -310,6 +310,135 @@ class TestTermFactory extends Timber_UnitTestCase
         $this->assertTrue(MyTerm::class === get_class($res[1]));
     }
 
+    public function testFromTermQueryWithFields()
+    {
+        $term_ids = $this->factory->term->create_many(4, [
+            'taxonomy' => 'post_tag',
+        ]);
+
+        $post_id = $this->factory->post->create();
+        wp_set_object_terms(
+            $post_id,
+            $term_ids[0],
+            'post_tag'
+        );
+        wp_set_object_terms(
+            $this->factory->post->create(),
+            [$term_ids[1], $term_ids[2]],
+            'post_tag'
+        );
+
+        $termFactory = new TermFactory();
+
+        // all: array of used terms as Timber\Term object
+        $termQuery = new WP_Term_Query([
+            'taxonomy' => 'post_tag',
+            'fields' => 'all',
+        ]);
+        $terms = $termFactory->from($termQuery);
+        $this->assertCount(3, $terms);
+        foreach ($terms as $term) {
+            $this->assertInstanceOf(Term::class, $term);
+        }
+
+        // all_with_object_id: all terms used in a specific object as Timber\Term object
+        $termQuery = new WP_Term_Query([
+            'taxonomy' => 'post_tag',
+            'fields' => 'all_with_object_id',
+            'object_ids' => $post_id,
+        ]);
+        $terms = $termFactory->from($termQuery);
+        $this->assertCount(1, $terms);
+        $this->assertInstanceOf(Term::class, $terms[0]);
+        $this->assertSame($terms[0]->id, $term_ids[0]);
+
+        // register class map and repeat previous tests
+        $my_class_map = function (array $map) {
+            return array_merge($map, [
+                'post_tag' => MyTerm::class,
+            ]);
+        };
+        $this->add_filter_temporarily('timber/term/classmap', $my_class_map);
+
+        // all_with_object_id: all terms used in a specific object as MyTerm object
+        $termQuery = new WP_Term_Query([
+            'taxonomy' => 'post_tag',
+            'fields' => 'all',
+        ]);
+        $terms = $termFactory->from($termQuery);
+        $this->assertCount(3, $terms);
+        foreach ($terms as $term) {
+            $this->assertInstanceOf(MyTerm::class, $term);
+        }
+
+        // all_with_object_id: all terms used in a specific object as MyTerm object
+        $termQuery = new WP_Term_Query([
+            'taxonomy' => 'post_tag',
+            'fields' => 'all_with_object_id',
+            'object_ids' => $post_id,
+        ]);
+        $terms = $termFactory->from($termQuery);
+        $this->assertCount(1, $terms);
+        $this->assertInstanceOf(MyTerm::class, $terms[0]);
+        $this->assertSame($terms[0]->id, $term_ids[0]);
+
+        // count: number of used terms as integer string value
+        $termQuery = new WP_Term_Query([
+            'taxonomy' => 'post_tag',
+            'fields' => 'count',
+        ]);
+        $count = $termFactory->from($termQuery);
+        $this->assertTrue(is_string($count));
+        $this->assertTrue(is_numeric($count));
+        $this->assertSame(intval($count), 3);
+
+        // count: number of terms as integer string value
+        $termQuery = new WP_Term_Query([
+            'taxonomy' => 'post_tag',
+            'fields' => 'count',
+            'hide_empty' => false,
+        ]);
+        $count = $termFactory->from($termQuery);
+        $this->assertTrue(is_string($count));
+        $this->assertTrue(is_numeric($count));
+        $this->assertSame(intval($count), 4);
+
+        // ids: array of integer ids of used terms
+        $termQuery = new WP_Term_Query([
+            'taxonomy' => 'post_tag',
+            'fields' => 'ids',
+        ]);
+        $ids = $termFactory->from($termQuery);
+        $this->assertCount(3, $ids);
+        foreach ($ids as $id) {
+            $this->assertTrue(is_int($id));
+            $this->assertTrue(in_array($id, $term_ids));
+        }
+
+        // names: array of strings
+        $termQuery = new WP_Term_Query([
+            'taxonomy' => 'post_tag',
+            'fields' => 'names',
+        ]);
+        $names = $termFactory->from($termQuery);
+        $this->assertCount(3, $names);
+        foreach ($names as $name) {
+            $this->assertTrue(is_string($name));
+        }
+
+        // id=>parent: array of numeric strings
+        $termQuery = new WP_Term_Query([
+            'taxonomy' => 'post_tag',
+            'fields' => 'id=>parent',
+        ]);
+        $map = $termFactory->from($termQuery);
+        $this->assertCount(3, $map);
+        foreach ($map as $k => $v) {
+            $this->assertTrue(is_int($k));
+            $this->assertTrue(is_int(filter_var($v, FILTER_VALIDATE_INT)));
+        }
+    }
+
     public function testFromAssortedArray()
     {
         register_taxonomy('make', 'post');

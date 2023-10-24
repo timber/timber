@@ -192,9 +192,9 @@ class Attachment extends Post
      * </figure>
      * ```
      *
-     * @return string
+     * @return string|null
      */
-    public function caption(): string
+    public function caption(): ?string
     {
         /**
          * Filters the attachment caption.
@@ -209,26 +209,25 @@ class Attachment extends Post
     }
 
     /**
-     * Gets filesize in a human readable format.
+     * Gets the raw filesize in bytes.
      *
-     * This can be useful if you want to display the human readable filesize for a file. It’s
-     * easier to read «16 KB» than «16555 bytes» or «1 MB» than «1048576 bytes».
+     * Use the `size_format` filter to format the raw size into a human readable size («1 MB» intead of «1048576»)
      *
      * @api
      * @since 2.0.0
      * @example
+     * @see https://developer.wordpress.org/reference/functions/size_format/
      *
      * Use filesize information in a link that downloads a file:
      *
      * ```twig
      * <a class="download" href="{{ attachment.src }}" download="{{ attachment.title }}">
      *     <span class="download-title">{{ attachment.title }}</span>
-     *     <span class="download-info">(Download, {{ attachment.size }})</span>
+     *     <span class="download-info">(Download, {{ attachment.size|size_format }})</span>
      * </a>
      * ```
      *
-     * @return int|null The filesize string in a human-readable format or null if the
-     *                     filesize can’t be read.
+     * @return int|null The raw filesize or null if it could not be read.
      */
     public function size(): ?int
     {

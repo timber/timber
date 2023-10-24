@@ -1,0 +1,38 @@
+name: 'Setup PHP & Composer'
+description: 'Setup PHP & installs composer dependencies'
+inputs:
+  PHP_VERSION:
+    description: PHP version
+    default: "8.1"
+    required: false
+    type: string
+  PHP_TOOLS:
+    description: PHP version
+    default: ""
+    required: false
+    type: string
+  COMPOSER_ARGS:
+    description: Set of arguments passed to Composer.
+    default: '--prefer-dist --no-scripts'
+    required: false
+    type: string
+  INSTALL_DEPS:
+    description: Whether to install dependencies or not.
+    default: true
+    required: false
+    type: boolean
+
+runs:
+  using: composite
+  steps:
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ inputs.PHP_VERSION }}
+        tools: ${{ format('composer,{0}', inputs.PHP_TOOLS) }}
+
+    - name: Install Composer dependencies
+      if: ${{ inputs.INSTALL_DEPS == 'true' }}
+      uses: ramsey/composer-install@v2
+      with:
+        composer-options: ${{ inputs.COMPOSER_ARGS }}
