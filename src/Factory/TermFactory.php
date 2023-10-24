@@ -60,9 +60,16 @@ class TermFactory
         return $this->build($wp_term);
     }
 
-    protected function from_wp_term_query(WP_Term_Query $query): iterable
+    protected function from_wp_term_query(WP_Term_Query $query)
     {
-        return \array_map([$this, 'build'], $query->get_terms());
+        $terms = $query->get_terms();
+
+        $fields = $query->query_vars['fields'];
+        if ('all' === $fields || 'all_with_object_id' === $fields) {
+            return \array_map([$this, 'build'], $terms);
+        }
+
+        return $terms;
     }
 
     protected function from_term_object(object $obj): CoreInterface
