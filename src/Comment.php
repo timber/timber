@@ -122,7 +122,7 @@ class Comment extends CoreEntity
      *
      * @internal
      */
-    final protected function __construct()
+    protected function __construct()
     {
     }
 

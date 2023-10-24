@@ -278,7 +278,7 @@ class Menu extends CoreEntity
      *                            many levels of hierarchy should be included in the menu. Default
      *                            `0`, which is all levels.
      */
-    final protected function __construct(?WP_term $term, array $args = [])
+    protected function __construct(?WP_term $term, array $args = [])
     {
         // For future enhancements?
         $this->raw_args = $args;
