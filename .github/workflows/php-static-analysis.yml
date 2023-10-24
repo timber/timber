@@ -1,0 +1,45 @@
+name: PHP static analysis
+
+on:
+  push:
+    branches:
+      - master
+      - 2.x
+    paths:
+      - '**.php'
+      - '**composer.json'
+  pull_request:
+    branches:
+      - master
+      - 2.x
+    paths:
+      - '**.php'
+      - '**composer.json'
+    types:
+      - opened
+      - synchronize
+      - ready_for_review
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  php-static-analysis:
+    name: PHP static analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        uses: ./.github/actions/setup
+        with:
+          PHP_TOOLS: cs2pr
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v39
+
+      - name: Run static analysis
+        if: steps.changed-files.outputs.all_changed_files != ''
+        run: ./vendor/bin/phpstan analyse --memory-limit=-1 --error-format=checkstyle ${{ join(steps.changed-files.outputs.all_changed_files, ' ') }} | cs2pr

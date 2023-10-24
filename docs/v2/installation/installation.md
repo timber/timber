@@ -15,6 +15,12 @@ To install Timber, you can use the following command:
 composer require timber/timber
 ```
 
+While Timber version 2 is still released as a release candidate, you should use the following command:
+
+```bash
+composer require timber/timber:2.0.0-rc.1
+```
+
 Now in which folder do you run that command?
 
 You can choose yourself where in your project you want to include Timber.

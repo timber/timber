@@ -30,10 +30,10 @@ Timber::render('single.twig', $context);
 
 
 ## Theme
-* `get_template_directory_uri()` => `{{ theme.link }}` (Parent Themes)
-* `get_template_directory_uri()` => `{{ theme.parent.link }}` (Child Themes)
-* `get_stylesheet_directory_uri()` => `{{ theme.link }}`
-* `get_template_directory()` => `{{ theme.parent.path }}`
-* `get_stylesheet_directory()` => `{{ theme.path }}`
+* `get_template_directory_uri()` => `{{ theme.uri }}` Template directory URI for the active (parent) theme (ex: `http://example.org/wp-content/themes/my-timber-theme`)
+* `get_template_directory_uri()` => `{{ theme.parent.link }}` Explicitly return directory uri of parent theme (ex: `http://example.org/wp-content/themes/my-timber-parent-theme`)
+* `get_stylesheet_directory_uri()` => `{{ theme.link }}` Template directory URI for the active (child) theme (ex: `http://example.org/wp-content/themes/my-timber-theme`)
+* `get_template_directory()` => `{{ theme.parent.path }}` Explicitly return relative directory path of parent theme  (ex: `/wp-content/themes/my-timber-parent-theme`)
+* `get_stylesheet_directory()` => `{{ theme.path }}` Relative directory path for the active (child) theme (ex: `/wp-content/themes/my-timber-theme`)
 
 In WordPress parlance, stylesheet_directory = child theme, template directory = parent theme. Both WP and Timber functions safely return the current theme info if there's no parent/child going on.
