@@ -17,9 +17,9 @@ You can still use plugins like [W3 Total Cache](https://wordpress.org/plugins/w3
 
 With Timber you can cache the full Timber render/compile calls. When you do this, the whole template you render and its data will be cached. This results in faster page rendering by skipping queries and Twig compilations. But here’s the cool part: Timber hashes the fields in the view context. This means that **as soon as the data changes, the cache is automatically invalidated**. Yay!
 
-`Timber::render()` and `Timber::compile()` will use the default cache mode which by default is the transient cache mode.
+For Timber caching to take effect on your `Timber::render()` and `Timber::compile()` calls, you need to set the `$expires` argument. If the `$expires` argument is not set, Timber will not cache that particular template, even if the (global)cache mode is set.
 
-When rendering, use the `$expires` argument in [`Timber::render`](https://timber.github.io/docs/v2/reference/timber-timber/#render). For example:
+Example:
 
 ```php
 $context['posts'] = Timber::get_posts();
@@ -28,8 +28,9 @@ Timber::render('index.twig', $context, 600);
 ```
 
 In this example, Timber will cache the template for 10 minutes (600 / 60 = 10) with the default cache mode which is "transient". 
+You can change the cache mode for Timber globally or on a per method basis. See [Timber cache modes](#timber-cache-modes) for more information.
 
-This method is very effective, but crude - the whole template is cached. So if you have any context dependent sub-views (eg. current user), this mode won’t do.
+This caching method is very effective, but crude - the whole template is cached. So if you have any context dependent sub-views (eg. current user), this mode won’t do.
 
 ### Timber cache modes
 Timber has 5 cache modes that it can use for the Timber `Timber::render()` and `Timber::compile()` methods. The following cache modes are available:
@@ -45,10 +46,19 @@ Timber has 5 cache modes that it can use for the Timber `Timber::render()` and `
 By default the cache mode is set to transients. You can change the default cache mode globally by using a filter or on a per method basis. We will go over them both.
 
 #### Set Timber cache mode globally
-hier een verhaal over de glogale cache mode.
+The default cache mode can be changed by using the `timber/cache/mode` filter. For example:
+
+```php
+apply_filters('timber/cache/mode', function () {
+    return Timber\Loader::CACHE_OBJECT;
+});
+```
+
+Sets the global/default cache mode to `CACHE_OBJECT`.
+
 
 #### Set Timber cache mode per compile or render method
-As a fourth parameter for [Timber::render()](https://timber.github.io/docs/v2/reference/timber-timber/#render), you can set the `$cache_mode`.
+As a fourth parameter for [Timber::render()](https://timber.github.io/docs/v2/reference/timber-timber/#render) and [Timber::compile()](https://timber.github.io/docs/v2/reference/timber-timber/#compile), you can set the `$cache_mode`.
 
 For example:
 ```php
