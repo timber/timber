@@ -1308,15 +1308,15 @@ class Timber
      *
      * $team_member = Timber::compile( 'team-member.twig', $data );
      * ```
-     * @param array|string $filenames  Name or full path of the Twig file to compile. If this is an array of file
-     *                                 names or paths, Timber will compile the first file that exists.
-     * @param array        $data       Optional. An array of data to use in Twig template.
-     * @param bool|int     $expires    Optional. In seconds. Use false to disable cache altogether. When passed an
-     *                                 array, the first value is used for non-logged in visitors, the second for users.
-     *                                 Default false.
-     * @param string       $cache_mode Optional. Any of the cache mode constants defined in Timber\Loader.
-     * @param bool         $via_render Optional. Whether to apply optional render or compile filters. Default false.
-     * @return bool|string The returned output.
+     * @param array|string    $filenames        Name or full path of the Twig file to compile. If this is an array of file
+     *                                          names or paths, Timber will compile the first file that exists.
+     * @param array           $data             Optional. An array of data to use in Twig template.
+     * @param bool|int|array  $expires          Optional. In seconds. Use false to disable cache altogether. When passed an
+     *                                          array, the first value is used for non-logged in visitors, the second for users.
+     *                                          Default false.
+     * @param string          $cache_mode       Optional. Any of the cache mode constants defined in Timber\Loader.
+     * @param bool            $via_render       Optional. Whether to apply optional render or compile filters. Default false.
+     * @return bool|string                      The returned output.
      */
     public static function compile($filenames, $data = [], $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT, $via_render = false)
     {
@@ -1566,13 +1566,13 @@ class Timber
      *
      * Timber::render( 'index.twig', $context );
      * ```
-     * @param array|string $filenames  Name or full path of the Twig file to render. If this is an array of file
-     *                                 names or paths, Timber will render the first file that exists.
-     * @param array        $data       Optional. An array of data to use in Twig template.
-     * @param bool|int     $expires    Optional. In seconds. Use false to disable cache altogether. When passed an
-     *                                 array, the first value is used for non-logged in visitors, the second for users.
-     *                                 Default false.
-     * @param string       $cache_mode Optional. Any of the cache mode constants defined in Timber\Loader.
+     * @param array|string   $filenames      Name or full path of the Twig file to render. If this is an array of file
+     *                                       names or paths, Timber will render the first file that exists.
+     * @param array          $data           Optional. An array of data to use in Twig template.
+     * @param bool|int|array $expires        Optional. In seconds. Use false to disable cache altogether. When passed an
+     *                                       array, the first value is used for non-logged in visitors, the second for users.
+     *                                       Default false.
+     * @param string         $cache_mode     Optional. Any of the cache mode constants defined in Timber\Loader.
      */
     public static function render($filenames, $data = [], $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT)
     {
