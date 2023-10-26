@@ -21,10 +21,10 @@ Underneath this text you will find an extensive list with guides and the reasons
 The GitHub version of Timber requires [Composer](https://getcomposer.org/download/).
 
 ```shell
-composer require timber/timber
+composer require timber/timber:^1.0
 ```
 
-If your theme is not setup to pull in Composer’s autoload file, you will need to add the following at the top of your `functions.php` file: 
+If your theme is not setup to pull in Composer’s autoload file, you will need to add the following at the top of your `functions.php` file:
 
 **functions.php**
 
