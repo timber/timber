@@ -174,6 +174,35 @@ class Site extends Core implements CoreInterface
     }
 
     /**
+     * Magic method dispatcher for site option fields, for convenience in Twig views.
+     *
+     * Called when explicitly invoking non-existent methods on the Site object. This method is not
+     * meant to be called directly.
+     *
+     * @example
+     * The following example will dynamically dispatch the magic __call() method with an argument
+     * of "users_can_register" #}
+     *
+     * ```twig
+     * {% if site.users_can_register %}
+     *   {# Show a notification and link to the register form #}
+     * {% endif %}
+     * @link https://secure.php.net/manual/en/language.oop5.overloading.php#object.call
+     * @link https://github.com/twigphp/Twig/issues/2
+     * @api
+     *
+     * @param string $option     The name of the method being called.
+     * @param array  $arguments Enumerated array containing the parameters passed to the function.
+     *                          Not used.
+     *
+     * @return mixed The value of the option field named `$field` if truthy, `false` otherwise.
+     */
+    public function __call($option, $arguments)
+    {
+        return $this->option($option);
+    }
+
+    /**
      * Gets the underlying WordPress Core object.
      *
      * @since 2.0.0

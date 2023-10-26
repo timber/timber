@@ -34,7 +34,7 @@ abstract class Core
     }
 
     /**
-     * Magic method dispatcher for meta fields, for convience in Twig views.
+     * Magic method dispatcher for meta fields, for convenience in Twig views.
      *
      * Called when explicitly invoking non-existent methods on a Core object. This method is not
      * meant to be called directly.
