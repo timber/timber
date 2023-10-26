@@ -124,7 +124,7 @@ class ExternalImage implements ImageInterface
      */
     protected ?ImageDimensions $image_dimensions;
 
-    final protected function __construct()
+    protected function __construct()
     {
     }
 

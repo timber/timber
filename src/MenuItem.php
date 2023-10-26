@@ -132,7 +132,7 @@ class MenuItem extends CoreEntity
      * @param WP_Post $data
      * @param \Timber\Menu $menu The `Timber\Menu` object the menu item is associated with.
      */
-    final protected function __construct(WP_Post $data, $menu = null)
+    protected function __construct(WP_Post $data, $menu = null)
     {
         $this->wp_object = $data;
         $this->menu = $menu;
