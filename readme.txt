@@ -43,7 +43,6 @@ _Twig is the template language powering Timber; if you need a little background 
 
 = 1.23.0 =
 
-## What's Changed
 * Improve GitHub pull request template by @gchtr in https://github.com/timber/timber/pull/2641
 * Update bug report template and CODEOWNERS by @gchtr in https://github.com/timber/timber/pull/2711
 * Add Erik to Contributors List by @jarednova in https://github.com/timber/timber/pull/2735
@@ -52,8 +51,6 @@ _Twig is the template language powering Timber; if you need a little background 
 * doc: Add drop support notice to issue template by @nlemoine in https://github.com/timber/timber/pull/2810
 * Add documentation and plugin notice about the end of the plugin version by @Levdbas in https://github.com/timber/timber/pull/2800
 * Workflow: fix path to guide by @Levdbas in https://github.com/timber/timber/pull/2823
-
-## New Contributors
 * @LogicEveryWhere made their first contribution in https://github.com/timber/timber/pull/2709
 
 **Full Changelog**: https://github.com/timber/timber/compare/1.22.1...1.23.0
