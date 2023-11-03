@@ -364,7 +364,7 @@ class Helper
             $message .= \sprintf(
                 ' Please see Debugging in WordPress (%1$s) as well as Debugging in Timber (%2$s) for more information.',
                 'https://wordpress.org/support/article/debugging-in-wordpress/',
-                'https://timber.github.io/docs/guides/debugging/'
+                'https://timber.github.io/docs/v2/guides/debugging/'
             );
 
             $error_message = \sprintf(
