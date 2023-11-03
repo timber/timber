@@ -19,7 +19,7 @@ By
 [![!Financial Contributors](https://opencollective.com/timber/tiers/badge.svg)](https://opencollective.com/timber/)
 
 ### ⚠️ Important information about the Timber plugin ⚠️
-> With the release of Timber 2.0, Composer is the only supported install method. We are unable to continue releasing or supporting Timber as a plugin on WordPress.org. We advise everyone to **[switch to the Composer based install of Timber 1 as a first step](https://timber.github.io/docs/getting-started/switch-to-composer/)** as soon as possible. If you need PHP 8.2 support you will have to switch to Timber 2.0.
+> With the release of Timber 2.0, Composer is the only supported install method. We are unable to continue releasing or supporting Timber as a plugin on WordPress.org. We advise everyone to **[switch to the Composer based install of Timber 1 as a first step](https://timber.github.io/docs/v1/getting-started/switch-to-composer/)** as soon as possible. If you need PHP 8.2 support you will have to switch to Timber 2.0.
 
 For more information and a list of additional resources, please visit this [discussion](https://github.com/timber/timber/discussions/2804).
 
@@ -81,7 +81,7 @@ Timber\Timber::init();
 
 ### What Now?
 
-Setup the [Timber Starter Theme](https://timber.github.io/docs/getting-started/setup/#use-the-starter-theme). Once you have that installed in your WordPress setup, continue reading the [Getting Started guide to Themeing](https://timber.github.io/docs/getting-started/theming/).
+Setup the [Timber Starter Theme](https://timber.github.io/docs/v2/installation/#use-the-starter-theme). Once you have that installed in your WordPress setup, continue reading the [Getting Started guide to Themeing](https://timber.github.io/docs/v2/getting-started/introduction/).
 
 * * *
 
