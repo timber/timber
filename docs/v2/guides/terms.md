@@ -70,7 +70,7 @@ Or in Twig:
 {% endif %}
 ```
 
-## Extending Timber\Term
+## Extending `Timber\Term`
 
 If you need additional functionality that the `Timber\Term` class doesn’t provide or if you want to have cleaner Twig templates, you can extend the `Timber\Term` class with your own classes:
 
