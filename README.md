@@ -51,8 +51,7 @@ Once Timber is installed, it gives any WordPress theme the ability to take advan
 ### Looking for docs?
 * [Timber Documentation](https://timber.github.io/docs/)
 * [Twig Reference](http://twig.sensiolabs.org/doc/templates.html)
-* [Overview / Getting Started Guide](https://timber.github.io/docs/getting-started/)
-* [Video Tutorials](https://timber.github.io/docs/getting-started/video-tutorials/)
+* [Overview / Getting Started Guide](https://timber.github.io/docs/v2/getting-started/introduction/)
 
 * * *
 
