@@ -70,7 +70,7 @@ Please note the argument count that WordPress requires for `add_action`.
 
 ## Filters
 
-Timber already comes with a [set of useful filters](/docs/guides/filters/). If you have your own WordPress filters that you want to easily apply in Twig, you can use `apply_filters`.
+Timber already comes with a [set of useful filters](https://timber.github.io/docs/v1/guides/filters/). If you have your own WordPress filters that you want to easily apply in Twig, you can use `apply_filters`.
 
 ```twig
 {{ post.content|apply_filters('default_message') }}

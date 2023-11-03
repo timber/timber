@@ -4,11 +4,11 @@ title: "Setup"
 
 ## Installation
 > ⚠️ **Important information about the Timber plugin**
-> With the release of Timber 2.0, Composer is the only supported install method. We are unable to continue releasing or supporting Timber as a plugin on WordPress.org. We advise everyone to **[switch to the Composer based install of Timber 1 as a first step](https://timber.github.io/docs/getting-started/switch-to-composer/)** as soon as possible. If you need PHP 8.2 support you will have to switch to Timber 2.0.
+> With the release of Timber 2.0, Composer is the only supported install method. We are unable to continue releasing or supporting Timber as a plugin on WordPress.org. We advise everyone to **[switch to the Composer based install of Timber 1 as a first step](https://timber.github.io/docs/v1/getting-started/switch-to-composer/)** as soon as possible. If you need PHP 8.2 support you will have to switch to Timber 2.0.
 
 Underneath this text you will find an extensive list with guides and the reasons why we are not going to release Timber 2 in plugin version anymore.
 
-* Guide: [How do I switch over from the plugin version to the Composer based version of Timber?](https://timber.github.io/docs/getting-started/switch-to-composer/)
+* Guide: [How do I switch over from the plugin version to the Composer based version of Timber?](https://timber.github.io/docs/v1/getting-started/switch-to-composer/)
 * Backstory: [Why we are dropping support for the plugin in the first place](https://github.com/timber/timber/pull/2005)
 * Github issue: [Road to Timber 2.0](https://github.com/timber/timber/issues/2741)
 
@@ -70,4 +70,4 @@ Make sure you select the Timber-enabled theme **after** you activate the plugin.
 
 ### 3. Let’s write our theme!
 
-Continue ahead in [part 2 about Theming](https://timber.github.io/docs/getting-started/theming/).
+Continue ahead in [part 2 about Theming](https://timber.github.io/docs/v1/getting-started/theming/).

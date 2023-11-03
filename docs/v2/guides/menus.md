@@ -33,7 +33,7 @@ Or the **slug of the registered location**:
 $menu = Timber::get_menu('primary');
 ```
 
-What you get in return is a [`Timber\Menu`](https://timber.github.io/docs/reference/timber-menu/) object that holds a collection of [`Timber\MenuItem`](https://timber.github.io/docs/reference/timber-menuitem/) objects. If no menu can be found with the argument you provided, the function will return `null`.
+What you get in return is a [`Timber\Menu`](https://timber.github.io/docs/v2/reference/timber-menu/) object that holds a collection of [`Timber\MenuItem`](https://timber.github.io/docs/v2/reference/timber-menuitem/) objects. If no menu can be found with the argument you provided, the function will return `null`.
 
 In earlier versions of Timber, it was possible to pass in nothing. We’ve removed that functionality because it led to confusing cases where a menu built from your pages was returned. If you still want to get a menu from your existing pages, use [`Timber::get_pages_menu()`](#pages-menu).
 
