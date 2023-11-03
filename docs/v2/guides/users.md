@@ -131,7 +131,7 @@ Here’s a little cheat sheet:
 {{ user.meta('wikipedia') }}
 ```
 
-## Extending `Timber\User`
+## Extending Timber\User
 
 If you need additional functionality that the `Timber\User` class doesn’t provide or if you want to have cleaner Twig templates, you can extend the `Timber\User` class with your own classes:
 

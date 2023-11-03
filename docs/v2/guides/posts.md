@@ -79,7 +79,7 @@ Or in Twig:
 {% endif %}
 ```
 
-## Extending `Timber\Post`
+## Extending Timber\Post
 
 If you need additional functionality that the `Timber\Post` class doesn’t provide or if you want to have cleaner Twig templates, you can [extend the `Timber\Post` class](/docs/v2/guides/extending-timber/) with your own classes:
 
