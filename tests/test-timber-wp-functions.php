@@ -12,6 +12,9 @@ class TestTimberWPFunctions extends Timber_UnitTestCase
         $this->assertEquals('jared sez hi', $output);
     }
 
+    /**
+     * @expectedDeprecated the_block_template_skip_link
+     */
     public function testFooterOnFooterFW()
     {
         global $wp_scripts;
@@ -27,6 +30,9 @@ class TestTimberWPFunctions extends Timber_UnitTestCase
         $this->assertSame(0, strlen($wp_footer_output1));
     }
 
+    /**
+     * @expectedDeprecated the_block_template_skip_link
+     */
     public function testFooterAlone()
     {
         global $wp_scripts;
@@ -47,6 +53,9 @@ class TestTimberWPFunctions extends Timber_UnitTestCase
         $this->assertEquals('bar', $fw1->call());
     }
 
+    /**
+     * @expectedDeprecated the_block_template_skip_link
+     */
     public function testDoubleActionWPFooter()
     {
         global $wp_scripts;
@@ -60,6 +69,9 @@ class TestTimberWPFunctions extends Timber_UnitTestCase
         remove_action('wp_footer', 'echo_junk');
     }
 
+    /**
+     * @expectedDeprecated the_block_template_skip_link
+     */
     public function testInTwig()
     {
         global $wp_scripts;
@@ -70,6 +82,9 @@ class TestTimberWPFunctions extends Timber_UnitTestCase
         $this->assertGreaterThan(-1, $pos);
     }
 
+    /**
+     * @expectedDeprecated the_block_template_skip_link
+     */
     public function testInTwigString()
     {
         global $wp_scripts;
@@ -80,6 +95,9 @@ class TestTimberWPFunctions extends Timber_UnitTestCase
         $this->assertGreaterThan(-1, $pos);
     }
 
+    /**
+     * @expectedDeprecated the_block_template_skip_link
+     */
     public function testAgainstFooterFunctionOutput()
     {
         global $wp_scripts;

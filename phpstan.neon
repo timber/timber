@@ -8,6 +8,7 @@ parameters:
         - vendor/php-stubs/acf-pro-stubs/acf-pro-stubs.php
     excludePaths:
         - tests/*
+        - docs/*
     ignoreErrors:
         - '#Instantiated class Twig\\CacheExtension\\CacheStrategy\\GenerationalCacheStrategy not found.#'
         - '#Instantiated class Twig\\CacheExtension\\Extension not found.#'
