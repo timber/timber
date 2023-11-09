@@ -1,7 +1,7 @@
 ---
 title: "Installation"
 order: "10"
-permalink: "/docs/v2/installation/installation/"
+permalink: "/v2/installation/installation/"
 ---
 
 You can install Timber through [Composer](https://getcomposer.org/download/). If you’re not familiar with Composer yet, read [our short introduction](https://timber.github.io/docs/v2/installation/intro-to-composer/) and then come back here.

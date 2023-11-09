@@ -8,7 +8,7 @@ use Timber\Image\Operation;
  * Class ImageHelper
  *
  * Implements the Twig image filters:
- * https://timber.github.io/docs/guides/cookbook-images/#arbitrary-resizing-of-images
+ * https://timber.github.io/docs/v2/guides/cookbook-images/#arbitrary-resizing-of-images
  * - resize
  * - retina
  * - letterbox

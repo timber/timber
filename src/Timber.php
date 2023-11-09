@@ -1530,7 +1530,7 @@ class Timber
     {
         Helper::deprecated(
             'fetch',
-            'Timber::compile() (see https://timber.github.io/docs/reference/timber/#compile for more information)',
+            'Timber::compile() (see https://timber.github.io/docs/v2/reference/timber/#compile for more information)',
             '2.0.0'
         );
         $output = self::compile($filenames, $data, $expires, $cache_mode, true);
@@ -1669,7 +1669,7 @@ class Timber
      *
      * @api
      * @deprecated 2.0.0
-     * @link https://timber.github.io/docs/guides/pagination/
+     * @link https://timber.github.io/docs/v2/guides/pagination/
      * @param array $prefs an array of preference data.
      * @return array|mixed
      */
@@ -1677,7 +1677,7 @@ class Timber
     {
         Helper::deprecated(
             'get_pagination',
-            '{{ posts.pagination }} (see https://timber.github.io/docs/guides/pagination/ for more information)',
+            '{{ posts.pagination }} (see https://timber.github.io/docs/v2/guides/pagination/ for more information)',
             '2.0.0'
         );
 

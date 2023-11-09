@@ -463,7 +463,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      *
      * This method returns a `Timber\PostExcerpt` object, which is a **chainable object**. This
      * means that you can change the output of the excerpt by **adding more methods**. Refer to the
-     * [documentation of the `Timber\PostExcerpt` class](https://timber.github.io/docs/reference/timber-postexcerpt/)
+     * [documentation of the `Timber\PostExcerpt` class](https://timber.github.io/docs/v2/reference/timber-postexcerpt/)
      * to get an overview of all the available methods.
      *
      * @api
@@ -1012,7 +1012,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      *
      * @api
      * Gets the comments on a `Timber\Post` and returns them as a `Timber\CommentThread`: a PHP
-     * ArrayObject of [`Timber\Comment`](https://timber.github.io/docs/reference/timber-comment/)
+     * ArrayObject of [`Timber\Comment`](https://timber.github.io/docs/v2/reference/timber-comment/)
      * (or whatever comment class you set).
      * @api
      *
