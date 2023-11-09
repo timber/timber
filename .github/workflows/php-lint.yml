@@ -39,7 +39,7 @@ jobs:
 
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@v39
+        uses: tj-actions/changed-files@v40
 
       - name: Run PHP lint
         if: steps.changed-files.outputs.all_changed_files != ''
