@@ -1,5 +1,5 @@
 ---
-title: "Timber Docs"
+title: "Timber v2.x"
 layout: "page"
 ---
 

@@ -1,6 +1,7 @@
 ---
 title: "Installation"
 order: "10"
+permalink: "/docs/v2/installation/installation/"
 ---
 
 You can install Timber through [Composer](https://getcomposer.org/download/). If you’re not familiar with Composer yet, read [our short introduction](https://timber.github.io/docs/v2/installation/intro-to-composer/) and then come back here.
@@ -13,12 +14,6 @@ To install Timber, you can use the following command:
 
 ```bash
 composer require timber/timber
-```
-
-While Timber version 2 is still released as a release candidate, you should use the following command:
-
-```bash
-composer require timber/timber:2.0.0-rc.1
 ```
 
 Now in which folder do you run that command?
