@@ -63,11 +63,11 @@ Once Timber is installed, it gives any WordPress theme the ability to take advan
 
 ### Installation
 
-Follow the [Installation Guide](https://timber.github.io/docs/v2/installation/) for how to install Timber using Composer.
+Follow the [Installation Guide](https://timber.github.io/docs/v2/installation/installation/) for how to install Timber using Composer.
 
 ### What Now?
 
-Setup the [Timber Starter Theme](https://timber.github.io/docs/v2/installation/#use-the-starter-theme). Once you have that installed in your WordPress setup, continue reading the [Getting Started guide to Themeing](https://timber.github.io/docs/v2/getting-started/introduction/).
+Setup the [Timber Starter Theme](https://timber.github.io/docs/v2/installation/installation/#use-the-starter-theme). Once you have that installed in your WordPress setup, continue reading the [Getting Started guide to Themeing](https://timber.github.io/docs/v2/getting-started/introduction/).
 
 ## Timber’s mission
 
