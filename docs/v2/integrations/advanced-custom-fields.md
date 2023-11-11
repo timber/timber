@@ -78,7 +78,7 @@ This is where we’ll start in PHP.
 $post = Timber::get_post();
 
 if (isset($post->meta('hero_image')) && strlen($post->meta('hero_image'))) {
-    $post->meta('hero_image') = Timber::get_image($post->meta('hero_image'));
+    $post->hero_image = Timber::get_image($post->meta('hero_image'));
 }
 
 $context = Timber::context([
