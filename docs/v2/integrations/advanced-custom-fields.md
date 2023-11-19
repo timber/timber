@@ -20,6 +20,31 @@ If you’ve worked with ACF before, you’re use to use `get_field( 'my_acf_fiel
 $meta = $post->meta('my_acf_field');
 ```
 
+### Transform  values to Timber/PHP objects
+Timber does not automatically transform meta values to Timber/PHP objects by default. If you want to transform values to Timber/PHP objects, you can use the `timber/meta/transform_value` filter to do so globally:
+
+```php
+// in your functions.php
+add_filter('timber/meta/transform_value', '__return__true');
+```
+
+Or you can use the `transform_value` parameter to transform values on a field by field basis:
+
+**Twig**
+
+```twig
+{{ post.meta('my_acf_field', { transform_value: true }) }}
+```
+
+**PHP**
+
+```php
+$meta = $post->meta('my_meta_field', ['transform_value' => true]);
+```
+
+You can also use both the filter and parameter options at the same time to globally transform values and then opt-out on a field by field basis by setting `transform_value` to `false`.
+
+
 ### Unformatted values
 
 In ACF, all values are filtered. If you want to use unfiltered, raw values from the database, you’re probably used to using the third parameter for `get_field()`, which is called `$format_value`. This defaults to true. In Timber, you’d pass it like so:
