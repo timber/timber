@@ -26,7 +26,7 @@ For more information and a list of additional resources, please visit this [disc
 
 ### Timber 2
 
-Timber 2 is out now and is the recommended version for new projects.
+Timber 2 is out now and is the recommended version.
 
 - GitHub: [Timber 2](https://github.com/timber/timber)
 - Documentation: [https://timber.github.io/docs/v2/](https://timber.github.io/docs/v2/)
