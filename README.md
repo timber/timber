@@ -1,5 +1,5 @@
 <div style="text-align: center">
-<a href="https://upstatement.com/timber/"><img src="http://i.imgur.com/PbEwvZ9.png" style="display:block; margin:auto; width:100%; max-width:100%"/></a>
+<a href="https://upstatement.com/timber/"><img src="https://i.imgur.com/PbEwvZ9.png" style="display:block; margin:auto; width:100%; max-width:100%"/></a>
 </div>
 
 ## Timber 2.0
@@ -169,5 +169,5 @@ Are you a WordPress pro or part of an agency who relies on Timber? Keep the magi
 
 The Official [Documentation for Timber](https://timber.github.io/docs/) is generated from the contents of this repository:
 
-* Documentation for classes and functions is [auto generated](https://github.com/timber/docs). Any changes to the [Reference section](https://timber.github.io/docs/reference/) of the docs should be made by editing the function’s DocBlock. For inline documentation, we follow the [WordPress PHP Documentation Standards](https://make.wordpress.org/core/handbook/best-practices/inline-documentation-standards/php/).
-* To make a change to one of the guides, edit the relevant file in the [`docs` directory](https://github.com/timber/timber/tree/master/docs).
+* Documentation for classes and functions is [auto generated](https://github.com/timber/docs). Any changes to the [Reference section](https://timber.github.io/docs/v2/reference/) of the docs should be made by editing the function’s DocBlock. For inline documentation, we follow the [WordPress PHP Documentation Standards](https://make.wordpress.org/core/handbook/best-practices/inline-documentation-standards/php/).
+* To make a change to one of the guides, edit the relevant file in the [`docs` directory](https://github.com/timber/timber/tree/2.x/docs).
