@@ -6,12 +6,11 @@ Here are ways to get involved:
 
 1. [Star](https://github.com/timber/timber/stargazers) the project!
 2. Answer questions that come in through [GitHub issues](https://github.com/timber/timber/issues?state=open).
-3. [Report a bug](https://github.com/timber/timber/issues/new) that you find.
+3. [Report a bug](https://github.com/timber/timber/issues/new?assignees=&labels=&projects=&template=bug_report.yml&title=%5BBUG%5D+Your+title) that you find.
 4. Share a theme you’ve built with Timber. This helps transfer knowledge about best practices, etc. _Add it to the [Showcase list](https://github.com/timber/timber/wiki/Showcase)_.
-5. Tweet and [blog](http://www.oomphinc.com/blog/2013-10/php-templating-wordpress/#post-content) about the advantages (and criticisms) of the project and Twig.
-6. Browse ["help wanted"](https://github.com/timber/timber/labels/help%20wanted) and ["good first issue"](https://github.com/timber/timber/labels/good%20first%20issue) labels for areas of WordPress/PHP/code you know well to consider, build or document.
-7. Answer questions on [Stack Overflow posted under the «Timber» tag](https://stackoverflow.com/questions/tagged/timber). You can also [subscribe to a tag](https://stackoverflow.blog/2010/12/20/subscribe-to-tags-via-emai/) via email to get notified when someone needs help.
-8. Answer questions and join in on [GitHub Discussions](https://github.com/timber/timber/discussions).
+5. Browse ["help wanted"](https://github.com/timber/timber/labels/help%20wanted) and ["good first issue"](https://github.com/timber/timber/labels/good%20first%20issue) labels for areas of WordPress/PHP/code you know well to consider, build or document.
+6. Answer questions on [Stack Overflow posted under the «Timber» tag](https://stackoverflow.com/questions/tagged/timber). You can also [subscribe to a tag](https://stackoverflow.blog/2010/12/20/subscribe-to-tags-via-emai/) via email to get notified when someone needs help.
+7. Answer questions and join in on [GitHub Discussions](https://github.com/timber/timber/discussions).
 
 ## Pull Requests
 
@@ -99,7 +98,7 @@ $context = apply_filters( 'timber/context', $context );
 
 ## Inline Documentation
 
-The [Reference section](https://timber.github.io/docs/reference/) of the documentation is automatically generated from the inline documentation of the Timber code base. To document Timber, we follow the official [PHP Documentation Standards](https://make.wordpress.org/core/handbook/best-practices/inline-documentation-standards/) of WordPress.
+The [Reference section](https://timber.github.io/docs/v2/reference/) of the documentation is automatically generated from the inline documentation of the Timber code base. To document Timber, we follow the official [PHP Documentation Standards](https://make.wordpress.org/core/handbook/best-practices/inline-documentation-standards/) of WordPress.
 
 There are minor differences to the official standards:
 
@@ -152,7 +151,7 @@ function my_method( $param1, $param2 = true ) {}
 
 ### Reference linking with @see tag
 
-When you use the `@see` tag, the Reference Generator will automatically convert it to a link to the [reference](http://timber-docs.test/docs/reference/).
+When you use the `@see` tag, the Reference Generator will automatically convert it to a link to the [reference](https://timber.github.io/docs/v2/reference/).
 
 - Use this tag only when the referenced method has an `@api` tag, which means that it is public.
 - Beware, you’ll always use the notation with `::`, which you normally know from static methods. But even if the method that you link is not static, you’ll have to use the double colon.
