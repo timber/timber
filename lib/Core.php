@@ -2,6 +2,7 @@
 
 namespace Timber;
 
+#[\AllowDynamicProperties]
 abstract class Core {
 
 	public $id;
