@@ -59,10 +59,6 @@ Once Timber is installed, it gives any WordPress theme the ability to take advan
 * [Twig Reference](https://twig.symfony.com/doc/3.x/)
 * [Overview / Getting Started Guide](https://timber.github.io/docs/v2/getting-started/introduction/)
 
-## Timber 1
-
-You can find the code for Timber 1 on the [1.x branch](https://github.com/timber/timber/tree/1.x) and read the Timber 1 documentation [over here](https://timber.github.io/docs/v1/).
-
 * * *
 
 ### Installation
@@ -89,6 +85,10 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 ### Should I use it?
 
 Timber is MIT-licensed, so please use in personal or commercial work. Just don't re-sell it. Timber is used on [tens of thousands of sites](https://www.upstatement.com/timber/#showcase) (and tons more we don't know about)
+
+## Timber 1
+
+You can find the code for Timber 1 on the [1.x branch](https://github.com/timber/timber/tree/1.x) and read the Timber 1 documentation [over here](https://timber.github.io/docs/v1/).
 
 ## Links
 
