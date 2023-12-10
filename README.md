@@ -20,9 +20,17 @@ By
 [![!Financial Contributors](https://opencollective.com/timber/tiers/badge.svg)](https://opencollective.com/timber/)
 
 ### ⚠️ Important information about the Timber plugin ⚠️ 
-> With the release of Timber 2.0, Composer is the only supported install method. We are unable to continue releasing or supporting Timber as a plugin on WordPress.org. We advise everyone to **[switch to the Composer based install of Timber 1 as a first step](https://timber.github.io/docs/getting-started/switch-to-composer/)** as soon as possible. If you need PHP 8.2 support you will have to switch to Timber 2.0.
+> With the release of Timber 2.0, Composer is the only supported install method. We are unable to continue releasing or supporting Timber as a plugin on WordPress.org. We advise everyone to **[switch to the Composer based install of Timber 1 as a first step](https://timber.github.io/docs/v1/getting-started/switch-to-composer/)** as soon as possible. If you need PHP 8.2 support you will have to switch to Timber 2.0.
 
 For more information and a list of additional resources, please visit this [discussion](https://github.com/timber/timber/discussions/2804).
+
+### Timber 2
+
+Timber 2 is out now and is the recommended version.
+
+- GitHub: [Timber 2](https://github.com/timber/timber)
+- Documentation: [https://timber.github.io/docs/v2/](https://timber.github.io/docs/v2/)
+
 
 ### Because WordPress is awesome, but the_loop isn't
 Timber helps you create fully-customized WordPress themes faster with more sustainable code. With Timber, you write your HTML using the [Twig Template Engine](https://twig.symfony.com/) separate from your PHP files.
@@ -45,16 +53,16 @@ This is what Timber's `.twig` files look like (from this [Hello World example](h
 Once Timber is installed and activated in your `plugins` directory, it gives any WordPress theme the ability to take advantage of the power of Twig and other Timber features.
 
 ### Looking for docs?
-* [Timber Documentation](https://timber.github.io/docs/)
-* [Twig Reference](http://twig.sensiolabs.org/doc/templates.html)
-* [Overview / Getting Started Guide](https://timber.github.io/docs/getting-started/)
-* [Video Tutorials](https://timber.github.io/docs/getting-started/video-tutorials/)
+* [Timber Documentation](https://timber.github.io/docs/v1/)
+* [Twig Reference](https://twig.symfony.com/)
+* [Overview / Getting Started Guide](https://timber.github.io/docs/v1/getting-started/)
+* [Video Tutorials](https://timber.github.io/docs/v1/getting-started/video-tutorials/)
 
 * * *
 
 ### Installation
 
-The GitHub version of Timber requires [Composer](https://getcomposer.org/download/) and is setup for inclusion _within_ a theme or plugin. If you'd prefer one-click installation for your site, you should use the [WordPress.org](https://wordpress.org/plugins/timber-library/) version.
+The GitHub version of Timber requires [Composer](https://getcomposer.org/download/) and is setup for inclusion _within_ a theme or plugin.
 
 ```shell
 cd ~/wp-content/themes/my-theme
@@ -75,7 +83,7 @@ $timber = new \Timber\Timber();
 
 ### What Now?
 
-Setup the [Timber Starter Theme](https://timber.github.io/docs/getting-started/setup/#use-the-starter-theme). Once you have that installed in your WordPress setup, continue reading the [Getting Started guide to Themeing](https://timber.github.io/docs/getting-started/theming/).
+Setup the [Timber Starter Theme](https://timber.github.io/docs/v1/getting-started/setup/#use-the-starter-theme). Once you have that installed in your WordPress setup, continue reading the [Getting Started guide to Themeing](https://timber.github.io/docs/v1/getting-started/theming/).
 
 * * *
 
@@ -134,7 +142,7 @@ Please post on [StackOverflow under the "Timber" tag](http://stackoverflow.com/q
 Timber is MIT-licensed, so please use in personal or commercial work. Just don't re-sell it. Timber is used on [tens of thousands of sites](https://www.upstatement.com/timber/#showcase) (and tons more we don't know about)
 
 #### Contributing & Community
-We love PRs! Read the [Contributor Guidelines](https://github.com/timber/timber/blob/master/CONTRIBUTING.md) for more info. Say hello, share your tips/work, and spread the love on Twitter at [@TimberWP](https://twitter.com/TimberWP).
+We love PRs! Read the [Contributor Guidelines](https://github.com/timber/timber/blob/2.x/CONTRIBUTING.md) for more info. Say hello, share your tips/work, and spread the love on Twitter at [@TimberWP](https://twitter.com/TimberWP).
 
 ## Sponsor us
 
@@ -168,7 +176,7 @@ Are you a WordPress pro or part of an agency who relies on Timber? Keep the magi
 
 ## Documentation
 
-The Official [Documentation for Timber](https://timber.github.io/docs/) is generated from the contents of this repository:
+The Official [Documentation for Timber 1](https://timber.github.io/docs/v1/) is generated from the contents of this repository:
 
-* Documentation for classes and functions is [auto generated](https://github.com/timber/docs). Any changes to the [Reference section](https://timber.github.io/docs/reference/) of the docs should be made by editing the function’s DocBlock. For inline documentation, we follow the [WordPress PHP Documentation Standards](https://make.wordpress.org/core/handbook/best-practices/inline-documentation-standards/php/).
-* To make a change to one of the guides, edit the relevant file in the [`docs` directory](https://github.com/timber/timber/tree/master/docs).
+* Documentation for classes and functions is [auto generated](https://github.com/timber/docs). Any changes to the [Reference section](https://timber.github.io/docs/v1/reference/) of the docs should be made by editing the function’s DocBlock. For inline documentation, we follow the [WordPress PHP Documentation Standards](https://make.wordpress.org/core/handbook/best-practices/inline-documentation-standards/php/).
+* To make a change to one of the guides, edit the relevant file in the [`docs` directory](https://github.com/timber/timber/tree/1.x/docs).
