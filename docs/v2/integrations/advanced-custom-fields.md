@@ -20,15 +20,15 @@ If you’ve worked with ACF before, you’re use to use `get_field( 'my_acf_fiel
 $meta = $post->meta('my_acf_field');
 ```
 
-### Transform  values to Timber/PHP objects
+### Transform values to Timber/PHP objects  
 Timber by default returns all field values as is based on the return type set in your ACF field setting.
 
-But sometimes you might want to transform values directly into Timber/PHP objects. For example, if you have a relationship field, you might want to transform the values in `Timber\Post` objects.
+But sometimes you might want to transform values directly into Timber/PHP objects. For example, if you have a relationship field, you might want to transform the values directly into `Timber\Post` objects.
 
 You can do so using the `timber/meta/transform_value` filter:
 
+**functions.php**
 ```php
-// in your functions.php
 add_filter('timber/meta/transform_value', '__return__true');
 ```
 
@@ -48,20 +48,19 @@ $meta = $post->meta('my_meta_field', ['transform_value' => true]);
 
 You can also use both the filter and parameter options at the same time to globally transform values and then opt-out on a field by field basis by setting `transform_value` to `false`.
 
-The values of the following field types can be transformed into Timber/PHP objects:
+The values of the following field types will be transformed into Timber/PHP objects when using transforms:
 
-
-|Field type | Returns  |
+| Field type | Returns  |
 |---------|---------|
-|file    | `Timber::get_attachment`         |
-|image    | `Timber::get_image`         |
-|gallery    | `Timber::get_posts`         |
-|date picker     |  `DateTimeImmutable`       |
-|date time picker     |  `DateTimeImmutable`       |
-|post object     | `Timber::get_posts`         |
-|relationship     | `Timber::get_posts`         |
-|taxonomy     | `Timber::get_terms`         |
-|user     | `Timber::get_users`         |
+| File    | `Timber\Attachment`         |
+| Image    | `Timber\Image`         |
+| Gallery    | array of `Timber\Post` objects         |
+| Date picker     |  `DateTimeImmutable`       |
+| Date time picker     |  `DateTimeImmutable`       |
+| Post object     | array of `Timber\Post` objects         |
+| Relationship     | array of `Timber\Post` objects         |
+| Taxonomy     | array of `Timber\Term` objects         |
+| User     | array of `Timber\User` objects         |
 
 
 
