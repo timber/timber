@@ -1,5 +1,5 @@
 <div style="text-align: center">
-<a href="https://upstatement.com/timber/"><img src="http://i.imgur.com/PbEwvZ9.png" style="display:block; margin:auto; width:100%; max-width:100%"/></a>
+<a href="https://upstatement.com/timber/"><img src="https://i.imgur.com/PbEwvZ9.png" style="display:block; margin:auto; width:100%; max-width:100%"/></a>
 </div>
 
 ## Timber 2.0
@@ -56,7 +56,7 @@ Once Timber is installed, it gives any WordPress theme the ability to take advan
 
 * [Timber Documentation](https://timber.github.io/docs/)
 * [Timber 2.0 Upgrade Guide](https://timber.github.io/docs/v2/upgrade-guides/2.0/)
-* [Twig Reference](http://twig.sensiolabs.org/doc/templates.html)
+* [Twig Reference](https://twig.symfony.com/doc/3.x/)
 * [Overview / Getting Started Guide](https://timber.github.io/docs/v2/getting-started/introduction/)
 
 * * *
@@ -80,11 +80,15 @@ Timber is a tool for developers who want to translate their HTML into high-quali
 Nothing. Timber is meant for you to build a theme on. Like [underscores](https://github.com/Automattic/_s) it comes style-free, because you're the style expert. Instead, Timber handles the logic you need to make a kick-ass looking site.
 
 ### Who is it good for?
-Timber is great for any WordPress developer who cares about writing good, maintainable code. It helps teams of designers and developers working together. At [Upstatement](http://upstatement.com) we made Timber because while our entire team needs to participate in building WordPress sites, not everyone knows the ins-and-outs of the_loop(),  codex and PHP (nor should they). With Timber your best WordPress engineer can focus on building the `.php` files with requests from WordPress and pass the data into `.twig` files. Once there, designers can easily mark-up data and build out a site's look-and-feel.
+Timber is great for any WordPress developer who cares about writing good, maintainable code. It helps teams of designers and developers working together. At [Upstatement](https://upstatement.com) we made Timber because while our entire team needs to participate in building WordPress sites, not everyone knows the ins-and-outs of the_loop(),  codex and PHP (nor should they). With Timber your best WordPress engineer can focus on building the `.php` files with requests from WordPress and pass the data into `.twig` files. Once there, designers can easily mark-up data and build out a site's look-and-feel.
 
 ### Should I use it?
 
 Timber is MIT-licensed, so please use in personal or commercial work. Just don't re-sell it. Timber is used on [tens of thousands of sites](https://www.upstatement.com/timber/#showcase) (and tons more we don't know about)
+
+## Timber 1
+
+You can find the code for Timber 1 on the [1.x branch](https://github.com/timber/timber/tree/1.x) and read the Timber 1 documentation [over here](https://timber.github.io/docs/v1/).
 
 ## Links
 
@@ -121,12 +125,12 @@ Timber is MIT-licensed, so please use in personal or commercial work. Just don't
 ### Helpful Links
 
 * [**CSS Tricks**](https://css-tricks.com/timber-and-twig-reignited-my-love-for-wordpress/) introduction to Timber by [@tjFogarty](https://github.com/tjFogarty)
-* [**Twig for Timber Cheatsheet**](http://notlaura.com/the-twig-for-timber-cheatsheet/) by [@laras126](https://github.com/laras126)
+* [**Twig for Timber Cheatsheet**](https://notlaura.com/the-twig-for-timber-cheatsheet/) by [@laras126](https://github.com/laras126)
 * [**Timber Cheatsheet**](https://gist.github.com/taotiwordpress/266fd95513f97f3c17748288579c56b9) by [@taotiwordpress](https://github.com/taotiwordpress)
-* [**TutsPlus**](http://code.tutsplus.com/articles/kick-start-wordpress-development-with-twig-introduction--cms-24781) A guide to getting started by [@ahmadawais](https://github.com/ahmadawais)
+* [**TutsPlus**](https://code.tutsplus.com/articles/kick-start-wordpress-development-with-twig-introduction--cms-24781) A guide to getting started by [@ahmadawais](https://github.com/ahmadawais)
 
 ## Support
-Please post on [StackOverflow under the "Timber" tag](http://stackoverflow.com/questions/tagged/timber). Please use GitHub issues _only_ for specific bugs, feature requests and other types of issues.
+Please post on [StackOverflow under the "Timber" tag](https://stackoverflow.com/questions/tagged/timber). Please use GitHub issues _only_ for specific bugs, feature requests and other types of issues.
 
 ## Contributing & Community
 We love PRs! Read the [Contributor Guidelines](https://github.com/timber/timber/blob/master/CONTRIBUTING.md) for more info. Say hello, share your tips/work, and spread the love on Twitter at [@TimberWP](https://twitter.com/TimberWP).
@@ -165,5 +169,5 @@ Are you a WordPress pro or part of an agency who relies on Timber? Keep the magi
 
 The Official [Documentation for Timber](https://timber.github.io/docs/) is generated from the contents of this repository:
 
-* Documentation for classes and functions is [auto generated](https://github.com/timber/docs). Any changes to the [Reference section](https://timber.github.io/docs/reference/) of the docs should be made by editing the function’s DocBlock. For inline documentation, we follow the [WordPress PHP Documentation Standards](https://make.wordpress.org/core/handbook/best-practices/inline-documentation-standards/php/).
-* To make a change to one of the guides, edit the relevant file in the [`docs` directory](https://github.com/timber/timber/tree/master/docs).
+* Documentation for classes and functions is [auto generated](https://github.com/timber/docs). Any changes to the [Reference section](https://timber.github.io/docs/v2/reference/) of the docs should be made by editing the function’s DocBlock. For inline documentation, we follow the [WordPress PHP Documentation Standards](https://make.wordpress.org/core/handbook/best-practices/inline-documentation-standards/php/).
+* To make a change to one of the guides, edit the relevant file in the [`docs` directory](https://github.com/timber/timber/tree/2.x/docs).
