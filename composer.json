@@ -7,11 +7,14 @@
     "timber",
     "twig",
     "themes",
-    "templating"
+    "templating",
+    "wordpress"
   ],
   "authors": [
     {
-      "name": "Erik van der Bas"
+      "name": "Erik van der Bas",
+      "email": "erik@basedonline.nl",
+      "homepage": "https://basedonline.nl"
     },
     {
       "name": "Lukas Gächter"
