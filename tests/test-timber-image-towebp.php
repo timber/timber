@@ -25,7 +25,7 @@ class TestTimberImageToWEBP extends Timber_UnitTestCase
         $str = Timber::compile_string('{{file|towebp}}', [
             'file' => $filename,
         ]);
-        $renamed = str_replace('.png', '.webp', $filename);
+        $renamed = $filename . '.webp';
         $this->assertFileExists($renamed);
         $this->assertGreaterThan(1000, filesize($renamed));
         $this->assertEquals('image/png', mime_content_type($filename));
@@ -38,7 +38,7 @@ class TestTimberImageToWEBP extends Timber_UnitTestCase
         $str = Timber::compile_string('{{file|towebp}}', [
             'file' => $filename,
         ]);
-        $renamed = str_replace('.gif', '.webp', $filename);
+        $renamed = $filename . '.webp';
         $this->assertFileExists($renamed);
         $this->assertGreaterThan(1000, filesize($renamed));
         $this->assertEquals('image/gif', mime_content_type($filename));
@@ -52,19 +52,19 @@ class TestTimberImageToWEBP extends Timber_UnitTestCase
         $str = Timber::compile_string('{{file|towebp(100)}}', [
             'file' => $filename,
         ]);
-        $renamed = str_replace('.jpg', '.webp', $filename);
+        $renamed = $filename . '.webp';
         $this->assertGreaterThan(1000, filesize($renamed));
         $this->assertEquals('image/jpeg', mime_content_type($filename));
         $this->assertEquals('image/webp', mime_content_type($renamed));
     }
 
-    public function testJPEGtoJPG()
+    public function testJPEGtoWEBP()
     {
         $filename = TestTimberImage::copyTestAttachment('jarednova.jpeg');
         $str = Timber::compile_string('{{file|towebp}}', [
             'file' => $filename,
         ]);
-        $renamed = str_replace('.jpeg', '.webp', $filename);
+        $renamed = $filename . '.webp';
         $this->assertFileExists($renamed);
         $this->assertGreaterThan(1000, filesize($renamed));
         $this->assertEquals('image/jpeg', mime_content_type($filename));
@@ -91,7 +91,8 @@ class TestTimberImageToWEBP extends Timber_UnitTestCase
         ]);
 
         $base_url = str_replace(basename($sideloaded), '', $sideloaded);
-        $expected = $base_url . md5($url) . '.webp';
+        $original_extension = pathinfo($url, PATHINFO_EXTENSION);
+        $expected = $base_url . md5($url) . '.' . $original_extension . '.webp';
 
         $this->assertEquals($expected, $sideloaded);
     }
@@ -104,7 +105,8 @@ class TestTimberImageToWEBP extends Timber_UnitTestCase
         ]);
 
         $base_url = str_replace(basename($sideloaded), '', $sideloaded);
-        $expected = $base_url . md5($url) . '.webp';
+        $original_extension = pathinfo($url, PATHINFO_EXTENSION);
+        $expected = $base_url . md5($url) . '.' . $original_extension . '.webp';
 
         $this->assertEquals($expected, $sideloaded);
     }
