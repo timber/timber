@@ -40,7 +40,7 @@ class URLHelper
     /**
      * Check to see if the URL begins with the string in question
      * Because it's a URL we don't care about protocol (HTTP vs HTTPS)
-     * Or case (so it's cAsE iNsEnSeTiVe)
+     * Or case (so it's cAsE iNsEnSiTiVe)
      *
      * @api
      * @return boolean
@@ -535,8 +535,7 @@ class URLHelper
 
     /**
      * Returns the url path parameters, or a single parameter if given an index.
-     * Normalizes REQUEST_URI to lower-case. Returns false if given a
-     * non-existent index.
+     * Returns false if given a non-existent index.
      *
      * @example
      * ```php
@@ -563,7 +562,7 @@ class URLHelper
      */
     public static function get_params($i = false)
     {
-        $uri = \trim(\strtolower($_SERVER['REQUEST_URI']));
+        $uri = \trim($_SERVER['REQUEST_URI']);
         $params = \array_values(\array_filter(\explode('/', $uri)));
 
         if (false === $i) {
