@@ -538,7 +538,7 @@ class ImageHelper
         }
 
         /**
-         * Filters the array of anlayzed URL components.
+         * Filters the array of analyzed URL components.
          *
          * @since 2.0.0
          *
