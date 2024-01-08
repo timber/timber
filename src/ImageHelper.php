@@ -534,7 +534,7 @@ class ImageHelper
          */
         $result = \apply_filters('timber/image_helper/pre_analyze_url', null, $url);
         if (null === $result) {
-            $result = self::_analyze_url($url);
+            $result = self::get_url_components($url);
         }
 
         /**
@@ -554,7 +554,7 @@ class ImageHelper
      * @param  string $url A URL (absolute or relative) pointing to an image.
      * @return array<string, mixed> An array (see keys in code below).
      */
-    private static function _analyze_url(string $url): array
+    private static function get_url_components(string $url): array
     {
         $result = [
             // the initial url
@@ -630,7 +630,7 @@ class ImageHelper
          */
         $path = \apply_filters('timber/image_helper/pre_theme_url_to_dir', null, $src);
         if (null === $path) {
-            $path = self::_theme_url_to_dir($src);
+            $path = self::get_dir_from_theme_url($src);
         }
 
         /**
@@ -650,7 +650,7 @@ class ImageHelper
      * @param string  $src A URL (http://example.org/wp-content/themes/twentysixteen/images/home.jpg).
      * @return string Full path to the file in question.
      */
-    private static function _theme_url_to_dir(string $src): string
+    private static function get_dir_from_theme_url(string $src): string
     {
         $site_root = \trailingslashit(\get_theme_root_uri()) . \get_stylesheet();
         $path = \str_replace($site_root, '', $src);
