@@ -15,6 +15,7 @@ class LocationManager
         $locs = \array_merge_recursive($locs, self::get_locations_user());
         $locs = \array_merge_recursive($locs, self::get_locations_caller($caller));
         //remove themes from caller
+		$locs = \array_diff($locs, self::get_locations_theme());
         $locs = \array_merge_recursive($locs, self::get_locations_theme());
         $locs = \array_merge_recursive($locs, self::get_locations_caller($caller));
         $locs = \array_merge_recursive($locs, self::get_locations_open_basedir());
