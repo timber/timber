@@ -11,6 +11,7 @@ parameters:
         - tests/*
         - docs/*
     ignoreErrors:
+        - '#Result of function acf_get_field_type \(void\) is used.#'
         - '#Instantiated class Twig\\CacheExtension\\CacheStrategy\\GenerationalCacheStrategy not found.#'
         - '#Instantiated class Twig\\CacheExtension\\Extension not found.#'
         - '#Method Timber\\Loader::_get_cache_extension\(\) has invalid return type Twig\\CacheExtension\\Extension.#'
