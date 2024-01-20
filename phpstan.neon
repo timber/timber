@@ -4,6 +4,7 @@ parameters:
     paths:
         - src/
     scanFiles:
+        - tests/phpstan/bootstrap.php
         - vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
         - vendor/php-stubs/acf-pro-stubs/acf-pro-stubs.php
     excludePaths:
