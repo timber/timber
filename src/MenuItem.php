@@ -140,7 +140,7 @@ class MenuItem extends CoreEntity
         /**
          * @property string $title The nav menu item title.
          */
-        $this->title = $data->title;
+        $this->title = $data->post_title;
 
         $this->import($data);
         $this->import_classes($data);
