@@ -34,9 +34,6 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		Timber::get_posts('post_type=portfolio');
 		$pagination = Timber::get_pagination();
 
-		global $timber;
-		$timber->active_query = false;
-		unset($timber->active_query);
 		$this->assertEquals(4, count($pagination['pages']));
 	}
 
