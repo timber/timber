@@ -23,14 +23,15 @@ jobs:
 
     services:
       mysql:
-        image: mariadb:latest
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: true
-          MYSQL_ROOT_PASSWORD: ''
-          MYSQL_DATABASE: wordpress_test
-        ports:
-          - 3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+          image: mariadb:latest
+          env:
+              MYSQL_USER: root
+              MYSQL_ALLOW_EMPTY_PASSWORD: true
+              MYSQL_ROOT_PASSWORD: ''
+              MYSQL_DATABASE: wordpress_test
+          ports:
+              - 3306
+          options: --health-cmd="healthcheck.sh --connect --innodb_initialized" --health-interval=10s --health-timeout=5s --health-retries=3
 
     continue-on-error: ${{ matrix.experimental }}
     strategy:
@@ -81,6 +82,12 @@ jobs:
             dependency-version: 'prefer-lowest'
             multisite: '0'
             experimental: false
+          # PHP 8.2
+          - php: '8.2'
+            wp: 'latest'
+            dependency-version: 'prefer-stable'
+            multisite: '0'
+            experimental: true
           # PHP with Imagick
           - php: '7.4'
             wp: 'latest'
