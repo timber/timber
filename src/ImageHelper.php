@@ -302,7 +302,7 @@ class ImageHelper
     {
         if (\wp_attachment_is_image($post_id)) {
             $attachment = Timber::get_post($post_id);
-            /** @var \Timber\Attachment $attachment */
+            /** @var Attachment $attachment */
             if ($file_loc = $attachment->file_loc()) {
                 ImageHelper::delete_generated_files($file_loc);
             }

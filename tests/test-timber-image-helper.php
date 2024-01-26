@@ -47,7 +47,7 @@ class TestTimberImageHelper extends TimberAttachment_UnitTestCase
     public function testServerLocation()
     {
         $arch = TestTimberImage::copyTestAttachment('arch.jpg');
-        $this->assertEquals($arch, \Timber\ImageHelper::get_server_location($arch));
+        $this->assertEquals($arch, Timber\ImageHelper::get_server_location($arch));
     }
 
     /**

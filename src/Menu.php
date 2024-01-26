@@ -3,7 +3,6 @@
 namespace Timber;
 
 use Throwable;
-
 use Timber\Factory\MenuItemFactory;
 use WP_Term;
 
@@ -117,7 +116,7 @@ class Menu extends CoreEntity
      * @param array      $args Optional. Right now, only the `depth` is
      *                            supported which says how many levels of hierarchy should be
      *                            included in the menu. Default `0`, which is all levels.
-     * @return \Timber\Menu
+     * @return Menu
      */
     public static function build(?WP_Term $menu, $args = []): ?self
     {
@@ -278,7 +277,7 @@ class Menu extends CoreEntity
      *                            many levels of hierarchy should be included in the menu. Default
      *                            `0`, which is all levels.
      */
-    protected function __construct(?WP_term $term, array $args = [])
+    protected function __construct(?WP_Term $term, array $args = [])
     {
         // For future enhancements?
         $this->raw_args = $args;
@@ -340,7 +339,7 @@ class Menu extends CoreEntity
      * @api
      * @param array $menu_items An array of menu items.
      * @param int   $parent_id  The parent ID to look for.
-     * @return \Timber\MenuItem|null A menu item. False if no parent was found.
+     * @return MenuItem|null A menu item. False if no parent was found.
      */
     public function find_parent_item_in_menu(array $menu_items, int $parent_id): ?MenuItem
     {

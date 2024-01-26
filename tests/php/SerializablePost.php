@@ -8,7 +8,7 @@ use Timber\Post;
  */
 class SerializablePost extends Post implements JsonSerializable
 {
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return [

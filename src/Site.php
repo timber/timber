@@ -107,7 +107,7 @@ class Site extends Core implements CoreInterface
 
     /**
      * @api
-     * @var \Timber\Theme
+     * @var Theme
      */
     public $theme;
 
@@ -424,7 +424,7 @@ class Site extends Core implements CoreInterface
          * @param mixed        $value   The new value.
          * @param string       $key     The option key.
          * @param int          $site_id The site ID.
-         * @param \Timber\Site $site    The site object.
+         * @param Site $site    The site object.
          */
         $value = \apply_filters('timber/site/update_option', $value, $key, $this->ID, $this);
 

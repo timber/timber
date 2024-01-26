@@ -29,7 +29,7 @@ class TestTimberTheme extends Timber_UnitTestCase
     public function testThemeVersion()
     {
         switch_theme($this->theme_slug);
-        $theme = new Timber\Theme();
+        $theme = new Theme();
         $this->assertSame('1.0.1', $theme->version);
     }
 
@@ -45,7 +45,7 @@ class TestTimberTheme extends Timber_UnitTestCase
     public function testThemeMods()
     {
         set_theme_mod('foo', 'bar');
-        $theme = new Timber\Theme();
+        $theme = new Theme();
         $mods = $theme->theme_mods();
         $this->assertEquals('bar', $mods['foo']);
         $bar = $theme->theme_mod('foo');
@@ -75,7 +75,7 @@ class TestTimberTheme extends Timber_UnitTestCase
         }
 
         /* test */
-        $theme = new Timber\Theme();
+        $theme = new Theme();
         $this->assertEquals('/wp-content/themes/timber-test-theme', $theme->path());
 
         /* tearDown */

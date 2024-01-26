@@ -19,7 +19,7 @@ require_once $_tests_dir . '/includes/functions.php';
  */
 function _manually_load_plugin()
 {
-    \Timber\Timber::init();
+    Timber\Timber::init();
 
     require dirname(__FILE__) . '/../wp-content/plugins/advanced-custom-fields/acf.php';
     if (file_exists(dirname(__FILE__) . '/../wp-content/plugins/co-authors-plus/co-authors-plus.php')) {
@@ -63,7 +63,7 @@ require_once WP_CLI_ROOT . '/php/class-wp-cli-command.php';
 
 require_once __DIR__ . '/WpCliLogger.php';
 
-\WP_CLI::set_logger(new WpCliLogger(false));
+WP_CLI::set_logger(new WpCliLogger(false));
 
 /*
  * Bootstrap WordPress. This will also load the Composer autoload file, the PHPUnit Polyfills

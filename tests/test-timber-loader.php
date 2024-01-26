@@ -165,7 +165,7 @@ class TestTimberLoader extends Timber_UnitTestCase
         switch_theme('timber-test-theme');
 
         Timber::$dirname = [
-            \Timber\Loader::MAIN_NAMESPACE => ['foo', 'views'],
+            Timber\Loader::MAIN_NAMESPACE => ['foo', 'views'],
         ];
         if (!file_exists(get_template_directory() . '/foo')) {
             mkdir(get_template_directory() . '/foo', 0777, true);
@@ -253,7 +253,7 @@ class TestTimberLoader extends Timber_UnitTestCase
         switch_theme('timber-test-theme');
 
         Timber::$dirname = [
-            \Timber\Loader::MAIN_NAMESPACE => ['foo', 'views'],
+            Timber\Loader::MAIN_NAMESPACE => ['foo', 'views'],
         ];
         Timber::$locations = [
             __DIR__ . '/namespaced' => 'namespaced',

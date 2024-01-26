@@ -6,7 +6,6 @@ use DateInterval;
 use DateTime;
 use DateTimeInterface;
 use Exception;
-
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
 use Twig\Environment;
@@ -247,9 +246,9 @@ class Twig
     /**
      * Adds Timber-specific functions to Twig.
      *
-     * @param \Twig\Environment $twig The Twig Environment.
+     * @param Environment $twig The Twig Environment.
      *
-     * @return \Twig\Environment
+     * @return Environment
      */
     public function add_timber_functions($twig)
     {
@@ -431,9 +430,9 @@ class Twig
     /**
      * Adds filters to Twig.
      *
-     * @param \Twig\Environment $twig The Twig Environment.
+     * @param Environment $twig The Twig Environment.
      *
-     * @return \Twig\Environment
+     * @return Environment
      */
     public function add_timber_filters($twig)
     {
@@ -453,8 +452,8 @@ class Twig
     /**
      * Adds escapers.
      *
-     * @param \Twig\Environment $twig The Twig Environment.
-     * @return \Twig\Environment
+     * @param Environment $twig The Twig Environment.
+     * @return Environment
      */
     public function add_timber_escapers($twig)
     {
@@ -493,9 +492,9 @@ class Twig
      * @since 2.0.0
      *
      * @throws \Twig\Error\RuntimeError
-     * @param \Twig\Environment $twig Twig Environment.
+     * @param Environment $twig Twig Environment.
      *
-     * @return \Twig\Environment
+     * @return Environment
      */
     public function set_defaults(Environment $twig)
     {
@@ -521,7 +520,7 @@ class Twig
      *
      * @throws Exception
      *
-     * @param \Twig\Environment         $env      Twig Environment.
+     * @param Environment         $env      Twig Environment.
      * @param null|string|int|DateTime $date     A date.
      * @param null|string               $format   Optional. PHP date format. Will return the
      *                                            current date as a DateTimeImmutable object by

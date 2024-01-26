@@ -292,7 +292,7 @@ class Comment extends CoreEntity
      * Adds a child.
      *
      * @api
-     * @param \Timber\Comment $child_comment Comment child to add.
+     * @param Comment $child_comment Comment child to add.
      * @return array Comment children.
      */
     public function add_child(Comment $child_comment)
