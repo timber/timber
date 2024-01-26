@@ -262,4 +262,16 @@ class Timber_UnitTestCase extends TestCase
         wp_clean_themes_cache();
         unset($GLOBALS['wp_themes']);
     }
+
+    public function isWordPressVersion(string $version, string $operator = '=')
+    {
+        return version_compare($GLOBALS['wp_version'], $version, $operator);
+    }
+
+    public function skipForWordpressVersion(string $version, string $operator = '<')
+    {
+        if ($this->isWordPressVersion($version, $operator)) {
+            $this->markTestSkipped("This test requires WordPress version $version or higher.");
+        }
+    }
 }

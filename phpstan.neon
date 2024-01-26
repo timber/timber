@@ -4,12 +4,14 @@ parameters:
     paths:
         - src/
     scanFiles:
+        - tests/phpstan/bootstrap.php
         - vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
         - vendor/php-stubs/acf-pro-stubs/acf-pro-stubs.php
     excludePaths:
         - tests/*
         - docs/*
     ignoreErrors:
+        - '#Result of function acf_get_field_type \(void\) is used.#'
         - '#Instantiated class Twig\\CacheExtension\\CacheStrategy\\GenerationalCacheStrategy not found.#'
         - '#Instantiated class Twig\\CacheExtension\\Extension not found.#'
         - '#Method Timber\\Loader::_get_cache_extension\(\) has invalid return type Twig\\CacheExtension\\Extension.#'
