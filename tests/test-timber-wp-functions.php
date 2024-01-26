@@ -12,11 +12,12 @@ class TestTimberWPFunctions extends Timber_UnitTestCase
         $this->assertEquals('jared sez hi', $output);
     }
 
-    /**
-     * @expectedDeprecated the_block_template_skip_link
-     */
     public function testFooterOnFooterFW()
     {
+        if ($this->isWordPressVersion('6.4', '>=')) {
+            $this->setExpectedDeprecated('the_block_template_skip_link');
+        }
+
         global $wp_scripts;
         $wp_scripts = null;
         wp_enqueue_script('jquery', false, [], false, true);
@@ -30,11 +31,11 @@ class TestTimberWPFunctions extends Timber_UnitTestCase
         $this->assertSame(0, strlen($wp_footer_output1));
     }
 
-    /**
-     * @expectedDeprecated the_block_template_skip_link
-     */
     public function testFooterAlone()
     {
+        if ($this->isWordPressVersion('6.4', '>=')) {
+            $this->setExpectedDeprecated('the_block_template_skip_link');
+        }
         global $wp_scripts;
         $wp_scripts = null;
         wp_enqueue_script('jquery', false, [], false, true);
@@ -53,11 +54,11 @@ class TestTimberWPFunctions extends Timber_UnitTestCase
         $this->assertEquals('bar', $fw1->call());
     }
 
-    /**
-     * @expectedDeprecated the_block_template_skip_link
-     */
     public function testDoubleActionWPFooter()
     {
+        if ($this->isWordPressVersion('6.4', '>=')) {
+            $this->setExpectedDeprecated('the_block_template_skip_link');
+        }
         global $wp_scripts;
         $wp_scripts = null;
         add_action('wp_footer', 'echo_junk');
@@ -69,11 +70,11 @@ class TestTimberWPFunctions extends Timber_UnitTestCase
         remove_action('wp_footer', 'echo_junk');
     }
 
-    /**
-     * @expectedDeprecated the_block_template_skip_link
-     */
     public function testInTwig()
     {
+        if ($this->isWordPressVersion('6.4', '>=')) {
+            $this->setExpectedDeprecated('the_block_template_skip_link');
+        }
         global $wp_scripts;
         $wp_scripts = null;
         wp_enqueue_script('jquery', false, [], false, true);
@@ -82,11 +83,11 @@ class TestTimberWPFunctions extends Timber_UnitTestCase
         $this->assertGreaterThan(-1, $pos);
     }
 
-    /**
-     * @expectedDeprecated the_block_template_skip_link
-     */
     public function testInTwigString()
     {
+        if ($this->isWordPressVersion('6.4', '>=')) {
+            $this->setExpectedDeprecated('the_block_template_skip_link');
+        }
         global $wp_scripts;
         $wp_scripts = null;
         wp_enqueue_script('jquery', false, [], false, true);
@@ -95,11 +96,11 @@ class TestTimberWPFunctions extends Timber_UnitTestCase
         $this->assertGreaterThan(-1, $pos);
     }
 
-    /**
-     * @expectedDeprecated the_block_template_skip_link
-     */
     public function testAgainstFooterFunctionOutput()
     {
+        if ($this->isWordPressVersion('6.4', '>=')) {
+            $this->setExpectedDeprecated('the_block_template_skip_link');
+        }
         global $wp_scripts;
         $wp_scripts = null;
         wp_enqueue_script('colorpicker', false, [], false, true);
