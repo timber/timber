@@ -393,6 +393,23 @@ class ImageHelper
         $file = \parse_url($file);
         $path_parts = PathHelper::pathinfo($file['path']);
         $basename = \md5($filename);
+
+        /**
+         * Filters basename for sideloaded files.
+         * @since 2.0.1
+         * @example
+         * ```php
+         * // Change the basename used for sideloaded images.
+         * add_filter( 'timber/image_helper/sideload_image/basename', function ($basename, $path_parts) {
+         *     return $path_parts['filename'] . '-' . substr($basename, 0, 6);
+         * }, 10, 2)
+         * ```
+         *
+         * @param string $basename Current basename for the sideloaded file.
+         * @param array $path_parts Array with path info for the sideloaded file.
+         */
+        $basename = \apply_filters('timber/image_helper/sideload_image/basename', $basename, $path_parts);
+
         $ext = 'jpg';
         if (isset($path_parts['extension'])) {
             $ext = $path_parts['extension'];
