@@ -1,24 +1,39 @@
 {
   "name": "timber/timber",
-  "description": "Plugin to write WordPress themes w Object-Oriented Code and the Twig Template Engine",
+  "description": "Create WordPress themes with beautiful OOP code and the Twig Template Engine",
   "license": "MIT",
   "type": "library",
   "keywords": [
     "timber",
     "twig",
     "themes",
-    "templating"
+    "templating",
+    "wordpress"
   ],
   "authors": [
     {
-      "name": "Jared Novack",
-      "email": "jared@upstatement.com",
-      "homepage": "http://upstatement.com"
+      "name": "Erik van der Bas",
+      "email": "erik@basedonline.nl",
+      "homepage": "https://basedonline.nl"
     },
     {
-      "name": "Connor J. Burton",
-      "email": "connorjburton@gmail.com",
-      "homepage": "http://connorburton.com"
+      "name": "Lukas Gächter",
+      "email": "lukas.gaechter@mind.ch",
+      "homepage": "https://www.mind.ch"
+    },
+    {
+      "name": "Nicolas Lemoine",
+      "email": "nico@n5s.dev",
+      "homepage": "https://n5s.dev"
+    },
+    {
+      "name": "Jared Novack",
+      "email": "jared@upstatement.com",
+      "homepage": "https://upstatement.com"
+    },
+    {
+      "name": "Timber Community",
+      "homepage": "https://github.com/timber/timber"
     }
   ],
   "homepage": "http://timber.upstatement.com",
