@@ -516,26 +516,63 @@ class ImageHelper
      * The image is expected to be either part of a theme, plugin, or an upload.
      *
      * @param  string $url A URL (absolute or relative) pointing to an image.
-     * @return array       An array (see keys in code below).
+     * @return array<string, mixed> An array (see keys in code below).
      */
-    public static function analyze_url($url)
+    public static function analyze_url(string $url): array
+    {
+        /**
+         * Filters whether to short-circuit the ImageHelper::analyze_url()
+         * file path of a URL located in a theme directory.
+         *
+         * Returning a non-null value from the filter will short-circuit
+         * ImageHelper::analyze_url(), returning that value.
+         *
+         * @since 2.0.0
+         *
+         * @param array<string, mixed>|null $info The URL components array to short-circuit with. Default null.
+         * @param string                    $url  The URL pointing to an image.
+         */
+        $result = \apply_filters('timber/image_helper/pre_analyze_url', null, $url);
+        if (null === $result) {
+            $result = self::get_url_components($url);
+        }
+
+        /**
+         * Filters the array of analyzed URL components.
+         *
+         * @since 2.0.0
+         *
+         * @param array<string, mixed> $info The URL components.
+         * @param string               $url  The URL pointing to an image.
+         */
+        return \apply_filters('timber/image_helper/analyze_url', $result, $url);
+    }
+
+    /**
+     * Returns information about a URL.
+     *
+     * @param  string $url A URL (absolute or relative) pointing to an image.
+     * @return array<string, mixed> An array (see keys in code below).
+     */
+    private static function get_url_components(string $url): array
     {
         $result = [
-            'url' => $url,
             // the initial url
-            'absolute' => URLHelper::is_absolute($url),
+            'url' => $url,
             // is the url absolute or relative (to home_url)
-            'base' => 0,
+            'absolute' => URLHelper::is_absolute($url),
             // is the image in uploads dir, or in content dir (theme or plugin)
-            'subdir' => '',
+            'base' => 0,
             // the path between base (uploads or content) and file
-            'filename' => '',
+            'subdir' => '',
             // the filename, without extension
-            'extension' => '',
+            'filename' => '',
             // the file extension
-            'basename' => '',
+            'extension' => '',
             // full file name
+            'basename' => '',
         ];
+
         $upload_dir = \wp_upload_dir();
         $tmp = $url;
         if (\str_starts_with($tmp, ABSPATH) || \str_starts_with($tmp, '/srv/www/')) {
@@ -567,6 +604,7 @@ class ImageHelper
         $result['filename'] = $parts['filename'];
         $result['extension'] = \strtolower($parts['extension']);
         $result['basename'] = $parts['basename'];
+
         return $result;
     }
 
@@ -576,16 +614,52 @@ class ImageHelper
      * @param string  $src A URL (http://example.org/wp-content/themes/twentysixteen/images/home.jpg).
      * @return string Full path to the file in question.
      */
-    public static function theme_url_to_dir($src)
+    public static function theme_url_to_dir(string $src): string
+    {
+        /**
+         * Filters whether to short-circuit the ImageHelper::theme_url_to_dir()
+         * file path of a URL located in a theme directory.
+         *
+         * Returning a non-null value from the filter will short-circuit
+         * ImageHelper::theme_url_to_dir(), returning that value.
+         *
+         * @since 2.0.0
+         *
+         * @param string|null $path Full path to short-circuit with. Default null.
+         * @param string      $src  The URL to be converted.
+         */
+        $path = \apply_filters('timber/image_helper/pre_theme_url_to_dir', null, $src);
+        if (null === $path) {
+            $path = self::get_dir_from_theme_url($src);
+        }
+
+        /**
+         * Filters the raw file path of a URL located in a theme directory.
+         *
+         * @since 2.0.0
+         *
+         * @param string $path The resolved full path to $src.
+         * @param string $src  The URL that was converted.
+         */
+        return \apply_filters('timber/image_helper/theme_url_to_dir', $path, $src);
+    }
+
+    /**
+     * Converts a URL located in a theme directory into the raw file path.
+     *
+     * @param string  $src A URL (http://example.org/wp-content/themes/twentysixteen/images/home.jpg).
+     * @return string Full path to the file in question.
+     */
+    private static function get_dir_from_theme_url(string $src): string
     {
         $site_root = \trailingslashit(\get_theme_root_uri()) . \get_stylesheet();
-        $tmp = \str_replace($site_root, '', $src);
-        //$tmp = trailingslashit(get_theme_root()).get_stylesheet().$tmp;
-        $tmp = \get_stylesheet_directory() . $tmp;
-        if (\realpath($tmp)) {
-            return \realpath($tmp);
+        $path = \str_replace($site_root, '', $src);
+        //$path = \trailingslashit(\get_theme_root()).\get_stylesheet().$path;
+        $path = \get_stylesheet_directory() . $path;
+        if ($_path = \realpath($path)) {
+            return $_path;
         }
-        return $tmp;
+        return $path;
     }
 
     /**
@@ -795,8 +869,8 @@ class ImageHelper
         }
     }
 
-    // -- the below methods are just used for unit testing the URL generation code
-    //
+    //-- the below methods are just used for
+    // unit testing the URL generation code --//
     /**
      * @internal
      */
