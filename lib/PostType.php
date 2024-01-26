@@ -6,6 +6,7 @@ namespace Timber;
  * Wrapper for the post_type object provided by WordPress
  * @since 1.0.4
 */
+#[\AllowDynamicProperties]
 class PostType {
 
 	/**
