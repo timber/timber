@@ -103,7 +103,8 @@ class Timber
      */
     public static function init()
     {
-        if (!\defined('ABSPATH')
+        if (
+            !\defined('ABSPATH')
             || !\class_exists('\WP')
             || \defined('TIMBER_LOADED')
         ) {
@@ -1454,7 +1455,7 @@ class Timber
          *
          * @since 2.0.0
          *
-         * @param string $output
+         * @param string|bool $output the compiled output.
          */
         $output = \apply_filters('timber/compile/result', $output);
 
@@ -1465,15 +1466,13 @@ class Timber
          * This action can be helpful if you need to debug Twig template
          * compilation.
          *
-         * @todo Add parameter descriptions
-         *
          * @since 2.0.0
          *
-         * @param string $output
-         * @param string $file
-         * @param array  $data
-         * @param bool   $expires
-         * @param string $cache_mode
+         * @param string            $output       The compiled output.
+         * @param string            $file         The name of the Twig template that was compiled.
+         * @param array             $data         The data that was used to compile the Twig template.        
+         * @param bool|int|array    $expires      The expiration time of the cache in seconds, or false to disable cache.
+         * @param string            $cache_mode   Any of the cache mode constants defined in Timber\Loader.
          */
         \do_action('timber/compile/done', $output, $file, $data, $expires, $cache_mode);
 

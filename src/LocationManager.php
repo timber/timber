@@ -26,20 +26,28 @@ class LocationManager
         }, $locs);
 
         /**
-         * Filters …
+         * Filters the filesystem paths to search for Twig templates.
          *
-         * @todo Add summary, description, example, parameter description
+         * @example
+         * ```
+         * add_filter( 'timber/locations', function( $locs ) {
+         *   $locs = \array_map(function ($loc) {
+         *      \array_unshift($loc, \dirname(__DIR__) . '/my-custom-dir');
+         *       return $loc;
+         *   }, $locs);
+         *
+         *     return $locs;
+         * } );
+         * ```
          *
          * @since 0.20.10
          *
-         * @param array $locs
+         * @param array $locs An array of filesystem paths to search for Twig templates.
          */
         $locs = \apply_filters('timber/locations', $locs);
 
         /**
-         * Filters …
-         *
-         * @todo Add summary
+         * Filters the filesystem paths to search for Twig templates.
          *
          * @deprecated 2.0.0, use `timber/locations`
          */
