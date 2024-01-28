@@ -5,6 +5,7 @@ use Timber\Integration\CoAuthorsPlus\CoAuthorsPlusUser;
 /**
  * @group posts-api
  * @group integrations
+ * @group coauthors-plus
  */
 class TestTimberIntegrationsCoAuthors extends Timber_UnitTestCase
 {

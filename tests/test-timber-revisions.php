@@ -290,7 +290,7 @@ class TestTimberRevisions extends Timber_UnitTestCase
         $post_id = $this->factory->post->create([
             'post_author' => 5,
         ]);
-        update_field('test_field', 'The custom field content', $post_id);
+        update_post_meta($post_id, 'test_field', 'The custom field content');
 
         $assertCustomFieldVal = 'This has been revised';
         $revision_id = $this->factory->post->create([
@@ -298,7 +298,7 @@ class TestTimberRevisions extends Timber_UnitTestCase
             'post_status' => 'inherit',
             'post_parent' => $post_id,
         ]);
-        update_field('test_field', $assertCustomFieldVal, $revision_id);
+        update_post_meta($revision_id, 'test_field', $assertCustomFieldVal);
 
         $uid = $this->factory->user->create([
             'user_login' => 'timber',
@@ -326,7 +326,7 @@ class TestTimberRevisions extends Timber_UnitTestCase
         $post_id = $this->factory->post->create([
             'post_author' => 5,
         ]);
-        update_field('test_field', 'The custom field content', $post_id);
+        update_post_meta($post_id, 'test_field', 'The custom field content');
 
         $assertCustomFieldVal = 'This has been revised';
         $revision_id = $this->factory->post->create([
@@ -334,7 +334,7 @@ class TestTimberRevisions extends Timber_UnitTestCase
             'post_status' => 'inherit',
             'post_parent' => $post_id,
         ]);
-        update_field('test_field', $assertCustomFieldVal, $revision_id);
+        update_post_meta($revision_id, 'test_field', $assertCustomFieldVal);
 
         $uid = $this->factory->user->create([
             'user_login' => 'timber',
@@ -363,7 +363,7 @@ class TestTimberRevisions extends Timber_UnitTestCase
         $post_id = $this->factory->post->create([
             'post_author' => 5,
         ]);
-        update_field('test_field', $original_content, $post_id);
+        update_post_meta($post_id, 'test_field', $original_content);
 
         $assertCustomFieldVal = 'This has been revised';
         $revision_id = $this->factory->post->create([
@@ -371,7 +371,7 @@ class TestTimberRevisions extends Timber_UnitTestCase
             'post_status' => 'inherit',
             'post_parent' => $post_id,
         ]);
-        update_field('test_field', $assertCustomFieldVal, $revision_id);
+        update_post_meta($revision_id, 'test_field', $assertCustomFieldVal);
 
         $uid = $this->factory->user->create([
             'user_login' => 'timber',

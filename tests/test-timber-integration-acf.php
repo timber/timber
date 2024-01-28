@@ -3,6 +3,7 @@
 use Timber\User;
 
 /**
+ * @group acf
  * @group users-api
  * @group comments-api
  * @group integrations
