@@ -62,7 +62,7 @@ add_filter('timber/twig/functions', function ($functions) {
 You can replace a function with your own function or even remove a function by updating the array items in `$functions`.
 
 ```php
-add_filter('timber/twig/filters', function ($functions) {
+add_filter('timber/twig/functions', function ($functions) {
     // Replace a function.
     $functions['get_image'] = [
         'callable' => 'custom_get_image',
