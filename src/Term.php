@@ -401,15 +401,7 @@ class Term extends CoreEntity
         /**
          * Filters the relative link (path) to a term archive page.
          *
-         * ```
-         * add_filter( 'timber/term/path', function( $rel, $term ) {
-         *     if ( $term->slug === 'news' ) {
-         *        return '/category/modified-url';
-         *     }
-         *
-         *     return $rel;
-         * }, 10, 2 );
-         * ```
+         * @todo Add example
          *
          * @see   \Timber\Term::path()
          * @since 0.21.9

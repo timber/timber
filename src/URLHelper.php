@@ -172,17 +172,14 @@ class URLHelper
     }
 
     /**
-     * Translates a URL to a filesystem path
-     * 
-     * Takes a url and figures out its filesystem location.
-     * 
+     * Takes a url and figures out its place based in the file system based on path
      * NOTE: Not fool-proof, makes a lot of assumptions about the file path
      * matching the URL path
      *
      * @api
      *
-     * @param string $url The URL to translate to a filesystem path
-     * @return string The filesystem path derived from the URL
+     * @param string $url
+     * @return string
      */
     public static function url_to_file_system($url)
     {
@@ -190,15 +187,15 @@ class URLHelper
 
         /**
          * Filters the path of a parsed URL.
-         * 
-         * You can use this filter to alter the returned file system path. 
+         *
          * This filter is used by the WPML integration.
-
+         *
+         * @todo Add description, parameter description.
          *
          * @see \Timber\URLHelper::url_to_file_system()
          * @since 1.3.2
          *
-         * @param string $path The current translated path
+         * @param string $path
          */
         $url_parts['path'] = \apply_filters('timber/url_helper/url_to_file_system/path', $url_parts['path']);
 
@@ -220,48 +217,43 @@ class URLHelper
     }
 
     /**
-     * Translates a filesystem path to a URL
-     * 
-     * Takes a filesystem path and figures out its URL location.
-     * 
      * @api
-     * @param string $fs The filesystem path to translate to a URL
-     * @return string    The URL derived from the filesystem path
+     * @param string $fs
+     * @return string
      */
     public static function file_system_to_url($fs)
     {
         $relative_path = self::get_rel_path($fs);
-        $url = \home_url('/' . $relative_path);
+        $home = \home_url('/' . $relative_path);
 
         /**
-         * Filters the URL in URLHelper::file_system_to_url
-         * 
-         * You can use this filter to alter the returned URL. 
+         * Filters the home URL …
+         *
          * This filter is used by the WPML integration.
+         *
+         * @todo Complete summary, add description.
          *
          * @see \Timber\URLHelper::file_system_to_url()
          * @since 1.3.2
          *
-         * @param string $url The current translated url
+         * @param string $home The home URL.
          */
-        $url = \apply_filters('timber/url_helper/file_system_to_url', $url);
+        $home = \apply_filters('timber/url_helper/file_system_to_url', $home);
 
         /**
-         * Filters the URL in URLHelper::file_system_to_url
-         * 
-         * You can use this filter to alter the returned URL. 
-         * This filter is used by the WPML integration.
-         * 
-         * @param string $url The current url
+         * Filters the home URL …
+         *
+         * @todo Complete summary.
+         *
          * @deprecated 2.0.0, use `timber/url_helper/file_system_to_url`
          */
-        $url = \apply_filters_deprecated(
+        $home = \apply_filters_deprecated(
             'timber/URLHelper/file_system_to_url',
-            [$url],
+            [$home],
             '2.0.0',
             'timber/url_helper/file_system_to_url'
         );
-        return $url;
+        return $home;
     }
 
     /**
@@ -326,17 +318,6 @@ class URLHelper
     public static function remove_double_slashes($url)
     {
         $url = \str_replace('//', '/', $url);
-
-        /**
-         * Filters the schemes that are excluded for double slash removal.
-         * 
-         * If an url start with one of the schemes in the whitelist, 
-         * that scheme will be excluded from the double slash removal.
-         *
-         * @since 1.16.0
-         *
-         * @param array $schemes_whitelist the schemes that are excluded for double slash removal.
-         */
         $schemes_whitelist = \apply_filters('timber/url/schemes-whitelist', ['http', 'https', 's3', 'gs']);
         foreach ($schemes_whitelist as $scheme) {
             if (\strstr($url, $scheme . ':') && !\strstr($url, $scheme . '://')) {
