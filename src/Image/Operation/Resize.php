@@ -104,7 +104,7 @@ class Resize extends ImageOperation
         $current_size = $image->get_size();
         $src_w = $current_size['width'];
         $src_h = $current_size['height'];
-        $src_ratio = $src_w / $src_h;
+        $src_ratio = $src_w / max(1, $src_h);
         if (!$h) {
             $h = \round($w / $src_ratio);
         }
@@ -124,7 +124,7 @@ class Resize extends ImageOperation
             ];
         }
         // Get ratios
-        $dest_ratio = $w / $h;
+        $dest_ratio = $w / max(1, $h);
         $src_wt = $src_h * $dest_ratio;
         $src_ht = $src_w / $dest_ratio;
         $src_x = $src_w / 2 - $src_wt / 2;
