@@ -463,6 +463,38 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
         $this->assertSame(false, $file);
     }
 
+    /**
+     * @ticket #824
+     */
+    public function testTermWithNativeMetaNotExisting()
+    {
+        $tid = $this->factory->term->create([
+            'name' => 'News',
+            'taxonomy' => 'category',
+        ]);
+
+        add_term_meta($tid, 'bar', 'qux');
+        ;
+        $wp_native_value = get_term_meta($tid, 'foo', true);
+        $acf_native_value = get_field('foo', 'category_' . $tid);
+
+        $valid_wp_native_value = get_term_meta($tid, 'bar', true);
+        $valid_acf_native_value = get_field('bar', 'category_' . $tid);
+
+        $term = Timber::get_term($tid);
+
+        //test baseline "bar" data
+        $this->assertEquals('qux', $valid_wp_native_value);
+        $this->assertEquals('qux', $valid_acf_native_value);
+        $this->assertEquals('qux', $term->bar);
+
+        //test the one that doesn't exist
+        $this->assertEquals('string', gettype($wp_native_value));
+        $this->assertEmpty($wp_native_value);
+        $this->assertNull($acf_native_value);
+        $this->assertNotTrue($term->meta('foo'));
+    }
+
     private function register_field($field_name, $field_type, $field_args = [])
     {
         $group_key = sprintf('group_%s', uniqid());
