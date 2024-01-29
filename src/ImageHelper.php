@@ -408,7 +408,7 @@ class ImageHelper
          * @param string $basename Current basename for the sideloaded file.
          * @param array $path_parts Array with path info for the sideloaded file.
          */
-        $basename = \apply_filters('timber/image_helper/sideload_image/basename', $basename, $path_parts);
+        $basename = \apply_filters('timber/sideload_image/basename', $basename, $path_parts);
 
         $ext = 'jpg';
         if (isset($path_parts['extension'])) {
