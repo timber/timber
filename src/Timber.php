@@ -1466,7 +1466,7 @@ class Timber
          *
          * @param string            $output       The compiled output.
          * @param string            $file         The name of the Twig template that was compiled.
-         * @param array             $data         The data that was used to compile the Twig template.        
+         * @param array             $data         The data that was used to compile the Twig template.
          * @param bool|int|array    $expires      The expiration time of the cache in seconds, or false to disable cache.
          * @param string            $cache_mode   Any of the cache mode constants defined in Timber\Loader.
          */

@@ -82,7 +82,7 @@ class Helper
     {
         if ($enable_transients && self::_is_transient_locked($slug)) {
             /**
-             * Whether to force a locked transients to be regenerated.
+             * Filters whether to force a locked transients to be regenerated.
              *
              * If a transient is locked, it means that another process is currently generating the data.
              * If you want to force the transient to be regenerated, during that process, you can set this
@@ -94,7 +94,7 @@ class Helper
             $force = \apply_filters('timber/transient/force_transients', $force);
 
             /**
-             * Whether to force a locked transients to be regenerated.
+             * Filters whether to force a locked transients to be regenerated.
              *
              * If a transient is locked, it means that another process is currently generating the data.
              * If you want to force the transient to be regenerated, during that process, you can set this
@@ -110,7 +110,7 @@ class Helper
             );
 
             /**
-             * Whether to force a specific locked transients to be regenerated.
+             * Filters whether to force a specific locked transients to be regenerated.
              *
              * If a transient is locked, it means that another process is currently generating the data.
              * If you want to force the transient to be regenerated during that process, you can set this value to true.
@@ -133,12 +133,12 @@ class Helper
             $force = \apply_filters("timber/transient/force_transient_{$slug}", $force);
 
             /**
-             * Whether to force a specific locked transients to be regenerated.
+             * Filters whether to force a specific locked transients to be regenerated.
              *
              * If a transient is locked, it means that another process is currently generating the data.
              * If you want to force the transient to be regenerated, during that process, you can set this value to true.
              * `$slug` The transient slug.
-             * 
+             *
              * @param bool $force Whether to force a locked transient to be regenerated.
              * @deprecated 2.0.0, use `timber/transient/force_transient_{$slug}`
              */

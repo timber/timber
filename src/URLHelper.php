@@ -173,9 +173,9 @@ class URLHelper
 
     /**
      * Translates a URL to a filesystem path
-     * 
+     *
      * Takes a url and figures out its filesystem location.
-     * 
+     *
      * NOTE: Not fool-proof, makes a lot of assumptions about the file path
      * matching the URL path
      *
@@ -190,8 +190,8 @@ class URLHelper
 
         /**
          * Filters the path of a parsed URL.
-         * 
-         * You can use this filter to alter the returned file system path. 
+         *
+         * You can use this filter to alter the returned file system path.
          * This filter is used by the WPML integration.
 
          *
@@ -221,9 +221,9 @@ class URLHelper
 
     /**
      * Translates a filesystem path to a URL
-     * 
+     *
      * Takes a filesystem path and figures out its URL location.
-     * 
+     *
      * @api
      * @param string $fs The filesystem path to translate to a URL
      * @return string    The URL derived from the filesystem path
@@ -235,8 +235,8 @@ class URLHelper
 
         /**
          * Filters the URL in URLHelper::file_system_to_url
-         * 
-         * You can use this filter to alter the returned URL. 
+         *
+         * You can use this filter to alter the returned URL.
          * This filter is used by the WPML integration.
          *
          * @see \Timber\URLHelper::file_system_to_url()
@@ -248,10 +248,10 @@ class URLHelper
 
         /**
          * Filters the URL in URLHelper::file_system_to_url
-         * 
-         * You can use this filter to alter the returned URL. 
+         *
+         * You can use this filter to alter the returned URL.
          * This filter is used by the WPML integration.
-         * 
+         *
          * @param string $url The current url
          * @deprecated 2.0.0, use `timber/url_helper/file_system_to_url`
          */
@@ -329,8 +329,8 @@ class URLHelper
 
         /**
          * Filters the schemes that are excluded for double slash removal.
-         * 
-         * If an url start with one of the schemes in the whitelist, 
+         *
+         * If an url start with one of the schemes in the whitelist,
          * that scheme will be excluded from the double slash removal.
          *
          * @since 1.16.0

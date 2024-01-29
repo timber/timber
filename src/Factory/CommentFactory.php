@@ -71,7 +71,6 @@ class CommentFactory
 
     protected function get_comment_class(WP_Comment $comment): string
     {
-
         /**
          * Filters the class(es) used for comments linked to different post types.
          *
