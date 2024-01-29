@@ -720,8 +720,6 @@ class Post extends CoreEntity implements DatedInterface, Setupable
          *
          * This filter is used by the ACF Integration.
          *
-         * @todo Add example
-         *
          * @see   \Timber\Post::field_object()
          * @since 1.6.0
          *
@@ -914,7 +912,16 @@ class Post extends CoreEntity implements DatedInterface, Setupable
          *
          * This filter is used by the CoAuthorsPlus integration.
          *
-         * @todo  Add example
+         * @example
+         * ```
+         * add_filter( 'timber/post/authors', function( $author, $post ) {
+         *      foreach ($cauthors as $author) {
+         *        // do something with $author
+         *      }
+         *
+         *     return $authors;
+         * } );
+         * ```
          *
          * @see   \Timber\Post::authors()
          * @since 1.1.4
