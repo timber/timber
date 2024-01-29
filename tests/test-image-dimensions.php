@@ -1,7 +1,6 @@
 <?php
 
-
-class ImageDimensionsTestable extends \Timber\ImageDimensions
+class ImageDimensionsTestable extends Timber\ImageDimensions
 {
     public function __construct($file_loc)
     {

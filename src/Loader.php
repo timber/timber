@@ -245,7 +245,7 @@ class Loader
     }
 
     /**
-     * @return \Twig\Loader\FilesystemLoader
+     * @return FilesystemLoader
      */
     public function get_loader()
     {
@@ -308,7 +308,7 @@ class Loader
     }
 
     /**
-     * @return \Twig\Environment
+     * @return Environment
      */
     public function get_twig()
     {
@@ -432,7 +432,7 @@ class Loader
 
             $environment_options['cache'] = $twig_cache_loc;
         }
-        $twig = new \Twig\Environment($this->get_loader(), $environment_options);
+        $twig = new Environment($this->get_loader(), $environment_options);
 
         if (WP_DEBUG) {
             $twig->addExtension(new \Twig\Extension\DebugExtension());
@@ -463,7 +463,7 @@ class Loader
          *
          * @since 0.20.10
          *
-         * @param \Twig\Environment $twig The Twig environment you can add functionality to.
+         * @param Environment $twig The Twig environment you can add functionality to.
          */
         $twig = \apply_filters('timber/loader/twig', $twig);
 
@@ -502,7 +502,7 @@ class Loader
          * </a>
          * ```
          *
-         * @param \Twig\Environment $twig The Twig environment.
+         * @param Environment $twig The Twig environment.
          */
         $twig = \apply_filters('timber/twig', $twig);
 
@@ -628,12 +628,12 @@ class Loader
     }
 
     /**
-     * @return \Twig\CacheExtension\Extension
+     * @return CacheExtension\Extension
      */
     private function _get_cache_extension()
     {
-        $key_generator = new \Timber\Cache\KeyGenerator();
-        $cache_provider = new \Timber\Cache\WPObjectCacheAdapter($this);
+        $key_generator = new Cache\KeyGenerator();
+        $cache_provider = new Cache\WPObjectCacheAdapter($this);
         $cache_lifetime = \apply_filters('timber/cache/extension/lifetime', 0);
         $cache_strategy = new CacheExtension\CacheStrategy\GenerationalCacheStrategy(
             $cache_provider,

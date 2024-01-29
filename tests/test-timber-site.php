@@ -7,7 +7,7 @@ class TestTimberSite extends Timber_UnitTestCase
     {
         switch_theme('timber-test-theme');
 
-        $site = new \Timber\Site();
+        $site = new Timber\Site();
         $content_subdir = Timber\URLHelper::get_content_subdir();
         $this->assertEquals($content_subdir . '/themes/timber-test-theme', $site->theme->path);
 
@@ -17,7 +17,7 @@ class TestTimberSite extends Timber_UnitTestCase
     public function testLanguageAttributes()
     {
         restore_current_locale();
-        $site = new \Timber\Site();
+        $site = new Timber\Site();
         $lang = $site->language_attributes();
         $this->assertEquals('lang="en-US"', $lang);
     }
@@ -56,14 +56,14 @@ class TestTimberSite extends Timber_UnitTestCase
 
     public function testSiteURL()
     {
-        $site = new \Timber\Site();
+        $site = new Timber\Site();
         $this->assertEquals('http://example.org', $site->link());
         $this->assertEquals(site_url(), $site->site_url);
     }
 
     public function testHomeUrl()
     {
-        $site = new \Timber\Site();
+        $site = new Timber\Site();
         $this->assertEquals($site->url, $site->home_url);
     }
 

@@ -52,7 +52,7 @@ class PostExcerpt
     /**
      * Post.
      *
-     * @var \Timber\Post
+     * @var Post
      */
     protected $post;
 
@@ -128,7 +128,7 @@ class PostExcerpt
      *
      * @api
      *
-     * @param \Timber\Post $post The post to pull the excerpt from.
+     * @param Post $post The post to pull the excerpt from.
      * @param array        $options {
      *     An array of configuration options for generating the excerpt. Default empty.
      *
@@ -223,7 +223,7 @@ class PostExcerpt
      * <p>{{ post.excerpt.length(50) }}</p>
      * ```
      * @param int $length The maximum amount of words (not letters) for the excerpt. Default `50`.
-     * @return \Timber\PostExcerpt
+     * @return PostExcerpt
      */
     public function length($length = 50)
     {
@@ -241,7 +241,7 @@ class PostExcerpt
      * ```
      * @param int|bool $char_length The maximum amount of characters for the excerpt. Default
      *                              `false`.
-     * @return \Timber\PostExcerpt
+     * @return PostExcerpt
      */
     public function chars($char_length = false)
     {
@@ -258,7 +258,7 @@ class PostExcerpt
      * <p>{{ post.excerpt.end('… and much more!') }}</p>
      * ```
      * @param string $end The text for the end of the excerpt. Default `…`.
-     * @return \Timber\PostExcerpt
+     * @return PostExcerpt
      */
     public function end($end = '&hellip;')
     {
@@ -281,7 +281,7 @@ class PostExcerpt
      * @param bool $force Whether the length of the excerpt should be forced to the requested
      *                    length, even if an editor wrote a manual excerpt that is longer than the
      *                    set length. Default `true`.
-     * @return \Timber\PostExcerpt
+     * @return PostExcerpt
      */
     public function force($force = true)
     {
@@ -301,7 +301,7 @@ class PostExcerpt
      *
      * @param string $text Text for the link. Default 'Read More'.
      *
-     * @return \Timber\PostExcerpt
+     * @return PostExcerpt
      */
     public function read_more($text = 'Read More')
     {
@@ -320,7 +320,7 @@ class PostExcerpt
      * @param bool|string $strip Whether or how HTML tags in the excerpt should be stripped. Use
      *                           `true` to strip all tags, `false` for no stripping, or a string for
      *                           a list of allowed tags (e.g. '<p><a>'). Default `true`.
-     * @return \Timber\PostExcerpt
+     * @return PostExcerpt
      */
     public function strip($strip = true)
     {
@@ -399,7 +399,7 @@ class PostExcerpt
              *
              * @since 2.0.0
              * @param string       $link            The HTML link.
-             * @param \Timber\Post $post            Post instance.
+             * @param Post $post            Post instance.
              * @param string       $linktext        The link text.
              * @param string       $read_more_class The CSS class name.
              */

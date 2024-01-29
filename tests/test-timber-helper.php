@@ -1,6 +1,5 @@
 <?php
 
-
 require_once(__DIR__ . '/php/timber-post-subclass.php');
 
 /**
@@ -25,7 +24,7 @@ class TestTimberHelper extends Timber_UnitTestCase
             'name' => 'Hillary',
             'number' => 45,
         ];
-        $names = \Timber\Helper::pluck($arr, 'name');
+        $names = Timber\Helper::pluck($arr, 'name');
         $this->assertEquals(['Bill', 'Barack', 'Hillary'], $names);
     }
 
@@ -47,7 +46,7 @@ class TestTimberHelper extends Timber_UnitTestCase
         $arr[] = [
             'name' => 'Donald',
         ];
-        $names = \Timber\Helper::pluck($arr, 'number');
+        $names = Timber\Helper::pluck($arr, 'number');
         $this->assertEquals([42, 44, 45], $names);
     }
 
@@ -60,7 +59,7 @@ class TestTimberHelper extends Timber_UnitTestCase
         $jimmy->name = 'Jimmy Chamberlin';
         $jimmy->instrument = 'drums';
         $pumpkins = [$billy, $jimmy];
-        $instruments = \Timber\Helper::pluck($pumpkins, 'instrument');
+        $instruments = Timber\Helper::pluck($pumpkins, 'instrument');
         $this->assertEquals(['guitar', 'drums'], $instruments);
     }
 
@@ -74,21 +73,21 @@ class TestTimberHelper extends Timber_UnitTestCase
         $jimmy = new stdClass();
         $jimmy->name = 'Jimmy';
         $pumpkins = [$tps, $jimmy];
-        $bar = \Timber\Helper::pluck($pumpkins, 'foo');
+        $bar = Timber\Helper::pluck($pumpkins, 'foo');
         $this->assertEquals(['bar'], $bar);
     }
 
     public function testTrimCharacters()
     {
         $text = "Sometimes you need to do such weird things like remove all comments from your project.";
-        $trimmed = \Timber\TextHelper::trim_characters($text, 20);
+        $trimmed = Timber\TextHelper::trim_characters($text, 20);
         $this->assertEquals("Sometimes yo&hellip;", $trimmed);
     }
 
     public function testCloseTagsWithSelfClosingTags()
     {
         $p = '<p>My thing is this <hr>Whatever';
-        $html = \Timber\TextHelper::close_tags($p);
+        $html = Timber\TextHelper::close_tags($p);
         $this->assertEquals('<p>My thing is this <hr />Whatever</p>', $html);
     }
 
@@ -186,9 +185,9 @@ class TestTimberHelper extends Timber_UnitTestCase
         $obj2['name'] = 'austin';
         $obj2['skill'] = 'cooking';
         $arr = [$obj1, $obj2];
-        $index = \Timber\Helper::get_object_index_by_property($arr, 'skill', 'cooking');
+        $index = Timber\Helper::get_object_index_by_property($arr, 'skill', 'cooking');
         $this->assertSame(1, $index);
-        $this->assertFalse(\Timber\Helper::get_object_index_by_property('butts', 'skill', 'cooking'));
+        $this->assertFalse(Timber\Helper::get_object_index_by_property('butts', 'skill', 'cooking'));
     }
 
     public function testGetObjectByPropertyButNo()
@@ -333,28 +332,28 @@ class TestTimberHelper extends Timber_UnitTestCase
         // Test WP_Post -> \Timber\Post
         $post_id = $this->factory->post->create();
         $wp_post = get_post($post_id);
-        $timber_post = \Timber\Helper::convert_wp_object($wp_post);
-        $this->assertTrue($timber_post instanceof \Timber\Post);
+        $timber_post = Timber\Helper::convert_wp_object($wp_post);
+        $this->assertTrue($timber_post instanceof Timber\Post);
 
         // Test WP_Term -> \Timber\Term
         $term_id = $this->factory->term->create();
         $wp_term = get_term($term_id);
-        $timber_term = \Timber\Helper::convert_wp_object($wp_term);
-        $this->assertTrue($timber_term instanceof \Timber\Term);
+        $timber_term = Timber\Helper::convert_wp_object($wp_term);
+        $this->assertTrue($timber_term instanceof Timber\Term);
 
         // Test WP_User -> \Timber\User
         $user_id = $this->factory->user->create();
         $wp_user = get_user_by('id', $user_id);
-        $timber_user = \Timber\Helper::convert_wp_object($wp_user);
-        $this->assertTrue($timber_user instanceof \Timber\User);
+        $timber_user = Timber\Helper::convert_wp_object($wp_user);
+        $this->assertTrue($timber_user instanceof Timber\User);
 
         // Test strange input
         $random_int = 2018;
-        $convert_int = \Timber\Helper::convert_wp_object($random_int);
+        $convert_int = Timber\Helper::convert_wp_object($random_int);
         $this->assertTrue($convert_int === $random_int);
 
         $array = [];
-        $convert_array = \Timber\Helper::convert_wp_object($array);
+        $convert_array = Timber\Helper::convert_wp_object($array);
         $this->assertTrue(is_array($convert_array));
     }
 
@@ -372,7 +371,7 @@ class TestTimberHelper extends Timber_UnitTestCase
             'post_title' => 'Basketball Player',
         ]);
         $wp_post = get_post($sport_id);
-        $sport_post = \Timber\Helper::convert_wp_object($wp_post);
+        $sport_post = Timber\Helper::convert_wp_object($wp_post);
         $this->assertInstanceOf(Sport::class, $sport_post);
         $this->assertEquals('ESPN', $sport_post->channel());
     }

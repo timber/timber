@@ -12,7 +12,7 @@ interface Setupable
      *
      * @since 2.0.0
      *
-     * @return \Timber\Core The affected object.
+     * @return Core The affected object.
      */
     public function setup();
 
@@ -21,7 +21,7 @@ interface Setupable
      *
      * @since 2.0.0
      *
-     * @return \Timber\Core The affected object.
+     * @return Core The affected object.
      */
     public function teardown();
 }
