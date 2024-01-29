@@ -82,7 +82,7 @@ class Helper
     {
         if ($enable_transients && self::_is_transient_locked($slug)) {
             /**
-             * Whether to force a locked transients to be regenerated.
+             * Filters whether to force a locked transients to be regenerated.
              *
              * If a transient is locked, it means that another process is currently generating the data.
              * If you want to force the transient to be regenerated, during that process, you can set this
