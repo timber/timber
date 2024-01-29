@@ -53,7 +53,7 @@ class TestTimberTwigDateFunction extends Timber_UnitTestCase
         $result = Timber\Timber::compile_string(
             "{{ date(date) == date('2010-10-04 13:45') ? 'OK' : 'KO' }}",
             [
-                'date' => new \DateTime('2010-10-04 13:45'),
+                'date' => new DateTime('2010-10-04 13:45'),
             ]
         );
 
@@ -77,10 +77,10 @@ class TestTimberTwigDateFunction extends Timber_UnitTestCase
         $result = Timber\Timber::compile_string(
             "{{ date(date) == date('2010-10-04 13:45') ? 'OK' : 'KO' }}",
             [
-                'date' => \DateTime::createFromFormat(
+                'date' => DateTime::createFromFormat(
                     'Y-m-d H:i',
                     '2010-10-04 13:45',
-                    new \DateTimeZone('UTC')
+                    new DateTimeZone('UTC')
                 )->getTimestamp(),
                 // A Unix Timestamp is always GMT.
             ]
@@ -94,10 +94,10 @@ class TestTimberTwigDateFunction extends Timber_UnitTestCase
         $result = Timber\Timber::compile_string(
             "{{ date(date) == date('1964-01-02 03:04') ? 'OK' : 'KO' }}",
             [
-                'date' => \DateTime::createFromFormat(
+                'date' => DateTime::createFromFormat(
                     'Y-m-d H:i',
                     '1964-01-02 03:04',
-                    new \DateTimeZone('UTC')
+                    new DateTimeZone('UTC')
                 )->getTimestamp(),
             ]
         );

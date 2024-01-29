@@ -68,7 +68,7 @@ class TestTimberTerm extends Timber_UnitTestCase
 
     public function testTermFromInvalidObject()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         register_taxonomy('baseball', ['post']);
         $term_id = $this->factory->term->create([

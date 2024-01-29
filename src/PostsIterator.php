@@ -12,7 +12,7 @@ use Timber\Factory\PostFactory;
 class PostsIterator extends ArrayIterator
 {
     /**
-     * @var \Timber\Post The last post that was returned by the iterator. Used
+     * @var Post The last post that was returned by the iterator. Used
      *                   to skip the logic in `current()`.
      */
     protected Post $last_post;

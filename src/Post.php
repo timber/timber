@@ -3,7 +3,6 @@
 namespace Timber;
 
 use SimpleXMLElement;
-
 use Timber\Factory\PostFactory;
 use Timber\Factory\UserFactory;
 use WP_Post;
@@ -174,7 +173,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * (i.e. Timber\Post or a subclass).
      *
      * @internal
-     * @return \Timber\Post
+     * @return Post
      */
     public static function build(WP_Post $wp_post): self
     {
@@ -195,7 +194,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
          * @since 2.0.0
          * @see   Timber::init()
          * @param array        $data An array of post data to import.
-         * @param \Timber\Post $post The Timber post instance.
+         * @param Post $post The Timber post instance.
          */
         $data = \apply_filters('timber/post/import_data', $data, $post);
 
@@ -285,7 +284,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * @api
      * @since 2.0.0
      *
-     * @return \Timber\Post The post instance.
+     * @return Post The post instance.
      */
     public function setup()
     {
@@ -324,7 +323,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * @api
      * @since 2.0.0
      *
-     * @return \Timber\Post The post instance.
+     * @return Post The post instance.
      */
     public function teardown()
     {
@@ -425,7 +424,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * content, it will use that to mark where to pull through.
      *
      * @api
-     * @see \Timber\PostExcerpt
+     * @see PostExcerpt
      *
      * @param array $options {
      *     An array of configuration options for generating the excerpt. Default empty.
@@ -447,7 +446,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * <h2>{{ post.title }}</h2>
      * <div>{{ post.excerpt({ words: 100, read_more: 'Keep reading' }) }}</div>
      * ```
-     * @return \Timber\PostExcerpt
+     * @return PostExcerpt
      */
     public function excerpt(array $options = [])
     {
@@ -468,7 +467,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      *
      * @api
      * @deprecated 2.0.0, use `{{ post.excerpt }}` instead.
-     * @see \Timber\PostExcerpt
+     * @see PostExcerpt
      * @example
      * ```twig
      * {# Use default excerpt #}
@@ -480,7 +479,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * {# Additionally restrict the length to 50 words #}
      * <p>{{ post.excerpt.length(50).read_more('Continue Reading') }}</p>
      * ```
-     * @return \Timber\PostExcerpt
+     * @return PostExcerpt
      */
     public function preview()
     {
@@ -727,7 +726,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
          * @param mixed        $value      The value.
          * @param int|null     $post_id    The post ID.
          * @param string       $field_name The ACF field name.
-         * @param \Timber\Post $post       The post object.
+         * @param Post $post       The post object.
          */
         $value = \apply_filters('timber/post/meta_object_field', null, $this->ID, $field_name, $this);
         $value = $this->convert($value);
@@ -928,7 +927,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
          * @since 1.1.4
          *
          * @param array        $authors An array of User objects. Default: User object for `post_author`.
-         * @param \Timber\Post $post    The post object.
+         * @param Post $post    The post object.
          */
         return \apply_filters('timber/post/authors', [$this->author()], $this);
     }
@@ -969,7 +968,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * If multiple categories are set, it will return just the first one.
      *
      * @api
-     * @return \Timber\Term|null
+     * @return Term|null
      */
     public function category()
     {
@@ -996,7 +995,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * {% endif %}
      * ```
      * @param string|array $post_type _optional_ use to find children of a particular post type (attachment vs. page for example). You might want to restrict to certain types of children in case other stuff gets all mucked in there. You can use 'parent' to use the parent's post type or you can pass an array of post types.
-     * @return \Timber\PostCollectionInterface
+     * @return PostCollectionInterface
      */
     public function children($post_type = 'any')
     {
@@ -1030,7 +1029,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      *                             special purposes. Might be set to 'liveblog' or other, depending
      *                             on what’s stored in your comments table.
      * @param string $status       Could be 'pending', etc.
-     * @see \Timber\CommentThread for an example with nested comments
+     * @see CommentThread for an example with nested comments
      * @return bool|\Timber\CommentThread
      *
      * @example
@@ -1142,7 +1141,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
                  * ```
                  *
                  * @param string       $form Form output. Default WordPress password form output generated by `get_the_password_form()`.
-                 * @param \Timber\Post $post The post object.
+                 * @param Post $post The post object.
                  */
                 return \apply_filters('timber/post/content/password_form', \get_the_password_form($this->ID), $this);
             }
@@ -1529,7 +1528,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * ```html
      * This post is from <span>Recipes</span>
      * ```
-     * @return \Timber\PostType
+     * @return PostType
      */
     public function type()
     {
@@ -1860,7 +1859,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * ```twig
      * <img src="{{ post.thumbnail.src }}" />
      * ```
-     * @return \Timber\Image|null of your thumbnail
+     * @return Image|null of your thumbnail
      */
     public function thumbnail()
     {
@@ -1943,7 +1942,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * Get a PostFactory instance for internal usage
      *
      * @internal
-     * @return \Timber\Factory\PostFactory
+     * @return PostFactory
      */
     private function factory()
     {

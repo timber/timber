@@ -4,7 +4,6 @@ namespace Timber\Factory;
 
 use InvalidArgumentException;
 use Timber\CoreInterface;
-
 use Timber\Term;
 use WP_Term;
 use WP_Term_Query;

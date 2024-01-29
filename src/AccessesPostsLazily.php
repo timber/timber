@@ -3,7 +3,6 @@
 namespace Timber;
 
 use ReturnTypeWillChange;
-
 use Timber\Factory\PostFactory;
 use WP_Post;
 
@@ -25,7 +24,7 @@ trait AccessesPostsLazily
     /**
      * PostFactory instance used internally to instantiate Posts.
      *
-     * @var \Timber\Factory\PostFactory
+     * @var PostFactory
      */
     private $factory;
 
@@ -67,7 +66,7 @@ trait AccessesPostsLazily
      *   // No additional overhead here.
      * }
      * ```
-     * @return \Timber\PostCollectionInterface The realized PostQuery.
+     * @return PostCollectionInterface The realized PostQuery.
      */
     public function realize(): self
     {

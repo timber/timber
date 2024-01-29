@@ -3,7 +3,6 @@
 namespace Timber;
 
 use Timber\Factory\TermFactory;
-
 use WP_Term;
 
 /**
@@ -82,7 +81,7 @@ class Term extends CoreEntity
      * @internal
      *
      * @param WP_Term      $wp_term The vanilla WordPress term object to build from.
-     * @return \Timber\Term
+     * @return Term
      */
     public static function build(WP_Term $wp_term): self
     {
@@ -205,7 +204,6 @@ class Term extends CoreEntity
         }
         return false;
     }
-
 
     /* Public methods
     ===================== */
@@ -343,7 +341,7 @@ class Term extends CoreEntity
          * @since 0.21.9
          *
          * @param string       $link The link.
-         * @param \Timber\Term $term The term object.
+         * @param Term $term The term object.
          */
         $link = \apply_filters('timber/term/link', $link, $this);
 
@@ -415,7 +413,7 @@ class Term extends CoreEntity
          * @since 0.21.9
          *
          * @param string       $rel  The relative link.
-         * @param \Timber\Term $term The term object.
+         * @param Term $term The term object.
          */
         $rel = \apply_filters('timber/term/path', $rel, $this);
 
@@ -503,7 +501,7 @@ class Term extends CoreEntity
      *                                   specify the class, use Class Maps.
      * @see https://timber.github.io/docs/v2/guides/posts/
      * @see https://timber.github.io/docs/v2/guides/class-maps/
-     * @return \Timber\PostQuery
+     * @return PostQuery
      */
     public function posts($query = [], $post_type_or_class = null)
     {

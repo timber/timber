@@ -90,7 +90,7 @@ class TestTimberDates extends Timber_UnitTestCase
 
         $current_time = current_datetime();
         // Subtract 3 hours to get a time in the past.
-        $post_date = $current_time->sub(new \DateInterval('PT3H'));
+        $post_date = $current_time->sub(new DateInterval('PT3H'));
 
         $post_id = $this->factory->post->create([
             'post_date' => $post_date->format('Y-m-d H:i:s'),

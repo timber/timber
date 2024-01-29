@@ -10,7 +10,6 @@ use Timber\Image;
 use Timber\PathHelper;
 use Timber\Post;
 use Timber\PostArrayObject;
-
 use Timber\PostQuery;
 use WP_Post;
 use WP_Query;

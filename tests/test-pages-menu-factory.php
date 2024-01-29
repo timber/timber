@@ -2,7 +2,7 @@
 
 use Timber\Factory\PagesMenuFactory;
 
-class MyPagesMenu extends \Timber\PagesMenu
+class MyPagesMenu extends Timber\PagesMenu
 {
 }
 

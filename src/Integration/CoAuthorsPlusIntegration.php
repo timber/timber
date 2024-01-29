@@ -4,7 +4,6 @@ namespace Timber\Integration;
 
 use CoAuthors_Plus;
 use Timber\Integration\CoAuthorsPlus\CoAuthorsPlusUser;
-
 use WP_User;
 
 class CoAuthorsPlusIntegration implements IntegrationInterface
