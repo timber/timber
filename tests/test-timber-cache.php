@@ -179,7 +179,7 @@ class TestTimberCache extends Timber_UnitTestCase
 
         Timber\Helper::_lock_transient($transient, 30);
 
-        add_filter('timber/transient/force_transient_' . $transient, '__return_true');
+        $this->add_filter_temporarily('timber/transient/force_transient_' . $transient, '__return_true');
         $get_transient = Timber\Helper::transient($transient, '__return_true');
         remove_filter('timber/transient/force_transient_' . $transient, '__return_true');
 
