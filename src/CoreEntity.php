@@ -223,7 +223,7 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
              * @param string             $post_meta  The field value.
              * @param int                $post_id    The post ID.
              * @param string             $field_name The name of the meta field to get the value for.
-             * @param \Timber\CoreEntity $post       The post object.
+             * @param CoreEntity $post       The post object.
              * @param array              $args       An array of arguments.
              */
             $object_meta = \apply_filters(

@@ -8,7 +8,6 @@
 namespace Timber\Integration;
 
 use ACF;
-
 use DateTimeImmutable;
 use Timber\Timber;
 

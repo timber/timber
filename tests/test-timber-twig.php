@@ -252,7 +252,7 @@ class TestTimberTwig extends Timber_UnitTestCase
 
     public function testSetObject()
     {
-        $this->expectException(\Twig\Error\SyntaxError::class);
+        $this->expectException(Twig\Error\SyntaxError::class);
         $pid = $this->factory->post->create([
             'post_title' => 'Spaceballs',
         ]);
@@ -273,7 +273,7 @@ class TestTimberTwig extends Timber_UnitTestCase
     public function testAddToTwig()
     {
         add_filter('timber/twig', function ($twig) {
-            $twig->addFilter(new \Twig\TwigFilter('foobar', function ($text) {
+            $twig->addFilter(new Twig\TwigFilter('foobar', function ($text) {
                 return $text . 'foobar';
             }));
             return $twig;
@@ -285,7 +285,7 @@ class TestTimberTwig extends Timber_UnitTestCase
     public function testTimberTwigObjectFilter()
     {
         add_filter('timber/twig', function ($twig) {
-            $twig->addFilter(new \Twig\TwigFilter('quack', function ($text) {
+            $twig->addFilter(new Twig\TwigFilter('quack', function ($text) {
                 return $text . ' Quack!';
             }));
             return $twig;
@@ -378,7 +378,7 @@ class TestTimberTwig extends Timber_UnitTestCase
 
     public function testRemoveADefaultFunction()
     {
-        $this->expectException(\Twig\Error\SyntaxError::class);
+        $this->expectException(Twig\Error\SyntaxError::class);
         add_filter('timber/twig/functions', function ($functions) {
             unset($functions['shortcode']);
             return $functions;
@@ -390,7 +390,7 @@ class TestTimberTwig extends Timber_UnitTestCase
 
     public function testRemoveADefaultFilter()
     {
-        $this->expectException(\Twig\Error\SyntaxError::class);
+        $this->expectException(Twig\Error\SyntaxError::class);
         add_filter('timber/twig/filters', function ($filters) {
             unset($filters['wpautop']);
             return $filters;

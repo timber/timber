@@ -4,7 +4,6 @@ namespace Timber\Factory;
 
 use InvalidArgumentException;
 use Timber\Comment;
-
 use Timber\CoreInterface;
 use WP_Comment;
 use WP_Comment_Query;

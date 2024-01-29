@@ -628,7 +628,7 @@ class TestTimberMeta extends Timber_UnitTestCase
         if (version_compare(Environment::VERSION, '3.8.0', '>=')) {
             $this->expectException(RuntimeError::class);
         } else {
-            $this->expectException(\ArgumentCountError::class);
+            $this->expectException(ArgumentCountError::class);
         }
 
         $post_id = $this->factory->post->create();
@@ -661,7 +661,7 @@ class TestTimberMeta extends Timber_UnitTestCase
         if (version_compare(Environment::VERSION, '3.8.0', '>=')) {
             $this->expectException(RuntimeError::class);
         } else {
-            $this->expectException(\ArgumentCountError::class);
+            $this->expectException(ArgumentCountError::class);
         }
 
         $term_id = $this->factory->term->create();
@@ -696,7 +696,7 @@ class TestTimberMeta extends Timber_UnitTestCase
         if (version_compare(Environment::VERSION, '3.8.0', '>=')) {
             $this->expectException(RuntimeError::class);
         } else {
-            $this->expectException(\ArgumentCountError::class);
+            $this->expectException(ArgumentCountError::class);
         }
 
         $user_id = $this->factory->user->create();
@@ -732,7 +732,7 @@ class TestTimberMeta extends Timber_UnitTestCase
         if (version_compare(Environment::VERSION, '3.8.0', '>=')) {
             $this->expectException(RuntimeError::class);
         } else {
-            $this->expectException(\ArgumentCountError::class);
+            $this->expectException(ArgumentCountError::class);
         }
 
         $post_id = $this->factory->post->create();

@@ -319,20 +319,19 @@ class TestTimberCache extends Timber_UnitTestCase
         $post = Timber::get_post($pid);
         $str_old = Timber::compile('assets/single-post.twig', [
             'post' => $post,
-        ], 600, \Timber\Loader::CACHE_OBJECT);
+        ], 600, Timber\Loader::CACHE_OBJECT);
         //sleep(1);
         $str_new = Timber::compile('assets/single-post.twig', [
             'post' => $post,
-        ], 600, \Timber\Loader::CACHE_OBJECT);
+        ], 600, Timber\Loader::CACHE_OBJECT);
         $this->assertEquals($str_old, $str_new);
         $loader = new Timber\Loader();
-        $clear = $loader->clear_cache_timber(\Timber\Loader::CACHE_OBJECT);
+        $clear = $loader->clear_cache_timber(Timber\Loader::CACHE_OBJECT);
         $this->assertTrue($clear);
         $works = true;
-        if (
-            isset($wp_object_cache->cache[\Timber\Loader::CACHEGROUP])
-            && !empty($wp_object_cache->cache[\Timber\Loader::CACHEGROUP])
-        ) {
+      
+        if (isset($wp_object_cache->cache[Timber\Loader::CACHEGROUP])
+            && !empty($wp_object_cache->cache[Timber\Loader::CACHEGROUP])) {
             $works = false;
         }
         $this->assertTrue($works);
@@ -461,12 +460,12 @@ class TestTimberCache extends Timber_UnitTestCase
         $str_old = Timber::compile('assets/single-post-rand.twig', [
             'post' => $post,
             'rand' => $r1,
-        ], [600, false], \Timber\Loader::CACHE_SITE_TRANSIENT);
+        ], [600, false], Timber\Loader::CACHE_SITE_TRANSIENT);
         self::_swapFiles();
         $str_new = Timber::compile('assets/single-post-rand.twig', [
             'post' => $post,
             'rand' => $r1,
-        ], [600, false], \Timber\Loader::CACHE_SITE_TRANSIENT);
+        ], [600, false], Timber\Loader::CACHE_SITE_TRANSIENT);
         $this->assertEquals($str_old, $str_new);
         self::_unswapFiles();
     }
@@ -482,12 +481,12 @@ class TestTimberCache extends Timber_UnitTestCase
         $str_old = Timber::compile('assets/single-post-rand.twig', [
             'post' => $post,
             'rand' => $r1,
-        ], [600, false], \Timber\Loader::CACHE_OBJECT);
+        ], [600, false], Timber\Loader::CACHE_OBJECT);
         self::_swapFiles();
         $str_new = Timber::compile('assets/single-post-rand.twig', [
             'post' => $post,
             'rand' => $r1,
-        ], [600, false], \Timber\Loader::CACHE_OBJECT);
+        ], [600, false], Timber\Loader::CACHE_OBJECT);
         $this->assertEquals($str_old, $str_new);
         self::_unswapFiles();
         $_wp_using_ext_object_cache = false;

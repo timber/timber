@@ -42,7 +42,6 @@ class TestTimberImage extends TimberAttachment_UnitTestCase
         return $post;
     }
 
-
     /* ----------------
      * Tests
      * ---------------- */
@@ -1105,7 +1104,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase
 
     public function testAnimagedGifResizeWithoutImagick()
     {
-        $this->expectException(\Twig\Error\RuntimeError::class);
+        $this->expectException(Twig\Error\RuntimeError::class);
         define('TEST_NO_IMAGICK', true);
         $image = self::copyTestAttachment('robocop.gif');
         $data = [

@@ -9,35 +9,38 @@ use PhpCsFixer\Fixer\Operator\NotOperatorWithSuccessorSpaceFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
 use Symplify\EasyCodingStandard\ValueObject\Set\SetList;
 
-return static function (ECSConfig $ecsConfig): void {
-    $ecsConfig->paths([__DIR__ . '/src', __DIR__ . '/tests', 'ecs.php']);
-
-    $ecsConfig->skip([
+return ECSConfig::configure()
+    ->withPaths([__DIR__ . '/src', __DIR__ . '/tests', 'ecs.php'])
+    ->withSkip([
         NotOperatorWithSuccessorSpaceFixer::class,
-    ]);
-
-    $ecsConfig->sets([SetList::PSR_12, SetList::ARRAY, SetList::SPACES, SetList::NAMESPACES]);
-
+    ])
     /**
      * Import
      * @see https://cs.symfony.com/doc/rules/index.html#import
      */
-    $ecsConfig->rule(FullyQualifiedStrictTypesFixer::class);
-    $ecsConfig->rule(NoLeadingImportSlashFixer::class);
-    $ecsConfig->rule(SingleImportPerStatementFixer::class);
-    $ecsConfig->ruleWithConfiguration(GlobalNamespaceImportFixer::class, [
+    ->withRules([
+        FullyQualifiedStrictTypesFixer::class,
+        NoLeadingImportSlashFixer::class,
+        SingleImportPerStatementFixer::class,
+    ])
+    ->withConfiguredRule(GlobalNamespaceImportFixer::class, [
         'import_classes' => true,
-    ]);
-
+    ])
     /**
      * NativeFunctionInvocation
      * @see https://cs.symfony.com/doc/rules/function_notation/native_function_invocation.html
      */
-    $ecsConfig->ruleWithConfiguration(NativeFunctionInvocationFixer::class, [
+    ->withConfiguredRule(NativeFunctionInvocationFixer::class, [
         'include' => [
             '@all',
         ],
         'scope' => 'namespaced',
         'strict' => true,
-    ]);
-};
+    ])
+    ->withSets([
+        SetList::PSR_12,
+        SetList::ARRAY,
+        SetList::SPACES,
+        SetList::NAMESPACES,
+    ])
+;
