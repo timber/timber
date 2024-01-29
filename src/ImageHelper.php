@@ -400,7 +400,7 @@ class ImageHelper
          * @example
          * ```php
          * // Change the basename used for sideloaded images.
-         * add_filter( 'timber/image_helper/sideload_image/basename', function ($basename, $path_parts) {
+         * add_filter( 'timber/sideload_image/basename', function ($basename, $path_parts) {
          *     return $path_parts['filename'] . '-' . substr($basename, 0, 6);
          * }, 10, 2)
          * ```
