@@ -179,9 +179,8 @@ class TestTimberCache extends Timber_UnitTestCase
 
         Timber\Helper::_lock_transient($transient, 30);
 
-        add_filter('timber_force_transient_' . $transient, '__return_true');
+        $this->add_filter_temporarily('timber/transient/force_transient_' . $transient, '__return_true');
         $get_transient = Timber\Helper::transient($transient, '__return_true');
-        remove_filter('timber_force_transient_' . $transient, '__return_true');
 
         $this->assertTrue($get_transient);
     }
@@ -330,6 +329,7 @@ class TestTimberCache extends Timber_UnitTestCase
         $clear = $loader->clear_cache_timber(Timber\Loader::CACHE_OBJECT);
         $this->assertTrue($clear);
         $works = true;
+      
         if (isset($wp_object_cache->cache[Timber\Loader::CACHEGROUP])
             && !empty($wp_object_cache->cache[Timber\Loader::CACHEGROUP])) {
             $works = false;
