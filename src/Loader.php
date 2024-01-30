@@ -176,6 +176,17 @@ class Loader
 
             $template = $twig->load($file);
             $output = $template->render($data);
+
+            /**
+             * Filters $output before it is cached.
+             *
+             * @since 2.0.1
+             *
+             * @param string $output
+             * @param array  $data
+             * @param string $file
+             */
+            $output = \apply_filters('timber/output/pre-cache', $output, $data, $file);
         }
 
         if (false !== $output && false !== $expires && null !== $key) {
