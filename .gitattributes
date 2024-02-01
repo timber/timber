@@ -3,14 +3,11 @@
 /.github export-ignore
 /bin export-ignore
 /docs export-ignore
-/lando-config export-ignore
 /tests export-ignore
 /.coveralls.yml export-ignore
 /.editorconfig export-ignore
 /.gitignore export-ignore
-/.lando.yml export-ignore
 /.scrutinizer.yml export-ignore
-/.travis.yml export-ignore
 /CONTRIBUTING.md export-ignore
 /README.md export-ignore
 /ecs.php export-ignore
@@ -19,3 +16,5 @@
 /phpstan.neon export-ignore
 /phpunit-nocover.xml export-ignore
 /phpunit.xml  export-ignore
+/.release-please-manifest.json export-ignore
+/release-please-config.json export-ignore
