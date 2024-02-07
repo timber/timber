@@ -30,7 +30,7 @@ In terms of security, developing a Timber theme is no different than developing 
 - Escape as late as possible.
 - Sanitation is okay, but validation/rejection is better.
 
-Read the [Theme Security](https://developer.wordpress.org/themes/theme-security/) section in the WordPress Theme Handbook, especially the part [Escaping: Securing Output](https://developer.wordpress.org/themes/theme-security/data-sanitization-escaping/#escaping-securing-output), if you want to learn more about escaping.
+You can read more about the basics of [theme security](https://developer.wordpress.org/themes/advanced-topics/security/) and [how to escape your output in WordPress](https://developer.wordpress.org/apis/security/escaping/) in the WordPress Developer Resources.
 
 
 ## Escapers
