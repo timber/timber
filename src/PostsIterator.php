@@ -48,7 +48,7 @@ class PostsIterator extends ArrayIterator
         $post = $factory->from($wp_post);
 
         if ($post instanceof Post) {
-          $post->setup();
+            $post->setup();
         }
 
         $this->last_post = $post;
@@ -73,7 +73,7 @@ class PostsIterator extends ArrayIterator
         $post = $this->last_post;
 
         if ($post instanceof Post) {
-          $post->teardown();
+            $post->teardown();
         }
 
         // Fire action when the loop has ended.
