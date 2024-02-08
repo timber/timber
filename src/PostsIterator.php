@@ -15,7 +15,7 @@ class PostsIterator extends ArrayIterator
      * @var Post The last post that was returned by the iterator. Used
      *                   to skip the logic in `current()`.
      */
-    protected Post $last_post;
+    protected null|Post $last_post;
 
     /**
      * Prepares the state before working on a post.
@@ -46,7 +46,7 @@ class PostsIterator extends ArrayIterator
 
         // Lazily instantiate a Timber\Post instance exactly once.
         $post = $factory->from($wp_post);
-        $post->setup();
+        $post?->setup();
 
         $this->last_post = $post;
 
@@ -68,7 +68,7 @@ class PostsIterator extends ArrayIterator
          * $post->setup() again.
          */
         $post = $this->last_post;
-        $post->teardown();
+        $post?->teardown();
 
         // Fire action when the loop has ended.
         if ($this->key() === $this->count() - 1) {
