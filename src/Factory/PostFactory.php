@@ -80,7 +80,7 @@ class PostFactory
         $postQuery = new PostQuery($query);
 
         // No need for lazyness, if there are no results
-        // This improves compability with Twig as it allows to check for emptyness via `if`
+        // This improves compatibility with Twig as it allows to check for emptyness via `if`
         if (0 === \count($postQuery)) {
             return [];
         }
