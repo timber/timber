@@ -77,10 +77,6 @@ This is where we’ll start in PHP.
 ```php
 $post = Timber::get_post();
 
-if (isset($post->meta('hero_image')) && strlen($post->meta('hero_image'))) {
-    $post->hero_image = Timber::get_image($post->meta('hero_image'));
-}
-
 $context = Timber::context([
     'post' => $post,
 ]);
@@ -93,7 +89,9 @@ Timber::render('single.twig', $context);
 You can now use all the above functions to transform your custom images in the same way, the format will be:
 
 ```twig
-<img src="{{ post.meta('hero_image').src | resize(500, 300) }}" />
+{% if post.meta('hero_image') %}
+    <img src="{{ get_image(post.meta('hero_image')).src | resize(500, 300) }}" />
+{% endif %}
 ```
 
 ## Gallery Field
