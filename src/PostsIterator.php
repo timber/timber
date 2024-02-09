@@ -15,7 +15,7 @@ class PostsIterator extends ArrayIterator
      * @var null|Post The last post that was returned by the iterator. Used
      *                   to skip the logic in `current()`.
      */
-    protected $last_post;
+    protected ?Post $last_post;
 
     /**
      * Prepares the state before working on a post.
