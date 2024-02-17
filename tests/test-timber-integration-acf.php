@@ -11,6 +11,14 @@ use Timber\User;
  */
 class TestTimberIntegrationACF extends Timber_UnitTestCase
 {
+    public function setUp(): void
+    {
+        if (!function_exists('get_field')) {
+            $this->markTestSkipped('ACF plugin is not loaded');
+        }
+        parent::setUp();
+    }
+
     public function testACFGetFieldPost()
     {
         $post_id = $this->factory->post->create();

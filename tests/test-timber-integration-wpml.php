@@ -6,6 +6,14 @@
  */
 class TestTimberIntegrationWPML extends Timber_UnitTestCase
 {
+    public function setUp(): void
+    {
+        if (!defined('ICL_LANGUAGE_CODE')) {
+            $this->markTestSkipped('WPML plugin is not loaded');
+        }
+        parent::setUp();
+    }
+
     public function testFileSystemToURLWithWPML()
     {
         $this->add_filter_temporarily('home_url', function ($url, $path) {

@@ -21,12 +21,12 @@ class TestTimberIntegrationsCoAuthors extends Timber_UnitTestCase
         parent::expectedDeprecated();
     }
 
-    public function set_up()
+    public function setUp(): void
     {
         if (!class_exists('CoAuthors_Plus')) {
-            return $this->markTestSkipped('CoAuthors_Plus plugin not loaded');
+            $this->markTestSkipped('CoAuthors Plus plugin is not loaded');
         }
-        parent::set_up();
+        parent::setUp();
     }
 
     /* ----------------

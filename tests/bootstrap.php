@@ -14,24 +14,29 @@ if (!is_file("{$_tests_dir}/includes/functions.php")) {
 // Get access to tests_add_filter() function.
 require_once $_tests_dir . '/includes/functions.php';
 
-function tt_get_arg(string $key) {
+function tt_get_arg(string $key)
+{
     foreach ($_SERVER['argv'] as $index => $arg) {
         if ($key === substr($arg, 0, strlen($key))) {
-            return ['index' => $index, $key => str_replace("{$key}=", '', $arg)];
+            return [
+                'index' => $index,
+                $key => str_replace("{$key}=", '', $arg),
+            ];
         }
     }
     return false;
 }
 
-function tt_is_group(string $group_name) {
+function tt_is_group(string $group_name)
+{
     $group = tt_get_arg('--group');
-    if ( false === $group ) {
+    if (false === $group) {
         return false;
     }
 
     $group_name_index = ++$group['index'];
 
-    if (!isset($_SERVER['argv'][ $group_name_index ])) {
+    if (!isset($_SERVER['argv'][$group_name_index])) {
         return false;
     }
 
@@ -39,9 +44,9 @@ function tt_is_group(string $group_name) {
 }
 
 // Add plugin to active mu-plugins to make sure it gets loaded.
-tests_add_filter('muplugins_loaded', function() {
+tests_add_filter('muplugins_loaded', function () {
     // Load Timber
-    \Timber\Timber::init();
+    Timber\Timber::init();
 
     if (tt_is_group('acf')) {
         require __DIR__ . '/../wp-content/plugins/advanced-custom-fields/acf.php';
