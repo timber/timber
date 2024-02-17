@@ -1002,15 +1002,48 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         if ($post_type === 'parent') {
             $post_type = $this->post_type;
         }
-        if (\is_array($post_type)) {
-            $post_type = \implode('&post_type[]=', $post_type);
-        }
-        $query = 'post_parent=' . $this->ID . '&post_type[]=' . $post_type . '&posts_per_page=-1&orderby=menu_order title&order=ASC&post_status[]=publish';
+
+        $args = [
+            'post_parent' => $this->ID,
+            'post_type' => $post_type,
+            'posts_per_page' => -1,
+            'orderby' => 'menu_order title',
+            'order' => 'ASC',
+            'post_status' => 'publish',
+        ];
+
         if ($this->post_status === 'publish') {
-            $query .= '&post_status[]=inherit';
+            $args['post_status'] = ['publish', 'inherit'];
         }
 
-        return $this->factory()->from(\get_children($query));
+        /**
+         * Filters the arguments for the query used to get the children of a post.
+         *
+         * This filter is used by the `Timber\Post::children()` method. It allows you to modify the
+         * arguments for the `get_children` function. This way you can change the query to get the
+         * children of a post.
+         *
+         * @example
+         * ```
+         * add_filter( 'timber/post/children_args', function( $args, $post ) {
+         *
+         *     if ( $post->post_type === 'custom_post_type' ) {
+         *        $args['post_type'] = 'private';
+         *     }
+         *
+         *     return $args;
+         * } );
+         * ```
+         *
+         * @see   \Timber\Post::children()
+         * @since 2.1.0
+         *
+         * @param array        $arguments An array of arguments for the `get_children` function.
+         * @param Post $post   The post object.
+         */
+        $args = \apply_filters('timber/post/children/args', $args, $this);
+
+        return $this->factory()->from(\get_children($args));
     }
 
     /**
