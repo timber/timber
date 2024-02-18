@@ -994,11 +994,20 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      *     {% endfor %}
      * {% endif %}
      * ```
-     * @param string|array $post_type _optional_ use to find children of a particular post type (attachment vs. page for example). You might want to restrict to certain types of children in case other stuff gets all mucked in there. You can use 'parent' to use the parent's post type or you can pass an array of post types.
+     * @param string|array $args _optional_ An array of arguments for the `get_children` function or a string/non-indexed array to use as the post type(s).
      * @return PostCollectionInterface
      */
-    public function children($post_type = 'any')
+    public function children($args = 'any')
     {
+        $post_type = 'any';
+        if (\is_string($args)) {
+            $post_type = $args;
+        } elseif (\array_values($args) === $args) {
+            $post_type = $args;
+        } elseif (\is_array($args)) {
+            $additional_args = $args;
+        }
+
         if ($post_type === 'parent') {
             $post_type = $this->post_type;
         }
@@ -1016,6 +1025,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable
             $args['post_status'] = ['publish', 'inherit'];
         }
 
+        if (isset($additional_args)) {
+            $args = \array_merge($args, $additional_args);
+        }
         /**
          * Filters the arguments for the query used to get the children of a post.
          *
@@ -1028,7 +1040,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
          * add_filter( 'timber/post/children_args', function( $args, $post ) {
          *
          *     if ( $post->post_type === 'custom_post_type' ) {
-         *        $args['post_type'] = 'private';
+         *        $args['post_status'] = 'private';
          *     }
          *
          *     return $args;
@@ -1041,7 +1053,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
          * @param array        $arguments An array of arguments for the `get_children` function.
          * @param Post $post   The post object.
          */
-        $args = \apply_filters('timber/post/children/args', $args, $this);
+        $args = \apply_filters('timber/post/children_args', $args, $this);
 
         return $this->factory()->from(\get_children($args));
     }

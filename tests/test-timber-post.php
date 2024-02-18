@@ -686,6 +686,27 @@ class TestTimberPost extends Timber_UnitTestCase
         $this->assertSame(12, count($parent->children(['foo', 'bar'])));
     }
 
+    public function testPostChildrenWithArguments()
+    {
+        $parent_id = $this->factory->post->create([
+            'post_type' => 'foo',
+        ]);
+        $children = $this->factory->post->create_many(4, [
+            'post_parent' => $parent_id,
+            'post_type' => 'foo',
+            'post_status' => 'private',
+        ]);
+        $children = $this->factory->post->create_many(8, [
+            'post_parent' => $parent_id,
+            'post_type' => 'foo',
+        ]);
+        $parent = Timber::get_post($parent_id);
+        $this->assertSame(4, count($parent->children([
+            'post_type' => 'foo',
+            'post_status' => 'private',
+        ])));
+    }
+
     public function testPostNoConstructorArgument()
     {
         $pid = $this->factory->post->create();
