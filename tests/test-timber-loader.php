@@ -114,6 +114,19 @@ class TestTimberLoader extends Timber_UnitTestCase
         switch_theme('default');
     }
 
+    public function testTwigLoadsFromNotStandardDirectoryInChildTheme()
+    {
+        $this->assertFileExists(WP_CONTENT_DIR . '/themes/timber-test-theme-child-non-standard/style.css');
+
+        switch_theme('timber-test-theme-child-non-standard');
+        $child_theme = get_stylesheet_directory_uri();
+        $this->assertEquals(WP_CONTENT_URL . '/themes/timber-test-theme-child-non-standard', $child_theme);
+        $context = [];
+        $str = Timber::compile('single.twig', $context);
+        $this->assertEquals('I am single.twig', trim($str));
+        switch_theme('default');
+    }
+
     public function testTwigLoadsFromParentTheme()
     {
         switch_theme('timber-test-theme-child');
