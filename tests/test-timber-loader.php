@@ -316,5 +316,6 @@ class TestTimberLoader extends Timber_UnitTestCase
         $str = Timber::compile('single.twig', $context);
         $this->assertEquals('I am single.twig', trim($str));
         switch_theme('default');
+        Timber::$locations = null;
     }
 }
