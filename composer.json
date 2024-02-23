@@ -120,9 +120,17 @@
       "@test",
       "@cs"
     ],
-    "test": "phpunit",
-    "test:codecov": "phpunit --coverage-clover ./build/logs/clover.xml",
-    "test:make-pot": "wp i18n make-pot src tests/languages/timber.pot --domain= && wp i18n make-pot ./tests/assets/translations ./tests/languages/timber-test.pot --domain=timber-test",
-    "test:no-cov": "phpunit --no-coverage"
+    "test": [
+      "@test:integration:acf",
+      "@test:integration:coauthors-plus",
+      "@test:integration:wpml",
+      "@test:integration"
+    ],
+    "test:integration": "phpunit --no-coverage --exclude-group acf,coauthors-plus,wpml",
+    "test:integration:acf": "phpunit --no-coverage --group acf",
+    "test:integration:coauthors-plus": "phpunit --no-coverage --group coauthors-plus",
+    "test:integration:codecov": "phpunit --coverage-clover ./build/logs/clover.xml",
+    "test:integration:wpml": "phpunit --no-coverage --group wpml",
+    "test:make-pot": "wp i18n make-pot src tests/languages/timber.pot --domain= && wp i18n make-pot ./tests/assets/translations ./tests/languages/timber-test.pot --domain=timber-test"
   }
 }

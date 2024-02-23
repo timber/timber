@@ -329,7 +329,7 @@ class TestTimberCache extends Timber_UnitTestCase
         $clear = $loader->clear_cache_timber(Timber\Loader::CACHE_OBJECT);
         $this->assertTrue($clear);
         $works = true;
-      
+
         if (isset($wp_object_cache->cache[Timber\Loader::CACHEGROUP])
             && !empty($wp_object_cache->cache[Timber\Loader::CACHEGROUP])) {
             $works = false;

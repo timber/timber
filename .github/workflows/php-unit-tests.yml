@@ -139,17 +139,16 @@ jobs:
       - name: Install tests
         run: bash bin/install-wp-tests.sh wordpress_test root '' 127.0.0.1:${{ job.services.mysql.ports['3306'] }} ${{ matrix.wp }} true
 
-
       - name: Run tests
         if: ${{ !matrix.webp }}
-        run: composer run test:no-cov
+        run: composer run test
         env:
           WP_MULTISITE: ${{ matrix.multisite }}
 
       - name: Run tests with coverage
         if: matrix.coverage == true
         run: |
-          composer run test:codecov
+          composer run test:integration:codecov
 
       - name: Upload coverage results to Coveralls
         if: matrix.coverage == true

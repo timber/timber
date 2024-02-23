@@ -636,7 +636,7 @@ class TestTimberMenu extends Timber_UnitTestCase
         $this->assertEquals('bar', $item->foo);
         $this->assertNotEquals('bar', $item->meta('foo'));
         $this->assertEquals('stardust', $item->meta('ziggy'));
-        $this->assertNull($item->meta('asdfafds'));
+        $this->assertSame('', $item->meta('asdfafds'));
     }
 
     public function testMenuMeta()

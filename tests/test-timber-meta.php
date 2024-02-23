@@ -97,10 +97,10 @@ class TestTimberMeta extends Timber_UnitTestCase
         $user = Timber::get_user($user_id);
         $comment = Timber::get_comment($comment_id);
 
-        $this->assertSame(null, $post->meta('not_found'));
-        $this->assertSame(null, $term->meta('not_found'));
-        $this->assertSame(null, $user->meta('not_found'));
-        $this->assertSame(null, $comment->meta('not_found'));
+        $this->assertSame('', $post->meta('not_found'));
+        $this->assertSame('', $term->meta('not_found'));
+        $this->assertSame('', $user->meta('not_found'));
+        $this->assertSame('', $comment->meta('not_found'));
     }
 
     public function testPreMetaFilter()
@@ -375,16 +375,16 @@ class TestTimberMeta extends Timber_UnitTestCase
             ]
         );
 
-        $this->assertSame(null, $post->raw_meta('my_custom_property_inexistent'));
+        $this->assertSame('', $post->raw_meta('my_custom_property_inexistent'));
         $this->assertSame('', $post_string);
 
-        $this->assertSame(null, $term->raw_meta('my_custom_property_inexistent'));
+        $this->assertSame('', $term->raw_meta('my_custom_property_inexistent'));
         $this->assertSame('', $term_string);
 
-        $this->assertSame(null, $user->raw_meta('my_custom_property_inexistent'));
+        $this->assertSame('', $user->raw_meta('my_custom_property_inexistent'));
         $this->assertSame('', $user_string);
 
-        $this->assertSame(null, $comment->raw_meta('my_custom_property_inexistent'));
+        $this->assertSame('', $comment->raw_meta('my_custom_property_inexistent'));
         $this->assertSame('', $comment_string);
     }
 
