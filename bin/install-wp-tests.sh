@@ -188,6 +188,8 @@ install_wp_cli() {
 copy_test_themes() {
     cp -rf ./tests/assets/themes/timber-test-theme $WP_CORE_DIR/wp-content/themes/
     cp -rf ./tests/assets/themes/timber-test-theme-child $WP_CORE_DIR/wp-content/themes/
+	 cp -rf ./tests/assets/themes/timber-test-theme-non-standard $WP_CORE_DIR/wp-content/themes/
+	 cp -rf ./tests/assets/themes/timber-test-theme-child-non-standard $WP_CORE_DIR/wp-content/themes/
 }
 
 install_wp

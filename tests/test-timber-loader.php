@@ -302,4 +302,24 @@ class TestTimberLoader extends Timber_UnitTestCase
         $str = Timber::compile('@assets/thumb-test.twig');
         $this->assertEquals('<img src="" />', trim($str));
     }
+
+    public function testTwigLoadsFromNotStandardDirectoryInChildTheme()
+    {
+        $this->assertFileExists(WP_CONTENT_DIR . '/themes/timber-test-theme-child-non-standard/style.css');
+        switch_theme('timber-test-theme-child-non-standard');
+        $parent_theme_dir = get_template_directory();
+
+        // Load parent theme functions.php specifically from this directory to fake the caller location.
+        require_once $parent_theme_dir . '/functions.php';
+
+        $child_theme = get_stylesheet_directory_uri();
+        $this->assertEquals(WP_CONTENT_URL . '/themes/timber-test-theme-child-non-standard', $child_theme);
+        $context = [];
+        $str = Timber::compile('single.twig', $context);
+        $this->assertEquals('I am single.twig', trim($str));
+        switch_theme('default');
+
+        // Reset the Timber::$dirname to the default value.
+        Timber::$dirname = 'views';
+    }
 }
