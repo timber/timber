@@ -180,7 +180,7 @@ class Loader
             /**
              * Filters $output before it is cached.
              *
-             * @since 2.0.1
+             * @since 2.1.0
              *
              * @param string $output
              * @param array  $data

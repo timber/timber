@@ -396,7 +396,7 @@ class ImageHelper
 
         /**
          * Filters basename for sideloaded files.
-         * @since 2.0.1
+         * @since 2.1.0
          * @example
          * ```php
          * // Change the basename used for sideloaded images.
