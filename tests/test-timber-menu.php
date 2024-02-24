@@ -636,7 +636,7 @@ class TestTimberMenu extends Timber_UnitTestCase
         $this->assertEquals('bar', $item->foo);
         $this->assertNotEquals('bar', $item->meta('foo'));
         $this->assertEquals('stardust', $item->meta('ziggy'));
-        $this->assertNull($item->meta('asdfafds'));
+        $this->assertSame('', $item->meta('asdfafds'));
     }
 
     public function testMenuMeta()
@@ -1072,8 +1072,8 @@ class TestTimberMenu extends Timber_UnitTestCase
         $menu_id = $menu['term_id'];
 
         $menu = Timber::get_menu($menu_id);
-        $this->assertInstanceOf(\Timber\Post::class, $menu->items[0]->master_object());
-        $this->assertInstanceOf(\Timber\Term::class, $menu->items[6]->master_object());
+        $this->assertInstanceOf(Timber\Post::class, $menu->items[0]->master_object());
+        $this->assertInstanceOf(Timber\Term::class, $menu->items[6]->master_object());
         $this->assertInstanceOf(WP_Post_Type::class, $menu->items[7]->master_object());
     }
 

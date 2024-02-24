@@ -114,7 +114,7 @@ class TestCommentFactory extends Timber_UnitTestCase
 
     public function testInvalidCommentClassThrowsError()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $post_comment_id = $this->factory->comment->create([
             'comment_post_ID' => $this->factory->post->create(),

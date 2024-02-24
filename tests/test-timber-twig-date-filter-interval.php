@@ -33,10 +33,10 @@ class TestTimberTwigDateFilterInterval extends Timber_UnitTestCase
     public function get_context()
     {
         return [
-            'date1' => new \DateInterval('P2D'),
-            'date2' => new \DateInterval('P2D'),
+            'date1' => new DateInterval('P2D'),
+            'date2' => new DateInterval('P2D'),
             // This should have no effect on \DateInterval formatting
-            'timezone1' => new \DateTimeZone('America/New_York'),
+            'timezone1' => new DateTimeZone('America/New_York'),
         ];
     }
 

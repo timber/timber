@@ -131,7 +131,7 @@ class TestUserFactory extends Timber_UnitTestCase
         // Pass a list of IDs.
         list($user, $invalid) = $userFactory->from([$user_id, 256]);
 
-        $this->assertInstanceOf(Timber\User::class, $user);
+        $this->assertInstanceOf(User::class, $user);
         $this->assertNull($invalid);
     }
 
@@ -144,7 +144,7 @@ class TestUserFactory extends Timber_UnitTestCase
 
     public function testInvalidUserClassThrowsError()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $bad_user_obj = new BadUser();
 

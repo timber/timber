@@ -12,10 +12,10 @@ use Timber\Factory\PostFactory;
 class PostsIterator extends ArrayIterator
 {
     /**
-     * @var \Timber\Post The last post that was returned by the iterator. Used
+     * @var null|Post The last post that was returned by the iterator. Used
      *                   to skip the logic in `current()`.
      */
-    protected Post $last_post;
+    protected ?Post $last_post;
 
     /**
      * Prepares the state before working on a post.
@@ -46,7 +46,10 @@ class PostsIterator extends ArrayIterator
 
         // Lazily instantiate a Timber\Post instance exactly once.
         $post = $factory->from($wp_post);
-        $post->setup();
+
+        if ($post instanceof Post) {
+            $post->setup();
+        }
 
         $this->last_post = $post;
 
@@ -68,7 +71,10 @@ class PostsIterator extends ArrayIterator
          * $post->setup() again.
          */
         $post = $this->last_post;
-        $post->teardown();
+
+        if ($post instanceof Post) {
+            $post->teardown();
+        }
 
         // Fire action when the loop has ended.
         if ($this->key() === $this->count() - 1) {

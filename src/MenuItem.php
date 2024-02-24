@@ -90,7 +90,7 @@ class MenuItem extends CoreEntity
      *
      * @since 1.12.0
      * @see \Timber\MenuItem::menu()
-     * @var \Timber\Menu The `Timber\Menu` object the menu item is associated with.
+     * @var Menu The `Menu` object the menu item is associated with.
      */
     protected $menu;
 
@@ -119,8 +119,8 @@ class MenuItem extends CoreEntity
     /**
      * @internal
      * @param array|object $data The data this MenuItem is wrapping
-     * @param \Timber\Menu $menu The `Timber\Menu` object the menu item is associated with.
-     * @return \Timber\MenuItem a new MenuItem instance
+     * @param Menu $menu The `Menu` object the menu item is associated with.
+     * @return MenuItem a new MenuItem instance
      */
     public static function build($data, ?Menu $menu = null): self
     {
@@ -130,7 +130,7 @@ class MenuItem extends CoreEntity
     /**
      * @internal
      * @param WP_Post $data
-     * @param \Timber\Menu $menu The `Timber\Menu` object the menu item is associated with.
+     * @param Menu $menu The `Menu` object the menu item is associated with.
      */
     protected function __construct(WP_Post $data, $menu = null)
     {
@@ -180,7 +180,7 @@ class MenuItem extends CoreEntity
     public function add_class(string $class_name)
     {
         // Class name is already there
-        if (!\in_array($class_name, $this->classes, true)) {
+        if (\in_array($class_name, $this->classes, true)) {
             return;
         }
         $this->classes[] = $class_name;
@@ -301,7 +301,7 @@ class MenuItem extends CoreEntity
      *
      * @api
      *
-     * @param \Timber\MenuItem $item The menu item to add.
+     * @param MenuItem $item The menu item to add.
      */
     public function add_child(MenuItem $item)
     {
@@ -479,7 +479,7 @@ class MenuItem extends CoreEntity
      *
      * @api
      * @since 1.12.0
-     * @return \Timber\Menu The `Timber\Menu` object the menu item is associated with.
+     * @return Menu The `Menu` object the menu item is associated with.
      */
     public function menu()
     {

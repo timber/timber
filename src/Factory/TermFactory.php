@@ -4,7 +4,6 @@ namespace Timber\Factory;
 
 use InvalidArgumentException;
 use Timber\CoreInterface;
-
 use Timber\Term;
 use WP_Term;
 use WP_Term_Query;
@@ -100,7 +99,27 @@ class TermFactory
 
     protected function get_term_class(WP_Term $term): string
     {
-        // Get the user-configured Class Map
+        /**
+         * Filters the class(es) used for terms of different taxonomies.
+         *
+         * The default Term Class Map will contain class names mapped to the build-in post_tag and category taxonomies.
+         *
+         * @since 2.0.0
+         * @example
+         * ```
+         * add_filter( 'timber/term/classmap', function( $classmap ) {
+         *     $custom_classmap = [
+         *         'expertise'   => ExpertiseTerm::class,
+         *     ];
+         *
+         *     return array_merge( $classmap, $custom_classmap );
+         * } );
+         * ```
+         *
+         * @param array $classmap The term class(es) to use. An associative array where the key is
+         *                        the taxonomy name and the value the name of the class to use for this
+         *                        taxonomy or a callback that determines the class to use.
+         */
         $map = \apply_filters('timber/term/classmap', [
             'post_tag' => Term::class,
             'category' => Term::class,

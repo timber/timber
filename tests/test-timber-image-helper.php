@@ -6,10 +6,40 @@
  */
 class TestTimberImageHelper extends TimberAttachment_UnitTestCase
 {
+    public function set_up()
+    {
+        switch_theme('timber-test-theme');
+
+        parent::set_up();
+    }
+
+    public function tear_down()
+    {
+        $img_dir = get_stylesheet_directory_uri() . '/images';
+
+        if (file_exists($img_dir)) {
+            exec(sprintf("rm -rf %s", escapeshellarg($img_dir)));
+        }
+
+        $uploads = wp_upload_dir();
+        $files = glob($uploads['basedir'] . date('/Y/m/') . '*');
+
+        foreach ($files as $file) {
+            if (is_file($file)) {
+                unlink($file);
+            }
+        }
+
+        switch_theme('default');
+
+        parent::tear_down();
+    }
+
     public function testHTTPAnalyze()
     {
         $url = 'http://example.org/wp-content/uploads/2017/06/dog.jpg';
         $info = Timber\ImageHelper::analyze_url($url);
+        $this->assertEquals(Timber\ImageHelper::BASE_UPLOADS, $info['base']);
         $this->assertEquals('/2017/06', $info['subdir']);
     }
 
@@ -17,7 +47,136 @@ class TestTimberImageHelper extends TimberAttachment_UnitTestCase
     {
         $url = 'https://example.org/wp-content/uploads/2017/06/dog.jpg';
         $info = Timber\ImageHelper::analyze_url($url);
+        $this->assertEquals(Timber\ImageHelper::BASE_UPLOADS, $info['base']);
         $this->assertEquals('/2017/06', $info['subdir']);
+    }
+
+    /**
+     * Tests "pre_analyze_url" and "analyze_url" filters where
+     * "pre_analyze_url" IS NOT short-circuited which triggers
+     * the helper's default behaviour.
+     */
+    public function testAnalyzeFilters1()
+    {
+        $src = 'https://example.org/wp-content/uploads/2017/06/dog.jpg';
+
+        $pre_filter = function (?array $info, string $url) use ($src) {
+            $this->assertEquals($src, $url);
+            $this->assertNull($info);
+            return $info;
+        };
+
+        $this->add_filter_temporarily('timber/image_helper/pre_analyze_url', $pre_filter, 10, 2);
+
+        $filter = function (array $info, string $url) use ($src) {
+            $this->assertEquals($src, $url);
+            $this->assertSame(Timber\ImageHelper::BASE_UPLOADS, $info['base']);
+            $this->assertEquals('/2017/06', $info['subdir']);
+            return $info;
+        };
+
+        $this->add_filter_temporarily('timber/image_helper/analyze_url', $filter, 10, 2);
+
+        $info = Timber\ImageHelper::analyze_url($src);
+    }
+
+    /**
+     * Tests "pre_analyze_url" and "analyze_url" filters where
+     * "pre_analyze_url" IS short-circuited which ignores
+     * the helper's default behaviour.
+     */
+    public function testAnalyzeFilters2()
+    {
+        $src = 'https://example.org/wp-content/uploads/2017/06/dog.jpg';
+
+        $pre_filter = function (?array $info, string $url) {
+            return [
+                'url' => $url,
+                'absolute' => Timber\URLHelper::is_absolute($url),
+                'base' => -1,
+                'subdir' => '',
+                'filename' => '',
+                'extension' => '',
+                'basename' => '',
+            ];
+        };
+
+        $this->add_filter_temporarily('timber/image_helper/pre_analyze_url', $pre_filter, 10, 2);
+
+        $filter = function (array $info, string $url) {
+            $this->assertSame(-1, $info['base']);
+            $this->assertEquals('', $info['subdir']);
+            return $info;
+        };
+
+        $this->add_filter_temporarily('timber/image_helper/analyze_url', $filter, 10, 2);
+
+        $info = Timber\ImageHelper::analyze_url($src);
+    }
+
+    /**
+     * Tests "pre_theme_url_to_dir" and "theme_url_to_dir" filters where
+     * "pre_theme_url_to_dir" IS NOT short-circuited which triggers
+     * the helper's default behaviour.
+     */
+    public function testThemeUrlToDirFilters1()
+    {
+        $dest = TestExternalImage::copy_image_to_stylesheet('assets/images');
+        $this->addFile($dest);
+        $this->assertFileExists($dest);
+
+        $image = Timber::get_external_image($dest);
+        $src = $image->src();
+
+        $pre_filter = function (?string $path, string $url) use ($src) {
+            $this->assertEquals($src, $url);
+            $this->assertNull($path);
+            return $path;
+        };
+
+        $this->add_filter_temporarily('timber/image_helper/pre_theme_url_to_dir', $pre_filter, 10, 2);
+
+        $filter = function (string $path, string $url) use ($dest, $src) {
+            $this->assertEquals($src, $url);
+            $this->assertEquals($dest, $path);
+            return $path;
+        };
+
+        $this->add_filter_temporarily('timber/image_helper/theme_url_to_dir', $filter, 10, 2);
+
+        $path = Timber\ImageHelper::theme_url_to_dir($src);
+        $this->assertEquals($dest, $path);
+    }
+
+    /**
+     * Tests "pre_theme_url_to_dir" and "theme_url_to_dir" filters where
+     * "pre_theme_url_to_dir" IS short-circuited which ignores
+     * the helper's default behaviour.
+     */
+    public function testThemeUrlToDirFilters2()
+    {
+        $dest = TestExternalImage::copy_image_to_stylesheet('assets/images');
+        $this->addFile($dest);
+        $this->assertFileExists($dest);
+
+        $image = Timber::get_external_image($dest);
+        $src = $image->src();
+
+        $pre_filter = function (?string $path, string $url) {
+            return '/path/to/' . basename($url);
+        };
+
+        $this->add_filter_temporarily('timber/image_helper/pre_theme_url_to_dir', $pre_filter, 10, 2);
+
+        $filter = function (string $path, string $url) {
+            $this->assertEquals('/path/to/' . basename($url), $path);
+            return $path;
+        };
+
+        $this->add_filter_temporarily('timber/image_helper/theme_url_to_dir', $filter, 10, 2);
+
+        $path = Timber\ImageHelper::theme_url_to_dir($src);
+        $this->assertEquals('/path/to/' . basename($src), $path);
     }
 
     public function testIsAnimatedGif()
@@ -47,7 +206,7 @@ class TestTimberImageHelper extends TimberAttachment_UnitTestCase
     public function testServerLocation()
     {
         $arch = TestTimberImage::copyTestAttachment('arch.jpg');
-        $this->assertEquals($arch, \Timber\ImageHelper::get_server_location($arch));
+        $this->assertEquals($arch, Timber\ImageHelper::get_server_location($arch));
     }
 
     /**

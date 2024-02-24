@@ -5,7 +5,11 @@ order: "1650"
 
 ## Twig Environment
 
-Timber abstracts some of that functionality for you, so you can add functions or filters more easily.
+Twig has a `\Twig\Environment` class that you can [use to extend Twig](https://twig.symfony.com/doc/3.x/advanced.html). One of the most common ways this is used is to add [functions](https://twig.symfony.com/doc/3.x/advanced.html#functions) and [filters](https://twig.symfony.com/doc/3.x/advanced.html#filters) to Twig. But it could also be used to add globals, extensions, and more.
+
+Timber creates a `\Twig\Environment` object for you. You can use the `timber/twig` filter to access that object and extend Twig through it.
+
+Timber further abstracts some of that functionality for you, so you can add functions or filters more easily.
 
 ## Functions
 
@@ -62,7 +66,7 @@ add_filter('timber/twig/functions', function ($functions) {
 You can replace a function with your own function or even remove a function by updating the array items in `$functions`.
 
 ```php
-add_filter('timber/twig/filters', function ($functions) {
+add_filter('timber/twig/functions', function ($functions) {
     // Replace a function.
     $functions['get_image'] = [
         'callable' => 'custom_get_image',

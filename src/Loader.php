@@ -176,6 +176,17 @@ class Loader
 
             $template = $twig->load($file);
             $output = $template->render($data);
+
+            /**
+             * Filters $output before it is cached.
+             *
+             * @since 2.1.0
+             *
+             * @param string $output
+             * @param array  $data
+             * @param string $file
+             */
+            $output = \apply_filters('timber/output/pre-cache', $output, $data, $file);
         }
 
         if (false !== $output && false !== $expires && null !== $key) {
@@ -245,7 +256,7 @@ class Loader
     }
 
     /**
-     * @return \Twig\Loader\FilesystemLoader
+     * @return FilesystemLoader
      */
     public function get_loader()
     {
@@ -308,7 +319,7 @@ class Loader
     }
 
     /**
-     * @return \Twig\Environment
+     * @return Environment
      */
     public function get_twig()
     {
@@ -432,7 +443,7 @@ class Loader
 
             $environment_options['cache'] = $twig_cache_loc;
         }
-        $twig = new \Twig\Environment($this->get_loader(), $environment_options);
+        $twig = new Environment($this->get_loader(), $environment_options);
 
         if (WP_DEBUG) {
             $twig->addExtension(new \Twig\Extension\DebugExtension());
@@ -463,7 +474,7 @@ class Loader
          *
          * @since 0.20.10
          *
-         * @param \Twig\Environment $twig The Twig environment you can add functionality to.
+         * @param Environment $twig The Twig environment you can add functionality to.
          */
         $twig = \apply_filters('timber/loader/twig', $twig);
 
@@ -502,7 +513,7 @@ class Loader
          * </a>
          * ```
          *
-         * @param \Twig\Environment $twig The Twig environment.
+         * @param Environment $twig The Twig environment.
          */
         $twig = \apply_filters('timber/twig', $twig);
 
@@ -628,12 +639,12 @@ class Loader
     }
 
     /**
-     * @return \Twig\CacheExtension\Extension
+     * @return CacheExtension\Extension
      */
     private function _get_cache_extension()
     {
-        $key_generator = new \Timber\Cache\KeyGenerator();
-        $cache_provider = new \Timber\Cache\WPObjectCacheAdapter($this);
+        $key_generator = new Cache\KeyGenerator();
+        $cache_provider = new Cache\WPObjectCacheAdapter($this);
         $cache_lifetime = \apply_filters('timber/cache/extension/lifetime', 0);
         $cache_strategy = new CacheExtension\CacheStrategy\GenerationalCacheStrategy(
             $cache_provider,
@@ -656,6 +667,25 @@ class Loader
         $cache_mode = $this->_get_cache_mode($cache_mode);
         $value = false;
         $trans_key = \substr($group . '_' . $key, 0, self::TRANS_KEY_LEN);
+
+        /**
+         * Filters the transient key used for caching.
+         *
+         * @api
+         * @since 2.1.0
+         * @example
+         * ```
+         * add_filter( 'timber/cache/transient_key', function( $trans_key, $key, $group, $cache_mode ) {
+         *     return $trans_key . '_my_suffix';
+         * }, 10, 4 );
+         * ```
+         *
+         * @param string $trans_key The transient key.
+         * @param string $key The cache key.
+         * @param string $group The cache group.
+         * @param string $cache_mode The cache mode.
+         */
+        $trans_key = apply_filters('timber/cache/transient_key', $trans_key, $key, $group, $cache_mode);
 
         if (self::CACHE_TRANSIENT === $cache_mode) {
             $value = \get_transient($trans_key);
@@ -684,6 +714,25 @@ class Loader
 
         $cache_mode = $this->_get_cache_mode($cache_mode);
         $trans_key = \substr($group . '_' . $key, 0, self::TRANS_KEY_LEN);
+
+        /**
+         * Filters the transient key used for caching.
+         *
+         * @api
+         * @since 2.1.0
+         * @example
+         * ```
+         * add_filter( 'timber/cache/transient_key', function( $trans_key, $key, $group, $cache_mode ) {
+         *     return $trans_key . '_my_suffix';
+         * }, 10, 4 );
+         * ```
+         *
+         * @param string $trans_key The transient key.
+         * @param string $key The cache key.
+         * @param string $group The cache group.
+         * @param string $cache_mode The cache mode.
+         */
+        $trans_key = apply_filters('timber/cache/transient_key', $trans_key, $key, $group, $cache_mode);
 
         if (self::CACHE_TRANSIENT === $cache_mode) {
             \set_transient($trans_key, $value, $expires);

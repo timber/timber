@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * @group posts-api
  * @group post-collections

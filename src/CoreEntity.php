@@ -177,7 +177,7 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
             $object_meta = \get_metadata($object_type, $this->ID, $field_name, true);
 
             // Mimick $single argument when fetching all meta values.
-            if (empty($field_name) && \is_array($object_meta) && !empty($object_meta)) {
+            if (empty($field_name) && \is_array($object_meta)) {
                 $object_meta = \array_map(function ($meta) {
                     /**
                      * We use array_key_exists() instead of isset(), because when the meta value is null, isset() would
@@ -191,11 +191,6 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
 
                     return $meta;
                 }, $object_meta);
-            }
-
-            // Empty result.
-            if (empty($object_meta)) {
-                $object_meta = empty($field_name) ? [] : null;
             }
         }
 
@@ -223,7 +218,7 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
              * @param string             $post_meta  The field value.
              * @param int                $post_id    The post ID.
              * @param string             $field_name The name of the meta field to get the value for.
-             * @param \Timber\CoreEntity $post       The post object.
+             * @param CoreEntity $post       The post object.
              * @param array              $args       An array of arguments.
              */
             $object_meta = \apply_filters(

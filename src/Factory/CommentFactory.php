@@ -4,7 +4,6 @@ namespace Timber\Factory;
 
 use InvalidArgumentException;
 use Timber\Comment;
-
 use Timber\CoreInterface;
 use WP_Comment;
 use WP_Comment_Query;
@@ -72,7 +71,31 @@ class CommentFactory
 
     protected function get_comment_class(WP_Comment $comment): string
     {
-        // Get the user-configured Class Map
+        /**
+         * Filters the class(es) used for comments linked to different post types.
+         *
+         * The default class is Timber\Comment. You can use this filter to provide your own comment class for specific post types.
+         *
+         * Make sure to merge in your additional classes instead of overwriting the whole Class Map.
+         *
+         * @since 2.0.0
+         * @example
+         * ```
+         * use Book;
+         *
+         * add_filter( 'timber/post/classmap', function( $classmap ) {
+         *     $custom_classmap = [
+         *         'book' => BookComment::class,
+         *     ];
+         *
+         *     return array_merge( $classmap, $custom_classmap );
+         * } );
+         * ```
+         *
+         * @param array $classmap The post class(es) to use. An associative array where the key is
+         *                        the post type and the value the name of the class to use for the comments
+         *                        of this post type or a callback that determines the class to use.
+         */
         $map = \apply_filters('timber/comment/classmap', []);
 
         $type = \get_post_type($comment->comment_post_ID);

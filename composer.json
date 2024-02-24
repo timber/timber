@@ -1,24 +1,39 @@
 {
   "name": "timber/timber",
-  "description": "Plugin to write WordPress themes w Object-Oriented Code and the Twig Template Engine",
+  "description": "Create WordPress themes with beautiful OOP code and the Twig Template Engine",
   "license": "MIT",
   "type": "library",
   "keywords": [
     "timber",
     "twig",
     "themes",
-    "templating"
+    "templating",
+    "wordpress"
   ],
   "authors": [
     {
-      "name": "Jared Novack",
-      "email": "jared@upstatement.com",
-      "homepage": "http://upstatement.com"
+      "name": "Erik van der Bas",
+      "email": "erik@basedonline.nl",
+      "homepage": "https://basedonline.nl"
     },
     {
-      "name": "Connor J. Burton",
-      "email": "connorjburton@gmail.com",
-      "homepage": "http://connorburton.com"
+      "name": "Lukas Gächter",
+      "email": "lukas.gaechter@mind.ch",
+      "homepage": "https://www.mind.ch"
+    },
+    {
+      "name": "Nicolas Lemoine",
+      "email": "nico@n5s.dev",
+      "homepage": "https://n5s.dev"
+    },
+    {
+      "name": "Jared Novack",
+      "email": "jared@upstatement.com",
+      "homepage": "https://upstatement.com"
+    },
+    {
+      "name": "Timber Community",
+      "homepage": "https://github.com/timber/timber"
     }
   ],
   "homepage": "http://timber.upstatement.com",
@@ -36,7 +51,7 @@
   "require-dev": {
     "ergebnis/composer-normalize": "^2.28",
     "php-parallel-lint/php-parallel-lint": "^1.3",
-    "php-stubs/acf-pro-stubs": "^5.12",
+    "php-stubs/acf-pro-stubs": "^6.0",
     "php-stubs/wp-cli-stubs": "^2.0",
     "phpro/grumphp": "^1.12",
     "phpstan/extension-installer": "^1.1",
@@ -89,7 +104,7 @@
     }
   },
   "scripts": {
-    "analyze": "phpstan",
+    "analyze": "phpstan analyse --memory-limit=1G",
     "cs": "ecs check",
     "cs:docs": "ecs check-markdown docs/v2/**/*.md --fix",
     "cs:docs:fix": "ecs check-markdown docs/v2/**/*.md",
@@ -105,9 +120,17 @@
       "@test",
       "@cs"
     ],
-    "test": "phpunit",
-    "test:codecov": "phpunit --coverage-clover ./build/logs/clover.xml",
-    "test:make-pot": "wp i18n make-pot src tests/languages/timber.pot --domain= && wp i18n make-pot ./tests/assets/translations ./tests/languages/timber-test.pot --domain=timber-test",
-    "test:no-cov": "phpunit --no-coverage"
+    "test": [
+      "@test:integration:acf",
+      "@test:integration:coauthors-plus",
+      "@test:integration:wpml",
+      "@test:integration"
+    ],
+    "test:integration": "phpunit --no-coverage --exclude-group acf,coauthors-plus,wpml",
+    "test:integration:acf": "phpunit --no-coverage --group acf",
+    "test:integration:coauthors-plus": "phpunit --no-coverage --group coauthors-plus",
+    "test:integration:codecov": "phpunit --coverage-clover ./build/logs/clover.xml",
+    "test:integration:wpml": "phpunit --no-coverage --group wpml",
+    "test:make-pot": "wp i18n make-pot src tests/languages/timber.pot --domain= && wp i18n make-pot ./tests/assets/translations ./tests/languages/timber-test.pot --domain=timber-test"
   }
 }

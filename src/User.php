@@ -214,7 +214,7 @@ class User extends CoreEntity
          * @since 1.1.4
          *
          * @param string       $name The name of the user. Default `display_name`.
-         * @param \Timber\User $user The user object.
+         * @param User $user The user object.
          */
         return \apply_filters('timber/user/name', $this->display_name, $this);
     }

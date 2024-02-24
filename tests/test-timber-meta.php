@@ -2,6 +2,8 @@
 
 use Timber\Integration\AcfIntegration;
 use Timber\Timber;
+use Twig\Environment;
+use Twig\Error\RuntimeError;
 
 /**
  * Class TestTimberMeta
@@ -95,10 +97,10 @@ class TestTimberMeta extends Timber_UnitTestCase
         $user = Timber::get_user($user_id);
         $comment = Timber::get_comment($comment_id);
 
-        $this->assertSame(null, $post->meta('not_found'));
-        $this->assertSame(null, $term->meta('not_found'));
-        $this->assertSame(null, $user->meta('not_found'));
-        $this->assertSame(null, $comment->meta('not_found'));
+        $this->assertSame('', $post->meta('not_found'));
+        $this->assertSame('', $term->meta('not_found'));
+        $this->assertSame('', $user->meta('not_found'));
+        $this->assertSame('', $comment->meta('not_found'));
     }
 
     public function testPreMetaFilter()
@@ -373,16 +375,16 @@ class TestTimberMeta extends Timber_UnitTestCase
             ]
         );
 
-        $this->assertSame(null, $post->raw_meta('my_custom_property_inexistent'));
+        $this->assertSame('', $post->raw_meta('my_custom_property_inexistent'));
         $this->assertSame('', $post_string);
 
-        $this->assertSame(null, $term->raw_meta('my_custom_property_inexistent'));
+        $this->assertSame('', $term->raw_meta('my_custom_property_inexistent'));
         $this->assertSame('', $term_string);
 
-        $this->assertSame(null, $user->raw_meta('my_custom_property_inexistent'));
+        $this->assertSame('', $user->raw_meta('my_custom_property_inexistent'));
         $this->assertSame('', $user_string);
 
-        $this->assertSame(null, $comment->raw_meta('my_custom_property_inexistent'));
+        $this->assertSame('', $comment->raw_meta('my_custom_property_inexistent'));
         $this->assertSame('', $comment_string);
     }
 
@@ -618,7 +620,17 @@ class TestTimberMeta extends Timber_UnitTestCase
      */
     public function testPostMetaDirectAccessMethodWithRequiredParametersConflict()
     {
-        $this->expectException(\ArgumentCountError::class);
+        /**
+         * Twig 3.8 changed the way some exception are handled and a different exception is thrown.
+         *
+         * @see https://github.com/twigphp/Twig/commit/85bf01b4abd4b4ee6f6d1aca19af74189c939d69
+         */
+        if (version_compare(Environment::VERSION, '3.8.0', '>=')) {
+            $this->expectException(RuntimeError::class);
+        } else {
+            $this->expectException(ArgumentCountError::class);
+        }
+
         $post_id = $this->factory->post->create();
 
         update_post_meta($post_id, 'public_method_with_args', 'I am a meta value');
@@ -641,7 +653,17 @@ class TestTimberMeta extends Timber_UnitTestCase
      */
     public function testTermMetaDirectAccessMethodWithRequiredParametersConflict()
     {
-        $this->expectException(\ArgumentCountError::class);
+        /**
+         * Twig 3.8 changed the way some exceptions are handled and a different exception is thrown.
+         *
+         * @see https://github.com/twigphp/Twig/commit/85bf01b4abd4b4ee6f6d1aca19af74189c939d69
+         */
+        if (version_compare(Environment::VERSION, '3.8.0', '>=')) {
+            $this->expectException(RuntimeError::class);
+        } else {
+            $this->expectException(ArgumentCountError::class);
+        }
+
         $term_id = $this->factory->term->create();
 
         update_term_meta($term_id, 'public_method_with_args', 'I am a meta value');
@@ -666,7 +688,16 @@ class TestTimberMeta extends Timber_UnitTestCase
      */
     public function testUserMetaDirectAccessMethodWithRequiredParametersConflict()
     {
-        $this->expectException(\ArgumentCountError::class);
+        /**
+         * Twig 3.8 changed the way some exceptions are handled and a different exception is thrown.
+         *
+         * @see https://github.com/twigphp/Twig/commit/85bf01b4abd4b4ee6f6d1aca19af74189c939d69
+         */
+        if (version_compare(Environment::VERSION, '3.8.0', '>=')) {
+            $this->expectException(RuntimeError::class);
+        } else {
+            $this->expectException(ArgumentCountError::class);
+        }
 
         $user_id = $this->factory->user->create();
 
@@ -693,7 +724,16 @@ class TestTimberMeta extends Timber_UnitTestCase
      */
     public function testCommentMetaDirectAccessMethodWithRequiredParametersConflict()
     {
-        $this->expectException(\ArgumentCountError::class);
+        /**
+         * Twig 3.8 changed the way some exceptions are handled and a different exception is thrown.
+         *
+         * @see https://github.com/twigphp/Twig/commit/85bf01b4abd4b4ee6f6d1aca19af74189c939d69
+         */
+        if (version_compare(Environment::VERSION, '3.8.0', '>=')) {
+            $this->expectException(RuntimeError::class);
+        } else {
+            $this->expectException(ArgumentCountError::class);
+        }
 
         $post_id = $this->factory->post->create();
         $comment_id = $this->factory->comment->create([
