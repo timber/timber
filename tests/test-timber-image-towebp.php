@@ -18,7 +18,7 @@
 		function testPNGtoWEBP() {
 			$filename = TestTimberImage::copyTestImage( 'flag.png' );
 			$str = Timber::compile_string('{{file|towebp}}', array('file' => $filename));
-			$renamed = str_replace('.png', '.webp', $filename);
+			$renamed = str_replace('.png', '-towebp.webp', $filename);
 			$this->assertFileExists($renamed);
 			$this->assertGreaterThan(1000, filesize($renamed));
 			$this->assertEquals('image/png', mime_content_type($filename));
@@ -28,7 +28,7 @@
 		function testGIFtoJPG() {
 			$filename = TestTimberImage::copyTestImage( 'boyer.gif' );
 			$str = Timber::compile_string('{{file|towebp}}', array('file' => $filename));
-			$renamed = str_replace('.gif', '.webp', $filename);
+			$renamed = str_replace('.gif', '-towebp.webp', $filename);
 			$this->assertFileExists($renamed);
 			$this->assertGreaterThan(1000, filesize($renamed));
 			$this->assertEquals('image/gif', mime_content_type($filename));
@@ -39,7 +39,7 @@
 			$filename = TestTimberImage::copyTestImage( 'stl.jpg' );
 			$original_size = filesize($filename);
 			$str = Timber::compile_string('{{file|towebp(100)}}', array('file' => $filename));
-			$renamed = str_replace('.jpg', '.webp', $filename);
+			$renamed = str_replace('.jpg', '-towebp.webp', $filename);
 			$this->assertGreaterThan(1000, filesize($renamed));
 			$this->assertEquals('image/jpeg', mime_content_type($filename));
 			$this->assertEquals('image/webp', mime_content_type($renamed));
@@ -48,7 +48,7 @@
 		function testJPEGtoJPG() {
 			$filename = TestTimberImage::copyTestImage( 'jarednova.jpeg' );
 			$str = Timber::compile_string('{{file|towebp}}', array('file' => $filename));
-			$renamed = str_replace('.jpeg', '.webp', $filename);
+			$renamed = str_replace('.jpeg', '-towebp.webp', $filename);
 			$this->assertFileExists($renamed);
 			$this->assertGreaterThan(1000, filesize($renamed));
 			$this->assertEquals('image/jpeg', mime_content_type($filename));
