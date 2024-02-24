@@ -661,7 +661,7 @@ class Loader
          * Filters the transient key used for caching.
          *
          * @api
-         * @since 2.0.0
+         * @since 2.1.0
          * @example
          * ```
          * add_filter( 'timber/cache/transient_key', function( $trans_key, $key, $group, $cache_mode ) {
@@ -708,7 +708,7 @@ class Loader
          * Filters the transient key used for caching.
          *
          * @api
-         * @since 2.0.0
+         * @since 2.1.0
          * @example
          * ```
          * add_filter( 'timber/cache/transient_key', function( $trans_key, $key, $group, $cache_mode ) {
