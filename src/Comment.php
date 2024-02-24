@@ -252,6 +252,10 @@ class Comment extends CoreEntity
             return $args['url'];
         }
 
+        if (isset($args['default'])) {
+            $default = $args['default'];
+        }
+
         $email_hash = '';
         if (!empty($email)) {
             $email_hash = \md5(\strtolower(\trim($email)));
@@ -609,11 +613,23 @@ class Comment extends CoreEntity
      */
     protected function avatar_out($default, $host, $email_hash, $size)
     {
-        $out = $host . '/avatar/' . $email_hash . '?s=' . $size . '&amp;d=' . \urlencode($default);
+        $out = $host . '/avatar/' . $email_hash;
         $rating = \get_option('avatar_rating');
+
+        $url_args = [
+            's' => $size,
+            'd' => $default,
+        ];
+
         if (!empty($rating)) {
-            $out .= '&amp;r=' . $rating;
+            $url_args['r'] = $rating;
         }
+
+        $out = \add_query_arg(
+            \rawurlencode_deep(\array_filter($url_args)),
+            $out
+        );
+
         return \str_replace('&#038;', '&amp;', \esc_url($out));
     }
 }
