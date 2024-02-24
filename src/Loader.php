@@ -668,6 +668,25 @@ class Loader
         $value = false;
         $trans_key = \substr($group . '_' . $key, 0, self::TRANS_KEY_LEN);
 
+        /**
+         * Filters the transient key used for caching.
+         *
+         * @api
+         * @since 2.1.0
+         * @example
+         * ```
+         * add_filter( 'timber/cache/transient_key', function( $trans_key, $key, $group, $cache_mode ) {
+         *     return $trans_key . '_my_suffix';
+         * }, 10, 4 );
+         * ```
+         *
+         * @param string $trans_key The transient key.
+         * @param string $key The cache key.
+         * @param string $group The cache group.
+         * @param string $cache_mode The cache mode.
+         */
+        $trans_key = apply_filters('timber/cache/transient_key', $trans_key, $key, $group, $cache_mode);
+
         if (self::CACHE_TRANSIENT === $cache_mode) {
             $value = \get_transient($trans_key);
         } elseif (self::CACHE_SITE_TRANSIENT === $cache_mode) {
@@ -695,6 +714,25 @@ class Loader
 
         $cache_mode = $this->_get_cache_mode($cache_mode);
         $trans_key = \substr($group . '_' . $key, 0, self::TRANS_KEY_LEN);
+
+        /**
+         * Filters the transient key used for caching.
+         *
+         * @api
+         * @since 2.1.0
+         * @example
+         * ```
+         * add_filter( 'timber/cache/transient_key', function( $trans_key, $key, $group, $cache_mode ) {
+         *     return $trans_key . '_my_suffix';
+         * }, 10, 4 );
+         * ```
+         *
+         * @param string $trans_key The transient key.
+         * @param string $key The cache key.
+         * @param string $group The cache group.
+         * @param string $cache_mode The cache mode.
+         */
+        $trans_key = apply_filters('timber/cache/transient_key', $trans_key, $key, $group, $cache_mode);
 
         if (self::CACHE_TRANSIENT === $cache_mode) {
             \set_transient($trans_key, $value, $expires);

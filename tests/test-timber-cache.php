@@ -543,6 +543,21 @@ class TestTimberCache extends Timber_UnitTestCase
         $this->assertSame(2, $wpdb->num_rows);
         $this->assertEquals('foo', get_transient('random_600'));
     }
+
+    public function testCacheTransientKeyFilter()
+    {
+        $filter = function ($key) {
+            return 'my_custom_key';
+        };
+        add_filter('timber/cache/transient_key', $filter);
+
+        $loader = new Timber\Loader();
+        $loader->set_cache('test', 'foobar', \Timber\Loader::CACHE_TRANSIENT);
+
+        remove_filter('timber/cache/transient_key', $filter);
+
+        $this->assertEquals('foobar', get_transient('my_custom_key'));
+    }
 }
 
 class MyFakeThing implements TimberKeyGeneratorInterface
