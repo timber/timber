@@ -48,7 +48,7 @@ The `wp_kses_post` escaper uses the internal WordPress function [`wp_kses_post()
 **Twig**
 
 ```twig
-<p class="intro">{{ post.post_content|e('wp_kses_post') }}</p>
+<p class="intro">{{ post.post_content|wp_kses_post }}</p>
 ```
 
 In this example, `post.post_content` contains the following string:
@@ -70,7 +70,7 @@ Uses WordPress’ internal [`esc_url`](https://codex.wordpress.org/Function_Refe
 **Twig**
 
 ```twig
-<a href="{{ post.meta('custom_link')|e('esc_url') }}"></a>
+<a href="{{ post.meta('custom_link')|esc_url }}"></a>
 ```
 
 **Output**
@@ -88,7 +88,7 @@ This is for plain old text. If your content has HTML markup, you should not use 
 **Twig**
 
 ```twig
-<div class="equation">{{ post.meta('equation')|e('esc_html') }}</div>
+<div class="equation">{{ post.meta('equation')|esc_html }}</div>
 ```
 
 **Output**
@@ -104,7 +104,7 @@ Escapes text strings for echoing in JavaScript. It is intended to be used for in
 **Twig**
 
 ```twig
-<script>var bar = '{{ post.meta('name')|e('esc_js') }}';</script>
+<script>var bar = '{{ post.meta('name')|esc_js }}';</script>
 ```
 
 **Output**

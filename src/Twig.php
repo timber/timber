@@ -29,8 +29,8 @@ class Twig
 
         \add_filter('timber/twig', [$self, 'add_timber_functions']);
         \add_filter('timber/twig', [$self, 'add_timber_filters']);
+        \add_filter('timber/twig', [$self, 'add_timber_escaper_filters']);
         \add_filter('timber/twig', [$self, 'add_timber_escapers']);
-
         \add_filter('timber/loader/twig', [$self, 'set_defaults']);
     }
 
@@ -428,6 +428,73 @@ class Twig
     }
 
     /**
+     * Get Timber default filters
+     *
+     * @return array Default Timber filters
+     */
+    public function get_timber_escaper_filters()
+    {
+        $escaper_filters = [
+            /* image filters */
+            'esc_url' => [
+                'callable' => 'esc_url',
+            ],
+            'esc_url_raw' => [
+                'callable' => 'esc_url_raw',
+            ],
+            'wp_kses' => [
+                'callable' => 'wp_kses',
+            ],
+            'wp_kses_post' => [
+                'callable' => 'wp_kses_post',
+            ],
+            'esc_attr' => [
+                'callable' => 'esc_attr',
+            ],
+            'esc_html' => [
+                'callable' => 'esc_html',
+            ],
+            'esc_js' => [
+                'callable' => 'esc_js',
+            ],
+        ];
+
+        /**
+         * Filters the filters that are added to Twig.
+         *
+         * The `$escaper_filters` array is an associative array with the filter name as a key and an
+         * arguments array as the value. In the arguments array, you pass the function to call with
+         * a `callable` entry.
+         *
+         *
+         * @api
+         * @since 2.1.0
+         * @example
+         * ```php
+         * add_filter( 'timber/twig/escapers', function( $escaper_filters ) {
+         *     // Add your own filter.
+         *     $filters['esc_xml'] = [
+         *         'callable' => 'esc_xml',
+         *          'options' => [
+         *             'is_safe' => ['html'],
+         *          ],
+         *     ];
+         *
+         *     // Remove a filter.
+         *     unset( $filters['esc_js'] );
+         *
+         *     return $filters;
+         * } );
+         * ```
+         *
+         * @param array $escaper_filters
+         */
+        $escaper_filters = \apply_filters('timber/twig/escapers', $escaper_filters);
+
+        return $escaper_filters;
+    }
+
+    /**
      * Adds filters to Twig.
      *
      * @param Environment $twig The Twig Environment.
@@ -442,6 +509,23 @@ class Twig
                     $name,
                     $function['callable'],
                     $function['options'] ?? []
+                )
+            );
+        }
+
+        return $twig;
+    }
+
+    public function add_timber_escaper_filters($twig)
+    {
+        foreach ($this->get_timber_escaper_filters() as $name => $function) {
+            $twig->addFilter(
+                new TwigFilter(
+                    $name,
+                    $function['callable'],
+                    $function['options'] ?? [
+                        'is_safe' => ['html'],
+                    ]
                 )
             );
         }
