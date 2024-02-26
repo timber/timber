@@ -619,7 +619,7 @@ class ImageHelper
         $parts = PathHelper::pathinfo($tmp);
         $result['subdir'] = ($parts['dirname'] === '/') ? '' : $parts['dirname'];
         $result['filename'] = $parts['filename'];
-        $result['extension'] = \strtolower($parts['extension']);
+        $result['extension'] = (isset($parts['extension']) ? \strtolower($parts['extension']) : '');
         $result['basename'] = $parts['basename'];
 
         return $result;
