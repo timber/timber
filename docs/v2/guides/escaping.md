@@ -43,7 +43,7 @@ In addition to these standard escaping functions, Timber comes with some valuabl
 
 KSES is a recursive acronym for `KSES Kills Evil Scripts`. It’s goal is to ensure only "allowed" HTML element names, attribute names and attribute values plus only sane HTML entities in the string. Allowed means based on a configuration.
 
-The `wp_kses_post` escaper uses the internal WordPress function [`wp_kses_post()`](https://codex.wordpress.org/Function_Reference/wp_kses_post) that sanitizes content for allowed HTML tags for the post content. The configuration used can be found by running ` wp_kses_allowed_html( 'post' );`.
+The `wp_kses_post` escaper uses the internal WordPress function [`wp_kses_post()`](https://developer.wordpress.org/reference/functions/wp_kses_post/) that sanitizes content for allowed HTML tags for the post content. The configuration used can be found by running ` wp_kses_allowed_html( 'post' );`.
 
 **Twig**
 
@@ -65,7 +65,7 @@ In this example, `post.post_content` contains the following string:
 
 ## esc_url
 
-Uses WordPress’ internal [`esc_url`](https://codex.wordpress.org/Function_Reference/esc_url) function on a text. This should be used to sanitize URLs.
+Uses WordPress’ internal [`esc_url`](https://developer.wordpress.org/reference/functions/esc_url/) function on a text. This should be used to sanitize URLs.
 
 **Twig**
 
@@ -81,7 +81,7 @@ Uses WordPress’ internal [`esc_url`](https://codex.wordpress.org/Function_Refe
 
 ## esc_html
 
-Escaping for HTML blocks. converts any potentially conflicting HTML entities to their encoded equivalent to prevent them from being rendered as markup by the browser, e.g. converts `<` to `&lt;` and double quotes `"` to `$quot;`.
+Escaping for HTML blocks. Converts any potentially conflicting HTML entities to their encoded equivalent to prevent them from being rendered as markup by the browser, e.g. converts `<` to `&lt;` and double quotes `"` to `$quot;`.
 
 This is for plain old text. If your content has HTML markup, you should not use `esc_html`, which will render the HTML as it looks in your code editor. To preserve the HTML you will want to use `wp_kses_post`.
 
@@ -95,6 +95,23 @@ This is for plain old text. If your content has HTML markup, you should not use 
 
 ```html
 <div class="equation">is x &lt; y?</div>
+```
+
+## esc_attr
+
+Escaping for HTML attributes. Encodes the <, >, &, ” and ‘ (less than, greater than, ampersand, double quote and single quote) characters. Will never double encode entities.
+Always use when escaping HTML attributes (especially form values) such as alt, value, title, etc.
+
+**Twig**
+
+```twig
+<input type="text" name="name" value="{{ user.name|esc_attr }}">
+```
+
+**Output**
+
+```html
+<input type="text" name="name" value="Han Solo">
 ```
 
 ## esc_js
