@@ -439,9 +439,6 @@ class Twig
             'esc_url' => [
                 'callable' => 'esc_url',
             ],
-            'esc_url_raw' => [
-                'callable' => 'esc_url_raw',
-            ],
             'wp_kses' => [
                 'callable' => 'wp_kses',
             ],
@@ -460,7 +457,7 @@ class Twig
         ];
 
         /**
-         * Filters the filters that are added to Twig.
+         * Filters the escaping filters that are added to Twig.
          *
          * The `$escaper_filters` array is an associative array with the filter name as a key and an
          * arguments array as the value. In the arguments array, you pass the function to call with
