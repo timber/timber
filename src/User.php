@@ -201,6 +201,18 @@ class User extends CoreEntity
     }
 
     /**
+     * Check if the user object is the current user
+     *
+     * @api
+     *
+     * @return bool true if the user is the current user
+     */
+    public function is_current(): bool
+    {
+        return \get_current_user_id() === $this->ID;
+    }
+
+    /**
      * Get the name of the User
      *
      * @api
@@ -279,13 +291,13 @@ class User extends CoreEntity
     }
 
     /**
-       * Creates an associative array with user role slugs and their translated names.
-       *
-       * @internal
-       * @since 1.8.5
-       * @param array $roles user roles.
-       * @return array|null
-       */
+     * Creates an associative array with user role slugs and their translated names.
+     *
+     * @internal
+     * @since 1.8.5
+     * @param array $roles user roles.
+     * @return array|null
+     */
     protected function get_roles($roles)
     {
         if (empty($roles)) {
@@ -343,6 +355,32 @@ class User extends CoreEntity
     public function roles()
     {
         return $this->roles;
+    }
+
+    /**
+     * Gets the profile link to the user’s profile in the WordPress admin if the ID in the user object
+     * is the same as the current user’s ID.
+     *
+     * @api
+     * @since 2.1.0
+     * @example
+     *
+     * Get the profile URL for the current user:
+     *
+     * ```twig
+     * {% if user.profile_link %}
+     *     <a href="{{ user.profile_link }}">My profile</a>
+     * {% endif %}
+     * ```
+     * @return string|null The profile link for the current user.
+     */
+    public function profile_link(): ?string
+    {
+        if (!$this->is_current()) {
+            return null;
+        }
+
+        return \get_edit_profile_url($this->ID);
     }
 
     /**
