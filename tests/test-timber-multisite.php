@@ -53,6 +53,7 @@ class TestTimberMultisite extends Timber_UnitTestCase
             $this->factory->post->create([
                 'post_title' => array_pop($post_titles),
             ]);
+            restore_current_blog();
         }
 
         $timber_posts = [];
@@ -108,6 +109,7 @@ class TestTimberMultisite extends Timber_UnitTestCase
             $this->factory->post->create([
                 'post_title' => 'Zebras are good on site ID = ' . $site_id,
             ]);
+            restore_current_blog();
         }
         $this->go_to('/');
         $timber_posts = [];
@@ -144,8 +146,11 @@ class TestTimberMultisite extends Timber_UnitTestCase
             return;
         }
         $site_ids[] = self::createSubDomainSite('foo.example.org', 'My Foo');
+        restore_current_blog();
         $site_ids[] = self::createSubDomainSite('quack.example.org', "Ducks R Us");
+        restore_current_blog();
         $site_ids[] = self::createSubDomainSite('duck.example.org', "More Ducks R Us");
+        restore_current_blog();
 
         $post_titles = ["I don't like zebras", "Zebra and a half", "Have a zebra of a time"];
         $others = $this->factory->post->create_many(8);
@@ -154,6 +159,7 @@ class TestTimberMultisite extends Timber_UnitTestCase
             $this->factory->post->create([
                 'post_title' => array_pop($post_titles),
             ]);
+            restore_current_blog();
         }
 
         $timber_posts = [];
