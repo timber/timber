@@ -1674,11 +1674,11 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * Using simple links to the next an previous page.
      * ```twig
      * {% if post.pagination.next is not empty %}
-     *     <a href="{{ post.pagination.next.link|e('esc_url') }}">Go to next page</a>
+     *     <a href="{{ post.pagination.next.link|esc_url }}">Go to next page</a>
      * {% endif %}
      *
      * {% if post.pagination.prev is not empty %}
-     *     <a href="{{ post.pagination.prev.link|e('esc_url') }}">Go to previous page</a>
+     *     <a href="{{ post.pagination.prev.link|esc_url }}">Go to previous page</a>
      * {% endif %}
      * ```
      * Using a pagination for all pages.
@@ -1691,7 +1691,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      *                    {% if page.current %}
      *                        <span aria-current="page">Page {{ page.title }}</span>
      *                    {% else %}
-     *                        <a href="{{ page.link|e('esc_url') }}">Page {{ page.title }}</a>
+     *                        <a href="{{ page.link|esc_ur }}">Page {{ page.title }}</a>
      *                    {% endif %}
      *                </li>
      *            {% endfor %}
