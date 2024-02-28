@@ -552,7 +552,7 @@ class TestTimberCache extends Timber_UnitTestCase
         add_filter('timber/cache/transient_key', $filter);
 
         $loader = new Timber\Loader();
-        $loader->set_cache('test', 'foobar', \Timber\Loader::CACHE_TRANSIENT);
+        $loader->set_cache('test', 'foobar', Timber\Loader::CACHE_TRANSIENT);
 
         remove_filter('timber/cache/transient_key', $filter);
 
