@@ -457,8 +457,8 @@ class ImageHelper
         }
         $tmp = \download_url($file);
         \preg_match('/[^\?]+\.(jpe?g|jpe|gif|png)\b/i', $file, $matches);
+
         $file_array = [];
-        $file_array['name'] = PathHelper::basename($matches[0]);
         $file_array['tmp_name'] = $tmp;
         // If error storing temporarily, do not use
         if (\is_wp_error($tmp)) {
@@ -619,7 +619,7 @@ class ImageHelper
         $parts = PathHelper::pathinfo($tmp);
         $result['subdir'] = ($parts['dirname'] === '/') ? '' : $parts['dirname'];
         $result['filename'] = $parts['filename'];
-        $result['extension'] = \strtolower($parts['extension']);
+        $result['extension'] = (isset($parts['extension']) ? \strtolower($parts['extension']) : '');
         $result['basename'] = $parts['basename'];
 
         return $result;
