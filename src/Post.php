@@ -999,35 +999,21 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      */
     public function children($args = 'any')
     {
-        $post_type = 'any';
-        if (\is_string($args)) {
-            $post_type = $args;
-        } elseif (\array_values($args) === $args) {
-            $post_type = $args;
-        } elseif (\is_array($args)) {
-            $additional_args = $args;
+        if (\is_string($args) || \array_values($args) === $args) {
+            $args = [
+                'post_type' => 'parent' === $args ? $this->post_type : $args,
+            ];
         }
 
-        if ($post_type === 'parent') {
-            $post_type = $this->post_type;
-        }
-
-        $args = [
+        $args = \wp_parse_args($args, [
             'post_parent' => $this->ID,
-            'post_type' => $post_type,
+            'post_type' => 'any',
             'posts_per_page' => -1,
             'orderby' => 'menu_order title',
             'order' => 'ASC',
-            'post_status' => 'publish',
-        ];
+            'post_status' => 'publish' === $this->post_status ? ['publish', 'inherit'] : 'publish',
+        ]);
 
-        if ($this->post_status === 'publish') {
-            $args['post_status'] = ['publish', 'inherit'];
-        }
-
-        if (isset($additional_args)) {
-            $args = \array_merge($args, $additional_args);
-        }
         /**
          * Filters the arguments for the query used to get the children of a post.
          *
