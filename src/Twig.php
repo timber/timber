@@ -435,7 +435,6 @@ class Twig
     public function get_timber_escaper_filters()
     {
         $escaper_filters = [
-            /* image filters */
             'esc_url' => [
                 'callable' => 'esc_url',
             ],
