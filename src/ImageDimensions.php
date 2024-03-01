@@ -44,7 +44,7 @@ class ImageDimensions
      * <img src="{{ image.src }}" width="{{ image.width }}" />
      * ```
      * ```html
-     * <img src="http://example.org/wp-content/uploads/2015/08/pic.jpg" width="1600" />
+     * <img src="https://example.org/wp-content/uploads/2015/08/pic.jpg" width="1600" />
      * ```
      *
      * @return int|null The width of the image in pixels. Null if the width can’t be read, e.g. because the file doesn’t
@@ -64,7 +64,7 @@ class ImageDimensions
      * <img src="{{ image.src }}" height="{{ image.height }}" />
      * ```
      * ```html
-     * <img src="http://example.org/wp-content/uploads/2015/08/pic.jpg" height="900" />
+     * <img src="https://example.org/wp-content/uploads/2015/08/pic.jpg" height="900" />
      * ```
      *
      * @return int|null The height of the image in pixels. Null if the height can’t be read, e.g. because the file
