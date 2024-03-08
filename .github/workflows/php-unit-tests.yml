@@ -118,7 +118,7 @@ jobs:
       - name: Setup problem matchers for PHPUnit
         run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
-      - uses: ramsey/composer-install@v2
+      - uses: ramsey/composer-install@v3
         with:
           dependency-versions: ${{ matrix.dependency-version }}
 
