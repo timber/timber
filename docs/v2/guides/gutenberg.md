@@ -11,112 +11,123 @@ Timber works with the Block Editor (also called Gutenberg) out of the box. If yo
 
 ### What are ACF Blocks?
 
-ACF Blocks are an alternative way to create content blocks without advanced JavaScript knowledge. If you want to learn more about them, read the article on [advancedcustomfields.com](https://www.advancedcustomfields.com/blog/acf-5-8-introducing-acf-blocks-for-gutenberg/).
+ACF Blocks are an alternative way to create content blocks without advanced JavaScript knowledge. If you want to learn more about them, read the article on [advancedcustomfields.com](https://www.advancedcustomfields.com/resources/blocks/). 
 
 ### How to use ACF Blocks with Timber
 
-Before you can start using ACF Blocks, you must install the Advanced Custom Fields 5.8.0-beta version or later.
+Before you can start using ACF Blocks, you must install the Advanced Custom Fields 6.2.5 version or later.
 
-To create a content block, you first have to register it in **functions.php** or in a separate plugin:
+#### Add Blocks Directory Structure
 
-```php
-add_action('acf/init', 'my_acf_init');
+First, we will create a blocks directory in our theme file. This directory will house the individual block.json files that will provide the settings for each respective block.
 
-function my_acf_init()
-{
-    // Bail out if function doesn’t exist.
-    if (!function_exists('acf_register_block')) {
-        return;
-    }
+1. Create a **blocks** directory in the root of your theme: 
+2. Add a directory with the block name of your choice. Example: **my-block**
+3. Within your custom block directory, add the block.json file. 
+4. Also within your custom block directory, add a css file to reference in the settings. 
+    * Note: this is optional. You can reference CSS from any directory or rely on sitewide styling to get applied to your block on production. For purposes of this tutorial
 
-    // Register a new block.
-    acf_register_block([
-        'name' => 'example_block',
-        'title' => __('Example Block', 'your-text-domain'),
-        'description' => __('A custom example block.', 'your-text-domain'),
-        'render_callback' => 'my_acf_block_render_callback',
-        'category' => 'formatting',
-        'icon' => 'admin-comments',
-        'keywords' => ['example'],
-    ]);
-}
+Your blocks directory shoud look like this: 
+
+```
+.
+|--...
+|-- wp-content
+|   |-- themes 
+|       |-- your-theme # your theme directory
+|           |-- blocks # your blocks directory
+|               |-- my-block # your block
+|                   |-- block.json # your block settings 
+|                   |-- my-block.css # styles for your block
 ```
 
-Next, you you have to create your `render_callback()` function:
+#### Write the Block Settings file: block.json
 
-```php
-/**
- *  This is the callback that displays the block.
- *
- * @param   array  $block      The block settings and attributes.
- * @param   string $content    The block content (emtpy string).
- * @param   bool   $is_preview True during AJAX preview.
- */
-function my_acf_block_render_callback($block, $content = '', $is_preview = false)
+[Wordpress has a full example](https://developer.wordpress.org/block-editor/reference-guides/block-api/block-metadata/) of the values you can add to your block.json. For our example, we'll follow [ACF's example](https://www.advancedcustomfields.com/resources/acf-blocks-key-concepts/#acf-blocks-and-blockjson) with the minimal fields plus the acf property. We will use renderCallback instead of renderTemplate so we can set a formula to render our blocks instead of rednering them one by one in our code. 
+
+```json
+//block.json
 {
-    $context = Timber::context([
-        // Store block values.
-        'block' => $block,
-        // Store field values.
-        'fields' => get_fields(),
-        // Store $is_preview value.
-        'is_preview' => $is_preview,
-    ]);
-
-    // Render the block.
-    Timber::render('block/example-block.twig', $context);
+    "name": "acf/my-block", // https://developer.wordpress.org/block-editor/reference-guides/block-api/block-metadata/#name
+    "title": "My Block", // https://developer.wordpress.org/block-editor/reference-guides/block-api/block-metadata/#title
+    "description": "Description for my block", // https://developer.wordpress.org/block-editor/reference-guides/block-api/block-metadata/#description
+    "style": [ "file:./my-block.css" ], // https://developer.wordpress.org/block-editor/reference-guides/block-api/block-metadata/#category,
+    
+    "category": "formatting", // https://developer.wordpress.org/block-editor/reference-guides/block-api/block-metadata/#category
+    "icon": "format-aside", // https://developer.wordpress.org/block-editor/reference-guides/block-api/block-metadata/#icon
+    "keywords": ["my", "block"], // https://developer.wordpress.org/block-editor/reference-guides/block-api/block-metadata/#keywords
+    "acf": { 
+        "mode": "preview", // https://www.advancedcustomfields.com/resources/acf-blocks-key-concepts/#acf-blocks-and-blockjson
+        "renderCallback": "my_acf_block_render_callback" // the function that will render the block we'll add later on
+    } 
 }
 ```
+Important note on the name property: You are not required to use acf as the namespace in the naming convention `namespace/block-name`, but you still need a value. The block-name will need to match your template name for when we render the block later on. 
 
-You create an extra array called `$context` with three values:
-- **block** - with all data like block title, alignment etc
-- **fields** - all custom fields - also all the fields created in **ACF**
-- **is_preview** - returns true during AJAX preview
+#### Register the Block
 
-Finally, you can create the template **block/example-block.twig**:
+Your site will need to know the block exists on init so we will employ the [register_block_type](https://developer.wordpress.org/reference/functions/register_block_type/) function witin our functions.php file and trigger the function on init. 
+
+The straight forward way to do this is posted below: 
+
+```php
+function register_acf_blocks() {
+    register_block_type( __DIR__ . '/blocks/my-block' ); //register_block_type will look in the current directory and register the block you specify
+    //add additional register_block_type functions for each of your custom blocks
+}
+add_action( 'init', 'register_acf_blocks' ); //trigger the register function on init
+```
+
+Alternatively, you can dynamically register each block. This will keep our code DRY and prevent you from having to register each inidivual block every time you create a new one. 
+
+```php
+function register_acf_blocks() {
+	foreach ( $blocks = new DirectoryIterator( __DIR__ . '/blocks' ) as $item ) {
+        if ( $item -> isDir() && !$item -> isDot() ) //check for the directory
+		if ( file_exists( $item -> getPathname() . '/block.json' ) ) //check if the block.json exists
+		register_block_type( $item -> getPathname() );  //register the block given the directory name within the blocks directory
+	}
+}
+add_action( 'init', 'register_acf_blocks' ); //trigger the register function on init
+```
+
+#### Create fields in ACF
+
+[ACF has precise guidance](https://www.advancedcustomfields.com/resources/create-your-first-acf-block/#create-the-testimonial-field-group) on how to create the fields for your block. The important thing is to make sure the field group is enabled for your specific block: 
+    Show field group if: Block  
+    Operator: is equal to  
+    Selector: My Block  
+    
+
+#### Block Template
+Now that we have our block directory and settings, we need the block template that our site will render. We will create a blocks directory within our view directory to keep things organized and add the template file to that blocks directory: 
+
+```
+.
+|--...
+|-- wp-content
+|   |-- themes 
+|       |-- your-theme # your theme directory
+|           |-- blocks # your blocks directory
+|               |-- my-block # your block
+|                   |-- block.json # your block settings 
+|                   |-- my-block.css # styles for your block
+|           |-- views # your views directory
+|               |-- blocks # your block templates directory
+|                   |-- my-block.twig # your block template 
+```
+
+Within our new template, we will call each of the fields we created in ACF for our block. Each field we define for this block in ACF will be prepended with the fields key. Here is a simple example: 
 
 ```twig
-{#
-/**
- * Block Name: Example block
- *
- * This is the template that displays the example block.
- */
-#}
-
-{% if is_preview %}
-    <p>I will only appear in the editor.</p>
-{% endif %}
-
-<div id="example-{{ block.id }}" class="wrapper">
-    <h1>{{ fields.title }}</h1>
-    <p>{{ fields.description }}</p>
+{# my-block.twig #}
+<div>
+    <h2>{{ fields.title }}</h2>
+    <p>{{ fields.text }}</p>
 </div>
-<style type="text/css">
-    #testimonial-{{ block.id }} {
-        background: {{ fields.background_color }};
-        color: {{ fields.text_color }};
-    }
-</style>
 ```
 
-If you would like to use an external stylesheet both inside of the block editor and the frontend you should add:
-
-```php
-function my_acf_block_editor_style()
-{
-    wp_enqueue_style(
-        'example_block_css',
-        get_template_directory_uri() . '/assets/example-block.css'
-    );
-}
-
-add_action('enqueue_block_assets', 'my_acf_block_editor_style');
-```
-
-For more details about enqueueing assets read the [Block Editor Handbook](https://developer.wordpress.org/block-editor/tutorials/block-tutorial/applying-styles-with-stylesheets/#enqueueing-editor-only-block-assets).
-
-### Using repeaters
+##### Using repeaters
 
 ```
 {% for field in fields.repeater %}
@@ -125,9 +136,39 @@ For more details about enqueueing assets read the [Block Editor Handbook](https:
 {% endfor %}
 ```
 
-### Using groups
+##### Using groups
 
 ```
 Title: {{ fields.group.title }} <br/>
 Url: {{ fields.group.url }}
 ```
+
+#### Render Block
+
+Finally, Add the following function to your template to your functions.php file:  
+
+```php
+//functions.php 
+function my_acf_block_render_callback( $block ) {
+    // Create the slug of the block using the name property in the block.json. 
+	$slug = str_replace( 'acf/', '', $block['name'] );
+
+	$context = Timber::get_context();
+
+	// Store block values. 
+	$context['block'] = $block;
+
+	// Store field values. These are the fields from your ACF field group for the block. 
+	$context['fields'] = get_fields(); 
+
+	// Render the block.
+	Timber::render(
+			'blocks/' . $slug . '.twig',
+			$context
+	);
+}
+```
+We call this function in the renderCallback object in block.json file of our block. This function will work for all blocks so long as we follow the nameing convertion of acf/[block name] for the name property in the block.json and name the template [block name].twig in the blocks folder of the views directory. 
+
+
+
