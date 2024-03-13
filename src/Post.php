@@ -994,23 +994,54 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      *     {% endfor %}
      * {% endif %}
      * ```
-     * @param string|array $post_type _optional_ use to find children of a particular post type (attachment vs. page for example). You might want to restrict to certain types of children in case other stuff gets all mucked in there. You can use 'parent' to use the parent's post type or you can pass an array of post types.
+     * @param string|array $args _optional_ An array of arguments for the `get_children` function or a string/non-indexed array to use as the post type(s).
      * @return PostCollectionInterface
      */
-    public function children($post_type = 'any')
+    public function children($args = 'any')
     {
-        if ($post_type === 'parent') {
-            $post_type = $this->post_type;
-        }
-        if (\is_array($post_type)) {
-            $post_type = \implode('&post_type[]=', $post_type);
-        }
-        $query = 'post_parent=' . $this->ID . '&post_type[]=' . $post_type . '&posts_per_page=-1&orderby=menu_order title&order=ASC&post_status[]=publish';
-        if ($this->post_status === 'publish') {
-            $query .= '&post_status[]=inherit';
+        if (\is_string($args) || \array_values($args) === $args) {
+            $args = [
+                'post_type' => 'parent' === $args ? $this->post_type : $args,
+            ];
         }
 
-        return $this->factory()->from(\get_children($query));
+        $args = \wp_parse_args($args, [
+            'post_parent' => $this->ID,
+            'post_type' => 'any',
+            'posts_per_page' => -1,
+            'orderby' => 'menu_order title',
+            'order' => 'ASC',
+            'post_status' => 'publish' === $this->post_status ? ['publish', 'inherit'] : 'publish',
+        ]);
+
+        /**
+         * Filters the arguments for the query used to get the children of a post.
+         *
+         * This filter is used by the `Timber\Post::children()` method. It allows you to modify the
+         * arguments for the `get_children` function. This way you can change the query to get the
+         * children of a post.
+         *
+         * @example
+         * ```
+         * add_filter( 'timber/post/children_args', function( $args, $post ) {
+         *
+         *     if ( $post->post_type === 'custom_post_type' ) {
+         *        $args['post_status'] = 'private';
+         *     }
+         *
+         *     return $args;
+         * } );
+         * ```
+         *
+         * @see   \Timber\Post::children()
+         * @since 2.1.0
+         *
+         * @param array        $arguments An array of arguments for the `get_children` function.
+         * @param Post $post   The post object.
+         */
+        $args = \apply_filters('timber/post/children_args', $args, $this);
+
+        return $this->factory()->from(\get_children($args));
     }
 
     /**
