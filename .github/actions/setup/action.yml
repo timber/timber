@@ -33,6 +33,6 @@ runs:
 
     - name: Install Composer dependencies
       if: ${{ inputs.INSTALL_DEPS == 'true' }}
-      uses: ramsey/composer-install@v2
+      uses: ramsey/composer-install@v3
       with:
         composer-options: ${{ inputs.COMPOSER_ARGS }}
