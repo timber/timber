@@ -147,7 +147,7 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
 
     public function testExternalImageWithExternalUrlAndNoImageExtension()
     {
-        $file = 'https://placekitten.com/222/333';
+        $file = 'https://via.placeholder.com/640x360';
         $filename = basename(Timber\ImageHelper::get_sideloaded_file_loc($file));
         $this->delete_existing_sideloaded_image($file);
 
