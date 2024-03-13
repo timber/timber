@@ -96,7 +96,7 @@ You can find the code for Timber 1 on the [1.x branch](https://github.com/timber
 
 * [**Twig**](https://github.com/twigphp/Twig) The template language used by Timber.
 * [**Timber Starter Theme**](https://github.com/timber/starter-theme) The "_s" of Timber to give you an easy start to the most basic theme you can build upon and customize.
-* [**wp-i18n-twig**](https://github.com/timber/wp-i18n-twig) wp cli command to grab translatable strings from twig files as well.
+* [**wp-i18n-twig**](https://github.com/timber/wp-i18n-twig) WP CLI Command to grab translatable strings from Twig files.
 * [**Timber Debug Bar**](https://github.com/timber/debug-bar-timber) Adds a debug bar panel that will show you which template is in-use and the data sent to your twig file.
 
 ### Related Timber Projects
