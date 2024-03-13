@@ -88,7 +88,7 @@ If a directly accessed property or method doesn’t exist, Timber will fall back
 
 For example, when you use a custom field that you name `date` and try to get its value through `{{ post.date }}`, it won’t work. That’s because [`date`](https://timber.github.io/docs/v2/reference/timber-post/#date) is a method of the `Timber\Post` object that returns the date a post was published.
 
-In PHP, you’d access the property through `$post->date` and call the `date` method through `$post->date()`. But in Twig, you can call methods without using parentheses. And methods take precedence over properties. Timber uses a PHP technique called [Overloading](http://de.php.net/manual/en/language.oop5.overloading.php#language.oop5.overloading.members) to get meta values using PHP’s [`__get` magic method](http://php.net/manual/en/language.oop5.overloading.php#object.get) on `Timber\Post`, `Timber\Term`, `Timber\User` and `Timber\Comment` objects. This means that when you use `{{ post.date }}`, it will ...
+In PHP, you’d access the property through `$post->date` and call the `date` method through `$post->date()`. But in Twig, you can call methods without using parentheses. And methods take precedence over properties. Timber uses a PHP technique called [Overloading](https://de.php.net/manual/en/language.oop5.overloading.php#language.oop5.overloading.members) to get meta values using PHP’s [`__get` magic method](https://php.net/manual/en/language.oop5.overloading.php#object.get) on `Timber\Post`, `Timber\Term`, `Timber\User` and `Timber\Comment` objects. This means that when you use `{{ post.date }}`, it will ...
 
 - Check if method `date` exists. If it does, it will return what the method produces.
 - Otherwise, it will check if a property `date` exists. If it does, it will return its value.
@@ -171,7 +171,7 @@ Please be aware that using this might conflict with existing Timber methods on t
 
 ## Query by custom field value
 
-This example that uses a [WP_Query](http://codex.wordpress.org/Class_Reference/WP_Query) array shows the arguments to find all posts where a custom field called `color` has a value of `red`.
+This example that uses a [WP_Query](https://codex.wordpress.org/Class_Reference/WP_Query) array shows the arguments to find all posts where a custom field called `color` has a value of `red`.
 
 ```php
 $args = [
