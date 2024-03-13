@@ -96,6 +96,7 @@ You can find the code for Timber 1 on the [1.x branch](https://github.com/timber
 
 * [**Twig**](https://github.com/twigphp/Twig) The template language used by Timber.
 * [**Timber Starter Theme**](https://github.com/timber/starter-theme) The "_s" of Timber to give you an easy start to the most basic theme you can build upon and customize.
+* [**wp-i18n-twig**](https://github.com/timber/wp-i18n-twig) wp cli command to grab translatable strings from twig files as well.
 * [**Timber Debug Bar**](https://github.com/timber/debug-bar-timber) Adds a debug bar panel that will show you which template is in-use and the data sent to your twig file.
 
 ### Related Timber Projects
@@ -128,6 +129,9 @@ You can find the code for Timber 1 on the [1.x branch](https://github.com/timber
 * [**Twig for Timber Cheatsheet**](https://notlaura.com/the-twig-for-timber-cheatsheet/) by [@laras126](https://github.com/laras126)
 * [**Timber Cheatsheet**](https://gist.github.com/taotiwordpress/266fd95513f97f3c17748288579c56b9) by [@taotiwordpress](https://github.com/taotiwordpress)
 * [**TutsPlus**](https://code.tutsplus.com/articles/kick-start-wordpress-development-with-twig-introduction--cms-24781) A guide to getting started by [@ahmadawais](https://github.com/ahmadawais)
+
+## Reporting Security Issues
+To disclose a security issue to our team, please submit a report via [Github](https://github.com/timber/timber/security).
 
 ## Support
 Please post on [StackOverflow under the "Timber" tag](https://stackoverflow.com/questions/tagged/timber). Please use GitHub issues _only_ for specific bugs, feature requests and other types of issues.
