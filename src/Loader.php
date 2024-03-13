@@ -685,7 +685,7 @@ class Loader
          * @param string $group The cache group.
          * @param string $cache_mode The cache mode.
          */
-        $trans_key = apply_filters('timber/cache/transient_key', $trans_key, $key, $group, $cache_mode);
+        $trans_key = \apply_filters('timber/cache/transient_key', $trans_key, $key, $group, $cache_mode);
 
         if (self::CACHE_TRANSIENT === $cache_mode) {
             $value = \get_transient($trans_key);
@@ -732,7 +732,7 @@ class Loader
          * @param string $group The cache group.
          * @param string $cache_mode The cache mode.
          */
-        $trans_key = apply_filters('timber/cache/transient_key', $trans_key, $key, $group, $cache_mode);
+        $trans_key = \apply_filters('timber/cache/transient_key', $trans_key, $key, $group, $cache_mode);
 
         if (self::CACHE_TRANSIENT === $cache_mode) {
             \set_transient($trans_key, $value, $expires);
