@@ -63,7 +63,7 @@ Example contents of the block.json
     } 
 }
 ```
-Important note on the `name` property: You are not required to use acf as the namespace in the naming convention `namespace/block-name`, but you do have to provide one. For example you could also name them `my-project/block-name`. Keep in mind that we recommend using the same namespace throughout your blocks and that, in the case you use another namespace then `acf`, you need to change the render callback as well to omit your chosen namespace.
+Important note on the `name` property: You are not required to use `acf ` as the namespace in the naming convention `namespace/block-name`, but you do have to provide one. For example you could also name them `my-project/block-name`. Keep in mind that we recommend using the same namespace throughout your blocks and that, in the case you use another namespace then `acf`, you need to change the render callback as well to omit your chosen namespace.
 
 #### Register the Block
 
