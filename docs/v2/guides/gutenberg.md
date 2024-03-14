@@ -153,7 +153,7 @@ function my_acf_block_render_callback( $block ) {
     // Create the slug of the block using the name property in the block.json. 
 	$slug = str_replace( 'acf/', '', $block['name'] );
 
-	$context = Timber::get_context();
+	$context = Timber::context();
 
 	// Store block values. 
 	$context['block'] = $block;
