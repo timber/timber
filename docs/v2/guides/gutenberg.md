@@ -15,7 +15,7 @@ ACF Blocks are an alternative way to create content blocks without advanced Java
 
 ### How to use ACF Blocks with Timber
 
-Before you can start using ACF Blocks, you must install the Advanced Custom Fields 6.2.5 version or later.
+Before you can start using ACF Blocks, you must install the Advanced Custom Fields Pro 6.0 or later.
 
 #### Add Blocks Directory Structure
 
