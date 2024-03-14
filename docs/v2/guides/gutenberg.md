@@ -11,7 +11,7 @@ Timber works with the Block Editor (also called Gutenberg) out of the box. If yo
 
 ### What are ACF Blocks?
 
-ACF Blocks are an alternative way to create content blocks without advanced JavaScript knowledge. If you want to learn more about them, read the article on [advancedcustomfields.com](https://www.advancedcustomfields.com/resources/blocks/). 
+ACF Blocks are an alternative way to create content blocks without advanced JavaScript knowledge. If you want to learn more about them, read the article on [advancedcustomfields.com](https://www.advancedcustomfields.com/resources/blocks/).
 
 ### How to use ACF Blocks with Timber
 
