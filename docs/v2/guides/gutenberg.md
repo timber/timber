@@ -145,7 +145,7 @@ Url: {{ fields.group.url }}
 
 #### Render Block
 
-Finally, Add the following function to your template to your functions.php file:  
+Finally, Add the following function to your functions.php file:  
 
 ```php
 //functions.php 
