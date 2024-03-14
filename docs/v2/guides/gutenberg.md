@@ -39,6 +39,7 @@ Your blocks directory shoud look like this:
 |               |-- my-block # your block
 |                   |-- block.json # your block settings 
 |                   |-- my-block.css # styles for your block
+|                   |-- my-block.twig # your block template
 ```
 
 #### Write the Block Settings file: block.json
@@ -90,6 +91,32 @@ function register_acf_blocks() {
 add_action( 'init', 'register_acf_blocks' ); //trigger the register function on init
 ```
 
+#### Render Block
+
+Next, add the following function to your functions.php file:  
+
+```php
+function my_acf_block_render_callback( $block ) {
+    // Create the slug of the block using the name property in the block.json. 
+	$slug = str_replace( 'acf/', '', $block['name'] );
+
+	$context = Timber::context();
+
+	// Store block values. 
+	$context['block'] = $block;
+
+	// Store field values. These are the fields from your ACF field group for the block. 
+	$context['fields'] = get_fields(); 
+
+	// Render the block.
+	Timber::render(
+			'blocks/' . $slug . '/' . $slug . '.twig',
+			$context
+	);
+}
+```
+We call this function in the renderCallback object in block.json file of our block. This function will work for all blocks as long as we follow the naming convention of `acf/your-block-name` for the name property in the block.json and name the template `your-block-name.twig` in the blocks folder inside the views directory. 
+
 #### Create fields in ACF
 
 [ACF has precise guidance](https://www.advancedcustomfields.com/resources/create-your-first-acf-block/#create-the-testimonial-field-group) on how to create the fields for your block. The important thing is to make sure the field group is enabled for your specific block: 
@@ -99,22 +126,7 @@ add_action( 'init', 'register_acf_blocks' ); //trigger the register function on 
     
 
 #### Block Template
-Now that we have our block directory and settings, we need the a twig template for our block that will be used to display our block. We will create a blocks directory within our view directory to keep things organized and add the template file to that blocks directory: 
-
-```
-.
-|--...
-|-- wp-content
-|   |-- themes 
-|       |-- your-theme # your theme directory
-|           |-- blocks # your blocks directory
-|               |-- my-block # your block
-|                   |-- block.json # your block settings 
-|                   |-- my-block.css # styles for your block
-|           |-- views # your views directory
-|               |-- blocks # your block templates directory
-|                   |-- my-block.twig # your block template 
-```
+Now that we have our block directory and settings, we need the a twig template for our block that will be used to display our block. 
 
 Within our new Twig template, we will call each of the fields we created in ACF for our block. Each field we define for this block in ACF will be prepended with the fields key. Here is a simple example: 
 
@@ -141,33 +153,5 @@ Within our new Twig template, we will call each of the fields we created in ACF 
 Title: {{ fields.group.title }} <br/>
 Url: {{ fields.group.url }}
 ```
-
-#### Render Block
-
-Finally, Add the following function to your functions.php file:  
-
-```php
-//functions.php 
-function my_acf_block_render_callback( $block ) {
-    // Create the slug of the block using the name property in the block.json. 
-	$slug = str_replace( 'acf/', '', $block['name'] );
-
-	$context = Timber::context();
-
-	// Store block values. 
-	$context['block'] = $block;
-
-	// Store field values. These are the fields from your ACF field group for the block. 
-	$context['fields'] = get_fields(); 
-
-	// Render the block.
-	Timber::render(
-			'blocks/' . $slug . '.twig',
-			$context
-	);
-}
-```
-We call this function in the renderCallback object in block.json file of our block. This function will work for all blocks as long as we follow the naming convention of `acf/your-block-name` for the name property in the block.json and name the template `your-block-name.twig` in the blocks folder inside the views directory. 
-
 
 
