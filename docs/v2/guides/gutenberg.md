@@ -44,7 +44,7 @@ Your blocks directory shoud look like this:
 #### Write the Block Settings file: block.json
 
 [WordPress has a full example](https://developer.wordpress.org/block-editor/reference-guides/block-api/block-metadata/) of the values you can add to your block.json. For our example, we'll follow [ACF's example](https://www.advancedcustomfields.com/resources/acf-blocks-key-concepts/#acf-blocks-and-blockjson) with the minimal settings plus the specific ACF property. We will use renderCallback instead of renderTemplate so we can set a function callback to render all our blocks instead of creating a function for each individual block.
-
+Example contents of the block.json
 ```json
 //block.json
 {
