@@ -99,7 +99,7 @@ add_action( 'init', 'register_acf_blocks' ); //trigger the register function on 
     
 
 #### Block Template
-Now that we have our block directory and settings, we need the block template that our site will render. We will create a blocks directory within our view directory to keep things organized and add the template file to that blocks directory: 
+Now that we have our block directory and settings, we need the a twig template for our block that will be used to display our block. We will create a blocks directory within our view directory to keep things organized and add the template file to that blocks directory: 
 
 ```
 .
