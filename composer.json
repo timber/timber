@@ -132,5 +132,25 @@
     "test:integration:codecov": "phpunit --coverage-clover ./build/logs/clover.xml",
     "test:integration:wpml": "phpunit --no-coverage --group wpml",
     "test:make-pot": "wp i18n make-pot src tests/languages/timber.pot --domain= && wp i18n make-pot ./tests/assets/translations ./tests/languages/timber-test.pot --domain=timber-test"
+  },
+  "scripts-descriptions": {
+    "analyze": "Run PHPStan code analysis",
+    "cs": "Check code style with EasyCodingStandard",
+    "cs:docs": "Check markdown files in the docs directory with EasyCodingStandard",
+    "cs:docs:fix": "Fix markdown files in the docs directory with EasyCodingStandard",
+    "cs:fix": "Fix code style with EasyCodingStandard",
+    "grump": "Run GrumPHP checks",
+    "grump:install": "Install GrumPHP configuration",
+    "lint": "Run PHP Parallel Lint",
+    "lint-composer": "Check composer.json for incorrect order and whitespace",
+    "lint-composer:fix": "Fix composer.json for incorrect order and whitespace",
+    "qa": "Run all quality assurance checks/tests",
+    "test": "Run all integration tests with PHPUnit",
+    "test:integration": "Run unit tests for Timber core",
+    "test:integration:acf": "Run unit tests related to the ACF integration for Timber",
+    "test:integration:coauthors-plus": "Run unit tests related to the Co-Authors Plus integration for Timber",
+    "test:integration:codecov": "Run unit tests for Timber with code coverage",
+    "test:integration:wpml": "Run unit tests related to the WPML integration for Timber",
+    "test:make-pot": "Generate .pot files if translatable strings have changed that are used in the translation unit test."
   }
 }
