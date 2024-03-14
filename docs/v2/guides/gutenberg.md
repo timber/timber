@@ -78,7 +78,7 @@ function register_acf_blocks() {
 add_action( 'init', 'register_acf_blocks' ); //trigger the register function on init
 ```
 
-Alternatively, you can dynamically register each block. This will keep our code DRY and prevent you from having to register each inidivual block every time you create a new one. 
+Alternatively, you can dynamically register each block. This will keep our code DRY and prevent you from having to register each individual block every time you create a new one.
 
 ```php
 function register_acf_blocks() {
