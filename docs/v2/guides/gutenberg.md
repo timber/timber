@@ -19,7 +19,7 @@ Before you can start using ACF Blocks, you must install the Advanced Custom Fiel
 
 #### Add Blocks Directory Structure
 
-First, we will create a blocks directory in our theme file. This directory will house the individual block.json files that will provide the settings for each respective block.
+First, we will create a blocks directory in our theme folder. This directory will house the individual block.json files that will provide the settings for each respective block.
 
 1. Create a **blocks** directory in the root of your theme: 
 2. Add a directory with the block name of your choice. Example: **my-block**
