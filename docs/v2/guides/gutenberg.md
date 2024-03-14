@@ -168,7 +168,7 @@ function my_acf_block_render_callback( $block ) {
 	);
 }
 ```
-We call this function in the renderCallback object in block.json file of our block. This function will work for all blocks so long as we follow the nameing convertion of acf/[block name] for the name property in the block.json and name the template [block name].twig in the blocks folder of the views directory. 
+We call this function in the renderCallback object in block.json file of our block. This function will work for all blocks as long as we follow the naming convention of `acf/your-block-name` for the name property in the block.json and name the template `your-block-name.twig` in the blocks folder inside the views directory. 
 
 
 
