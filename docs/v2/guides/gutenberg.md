@@ -23,7 +23,7 @@ First, we will create a blocks directory in our theme folder. This directory wil
 
 1. Create a **blocks** directory in the root of your theme: 
 2. Add a directory with the block name of your choice. Example: **my-block**
-3. Within your custom block directory, add the block.json file. 
+3. Within your custom block directory, create a block.json file. 
 4. Also within your custom block directory, add a css file to reference in the settings. 
     * Note: this is optional. You can reference CSS from any directory or rely on sitewide styling to get applied to your block on production. For purposes of this tutorial
 
