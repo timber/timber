@@ -68,7 +68,7 @@ Important note on the name property: You are not required to use acf as the name
 
 Your theme needs to know the block exists on `init` so we will use the [register_block_type](https://developer.wordpress.org/reference/functions/register_block_type/) function within our functions.php file and trigger the function on the  `init` action. 
 
-The straight forward way to do this is posted below: 
+The straight forward way to do this is shown below: 
 
 ```php
 function register_acf_blocks() {
