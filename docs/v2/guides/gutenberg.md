@@ -117,7 +117,7 @@ Now that we have our block directory and settings, we need the block template th
 |                   |-- my-block.twig # your block template 
 ```
 
-Within our new template, we will call each of the fields we created in ACF for our block. Each field we define for this block in ACF will be prepended with the fields key. Here is a simple example: 
+Within our new Twig template, we will call each of the fields we created in ACF for our block. Each field we define for this block in ACF will be prepended with the fields key. Here is a simple example: 
 
 ```twig
 {# my-block.twig #}
