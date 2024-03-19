@@ -57,7 +57,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      *
      * @var WP_Post|null
      */
-    protected ?WP_Post $wp_object;
+    protected ?WP_Post $wp_object = null;
 
     /**
      * @var string What does this class represent in WordPress terms?
