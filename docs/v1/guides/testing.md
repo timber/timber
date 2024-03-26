@@ -43,7 +43,7 @@ $ cd /srv/www/timber
 $ phpunit
 ```
 
-You should see a bunch of gobbledygook across your screen (the whole process will take about 3 mins.), but we should see that WordPress is testing successfully. Hurrah! For more info, check out the [Handbook on Automated Testing](http://make.wordpress.org/core/handbook/automated-testing/).
+You should see a bunch of gobbledygook across your screen (the whole process will take about 3 mins.), but we should see that WordPress is testing successfully. Hurrah! For more info, check out the [Handbook on Automated Testing](https://make.wordpress.org/core/handbook/automated-testing/).
 
 ## Writing tests
 

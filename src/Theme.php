@@ -25,7 +25,7 @@ use WP_Theme;
  * <script src="{{ theme.link }}/static/js/all.js"></script>
  * ```
  * ```html
- * <script src="http://example.org/wp-content/themes/my-theme/static/js/all.js"></script>
+ * <script src="https://example.org/wp-content/themes/my-theme/static/js/all.js"></script>
  * ```
  */
 class Theme extends Core implements JsonSerializable
@@ -73,7 +73,7 @@ class Theme extends Core implements JsonSerializable
 
     /**
      * @api
-     * @var string Retrieves template directory URI for the active (parent) theme. (ex: `http://example.org/wp-content/themes/my-timber-theme`).
+     * @var string Retrieves template directory URI for the active (parent) theme. (ex: `https://example.org/wp-content/themes/my-timber-theme`).
      */
     public $uri;
 
@@ -135,7 +135,7 @@ class Theme extends Core implements JsonSerializable
 
     /**
      * @api
-     * @return string Retrieves template directory URI for the active (child) theme. (ex: `http://example.org/wp-content/themes/my-timber-theme`).
+     * @return string Retrieves template directory URI for the active (child) theme. (ex: `https://example.org/wp-content/themes/my-timber-theme`).
      */
     public function link()
     {

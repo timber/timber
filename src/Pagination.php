@@ -134,7 +134,7 @@ class Pagination
     {
         $defaults = [
             'base' => '%_%',
-            // http://example.com/all_posts.php%_% : %_% is replaced by format (below)
+            // https://example.com/all_posts.php%_% : %_% is replaced by format (below)
             'format' => '?page=%#%',
             // ?page=%#% : %#% is replaced by the page number
             'total' => 1,

@@ -18,7 +18,7 @@ This differs from `{{ post.post_content }}`, which will display the raw text sto
 
 ## Hooks
 
-Timber hooks to interact with WordPress use `this/style/of_hooks` instead of `this_style_of_hooks`. This matches the same methodology as [Advanced Custom Fields](http://www.advancedcustomfields.com/resources/#actions).
+Timber hooks to interact with WordPress use `this/style/of_hooks` instead of `this_style_of_hooks`. This matches the same methodology as [Advanced Custom Fields](https://www.advancedcustomfields.com/resources/#actions).
 
 Full documentation to come.
 

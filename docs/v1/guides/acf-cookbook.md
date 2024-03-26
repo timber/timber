@@ -2,7 +2,7 @@
 title: "ACF Cookbook"
 ---
 
-Timber is designed to play nicely with (the amazing) [Advanced Custom Fields](http://www.advancedcustomfields.com/). It's not a requirement, of course.
+Timber is designed to play nicely with (the amazing) [Advanced Custom Fields](https://www.advancedcustomfields.com/). It's not a requirement, of course.
 
 While data saved by ACF is available via `{{ post.my_acf_field }}` you will often need to do some additional work to get back the _kind_ of data you want. For example, images are stored as image ID#s which you might want to translate into a specific image object. Read on to learn more about those specific exceptions.
 
@@ -161,7 +161,7 @@ Similar to repeaters, get the field by the name of the flexible content field:
 		<p class="caption">{{ Image(media_item.image).caption }}</p>
 		<aside class="notes">{{ media_item.notes }}</aside>
 	{% elseif media_item.acf_fc_layout == 'video_set' %}
-		<iframe width="560" height="315" src="http://www.youtube.com/embed/{{ media_item.youtube_id }}" frameborder="0" allowfullscreen></iframe>
+		<iframe width="560" height="315" src="https://www.youtube.com/embed/{{ media_item.youtube_id }}" frameborder="0" allowfullscreen></iframe>
 		<p class="caption">{{ media_item.caption }}</p>
 	{% endif %}
 {% endfor %}
@@ -237,7 +237,7 @@ $context["acf"] = get_field_objects($data["post"]->ID);
 
 ## Query by custom field value
 
-This example that uses a [WP_Query](http://codex.wordpress.org/Class_Reference/WP_Query) array shows the arguments to find all posts where a custom field called `color` has a value of `red`.
+This example that uses a [WP_Query](https://codex.wordpress.org/Class_Reference/WP_Query) array shows the arguments to find all posts where a custom field called `color` has a value of `red`.
 
 ```php
 <?php

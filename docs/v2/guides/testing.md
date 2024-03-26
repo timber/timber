@@ -88,7 +88,7 @@ $ composer install
 $ phpunit
 ```
 
-You should see a bunch of gobbledygook across your screen (the whole process will take about 4 mins.), but we should see that WordPress is testing successfully. Hurrah! For more info, check out the [Handbook on Automated Testing](http://make.wordpress.org/core/handbook/automated-testing/).
+You should see a bunch of gobbledygook across your screen (the whole process will take about 4 mins.), but we should see that WordPress is testing successfully. Hurrah! For more info, check out the [Handbook on Automated Testing](https://make.wordpress.org/core/handbook/automated-testing/).
 
 ### Writing tests
 

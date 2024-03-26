@@ -7,7 +7,7 @@ namespace Timber;
  *
  * The `Timber\Archives` class is used to generate a menu based on the date archives of your posts.
  *
- * The [Nieman Foundation News site](http://nieman.harvard.edu/news/) has an example of how the
+ * The [Nieman Foundation News site](https://nieman.harvard.edu/news/) has an example of how the
  * output can be used in a real site ([screenshot](https://cloud.githubusercontent.com/assets/1298086/9610076/3cdca596-50a5-11e5-82fd-acb74c09c482.png)).
  *
  * @api

@@ -103,7 +103,7 @@ Create a Twig file according to the location asked by the above file, in this ex
 
     {% do action('woocommerce_before_single_product') %}
 
-    <article itemscope itemtype="http://schema.org/Product" class="single-product-details {{ post.class }}">
+    <article itemscope itemtype="https://schema.org/Product" class="single-product-details {{ post.class }}">
 
         <div class="entry-images">
             {% do action('woocommerce_before_single_product_summary') %}

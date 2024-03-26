@@ -405,7 +405,7 @@ class Site extends Core implements CoreInterface
      * </a>
      * ```
      * ```html
-     * <a href="http://example.org" title="Home">
+     * <a href="https://example.org" title="Home">
      *       <img src="/wp-content/uploads/logo.png" alt="Logo for some stupid thing" />
      * </a>
      * ```

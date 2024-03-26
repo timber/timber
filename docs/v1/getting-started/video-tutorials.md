@@ -35,7 +35,7 @@ You can find a guide on [how to get started with Composer](https://getcomposer.o
 
 ### Option 3: Via WordPress plugins directory (for non-developers)
 
-If you’d prefer one-click installation, you should use the [WordPress.org](http://wordpress.org/plugins/timber-library/) version.
+If you’d prefer one-click installation, you should use the [WordPress.org](https://wordpress.org/plugins/timber-library/) version.
 
 * * *
 
@@ -45,7 +45,7 @@ Now just activate in your WordPress admin screen. Inside of the timber directory
 
 ## 2. Including a Twig template and sending data
 
-[![Installing Timber](http://img.youtube.com/vi/SlMonnwVi5M/0.jpg)](http://www.youtube.com/watch?v=SlMonnwVi5M)
+[![Installing Timber](https://img.youtube.com/vi/SlMonnwVi5M/0.jpg)](https://www.youtube.com/watch?v=SlMonnwVi5M)
 
 In which we use an existing WordPress template and implement a very simple Timber usage.
 
@@ -76,7 +76,7 @@ Timber::render( 'welcome.twig', $context );
 
 ## 3. Connecting Twig to your WordPress Admin
 
-[![Connecting Timber](http://img.youtube.com/vi/C7HtYkaG2DQ/0.jpg)](http://www.youtube.com/watch?v=C7HtYkaG2DQ)
+[![Connecting Timber](https://img.youtube.com/vi/C7HtYkaG2DQ/0.jpg)](https://www.youtube.com/watch?v=C7HtYkaG2DQ)
 
 ```php
 <?php
@@ -100,7 +100,7 @@ Timber::render( 'welcome.twig', $context );
 
 ## 4. Converting HTML to Twig Templates
 
-[![Connecting HTML Templates](http://img.youtube.com/vi/BxazrNBLK-0/0.jpg)](http://www.youtube.com/watch?v=BxazrNBLK-0)
+[![Connecting HTML Templates](https://img.youtube.com/vi/BxazrNBLK-0/0.jpg)](https://www.youtube.com/watch?v=BxazrNBLK-0)
 
 ```php
 <?php
@@ -121,7 +121,7 @@ Timber::render( 'home-main.twig', $context );
 
 ## 5. Using Custom Post Types with Timber + Twig
 
-[![Using Custom Post Types with Timber](http://img.youtube.com/vi/19T0MStDLSQ/0.jpg)](http://www.youtube.com/watch?v=19T0MStDLSQ)
+[![Using Custom Post Types with Timber](https://img.youtube.com/vi/19T0MStDLSQ/0.jpg)](https://www.youtube.com/watch?v=19T0MStDLSQ)
 
 **home-main.twig**
 

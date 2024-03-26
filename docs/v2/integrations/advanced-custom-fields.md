@@ -2,7 +2,7 @@
 title: "Advanced Custom Fields"
 ---
 
-Timber is designed to play nicely with the amazing [Advanced Custom Fields](http://www.advancedcustomfields.com/) plugin.
+Timber is designed to play nicely with the amazing [Advanced Custom Fields](https://www.advancedcustomfields.com/) plugin.
 
 ## Getting data from ACF
 
@@ -244,7 +244,7 @@ Similar to repeaters, get the field by the name of the flexible content field:
         <p class="caption">{{ get_image(media_item.image).caption }}</p>
         <aside class="notes">{{ media_item.notes }}</aside>
     {% elseif media_item.acf_fc_layout == 'video_set' %}
-        <iframe width="560" height="315" src="http://www.youtube.com/embed/{{media_item.youtube_id}}" frameborder="0" allowfullscreen></iframe>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/{{media_item.youtube_id}}" frameborder="0" allowfullscreen></iframe>
         <p class="caption">{{ media_item.caption }}</p>
     {% endif %}
 {% endfor %}

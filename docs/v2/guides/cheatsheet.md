@@ -30,9 +30,9 @@ Timber::render('single.twig', $context);
 
 
 ## Theme
-* `get_template_directory_uri()` => `{{ theme.uri }}` Template directory URI for the active (parent) theme (ex: `http://example.org/wp-content/themes/my-timber-theme`)
-* `get_template_directory_uri()` => `{{ theme.parent.link }}` Explicitly return directory uri of parent theme (ex: `http://example.org/wp-content/themes/my-timber-parent-theme`)
-* `get_stylesheet_directory_uri()` => `{{ theme.link }}` Template directory URI for the active (child) theme (ex: `http://example.org/wp-content/themes/my-timber-theme`)
+* `get_template_directory_uri()` => `{{ theme.uri }}` Template directory URI for the active (parent) theme (ex: `https://example.org/wp-content/themes/my-timber-theme`)
+* `get_template_directory_uri()` => `{{ theme.parent.link }}` Explicitly return directory uri of parent theme (ex: `https://example.org/wp-content/themes/my-timber-parent-theme`)
+* `get_stylesheet_directory_uri()` => `{{ theme.link }}` Template directory URI for the active (child) theme (ex: `https://example.org/wp-content/themes/my-timber-theme`)
 * `get_template_directory()` => `{{ theme.parent.path }}` Explicitly return relative directory path of parent theme  (ex: `/wp-content/themes/my-timber-parent-theme`)
 * `get_stylesheet_directory()` => `{{ theme.path }}` Relative directory path for the active (child) theme (ex: `/wp-content/themes/my-timber-theme`)
 

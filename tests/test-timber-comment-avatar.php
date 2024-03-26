@@ -19,7 +19,7 @@ class TestTimberCommentAvatar extends Timber_UnitTestCase
         # test default gravatr holding image
         $avatar = $comment->avatar("mystery");
 
-        $this->assertTrue(substr($avatar, 0, 5) == "http:");
+        $this->assertTrue(substr($avatar, 0, 6) == "https:");
     }
 
     public function testAvatarFalse()
@@ -68,7 +68,7 @@ class TestTimberCommentAvatar extends Timber_UnitTestCase
         # test default gravatr holding image
         $avatar = $comment->avatar(92, "gravatar_default");
 
-        $this->assertTrue(substr($avatar, 0, 5) == "http:");
+        $this->assertTrue(substr($avatar, 0, 6) == "https:");
     }
 
     public function testGravatar()
@@ -112,7 +112,7 @@ class TestTimberCommentAvatar extends Timber_UnitTestCase
         # test default gravatr holding image
         $avatar = $comment->avatar(32, "mystery");
 
-        $this->assertTrue(substr($avatar, 0, 5) == "http:");
+        $this->assertTrue(substr($avatar, 0, 6) == "https:");
 
         # does it work if its SSL?
         $_SERVER['HTTPS'] = 'on';
@@ -124,17 +124,15 @@ class TestTimberCommentAvatar extends Timber_UnitTestCase
         # pass custom url on different domain. can't check by crawling as
         # i get a 302 regardless of default url
         # so just check it comes back with it in the url
-        $this->valid_avatar($comment, "http://upload.wikimedia.org/wikipedia/en/b/bc/Wiki.png");
+        $this->valid_avatar($comment, "https://upload.wikimedia.org/wikipedia/en/b/bc/Wiki.png");
 
         # same domain.
         $this->valid_avatar($comment, $theme_url . "/images/default.png");
 
-        #relative
-        $default_url = "/images/default.png";
+        $default_url = get_stylesheet_directory_uri() . "/images/default.png";
         $avatar = $comment->avatar(32, $default_url);
         if (strstr($avatar, '?')) {
             list($url, $params) = explode('?', $avatar);
-            $default_url = $theme_url . $default_url;
             # you get back the absoulte url to default in the avatar url?
             $this->assertEquals($params, "d=$default_url&amp;s=32");
         }
@@ -151,7 +149,7 @@ class TestTimberCommentAvatar extends Timber_UnitTestCase
             $this->assertEquals($params, "d=$default_url&amp;s=32");
         }
         # you get back url?
-        $this->assertTrue(substr($avatar, 0, 5) == "http:");
+        $this->assertTrue(substr($avatar, 0, 6) == "https:");
     }
 
     public function crawl($url)

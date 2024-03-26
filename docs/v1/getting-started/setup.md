@@ -14,7 +14,7 @@ Underneath this text you will find an extensive list with guides and the reasons
 
 ### ~~Via WordPress.org (easy)~~
 
-~~You can grab the all-things-included plugin at [WordPress.org](http://wordpress.org/plugins/timber-library/) either through the WordPress site or through the Plugins menu in the backend. Then skip ahead to [using the starter theme](#use-the-starter-theme).~~
+~~You can grab the all-things-included plugin at [WordPress.org](https://wordpress.org/plugins/timber-library/) either through the WordPress site or through the Plugins menu in the backend. Then skip ahead to [using the starter theme](#use-the-starter-theme).~~
 
 ### Via Composer (recommended)
 

@@ -189,7 +189,7 @@ $args = array(
 $context['posts'] = Timber::get_posts( $args );
 ```
 
-You can find all available options in the documentation for [WP_Query](http://codex.wordpress.org/Class_Reference/WP_Query).
+You can find all available options in the documentation for [WP_Query](https://codex.wordpress.org/Class_Reference/WP_Query).
 
 ### Use a WP_Query string
 

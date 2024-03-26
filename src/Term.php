@@ -320,7 +320,7 @@ class Term extends CoreEntity
     }
 
     /**
-     * Returns a full link to the term archive page like `http://example.com/category/news`
+     * Returns a full link to the term archive page like `https://example.com/category/news`
      *
      * @api
      * @example
