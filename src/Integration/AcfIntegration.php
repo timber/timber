@@ -200,6 +200,9 @@ class AcfIntegration implements IntegrationInterface
      */
     public static function transform_taxonomy($value, $id, $field)
     {
+        if (empty($value)) {
+            return false;
+        }
         if ($field['field_type'] === 'select' || $field['field_type'] === 'radio') {
             return Timber::get_term((int) $value);
         }
@@ -215,6 +218,9 @@ class AcfIntegration implements IntegrationInterface
      */
     public static function transform_user($value, $id, $field)
     {
+        if (empty($value)) {
+            return false;
+        }
         if (!$field['multiple']) {
             return Timber::get_user((int) $value);
         }
