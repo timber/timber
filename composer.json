@@ -43,10 +43,9 @@
     "docs": "https://timber.github.io/docs/"
   },
   "require": {
-    "php": "^7.4 || ^8.0",
+    "php": "^8.1",
     "composer/installers": "^1.0 || ^2.0",
-    "symfony/polyfill-php80": "^1.27",
-    "twig/twig": "^2.15.3 || ^3.0"
+    "twig/twig": "^3.0"
   },
   "require-dev": {
     "ergebnis/composer-normalize": "^2.28",
