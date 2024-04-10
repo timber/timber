@@ -19,7 +19,7 @@ class TestTimberImageToWEBP extends Timber_UnitTestCase
         $this->assertEquals($filename, $str);
     }
 
-    public function testONGtoWEBP()
+    public function testPNGtoWEBP()
     {
         $filename = TestTimberImage::copyTestAttachment('flag.png');
         $str = Timber::compile_string('{{file|towebp}}', [
