@@ -12,6 +12,10 @@ class TestTimberWPFunctions extends Timber_UnitTestCase {
 		}
 
 		function testFooterOnFooterFW(){
+			if ($this->isWordPressVersion('6.4', '>=')) {
+				$this->setExpectedDeprecated('the_block_template_skip_link');
+			}
+
 			global $wp_scripts;
 			$wp_scripts = null;
 			wp_enqueue_script( 'jquery', false, array(), false, true );
@@ -26,6 +30,10 @@ class TestTimberWPFunctions extends Timber_UnitTestCase {
 		}
 
 		function testFooterAlone(){
+			if ($this->isWordPressVersion('6.4', '>=')) {
+				$this->setExpectedDeprecated('the_block_template_skip_link');
+			}
+
 			global $wp_scripts;
 			$wp_scripts = null;
 			wp_enqueue_script( 'jquery', false, array(), false, true );
@@ -44,6 +52,10 @@ class TestTimberWPFunctions extends Timber_UnitTestCase {
 		}
 
 		function testDoubleActionWPFooter(){
+			if ($this->isWordPressVersion('6.4', '>=')) {
+				$this->setExpectedDeprecated('the_block_template_skip_link');
+			}
+
 			global $wp_scripts;
 			$wp_scripts = null;
 			add_action('wp_footer', 'echo_junk');
@@ -55,6 +67,10 @@ class TestTimberWPFunctions extends Timber_UnitTestCase {
 		}
 
 		function testInTwig(){
+			if ($this->isWordPressVersion('6.4', '>=')) {
+				$this->setExpectedDeprecated('the_block_template_skip_link');
+			}
+
 			global $wp_scripts;
 			$wp_scripts = null;
 			wp_enqueue_script( 'jquery', false, array(), false, true );
@@ -63,6 +79,10 @@ class TestTimberWPFunctions extends Timber_UnitTestCase {
 		}
 
 		function testInTwigString(){
+			if ($this->isWordPressVersion('6.4', '>=')) {
+				$this->setExpectedDeprecated('the_block_template_skip_link');
+			}
+
 			global $wp_scripts;
 			$wp_scripts = null;
 			wp_enqueue_script( 'jquery', false, array(), false, true );
@@ -71,6 +91,10 @@ class TestTimberWPFunctions extends Timber_UnitTestCase {
 		}
 
 		function testAgainstFooterFunctionOutput(){
+			if ($this->isWordPressVersion('6.4', '>=')) {
+				$this->setExpectedDeprecated('the_block_template_skip_link');
+			}
+
 			global $wp_scripts;
 			$wp_scripts = null;
 			wp_enqueue_script( 'colorpicker', false, array(), false, true);

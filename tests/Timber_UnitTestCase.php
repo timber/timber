@@ -219,4 +219,16 @@ class Timber_UnitTestCase extends TestCase
         $method->setAccessible(true);
         return $method->invokeArgs($obj, $args);
     }
+
+	public function isWordPressVersion(string $version, string $operator = '=')
+    {
+        return version_compare($GLOBALS['wp_version'], $version, $operator);
+    }
+
+    public function skipForWordpressVersion(string $version, string $operator = '<')
+    {
+        if ($this->isWordPressVersion($version, $operator)) {
+            $this->markTestSkipped("This test requires WordPress version $version or higher.");
+        }
+    }
 }
