@@ -7,7 +7,7 @@ use Timber\Image\Operation as ImageOperation;
 use Timber\ImageHelper;
 
 /**
- * This class is used to process webp images. Not all server configurations support webp. 
+ * This class is used to process webp images. Not all server configurations support webp.
  * If webp is not enabled, Timber will generate webp images instead
  * @codeCoverageIgnore
  */
@@ -42,6 +42,10 @@ class ToWebp extends ImageOperation {
 	 * @return bool                  true if everything went fine, false otherwise
 	 */
 	public function run( $load_filename, $save_filename ) {
+		if (!ImageHelper::is_protocol_allowed($load_filename)) {
+            throw new \InvalidArgumentException('The output file scheme is not supported.');
+        }
+
         if (!is_file($load_filename)) {
             return false;
         }

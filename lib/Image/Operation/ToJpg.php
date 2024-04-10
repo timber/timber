@@ -42,11 +42,14 @@ class ToJpg extends ImageOperation {
 	 * @return bool                  true if everything went fine, false otherwise
 	 */
 	public function run( $load_filename, $save_filename ) {
+		if  (!ImageHelper::is_protocol_allowed($load_filename) ) {
+            throw new \InvalidArgumentException('The output file scheme is not supported.');
+        }
 
 		if ( !file_exists($load_filename) ) {
 			return false;
 		}
-		
+
 		// Attempt to check if SVG.
 		if ( ImageHelper::is_svg($load_filename) ) {
 			return false;

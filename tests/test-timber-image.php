@@ -1167,4 +1167,48 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$this->assertEquals( 20, $image->height() );
 	}
 
+	function testPharProtocolIsNotAllowedwithResize() {
+		$object = new ImageOperation\Resize( 400, 300, 'center' );
+		$load_filename = 'phar://test.jpg';
+		$save_filename = 'test-new.jpg';
+
+		$this->expectException( InvalidArgumentException::class );
+		$object->run( $load_filename, $save_filename );
+	}
+
+	function testPharProtocolIsNotAllowedwithLetterbox() {
+		$object = new ImageOperation\Letterbox( 400, 300, '#FFFFFF' );
+		$load_filename = 'phar://test.jpg';
+		$save_filename = 'test-new.jpg';
+
+		$this->expectException( InvalidArgumentException::class );
+		$object->run( $load_filename, $save_filename );
+	}
+
+	function testPharProtocolIsNotAllowedwithRetina() {
+		$object = new ImageOperation\Retina( 2 );
+		$load_filename = 'phar://test.jpg';
+		$save_filename = 'test-new.jpg';
+
+		$this->expectException( InvalidArgumentException::class );
+		$object->run( $load_filename, $save_filename );
+	}
+
+	function testPharProtocolIsNotAllowedwithToJpg() {
+		$object = new ImageOperation\ToJpg( '#FFFFFF' );
+		$load_filename = 'phar://test.svg';
+		$save_filename = 'test-new.svg';
+
+		$this->expectException( InvalidArgumentException::class );
+		$object->run( $load_filename, $save_filename );
+	}
+
+	function testPharProtocolIsNotAllowedwithToWebp() {
+		$object = new ImageOperation\ToWebp( 80 );
+		$load_filename = 'phar://test.png';
+		$save_filename = 'test-new.png';
+
+		$this->expectException( InvalidArgumentException::class );
+		$object->run( $load_filename, $save_filename );
+	}
 }

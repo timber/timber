@@ -128,6 +128,11 @@ class Image extends Post implements CoreInterface {
 		if ( isset($this->_dimensions) ) {
 			return $this->get_dimensions_loaded($dim);
 		}
+
+		if (!ImageHelper::is_protocol_allowed($this->file_loc) ) {
+            throw new \InvalidArgumentException('The output file scheme is not supported.');
+        }
+
 		if ( file_exists($this->file_loc) && filesize($this->file_loc) ) {
 			if ( ImageHelper::is_svg( $this->file_loc ) ) {
 				$svg_size             = $this->svgs_get_dimensions( $this->file_loc );
