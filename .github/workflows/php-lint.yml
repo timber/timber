@@ -39,7 +39,9 @@ jobs:
 
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@v42
+        uses: tj-actions/changed-files@v44
+        with:
+           files: '**.php'
 
       - name: Run PHP lint
         if: steps.changed-files.outputs.all_changed_files != ''
