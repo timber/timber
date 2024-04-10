@@ -60,8 +60,8 @@
     "twig/cache-extra": "^3.3",
     "wpackagist-plugin/advanced-custom-fields": "^5.0 || ^6.0",
     "wpackagist-plugin/co-authors-plus": "^3.3",
-    "yoast/wp-test-utils": "^1.0",
-    "phpunit/phpunit": "^9.6"
+    "yoast/wp-test-utils": "^1.2",
+    "phpunit/phpunit": "^9.0"
   },
   "suggest": {
     "php-coveralls/php-coveralls": "^2.0 for code coverage",
