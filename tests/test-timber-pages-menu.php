@@ -275,7 +275,7 @@ class TestTimberPagesMenu extends Timber_UnitTestCase
     }
 
     /**
-     * Tests whether params are correctly passed to the underyling get_pages() function.
+     * Tests whether params are correctly passed to the underlying get_pages() function.
      *
      * @return void
      */
@@ -427,7 +427,7 @@ class TestTimberPagesMenu extends Timber_UnitTestCase
     {
         $menu = Timber::get_pages_menu();
 
-        // ain't nothin there
+        // ain't nothing there
         $this->assertFalse($menu->current_item());
     }
 }

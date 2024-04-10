@@ -155,7 +155,7 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
         $this->assertEquals('Murder Spagurders are dangerous sneks.', $string);
     }
 
-    public function testACFTranformImage()
+    public function testACFTransformImage()
     {
         $field_name = 'my_image_meta';
         $this->register_field($field_name, 'image');

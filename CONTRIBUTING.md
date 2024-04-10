@@ -124,7 +124,7 @@ When referencing a namespaced class name in a type (for example in a `@param` or
 
 ### Code examples
 
-Timber uses tabs for indentation, but you should always use spaces for indentation in code examples, because the resulting Markdown will have a more consistens styling.
+Timber uses tabs for indentation, but you should always use spaces for indentation in code examples, because the resulting Markdown will have a more consists styling.
 
 The `@example` tag allows you add code examples to your DocBlocks, including fenced code blocks:
 

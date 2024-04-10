@@ -495,7 +495,7 @@ class TestTimberPagination extends Timber_UnitTestCase
     /**
      * @ticket #2123
      */
-    public function testLittlePaginationCateogry()
+    public function testLittlePaginationCategory()
     {
         $this->setPermalinkStructure('/%postname%/');
         // setup

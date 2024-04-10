@@ -277,7 +277,7 @@ class TestTimberPost extends Timber_UnitTestCase
         wp_update_post($nextPost);
         $nextPostTest = $firstPost->next();
         // because $nextPost has a status of "draft" now (and thus isn't public)
-        // it should not be retured when we call $firstPost->next();
+        // it should not be returned when we call $firstPost->next();
         $this->assertFalse($nextPostTest);
     }
 

@@ -225,7 +225,7 @@ class MenuFactory
         $class = $class ?? Menu::class;
 
         /**
-         * Filters the menu class based on your custom criterias.
+         * Filters the menu class based on your custom criteria.
          *
          * Maybe the location is not appropriate in some cases. This filter will allow you to filter the class
          * on whatever data is available.

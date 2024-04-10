@@ -638,7 +638,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase
         Timber::compile('assets/image-test.twig', $data);
         $this->assertFileExists($arch_regular);
         $this->assertFileExists($arch_2night);
-        //Delte the regular arch image
+        //Delete the regular arch image
         Timber\ImageHelper::delete_generated_files($file);
         //The child of the regular arch image should be like
         //poof-be-gone

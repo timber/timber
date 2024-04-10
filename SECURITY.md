@@ -7,7 +7,7 @@ If you discover a security vulnerability within Timber, please submit your repor
 Please do not discuss any vulnerabilities (even resolved ones) without express consent.
 
 ### Submit your report
-When you've found a security issue that abides by the rules and scope of this project, please submit the report to us via [Github](https://github.com/timber/timber/security/advisories/new). In your report, make sure to include a detailed guide on how to reproduce the issue.
+When you've found a security issue that abides by the rules and scope of this project, please submit the report to us via [GitHub](https://github.com/timber/timber/security/advisories/new). In your report, make sure to include a detailed guide on how to reproduce the issue.
 
 ### After your submission
 We will make a best effort to meet the following response targets for security reports:

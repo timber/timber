@@ -131,7 +131,7 @@ You can find the code for Timber 1 on the [1.x branch](https://github.com/timber
 * [**TutsPlus**](https://code.tutsplus.com/articles/kick-start-wordpress-development-with-twig-introduction--cms-24781) A guide to getting started by [@ahmadawais](https://github.com/ahmadawais)
 
 ## Reporting Security Issues
-To disclose a security issue to our team, please submit a report via [Github](https://github.com/timber/timber/security).
+To disclose a security issue to our team, please submit a report via [GitHub](https://github.com/timber/timber/security).
 
 ## Support
 Please post on [StackOverflow under the "Timber" tag](https://stackoverflow.com/questions/tagged/timber). Please use GitHub issues _only_ for specific bugs, feature requests and other types of issues.
