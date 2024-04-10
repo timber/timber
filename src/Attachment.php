@@ -2,6 +2,7 @@
 
 namespace Timber;
 
+use InvalidArgumentException;
 use Timber\Factory\PostFactory;
 
 /**
@@ -243,6 +244,10 @@ class Attachment extends Post
         $size = $this->metadata('filesize');
         if ($size !== null && \is_numeric($size)) {
             return $this->size = (int) $size;
+        }
+
+        if (!ImageHelper::is_protocol_allowed($this->file_loc())) {
+            throw new InvalidArgumentException('The output file scheme is not supported.');
         }
 
         /**
