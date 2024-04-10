@@ -73,9 +73,6 @@ class Admin {
 	 */
 	protected static function update_message_major() {
 		$m = '<br><b>Warning:</b> This new version of Timber introduces some major new features which might have unknown effects on your site.';
-
-
-		$m .= self::disable_update();
 		return $m;
 	}
 
@@ -118,16 +115,16 @@ class Admin {
 		$upgrade_magnitude = self::get_upgrade_magnitude($current_version, $new_version);
 		if ( $upgrade_magnitude == 'milestone' ) {
 			$message = self::update_message_milestone();
-			echo '<br />'.sprintf($message);
+			echo '<br />' . ($message);
 			return;
 		} elseif ( $upgrade_magnitude == 'major' ) {
 			//major version
 			$message = self::update_message_major();
-			echo '<br />'.sprintf($message);
+			echo '<br />' . ($message);
 			return;
 		}
 		$message = self::update_message_minor();
-		echo '<br />'.($message);
+		echo '<br />' . ($message);
 		return;
 
 	}
