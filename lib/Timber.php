@@ -35,7 +35,7 @@ use Timber\Loader;
  */
 class Timber {
 
-	public static $version = '1.23.0';
+	public static $version = '1.23.1';
 	public static $locations;
 	public static $dirname = 'views';
 	public static $twig_cache = false;
