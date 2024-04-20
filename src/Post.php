@@ -1279,7 +1279,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
          */
         $remove_blocks = (bool) \apply_filters('timber/post/content/remove_blocks', $remove_blocks);
 
-        if ($remove_blocks && \function_exists('excerpt_remove_blocks')) {
+        if ($remove_blocks) {
             $content = \excerpt_remove_blocks($content);
         }
 
