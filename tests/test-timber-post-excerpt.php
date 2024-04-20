@@ -356,4 +356,33 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase
 
         $this->assertEquals('Let this be the content, albeit a very short one!&hellip;', (string) $excerpt);
     }
+
+    /**
+     * Checks if the excerpt is correctly generated when the content contains a block.
+     * Prior to this fix, the excerpt would cause infinite loops (which show up as a segmentation fault in PHPunit).
+     *
+     * @ticket https://github.com/timber/timber/issues/2041
+     *
+     * @return void
+     */
+    public function testExcerptWithCustomBlock()
+    {
+        require_once 'assets/block-tests/block-register.php';
+
+        // Create an empty post
+        $post_id = $this->factory->post->create([
+            'post_excerpt' => '',
+            'post_content' => '',
+        ]);
+
+        // Update the post with a block and pass the post ID to the block
+        $this->factory->post->update_object($post_id, [
+            'post_excerpt' => '',
+            'post_content' => '<!-- wp:timber/test-block { "post_id": ' . $post_id . '} /--> Some other content',
+        ]);
+
+        $post = Timber::get_post($post_id);
+
+        $this->assertEquals('Some other content', (string) $post->excerpt());
+    }
 }
