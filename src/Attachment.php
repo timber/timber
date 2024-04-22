@@ -57,7 +57,7 @@ class Attachment extends Post
     public $abs_url;
 
     /**
-     * Attachement metadata.
+     * Attachment metadata.
      *
      * @var array Attachment metadata.
      */
@@ -212,7 +212,7 @@ class Attachment extends Post
     /**
      * Gets the raw filesize in bytes.
      *
-     * Use the `size_format` filter to format the raw size into a human readable size («1 MB» intead of «1048576»)
+     * Use the `size_format` filter to format the raw size into a human readable size («1 MB» instead of «1048576»)
      *
      * @api
      * @since 2.0.0
@@ -350,7 +350,7 @@ class Attachment extends Post
      */
     protected function metadata(?string $key = null)
     {
-        // We haven't retrived the metadata yet because it's wasn't needed until now.
+        // We haven't retrieved the metadata yet because it's wasn't needed until now.
         if (!isset($this->metadata)) {
             // Cache it so we don't have to retrieve it again.
             $this->metadata = (array) \wp_get_attachment_metadata($this->ID);

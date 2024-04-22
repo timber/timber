@@ -267,7 +267,7 @@ add_filter('timber/menuitem/class', function ($class, $item, $menu) {
 }, 10, 3);
 ```
 
-In the above example, the MenuItem class filter receives the default `Timber\MenuItem` class name, the WordPress menu item (which is an instance of `WP_Post`) and the `Timber\Menu` object that the item is assigend to. You should be able to decide which class to use based on these parameters. This example demonstrates how you can use a custom class (`MenuItemPrimary`) when the parent menu has a (custom) class of `MenuPrimary`.
+In the above example, the MenuItem class filter receives the default `Timber\MenuItem` class name, the WordPress menu item (which is an instance of `WP_Post`) and the `Timber\Menu` object that the item is assigned to. You should be able to decide which class to use based on these parameters. This example demonstrates how you can use a custom class (`MenuItemPrimary`) when the parent menu has a (custom) class of `MenuPrimary`.
 
 Here’s another example where you would use a different class if the menu item is in a menu assigned to the `secondary` menu location.
 

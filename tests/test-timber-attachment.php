@@ -130,7 +130,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase
         $this->assertEquals(Attachment::class, get_class($attachments[6]));
     }
 
-    public function testAttachmentWithExtentionFilter()
+    public function testAttachmentWithExtensionFilter()
     {
         // Add support for "uploading" WEBP images.
         $this->add_filter_temporarily('upload_mimes', function ($types) {

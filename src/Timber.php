@@ -1452,7 +1452,7 @@ class Timber
         /**
          * Filters the compiled result before it is returned in `Timber::compile()`.
          *
-         * It adds the posibility to filter the output ready for render.
+         * It adds the possibility to filter the output ready for render.
          *
          * @since 2.0.0
          *

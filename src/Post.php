@@ -291,7 +291,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         global $post;
         global $wp_query;
 
-        // Mimick WordPress behavior to improve compatibility with third party plugins.
+        // Mimic WordPress behavior to improve compatibility with third party plugins.
         $wp_query->in_the_loop = true;
 
         if (!$this->wp_object) {
@@ -809,7 +809,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      *    {# Some stuff here #}
      * </article>
      * ```
-     * @return string a space-seperated list of classes
+     * @return string a space-separated list of classes
      */
     public function post_class($class = '')
     {
@@ -840,7 +840,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * </article>
      * ```
      *
-     * @return string a space-seperated list of classes
+     * @return string a space-separated list of classes
      */
     public function css_class($class = '')
     {

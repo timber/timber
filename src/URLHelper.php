@@ -409,7 +409,7 @@ class URLHelper
     }
 
     /**
-     * This will evaluate wheter a URL is at an aboslute location (like http://example.org/whatever)
+     * This will evaluate whether a URL is at an absolute location (like http://example.org/whatever)
      *
      * @param string $path
      * @return boolean true if $path is an absolute url, false if relative.
@@ -460,7 +460,7 @@ class URLHelper
      * Otherwise, false.
      *
      * @api
-     * @param  string $url URL to evalute.
+     * @param  string $url URL to evaluate.
      * @return bool
      */
     public static function is_external(string $url): bool

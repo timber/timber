@@ -244,7 +244,7 @@ class Loader
         foreach ($templates as $template) {
             // Remove any whitespace around the template name
             $template = \trim($template);
-            // Use the Twig loader to test for existance
+            // Use the Twig loader to test for existence
             if ($loader->exists($template)) {
                 // Return name of existing template
                 return $template;

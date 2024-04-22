@@ -176,7 +176,7 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
             // Fetch values. Auto-fetches all values if $field_name is empty.
             $object_meta = \get_metadata($object_type, $this->ID, $field_name, true);
 
-            // Mimick $single argument when fetching all meta values.
+            // Mimic $single argument when fetching all meta values.
             if (empty($field_name) && \is_array($object_meta)) {
                 $object_meta = \array_map(function ($meta) {
                     /**
