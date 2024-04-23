@@ -1215,26 +1215,26 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      *
      * @param int $page Optional. The page to show if the content of the post is split into multiple
      *                  pages. Read more about this in the [Pagination Guide](https://timber.github.io/docs/v2/guides/pagination/#paged-content-within-a-post). Default `0`.
-     * @param int $num_words Optional. The number of words to show. Default `-1` (show all).
+     * @param int $len Optional. The number of words to show. Default `-1` (show all).
      * @param bool $remove_blocks Optional. Whether to remove blocks. Defaults to false. True when called from the $post->excerpt() method.
      * @return string The content of the post.
      */
-    public function content($page = 0, $num_words = -1, $remove_blocks = false)
+    public function content($page = 0, $len = -1, $remove_blocks = false)
     {
-        if ($rd = $this->get_revised_data_from_method('content', [$page, $num_words])) {
+        if ($rd = $this->get_revised_data_from_method('content', [$page, $len])) {
             return $rd;
         }
         if ($form = $this->maybe_show_password_form()) {
             return $form;
         }
-        if ($num_words == -1 && $page == 0 && $this->___content) {
+        if ($len == -1 && $page == 0 && $this->___content) {
             return $this->___content;
         }
 
         $content = $this->post_content;
 
-        if ($num_words > 0) {
-            $content = \wp_trim_words($content, $num_words);
+        if ($len > 0) {
+            $content = \wp_trim_words($content, $len);
         }
 
         /**
@@ -1286,7 +1286,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         $content = $this->content_handle_no_teaser_block($content);
         $content = \apply_filters('the_content', ($content));
 
-        if ($num_words == -1 && $page == 0) {
+        if ($len == -1 && $page == 0) {
             $this->___content = $content;
         }
 
