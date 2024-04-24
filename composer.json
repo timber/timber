@@ -58,8 +58,8 @@
     "symplify/easy-coding-standard": "^12.0",
     "szepeviktor/phpstan-wordpress": "^1.1",
     "twig/cache-extra": "^3.3",
-    "wpackagist-plugin/advanced-custom-fields": "^5.0 || ^6.0",
-    "wpackagist-plugin/co-authors-plus": "^3.3",
+    "wpackagist-plugin/advanced-custom-fields": "^6.0",
+    "wpackagist-plugin/co-authors-plus": "^3.6",
     "yoast/wp-test-utils": "^1.2",
     "phpunit/phpunit": "^9.0"
   },
