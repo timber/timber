@@ -96,6 +96,8 @@ require_once __DIR__ . '/WpCliLogger.php';
 
 WP_CLI::set_logger(new WpCliLogger(false));
 
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+
 /*
  * Bootstrap WordPress. This will also load the Composer autoload file, the PHPUnit Polyfills
  * and the custom autoloader for the TestCase and the mock object classes.
