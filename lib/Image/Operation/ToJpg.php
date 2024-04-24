@@ -28,7 +28,8 @@ class ToJpg extends ImageOperation {
 	 * @return  string    the final filename to be used (ex: my-awesome-pic.jpg)
 	 */
 	public function filename( $src_filename, $src_extension = 'jpg' ) {
-		$new_name = $src_filename.'.jpg';
+		$newbase = $src_filename.'-tojpg';
+		$new_name = $newbase.'.jpg';
 		return $new_name;
 	}
 

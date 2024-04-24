@@ -958,6 +958,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$str = '<img src="{{'."'$gif_url'".'|tojpg}}" />';
 		$result = Timber::compile_string($str);
 		$jpg_url = str_replace('.gif', '.jpg', $gif_url);
+		$jpg_url = str_replace('loading', 'loading-tojpg', $jpg_url);
 		$this->assertEquals('<img src="'.$jpg_url.'" />', $result);
 	}
 
