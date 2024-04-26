@@ -2,7 +2,7 @@
 
 class TestTimberTermTwigFilters extends Timber_UnitTestCase
 {
-    public function testTimberFitlerSanitize()
+    public function testTimberFilterSanitize()
     {
         $data['title'] = "Jared's Big Adventure";
         $str = Timber::compile_string('{{title|sanitize}}', $data);

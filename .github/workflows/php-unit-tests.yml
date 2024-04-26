@@ -46,21 +46,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['7.4', '8.0', '8.1', '8.2']
-        wp: ['latest', '5.3']
+        php: ['8.1', '8.2']
+        wp: ['latest', '6.2']
         multisite: ['0', '1']
         dependency-version: ['highest', 'lowest']
         webp: [false]
         coverage: [false]
         extensions: ['gd']
         experimental: [false]
-        exclude:
-            - wp: '5.3'
-              php: '8.0'
-            - wp: '5.3'
-              php: '8.1'
-            - wp: '5.3'
-              php: '8.2'
         include:
           # PHP 8.2 / experimental
           - php: '8.2'
@@ -118,38 +111,23 @@ jobs:
       - name: Setup problem matchers for PHPUnit
         run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
-      - uses: ramsey/composer-install@v2
+      - uses: ramsey/composer-install@v3
         with:
           dependency-versions: ${{ matrix.dependency-version }}
-
-      - name: Upgrade dev dependencies when lowest
-        if: matrix.dependency-version == 'lowest'
-        run: |
-            composer update yoast/wp-test-utils -W --dev
-            composer update composer/installers -W
-
-      - name: Downgrade PHPUnit to ^7.5 when WP < 5.9
-        if: matrix.wp < '5.9'
-        run: composer req phpunit/phpunit:^7.5 yoast/wp-test-utils:^1.0 -W --dev
-
-      - name: Upgrade PHPUnit to ^9.0 when prefer lowest and PHP 8.0+
-        if: ${{ matrix.dependency-version == 'prefer-lowest' && matrix.php >= '8.0' }}
-        run: composer req phpunit/phpunit:^9.0 yoast/wp-test-utils:^1.0 -W --dev
 
       - name: Install tests
         run: bash bin/install-wp-tests.sh wordpress_test root '' 127.0.0.1:${{ job.services.mysql.ports['3306'] }} ${{ matrix.wp }} true
 
-
       - name: Run tests
         if: ${{ !matrix.webp }}
-        run: composer run test:no-cov
+        run: composer run test
         env:
           WP_MULTISITE: ${{ matrix.multisite }}
 
       - name: Run tests with coverage
         if: matrix.coverage == true
         run: |
-          composer run test:codecov
+          composer run test:integration:codecov
 
       - name: Upload coverage results to Coveralls
         if: matrix.coverage == true

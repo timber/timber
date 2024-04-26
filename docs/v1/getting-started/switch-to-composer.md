@@ -29,7 +29,7 @@ We want to make sure that you are running the latest version of the Timber plugi
 ### 3. Disable the Timber plugin
 Once you are sure that you are running the latest version of the Timber plugin, you can disable it. This will make sure that the plugin is not loaded anymore and does not interfere with the Composer based version of Timber.
 
-Please note that you website will throw erros at this point, as there is no Timber available. This will be fixed in the next two steps.
+Please note that you website will throw errors at this point, as there is no Timber available. This will be fixed in the next two steps.
 
 ### 4. Install the latest 1.x version of Timber via Composer
 Now that the plugin is disabled, you can install the latest 1.x version of Timber via Composer. You can do this by navigating to your site's active theme folder inside your terminal and then running the following command:

@@ -122,10 +122,6 @@ This is where we’ll start in PHP.
 ```php
 $post = Timber::get_post();
 
-if (isset($post->hero_image) && strlen($post->hero_image)) {
-    $post->hero_image = Timber::get_image($post->hero_image);
-}
-
 $context = Timber::context([
     'post' => $post,
 ]);
@@ -138,7 +134,9 @@ Timber::render('single.twig', $context);
 You can now use all the above functions to transform your custom images in the same way, the format will be:
 
 ```twig
-<img src="{{ post.hero_image.src | resize(500, 300) }}" />
+{% if post.meta('hero_image') %}
+    <img src="{{ get_image(post.meta('hero_image')).src | resize(500, 300) }}" />
+{% endif %}
 ```
 
 ## Gallery Field
@@ -169,7 +167,7 @@ or
 The post data returned from a relationship field will not contain the Timber methods needed for easy handling inside of your Twig file. To get these, you’ll need to convert them into proper `Timber\Post` objects using `get_posts()`:
 
 ```twig
-{% for item in get_posts(post.relationship_field) %}
+{% for item in get_posts(post.meta('relationship_field')) %}
    {{ item.title }}
    {# Do something with item #}
 {% endfor %}

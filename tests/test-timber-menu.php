@@ -334,7 +334,7 @@ class TestTimberMenu extends Timber_UnitTestCase
         self::_createTestMenu();
 
         $this->add_filter_temporarily('wp_nav_menu_objects', function ($menu_items) {
-            // Be carefull with indexes, they are strings here
+            // Be careful with indexes, they are strings here
             $menu_items['9']->current = true;
             $menu_items['9']->classes = array_merge((array) $menu_items[8]->classes, ['current-menu-item', 'my-custom-item-class']);
             return $menu_items;
@@ -636,7 +636,7 @@ class TestTimberMenu extends Timber_UnitTestCase
         $this->assertEquals('bar', $item->foo);
         $this->assertNotEquals('bar', $item->meta('foo'));
         $this->assertEquals('stardust', $item->meta('ziggy'));
-        $this->assertNull($item->meta('asdfafds'));
+        $this->assertSame('', $item->meta('asdfafds'));
     }
 
     public function testMenuMeta()

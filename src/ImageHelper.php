@@ -2,6 +2,7 @@
 
 namespace Timber;
 
+use InvalidArgumentException;
 use Timber\Image\Operation;
 
 /**
@@ -28,6 +29,10 @@ class ImageHelper
     public const BASE_CONTENT = 2;
 
     public static $home_url;
+
+    protected const ALLOWED_PROTOCOLS = ['file', 'http', 'https'];
+
+    protected const WINDOWS_LOCAL_FILENAME_REGEX = '/^[a-z]:(?:[\\\\\/]?(?:[\w\s!#()-]+|[\.]{1,2})+)*[\\\\\/]?/i';
 
     /**
      * Inits the object.
@@ -140,6 +145,11 @@ class ImageHelper
             //doesn't have .gif, bail
             return false;
         }
+
+        if (!ImageHelper::is_protocol_allowed($file)) {
+            throw new InvalidArgumentException('The output file scheme is not supported.');
+        }
+
         // Its a gif so test
         if (!($fh = @\fopen($file, 'rb'))) {
             return false;
@@ -169,7 +179,15 @@ class ImageHelper
      */
     public static function is_svg($file_path)
     {
-        if ('' === $file_path || !\file_exists($file_path)) {
+        if ('' === $file_path) {
+            return false;
+        }
+
+        if (!ImageHelper::is_protocol_allowed($file_path)) {
+            throw new InvalidArgumentException('The output file scheme is not supported.');
+        }
+
+        if (!\file_exists($file_path)) {
             return false;
         }
 
@@ -396,7 +414,7 @@ class ImageHelper
 
         /**
          * Filters basename for sideloaded files.
-         * @since 2.0.1
+         * @since 2.1.0
          * @example
          * ```php
          * // Change the basename used for sideloaded images.
@@ -431,6 +449,10 @@ class ImageHelper
      */
     public static function sideload_image($file)
     {
+        if (!ImageHelper::is_protocol_allowed($file)) {
+            throw new InvalidArgumentException('The output file scheme is not supported.');
+        }
+
         /**
          * Adds a filter to change the upload folder temporarily.
          *
@@ -444,6 +466,7 @@ class ImageHelper
         \add_filter('upload_dir', [__CLASS__, 'set_sideload_image_upload_dir']);
 
         $loc = self::get_sideloaded_file_loc($file);
+
         if (\file_exists($loc)) {
             $url = URLHelper::file_system_to_url($loc);
 
@@ -457,8 +480,8 @@ class ImageHelper
         }
         $tmp = \download_url($file);
         \preg_match('/[^\?]+\.(jpe?g|jpe|gif|png)\b/i', $file, $matches);
+
         $file_array = [];
-        $file_array['name'] = PathHelper::basename($matches[0]);
         $file_array['tmp_name'] = $tmp;
         // If error storing temporarily, do not use
         if (\is_wp_error($tmp)) {
@@ -619,7 +642,7 @@ class ImageHelper
         $parts = PathHelper::pathinfo($tmp);
         $result['subdir'] = ($parts['dirname'] === '/') ? '' : $parts['dirname'];
         $result['filename'] = $parts['filename'];
-        $result['extension'] = \strtolower($parts['extension']);
+        $result['extension'] = (isset($parts['extension']) ? \strtolower($parts['extension']) : '');
         $result['basename'] = $parts['basename'];
 
         return $result;
@@ -806,6 +829,10 @@ class ImageHelper
             return '';
         }
 
+        if (!ImageHelper::is_protocol_allowed($src)) {
+            throw new InvalidArgumentException('The output file scheme is not supported.');
+        }
+
         $allow_fs_write = \apply_filters('timber/allow_fs_write', true);
 
         if ($allow_fs_write === false) {
@@ -948,5 +975,37 @@ class ImageHelper
             $op->filename($au['filename'], $au['extension'])
         );
         return $new_path;
+    }
+
+    /**
+     * Checks if the protocol of the given filename is allowed.
+     *
+     * This fixes a security issue with a PHAR deserialization vulnerability
+     * with file_exists() in PHP < 8.0.0.
+     *
+     * @param  string $filepath File path.
+     * @return bool
+     */
+    public static function is_protocol_allowed($filepath)
+    {
+        $parsed_url = \parse_url($filepath);
+
+        if (false === $parsed_url) {
+            throw new InvalidArgumentException('The filename is not valid.');
+        }
+
+        $protocol = isset($parsed_url['scheme'])
+            ? \mb_strtolower($parsed_url['scheme'])
+            : 'file';
+
+        if (
+            \PHP_OS_FAMILY === 'Windows'
+            && \strlen($protocol) === 1
+            && \preg_match(self::WINDOWS_LOCAL_FILENAME_REGEX, $filepath)
+        ) {
+            $protocol = 'file';
+        }
+
+        return \in_array($protocol, self::ALLOWED_PROTOCOLS, true);
     }
 }

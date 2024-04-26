@@ -291,7 +291,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         global $post;
         global $wp_query;
 
-        // Mimick WordPress behavior to improve compatibility with third party plugins.
+        // Mimic WordPress behavior to improve compatibility with third party plugins.
         $wp_query->in_the_loop = true;
 
         if (!$this->wp_object) {
@@ -809,7 +809,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      *    {# Some stuff here #}
      * </article>
      * ```
-     * @return string a space-seperated list of classes
+     * @return string a space-separated list of classes
      */
     public function post_class($class = '')
     {
@@ -840,7 +840,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * </article>
      * ```
      *
-     * @return string a space-seperated list of classes
+     * @return string a space-separated list of classes
      */
     public function css_class($class = '')
     {
@@ -994,23 +994,54 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      *     {% endfor %}
      * {% endif %}
      * ```
-     * @param string|array $post_type _optional_ use to find children of a particular post type (attachment vs. page for example). You might want to restrict to certain types of children in case other stuff gets all mucked in there. You can use 'parent' to use the parent's post type or you can pass an array of post types.
+     * @param string|array $args _optional_ An array of arguments for the `get_children` function or a string/non-indexed array to use as the post type(s).
      * @return PostCollectionInterface
      */
-    public function children($post_type = 'any')
+    public function children($args = 'any')
     {
-        if ($post_type === 'parent') {
-            $post_type = $this->post_type;
-        }
-        if (\is_array($post_type)) {
-            $post_type = \implode('&post_type[]=', $post_type);
-        }
-        $query = 'post_parent=' . $this->ID . '&post_type[]=' . $post_type . '&posts_per_page=-1&orderby=menu_order title&order=ASC&post_status[]=publish';
-        if ($this->post_status === 'publish') {
-            $query .= '&post_status[]=inherit';
+        if (\is_string($args) || \array_values($args) === $args) {
+            $args = [
+                'post_type' => 'parent' === $args ? $this->post_type : $args,
+            ];
         }
 
-        return $this->factory()->from(\get_children($query));
+        $args = \wp_parse_args($args, [
+            'post_parent' => $this->ID,
+            'post_type' => 'any',
+            'posts_per_page' => -1,
+            'orderby' => 'menu_order title',
+            'order' => 'ASC',
+            'post_status' => 'publish' === $this->post_status ? ['publish', 'inherit'] : 'publish',
+        ]);
+
+        /**
+         * Filters the arguments for the query used to get the children of a post.
+         *
+         * This filter is used by the `Timber\Post::children()` method. It allows you to modify the
+         * arguments for the `get_children` function. This way you can change the query to get the
+         * children of a post.
+         *
+         * @example
+         * ```
+         * add_filter( 'timber/post/children_args', function( $args, $post ) {
+         *
+         *     if ( $post->post_type === 'custom_post_type' ) {
+         *        $args['post_status'] = 'private';
+         *     }
+         *
+         *     return $args;
+         * } );
+         * ```
+         *
+         * @see   \Timber\Post::children()
+         * @since 2.1.0
+         *
+         * @param array        $arguments An array of arguments for the `get_children` function.
+         * @param Post $post   The post object.
+         */
+        $args = \apply_filters('timber/post/children_args', $args, $this);
+
+        return $this->factory()->from(\get_children($args));
     }
 
     /**
@@ -1674,11 +1705,11 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * Using simple links to the next an previous page.
      * ```twig
      * {% if post.pagination.next is not empty %}
-     *     <a href="{{ post.pagination.next.link|e('esc_url') }}">Go to next page</a>
+     *     <a href="{{ post.pagination.next.link|esc_url }}">Go to next page</a>
      * {% endif %}
      *
      * {% if post.pagination.prev is not empty %}
-     *     <a href="{{ post.pagination.prev.link|e('esc_url') }}">Go to previous page</a>
+     *     <a href="{{ post.pagination.prev.link|esc_url }}">Go to previous page</a>
      * {% endif %}
      * ```
      * Using a pagination for all pages.
@@ -1691,7 +1722,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      *                    {% if page.current %}
      *                        <span aria-current="page">Page {{ page.title }}</span>
      *                    {% else %}
-     *                        <a href="{{ page.link|e('esc_url') }}">Page {{ page.title }}</a>
+     *                        <a href="{{ page.link|esc_ur }}">Page {{ page.title }}</a>
      *                    {% endif %}
      *                </li>
      *            {% endfor %}

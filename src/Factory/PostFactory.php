@@ -182,7 +182,7 @@ class PostFactory
     {
         $src = \get_attached_file($post->ID);
         $mimes = \wp_get_mime_types();
-        // Add mime types that Timber recongizes as images, regardless of config
+        // Add mime types that Timber recognizes as images, regardless of config
         $mimes['svg'] = 'image/svg+xml';
         $mimes['webp'] = 'image/webp';
         $check = \wp_check_filetype(PathHelper::basename($src), $mimes);

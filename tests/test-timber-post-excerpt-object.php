@@ -9,7 +9,7 @@ class TestTimberPostExcerptObject extends Timber_UnitTestCase
 
     public function test1886Error()
     {
-        $expected = '<p>Govenment:</p> <ul> <li>of the <strong>people</strong></li> <li>by the people</li> <li>for the people</li> </ul>';
+        $expected = '<p>Government:</p> <ul> <li>of the <strong>people</strong></li> <li>by the people</li> <li>for the people</li> </ul>';
         $post_id = $this->factory->post->create([
             'post_content' => $expected . '<blockquote>Lincoln</blockquote>',
             'post_excerpt' => false,

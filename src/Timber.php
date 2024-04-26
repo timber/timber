@@ -2,6 +2,7 @@
 
 namespace Timber;
 
+use InvalidArgumentException;
 use Timber\Factory\CommentFactory;
 use Timber\Factory\MenuFactory;
 use Timber\Factory\PagesMenuFactory;
@@ -657,6 +658,10 @@ class Timber
                 );
 
                 return null;
+            }
+
+            if (!ImageHelper::is_protocol_allowed($ident)) {
+                throw new InvalidArgumentException('The output file scheme is not supported.');
             }
 
             if (!\file_exists($ident)) {
@@ -1447,7 +1452,7 @@ class Timber
         /**
          * Filters the compiled result before it is returned in `Timber::compile()`.
          *
-         * It adds the posibility to filter the output ready for render.
+         * It adds the possibility to filter the output ready for render.
          *
          * @since 2.0.0
          *

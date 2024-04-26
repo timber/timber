@@ -3,6 +3,7 @@
 use Timber\User;
 
 /**
+ * @group acf
  * @group users-api
  * @group comments-api
  * @group integrations
@@ -10,6 +11,14 @@ use Timber\User;
  */
 class TestTimberIntegrationACF extends Timber_UnitTestCase
 {
+    public function setUp(): void
+    {
+        if (!function_exists('get_field')) {
+            $this->markTestSkipped('ACF plugin is not loaded');
+        }
+        parent::setUp();
+    }
+
     public function testACFGetFieldPost()
     {
         $post_id = $this->factory->post->create();
@@ -146,7 +155,7 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
         $this->assertEquals('Murder Spagurders are dangerous sneks.', $string);
     }
 
-    public function testACFTranformImage()
+    public function testACFTransformImage()
     {
         $field_name = 'my_image_meta';
         $this->register_field($field_name, 'image');
@@ -460,6 +469,38 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
         ]);
         $this->assertSame(false, $image);
         $this->assertSame(false, $file);
+    }
+
+    /**
+     * @ticket #824
+     */
+    public function testTermWithNativeMetaNotExisting()
+    {
+        $tid = $this->factory->term->create([
+            'name' => 'News',
+            'taxonomy' => 'category',
+        ]);
+
+        add_term_meta($tid, 'bar', 'qux');
+        ;
+        $wp_native_value = get_term_meta($tid, 'foo', true);
+        $acf_native_value = get_field('foo', 'category_' . $tid);
+
+        $valid_wp_native_value = get_term_meta($tid, 'bar', true);
+        $valid_acf_native_value = get_field('bar', 'category_' . $tid);
+
+        $term = Timber::get_term($tid);
+
+        //test baseline "bar" data
+        $this->assertEquals('qux', $valid_wp_native_value);
+        $this->assertEquals('qux', $valid_acf_native_value);
+        $this->assertEquals('qux', $term->bar);
+
+        //test the one that doesn't exist
+        $this->assertEquals('string', gettype($wp_native_value));
+        $this->assertEmpty($wp_native_value);
+        $this->assertNull($acf_native_value);
+        $this->assertNotTrue($term->meta('foo'));
     }
 
     private function register_field($field_name, $field_type, $field_args = [])

@@ -638,7 +638,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase
         Timber::compile('assets/image-test.twig', $data);
         $this->assertFileExists($arch_regular);
         $this->assertFileExists($arch_2night);
-        //Delte the regular arch image
+        //Delete the regular arch image
         Timber\ImageHelper::delete_generated_files($file);
         //The child of the regular arch image should be like
         //poof-be-gone
@@ -1184,5 +1184,55 @@ class TestTimberImage extends TimberAttachment_UnitTestCase
         $image = Timber::get_image(self::get_attachment($pid, 'icon-twitter.svg'));
         $this->assertSame(23, $image->width());
         $this->assertSame(20, $image->height());
+    }
+
+    public function testPharProtocolIsNotAllowedwithResize()
+    {
+        $object = new ImageOperation\Resize(400, 300, 'center');
+        $load_filename = 'phar://test.jpg';
+        $save_filename = 'test-new.jpg';
+
+        $this->expectException(InvalidArgumentException::class);
+        $object->run($load_filename, $save_filename);
+    }
+
+    public function testPharProtocolIsNotAllowedwithLetterbox()
+    {
+        $object = new ImageOperation\Letterbox(400, 300, '#FFFFFF');
+        $load_filename = 'phar://test.jpg';
+        $save_filename = 'test-new.jpg';
+
+        $this->expectException(InvalidArgumentException::class);
+        $object->run($load_filename, $save_filename);
+    }
+
+    public function testPharProtocolIsNotAllowedwithRetina()
+    {
+        $object = new ImageOperation\Retina(2);
+        $load_filename = 'phar://test.jpg';
+        $save_filename = 'test-new.jpg';
+
+        $this->expectException(InvalidArgumentException::class);
+        $object->run($load_filename, $save_filename);
+    }
+
+    public function testPharProtocolIsNotAllowedwithToJpg()
+    {
+        $object = new ImageOperation\ToJpg('#FFFFFF');
+        $load_filename = 'phar://test.svg';
+        $save_filename = 'test-new.svg';
+
+        $this->expectException(InvalidArgumentException::class);
+        $object->run($load_filename, $save_filename);
+    }
+
+    public function testPharProtocolIsNotAllowedwithToWebp()
+    {
+        $object = new ImageOperation\ToWebp(80);
+        $load_filename = 'phar://test.png';
+        $save_filename = 'test-new.png';
+
+        $this->expectException(InvalidArgumentException::class);
+        $object->run($load_filename, $save_filename);
     }
 }

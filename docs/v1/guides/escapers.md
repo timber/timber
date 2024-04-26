@@ -32,7 +32,7 @@ This all follows the WordPress (and greater development philosophy) to:
 
 Background on KSES. KSES is a recursive acronym for `KSES Kills Evil Scripts`. It's goal is to ensure only  "allowed" HTML element names, attribute names and attribute values plus only sane HTML entities in the string. Allowed is based on a configuration.
 
-This uses ths internal WordPress method that sanitize content for allowed HTML tags for post content. The configuration used can be found by running ` wp_kses_allowed_html( 'post' );` [WordPress Documentation](https://codex.wordpress.org/Function_Reference/wp_kses_post)
+This uses the internal WordPress method that sanitize content for allowed HTML tags for post content. The configuration used can be found by running ` wp_kses_allowed_html( 'post' );` [WordPress Documentation](https://codex.wordpress.org/Function_Reference/wp_kses_post)
 
 **Twig**
 

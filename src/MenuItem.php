@@ -180,7 +180,7 @@ class MenuItem extends CoreEntity
     public function add_class(string $class_name)
     {
         // Class name is already there
-        if (!\in_array($class_name, $this->classes, true)) {
+        if (\in_array($class_name, $this->classes, true)) {
             return;
         }
         $this->classes[] = $class_name;

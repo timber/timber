@@ -21,7 +21,7 @@
             {% for page in posts.pagination.pages %}
                 {% if page.current %}
                     <li class="pagination-list-item pagination-page">{{ page.title }}</li>
-                    <li class="pagination-list-item pagination-seperator">of</li>
+                    <li class="pagination-list-item pagination-separator">of</li>
                 {% endif %}
                 {% if loop.last %}
                     <li class="pagination-list-item pagination-page">{{ page.title }}</li>

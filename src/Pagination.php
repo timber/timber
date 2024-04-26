@@ -116,7 +116,7 @@ class Pagination
                 'class' => 'page-numbers prev',
             ];
         }
-        if ($paged < 2) {
+        if ($this->current < 2) {
             $this->prev = '';
         }
         if ($this->total === (float) 0) {

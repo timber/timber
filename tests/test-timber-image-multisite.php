@@ -10,7 +10,7 @@ class TestTimberImageMultisite extends Timber_UnitTestCase
         TestTimberMultisite::clear();
     }
 
-    public function testSubDomainImageLocaion()
+    public function testSubDomainImageLocation()
     {
         if (!is_multisite()) {
             $this->markTestSkipped('Test is only for Multisite');
@@ -23,7 +23,7 @@ class TestTimberImageMultisite extends Timber_UnitTestCase
         $this->assertFalse($is_external);
     }
 
-    public function testSubDirectoryImageLocaion()
+    public function testSubDirectoryImageLocation()
     {
         if (!is_multisite()) {
             $this->markTestSkipped('Test is only for Multisite');

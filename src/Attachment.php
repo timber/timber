@@ -2,6 +2,7 @@
 
 namespace Timber;
 
+use InvalidArgumentException;
 use Timber\Factory\PostFactory;
 
 /**
@@ -56,7 +57,7 @@ class Attachment extends Post
     public $abs_url;
 
     /**
-     * Attachement metadata.
+     * Attachment metadata.
      *
      * @var array Attachment metadata.
      */
@@ -211,7 +212,7 @@ class Attachment extends Post
     /**
      * Gets the raw filesize in bytes.
      *
-     * Use the `size_format` filter to format the raw size into a human readable size («1 MB» intead of «1048576»)
+     * Use the `size_format` filter to format the raw size into a human readable size («1 MB» instead of «1048576»)
      *
      * @api
      * @since 2.0.0
@@ -243,6 +244,10 @@ class Attachment extends Post
         $size = $this->metadata('filesize');
         if ($size !== null && \is_numeric($size)) {
             return $this->size = (int) $size;
+        }
+
+        if (!ImageHelper::is_protocol_allowed($this->file_loc())) {
+            throw new InvalidArgumentException('The output file scheme is not supported.');
         }
 
         /**
@@ -345,7 +350,7 @@ class Attachment extends Post
      */
     protected function metadata(?string $key = null)
     {
-        // We haven't retrived the metadata yet because it's wasn't needed until now.
+        // We haven't retrieved the metadata yet because it's wasn't needed until now.
         if (!isset($this->metadata)) {
             // Cache it so we don't have to retrieve it again.
             $this->metadata = (array) \wp_get_attachment_metadata($this->ID);

@@ -195,6 +195,34 @@ class TestTimberUser extends Timber_UnitTestCase
         $this->assertEquals('16th', $user->president);
     }
 
+    public function testIsCurrent()
+    {
+        $uid = $this->factory->user->create([
+            'display_name' => 'Charles vonderZwen',
+            'user_login' => 'cvanderzwen',
+        ]);
+
+        $user = Timber::get_user($uid);
+
+        wp_set_current_user($uid);
+
+        $this->assertTrue($user->is_current());
+    }
+
+    public function testProfileLink()
+    {
+        $uid = $this->factory->user->create([
+            'display_name' => 'Boaty McBoatface',
+            'user_login' => 'BMcBoatface',
+        ]);
+
+        wp_set_current_user($uid);
+
+        $user = Timber::get_user($uid);
+
+        $this->assertEquals('http://example.org/wp-admin/profile.php', $user->profile_link());
+    }
+
     public function testAvatar()
     {
         // Restore integration-free Class Map for users.

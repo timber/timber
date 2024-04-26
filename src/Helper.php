@@ -119,7 +119,7 @@ class Helper
              * ```php
              *
              * add_filter( 'timber/transient/force_transient_mycustumslug', function($force) {
-             *     if(false == something_special_has_occured()){
+             *     if(false == something_special_has_occurred()){
              *       return false;
              *     }
              *
@@ -711,7 +711,7 @@ class Helper
      * Converts a WP object (WP_Post, WP_Term) into its
      * equivalent Timber class (Timber\Post, Timber\Term).
      *
-     * If no match is found the function will return the inital argument.
+     * If no match is found the function will return the initial argument.
      *
      * @param mixed $obj WP Object
      * @return mixed Instance of equivalent Timber object, or the argument if no match is found

@@ -57,6 +57,20 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
         return $dest;
     }
 
+    public function delete_existing_sideloaded_image($file)
+    {
+        // @see \Timber\ImageHelper::sideload_image()
+        add_filter('upload_dir', [Timber\ImageHelper::class, 'set_sideload_image_upload_dir']);
+
+        $file_loc = Timber\ImageHelper::get_sideloaded_file_loc($file);
+
+        if (file_exists($file_loc)) {
+            unlink($file_loc);
+        }
+
+        remove_filter('upload_dir', [Timber\ImageHelper::class, 'set_sideload_image_upload_dir']);
+    }
+
     public function testExternalImageWithInvalidUrl()
     {
         $image = Timber::get_external_image(78);
@@ -127,6 +141,20 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
 
         $this->assertSame(
             'http://example.org/wp-content/uploads/external/634489eb6a8b95c9ef9fac9b119bd92a.jpg',
+            $image->src()
+        );
+    }
+
+    public function testExternalImageWithExternalUrlAndNoImageExtension()
+    {
+        $file = 'https://via.placeholder.com/640x360';
+        $filename = basename(Timber\ImageHelper::get_sideloaded_file_loc($file));
+        $this->delete_existing_sideloaded_image($file);
+
+        $image = Timber::get_external_image($file);
+
+        $this->assertSame(
+            'http://example.org/wp-content/uploads/external/' . $filename,
             $image->src()
         );
     }

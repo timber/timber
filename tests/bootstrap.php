@@ -14,35 +14,66 @@ if (!is_file("{$_tests_dir}/includes/functions.php")) {
 // Get access to tests_add_filter() function.
 require_once $_tests_dir . '/includes/functions.php';
 
-/**
- * Callback to manually load the plugin
- */
-function _manually_load_plugin()
+function tt_get_arg(string $key)
 {
-    Timber\Timber::init();
-
-    require dirname(__FILE__) . '/../wp-content/plugins/advanced-custom-fields/acf.php';
-    if (file_exists(dirname(__FILE__) . '/../wp-content/plugins/co-authors-plus/co-authors-plus.php')) {
-        include dirname(__FILE__) . '/../wp-content/plugins/co-authors-plus/co-authors-plus.php';
+    foreach ($_SERVER['argv'] as $index => $arg) {
+        if ($key === substr($arg, 0, strlen($key))) {
+            return [
+                'index' => $index,
+                $key => str_replace("{$key}=", '', $arg),
+            ];
+        }
     }
+    return false;
+}
+
+function tt_is_group(string $group_name)
+{
+    $group = tt_get_arg('--group');
+    if (false === $group) {
+        return false;
+    }
+
+    $group_name_index = ++$group['index'];
+
+    if (!isset($_SERVER['argv'][$group_name_index])) {
+        return false;
+    }
+
+    return ($group_name === $_SERVER['argv'][$group_name_index]);
 }
 
 // Add plugin to active mu-plugins to make sure it gets loaded.
-tests_add_filter('muplugins_loaded', '_manually_load_plugin');
+tests_add_filter('muplugins_loaded', function () {
+    // Load Timber
+    Timber\Timber::init();
 
-// WPML integration
-define('ICL_LANGUAGE_CODE', 'en');
-
-/**
- * Mocked function for testing menus in WPML
- */
-function wpml_object_id_filter($element_id, $element_type = 'post', $return_original_if_missing = false, $language_code = null)
-{
-    $locations = get_nav_menu_locations();
-    if (isset($locations['extra-menu'])) {
-        return $locations['extra-menu'];
+    if (tt_is_group('acf')) {
+        require __DIR__ . '/../wp-content/plugins/advanced-custom-fields/acf.php';
     }
-    return $element_id;
+
+    if (tt_is_group('coauthors-plus')) {
+        require __DIR__ . '/../wp-content/plugins/co-authors-plus/co-authors-plus.php';
+    }
+
+    if (tt_is_group('wpml')) {
+        // WPML integration
+        define('ICL_LANGUAGE_CODE', 'en');
+    }
+});
+
+if (tt_is_group('wpml')) {
+    /**
+     * Mocked function for testing menus in WPML
+     */
+    function wpml_object_id_filter($element_id, $element_type = 'post', $return_original_if_missing = false, $language_code = null)
+    {
+        $locations = get_nav_menu_locations();
+        if (isset($locations['extra-menu'])) {
+            return $locations['extra-menu'];
+        }
+        return $element_id;
+    }
 }
 
 /**
@@ -64,6 +95,8 @@ require_once WP_CLI_ROOT . '/php/class-wp-cli-command.php';
 require_once __DIR__ . '/WpCliLogger.php';
 
 WP_CLI::set_logger(new WpCliLogger(false));
+
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
 
 /*
  * Bootstrap WordPress. This will also load the Composer autoload file, the PHPUnit Polyfills

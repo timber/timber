@@ -43,26 +43,25 @@
     "docs": "https://timber.github.io/docs/"
   },
   "require": {
-    "php": "^7.4 || ^8.0",
-    "composer/installers": "^1.0 || ^2.0",
-    "symfony/polyfill-php80": "^1.27",
-    "twig/twig": "^2.15.3 || ^3.0"
+    "php": "^8.1",
+    "twig/twig": "^3.5"
   },
   "require-dev": {
     "ergebnis/composer-normalize": "^2.28",
     "php-parallel-lint/php-parallel-lint": "^1.3",
     "php-stubs/acf-pro-stubs": "^6.0",
     "php-stubs/wp-cli-stubs": "^2.0",
-    "phpro/grumphp": "^1.12",
+    "phpro/grumphp": "^2.0",
     "phpstan/extension-installer": "^1.1",
     "phpstan/phpstan": "^1.7",
+    "phpunit/phpunit": "^9.0",
     "squizlabs/php_codesniffer": "^3.0",
     "symplify/easy-coding-standard": "^12.0",
     "szepeviktor/phpstan-wordpress": "^1.1",
     "twig/cache-extra": "^3.3",
-    "wpackagist-plugin/advanced-custom-fields": "^5.0 || ^6.0",
-    "wpackagist-plugin/co-authors-plus": "^3.3",
-    "yoast/wp-test-utils": "^1.0"
+    "wpackagist-plugin/advanced-custom-fields": "^6.0",
+    "wpackagist-plugin/co-authors-plus": "^3.6",
+    "yoast/wp-test-utils": "^1.2"
   },
   "suggest": {
     "php-coveralls/php-coveralls": "^2.0 for code coverage",
@@ -101,7 +100,8 @@
       "ergebnis/composer-normalize": true,
       "phpro/grumphp": true,
       "phpstan/extension-installer": true
-    }
+    },
+    "sort-packages": true
   },
   "scripts": {
     "analyze": "phpstan analyse --memory-limit=1G",
@@ -120,9 +120,37 @@
       "@test",
       "@cs"
     ],
-    "test": "phpunit",
-    "test:codecov": "phpunit --coverage-clover ./build/logs/clover.xml",
-    "test:make-pot": "wp i18n make-pot src tests/languages/timber.pot --domain= && wp i18n make-pot ./tests/assets/translations ./tests/languages/timber-test.pot --domain=timber-test",
-    "test:no-cov": "phpunit --no-coverage"
+    "test": [
+      "@test:integration:acf",
+      "@test:integration:coauthors-plus",
+      "@test:integration:wpml",
+      "@test:integration"
+    ],
+    "test:integration": "phpunit --no-coverage --exclude-group acf,coauthors-plus,wpml",
+    "test:integration:acf": "phpunit --no-coverage --group acf",
+    "test:integration:coauthors-plus": "phpunit --no-coverage --group coauthors-plus",
+    "test:integration:codecov": "phpunit --coverage-clover ./build/logs/clover.xml",
+    "test:integration:wpml": "phpunit --no-coverage --group wpml",
+    "test:make-pot": "wp i18n make-pot src tests/languages/timber.pot --domain= && wp i18n make-pot ./tests/assets/translations ./tests/languages/timber-test.pot --domain=timber-test"
+  },
+  "scripts-descriptions": {
+    "analyze": "Run PHPStan code analysis",
+    "cs": "Check code style with EasyCodingStandard",
+    "cs:docs": "Check markdown files in the docs directory with EasyCodingStandard",
+    "cs:docs:fix": "Fix markdown files in the docs directory with EasyCodingStandard",
+    "cs:fix": "Fix code style with EasyCodingStandard",
+    "grump": "Run GrumPHP checks",
+    "grump:install": "Install GrumPHP configuration",
+    "lint": "Run PHP Parallel Lint",
+    "lint-composer": "Check composer.json for incorrect order and whitespace",
+    "lint-composer:fix": "Fix composer.json for incorrect order and whitespace",
+    "qa": "Run all quality assurance checks/tests",
+    "test": "Run all integration tests with PHPUnit",
+    "test:integration": "Run unit tests for Timber core",
+    "test:integration:acf": "Run unit tests related to the ACF integration for Timber",
+    "test:integration:coauthors-plus": "Run unit tests related to the Co-Authors Plus integration for Timber",
+    "test:integration:codecov": "Run unit tests for Timber with code coverage",
+    "test:integration:wpml": "Run unit tests related to the WPML integration for Timber",
+    "test:make-pot": "Generate .pot files if translatable strings have changed that are used in the translation unit test."
   }
 }

@@ -176,6 +176,17 @@ class Loader
 
             $template = $twig->load($file);
             $output = $template->render($data);
+
+            /**
+             * Filters $output before it is cached.
+             *
+             * @since 2.1.0
+             *
+             * @param string $output
+             * @param array  $data
+             * @param string $file
+             */
+            $output = \apply_filters('timber/output/pre-cache', $output, $data, $file);
         }
 
         if (false !== $output && false !== $expires && null !== $key) {
@@ -233,7 +244,7 @@ class Loader
         foreach ($templates as $template) {
             // Remove any whitespace around the template name
             $template = \trim($template);
-            // Use the Twig loader to test for existance
+            // Use the Twig loader to test for existence
             if ($loader->exists($template)) {
                 // Return name of existing template
                 return $template;
@@ -657,6 +668,25 @@ class Loader
         $value = false;
         $trans_key = \substr($group . '_' . $key, 0, self::TRANS_KEY_LEN);
 
+        /**
+         * Filters the transient key used for caching.
+         *
+         * @api
+         * @since 2.1.0
+         * @example
+         * ```
+         * add_filter( 'timber/cache/transient_key', function( $trans_key, $key, $group, $cache_mode ) {
+         *     return $trans_key . '_my_suffix';
+         * }, 10, 4 );
+         * ```
+         *
+         * @param string $trans_key The transient key.
+         * @param string $key The cache key.
+         * @param string $group The cache group.
+         * @param string $cache_mode The cache mode.
+         */
+        $trans_key = \apply_filters('timber/cache/transient_key', $trans_key, $key, $group, $cache_mode);
+
         if (self::CACHE_TRANSIENT === $cache_mode) {
             $value = \get_transient($trans_key);
         } elseif (self::CACHE_SITE_TRANSIENT === $cache_mode) {
@@ -684,6 +714,25 @@ class Loader
 
         $cache_mode = $this->_get_cache_mode($cache_mode);
         $trans_key = \substr($group . '_' . $key, 0, self::TRANS_KEY_LEN);
+
+        /**
+         * Filters the transient key used for caching.
+         *
+         * @api
+         * @since 2.1.0
+         * @example
+         * ```
+         * add_filter( 'timber/cache/transient_key', function( $trans_key, $key, $group, $cache_mode ) {
+         *     return $trans_key . '_my_suffix';
+         * }, 10, 4 );
+         * ```
+         *
+         * @param string $trans_key The transient key.
+         * @param string $key The cache key.
+         * @param string $group The cache group.
+         * @param string $cache_mode The cache mode.
+         */
+        $trans_key = \apply_filters('timber/cache/transient_key', $trans_key, $key, $group, $cache_mode);
 
         if (self::CACHE_TRANSIENT === $cache_mode) {
             \set_transient($trans_key, $value, $expires);

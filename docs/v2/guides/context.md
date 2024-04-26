@@ -44,7 +44,7 @@ Follow this guide to get an overview of what’s in the context, or use `var_dum
 After you’ve called `Timber::context()`, you can add additional variables or overwrite existing variables in your context.
 
 ```php
-$context = Timber::get_context();
+$context = Timber::context();
 
 $context['today'] = wp_date('Ymd');
 
@@ -54,7 +54,7 @@ Timber::render('single.twig', $context);
 Another way to do this is to pass your custom data to the `Timber::context()` function itself:
 
 ```php
-$context = Timber::get_context([
+$context = Timber::context([
     'today' => wp_date('Ymd'),
 ]);
 
