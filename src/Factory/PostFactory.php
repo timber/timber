@@ -84,7 +84,7 @@ class PostFactory
         if (0 === \count($postQuery)) {
             return [];
         }
-  
+
         return $postQuery;
     }
 
