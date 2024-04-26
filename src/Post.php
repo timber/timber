@@ -175,7 +175,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * @internal
      * @return Post
      */
-    public static function build(WP_Post $wp_post): self
+    public static function build(WP_Post $wp_post): static
     {
         $post = new static();
 

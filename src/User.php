@@ -106,7 +106,7 @@ class User extends CoreEntity
     /**
      * Build a new User object.
      */
-    public static function build(WP_User $wp_user): self
+    public static function build(WP_User $wp_user): static
     {
         $user = new static();
         $user->init($wp_user);
