@@ -97,7 +97,7 @@ class ExternalImage implements ImageInterface
      *
      * @var integer|null
      */
-    protected ?int $size;
+    protected ?int $size = null;
 
     /**
      * File types.
@@ -122,7 +122,7 @@ class ExternalImage implements ImageInterface
      * @internal
      * @var ImageDimensions|null stores Image Dimensions in a structured way.
      */
-    protected ?ImageDimensions $image_dimensions;
+    protected ?ImageDimensions $image_dimensions = null;
 
     protected function __construct()
     {
@@ -155,7 +155,7 @@ class ExternalImage implements ImageInterface
             $external_image->init_with_url($url);
 
             return $external_image;
-        } elseif (\str_contains($url, ABSPATH)) {
+        } elseif (\str_contains($url, (string) ABSPATH)) {
             // Assume absolute path.
             $external_image->init_with_file_path($url);
 
@@ -164,7 +164,7 @@ class ExternalImage implements ImageInterface
             // Check for image file types.
             foreach ($external_image->image_file_types as $type) {
                 // Assume a relative path.
-                if (\str_contains(\strtolower($url), $type)) {
+                if (\str_contains(\strtolower($url), (string) $type)) {
                     $external_image->init_with_relative_path($url);
 
                     return $external_image;
@@ -226,10 +226,7 @@ class ExternalImage implements ImageInterface
      */
     public function file_loc(): string
     {
-        if (isset($this->file_loc)) {
-            return $this->file_loc;
-        }
-        return '';
+        return $this->file_loc ?? '';
     }
 
     /**
@@ -304,10 +301,7 @@ class ExternalImage implements ImageInterface
      */
     public function extension(): ?string
     {
-        if (isset($this->file_extension)) {
-            return $this->file_extension;
-        }
-        return $this->file_extension = \pathinfo($this->file_loc(), PATHINFO_EXTENSION);
+        return $this->file_extension ?? ($this->file_extension = \pathinfo($this->file_loc(), PATHINFO_EXTENSION));
     }
 
     /**
@@ -376,7 +370,7 @@ class ExternalImage implements ImageInterface
      *
      * @param string $alt Alt text for the image.
      */
-    public function set_alt(string $alt)
+    public function set_alt(string $alt): void
     {
         $this->alt_text = $alt;
     }
@@ -386,7 +380,7 @@ class ExternalImage implements ImageInterface
      *
      * @param string $caption Caption text for the image
      */
-    public function set_caption(string $caption)
+    public function set_caption(string $caption): void
     {
         $this->caption = $caption;
     }

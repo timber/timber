@@ -71,7 +71,7 @@ class PostFactory
 
         throw new InvalidArgumentException(\sprintf(
             'Expected an instance of Timber\CoreInterface or WP_Post, got %s',
-            \get_class($obj)
+            $obj::class
         ));
     }
 
@@ -130,9 +130,7 @@ class PostFactory
             'post' => Post::class,
             'page' => Post::class,
             // Apply special logic for attachments.
-            'attachment' => function (WP_Post $attachment) {
-                return $this->is_image($attachment) ? Image::class : Attachment::class;
-            },
+            'attachment' => fn (WP_Post $attachment) => $this->is_image($attachment) ? Image::class : Attachment::class,
         ]);
 
         $class = $classmap[$post->post_type] ?? null;
@@ -142,7 +140,7 @@ class PostFactory
             $class = $class($post);
         }
 
-        $class = $class ?? Post::class;
+        $class ??= Post::class;
 
         /**
          * Filters the post class based on your custom criteria.

@@ -2,6 +2,7 @@
 
 namespace Timber;
 
+use Stringable;
 use WP_Comment;
 
 /**
@@ -33,7 +34,7 @@ use WP_Comment;
  * <p class="comment-attribution">- Sullivan Ballou</p>
  * ```
  */
-class Comment extends CoreEntity
+class Comment extends CoreEntity implements Stringable
 {
     /**
      * The underlying WordPress Core object.
@@ -42,7 +43,7 @@ class Comment extends CoreEntity
      *
      * @var WP_Comment|null
      */
-    protected ?WP_Comment $wp_object;
+    protected ?WP_Comment $wp_object = null;
 
     public $object_type = 'comment';
 
@@ -149,7 +150,7 @@ class Comment extends CoreEntity
      * @api
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->content();
     }
@@ -158,7 +159,7 @@ class Comment extends CoreEntity
      * @internal
      * @param integer $cid
      */
-    public function init($cid)
+    public function init($cid): void
     {
         $comment_data = $cid;
         if (\is_integer($cid)) {
@@ -278,7 +279,7 @@ class Comment extends CoreEntity
      */
     public function content()
     {
-        return \trim(\apply_filters('comment_text', $this->comment_content));
+        return \trim((string) \apply_filters('comment_text', $this->comment_content));
     }
 
     /**
@@ -310,7 +311,7 @@ class Comment extends CoreEntity
      * @api
      * @param int $depth Level of depth.
      */
-    public function update_depth($depth = 0)
+    public function update_depth($depth = 0): void
     {
         $this->_depth = $depth;
         $children = $this->children();
@@ -374,7 +375,7 @@ class Comment extends CoreEntity
      */
     public function date($date_format = '')
     {
-        $df = $date_format ? $date_format : \get_option('date_format');
+        $df = $date_format ?: \get_option('date_format');
         $the_date = (string) \mysql2date($df, $this->comment_date);
         return \apply_filters('get_comment_date ', $the_date, $df);
     }
@@ -403,7 +404,7 @@ class Comment extends CoreEntity
      */
     public function time($time_format = '')
     {
-        $tf = $time_format ? $time_format : \get_option('time_format');
+        $tf = $time_format ?: \get_option('time_format');
         $the_time = (string) \mysql2date($tf, $this->comment_date);
         return \apply_filters('get_comment_time', $the_time, $tf);
     }
@@ -576,7 +577,7 @@ class Comment extends CoreEntity
      */
     protected function avatar_default($default, $email, $size, $host)
     {
-        if (\substr($default, 0, 1) == '/') {
+        if (\str_starts_with($default, '/')) {
             $default = \home_url() . $default;
         }
 
@@ -597,7 +598,7 @@ class Comment extends CoreEntity
             $default = '';
         } elseif ('gravatar_default' == $default) {
             $default = $host . '/avatar/?s=' . $size;
-        } elseif (empty($email) && !\strstr($default, 'http://')) {
+        } elseif (empty($email) && !\strstr((string) $default, 'http://')) {
             $default = $host . '/avatar/?d=' . $default . '&amp;s=' . $size;
         }
         return $default;
@@ -630,6 +631,6 @@ class Comment extends CoreEntity
             $out
         );
 
-        return \str_replace('&#038;', '&amp;', \esc_url($out));
+        return \str_replace('&#038;', '&amp;', (string) \esc_url($out));
     }
 }

@@ -25,7 +25,7 @@ class Twig
     /**
      * @codeCoverageIgnore
      */
-    public static function init()
+    public static function init(): void
     {
         $self = new self();
 
@@ -277,26 +277,26 @@ class Twig
         $filters = [
             /* image filters */
             'resize' => [
-                'callable' => ['Timber\ImageHelper', 'resize'],
+                'callable' => [ImageHelper::class, 'resize'],
             ],
             'retina' => [
-                'callable' => ['Timber\ImageHelper', 'retina_resize'],
+                'callable' => [ImageHelper::class, 'retina_resize'],
             ],
             'letterbox' => [
-                'callable' => ['Timber\ImageHelper', 'letterbox'],
+                'callable' => [ImageHelper::class, 'letterbox'],
             ],
             'tojpg' => [
-                'callable' => ['Timber\ImageHelper', 'img_to_jpg'],
+                'callable' => [ImageHelper::class, 'img_to_jpg'],
             ],
             'towebp' => [
-                'callable' => ['Timber\ImageHelper', 'img_to_webp'],
+                'callable' => [ImageHelper::class, 'img_to_webp'],
             ],
 
             // Debugging filters.
             'get_class' => [
                 'callable' => function ($obj) {
                     Helper::deprecated('{{ my_object | get_class }}', "{{ function('get_class', my_object) }}", '2.0.0');
-                    return \get_class($obj);
+                    return $obj::class;
                 },
                 'options' => [
                     'deprecated' => true,
@@ -323,7 +323,7 @@ class Twig
                 'callable' => 'wp_trim_words',
             ],
             'excerpt_chars' => [
-                'callable' => ['Timber\TextHelper', 'trim_characters'],
+                'callable' => [TextHelper::class, 'trim_characters'],
             ],
             'function' => [
                 'callable' => [$this, 'exec_function'],
@@ -344,16 +344,14 @@ class Twig
                 'callable' => [$this, 'add_list_separators'],
             ],
             'pluck' => [
-                'callable' => ['Timber\Helper', 'pluck'],
+                'callable' => [Helper::class, 'pluck'],
             ],
             'wp_list_filter' => [
-                'callable' => ['Timber\Helper', 'wp_list_filter'],
+                'callable' => [Helper::class, 'wp_list_filter'],
             ],
 
             'relative' => [
-                'callable' => function ($link) {
-                    return URLHelper::get_rel_url($link, true);
-                },
+                'callable' => fn ($link) => URLHelper::get_rel_url($link, true),
             ],
 
             /**
@@ -366,12 +364,10 @@ class Twig
                 ],
             ],
             'time_ago' => [
-                'callable' => ['Timber\DateTimeHelper', 'time_ago'],
+                'callable' => [DateTimeHelper::class, 'time_ago'],
             ],
             'truncate' => [
-                'callable' => function ($text, $len) {
-                    return TextHelper::trim_words($text, $len);
-                },
+                'callable' => fn ($text, $len) => TextHelper::trim_words($text, $len),
             ],
 
             // Numbers filters
@@ -539,21 +535,13 @@ class Twig
      */
     public function add_timber_escapers($twig)
     {
-        $esc_url = function (Environment $env, $string) {
-            return \esc_url($string);
-        };
+        $esc_url = fn (Environment $env, $string) => \esc_url($string);
 
-        $wp_kses_post = function (Environment $env, $string) {
-            return \wp_kses_post($string);
-        };
+        $wp_kses_post = fn (Environment $env, $string) => \wp_kses_post($string);
 
-        $esc_html = function (Environment $env, $string) {
-            return \esc_html($string);
-        };
+        $esc_html = fn (Environment $env, $string) => \esc_html($string);
 
-        $esc_js = function (Environment $env, $string) {
-            return \esc_js($string);
-        };
+        $esc_js = fn (Environment $env, $string) => \esc_js($string);
 
         if (\class_exists(EscaperRuntime::class)) {
             $escaper_extension = $twig->getRuntime(EscaperRuntime::class);
@@ -662,10 +650,9 @@ class Twig
     /**
      *
      *
-     * @param mixed   $arr
      * @return array
      */
-    public function to_array($arr)
+    public function to_array(mixed $arr)
     {
         if (\is_array($arr)) {
             return $arr;
@@ -709,7 +696,7 @@ class Twig
      */
     public function convert_pre_entities($matches)
     {
-        return \str_replace($matches[1], \htmlentities($matches[1]), $matches[0]);
+        return \str_replace($matches[1], \htmlentities((string) $matches[1]), (string) $matches[0]);
     }
 
     /**

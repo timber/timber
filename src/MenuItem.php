@@ -3,6 +3,7 @@
 namespace Timber;
 
 use stdClass;
+use Stringable;
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
 use WP_Post;
@@ -12,7 +13,7 @@ use WP_Post;
  *
  * @api
  */
-class MenuItem extends CoreEntity
+class MenuItem extends CoreEntity implements Stringable
 {
     /**
      * The underlying WordPress Core object.
@@ -85,16 +86,6 @@ class MenuItem extends CoreEntity
     public $current_item_ancestor;
 
     /**
-     * Timber Menu. Previously this was a public property, but converted to a method to avoid
-     * recursion (see #2071).
-     *
-     * @since 1.12.0
-     * @see \Timber\MenuItem::menu()
-     * @var Menu The `Menu` object the menu item is associated with.
-     */
-    protected $menu;
-
-    /**
      * Object ID.
      *
      * @api
@@ -129,13 +120,19 @@ class MenuItem extends CoreEntity
 
     /**
      * @internal
-     * @param WP_Post $data
      * @param Menu $menu The `Menu` object the menu item is associated with.
      */
-    protected function __construct(WP_Post $data, $menu = null)
-    {
+    protected function __construct(
+        WP_Post $data, /**
+     * Timber Menu. Previously this was a public property, but converted to a method to avoid
+     * recursion (see #2071).
+     *
+     * @since 1.12.0
+     * @see \Timber\MenuItem::menu()
+     */
+        protected $menu = null
+    ) {
         $this->wp_object = $data;
-        $this->menu = $menu;
 
         /**
          * @property string $title The nav menu item title.
@@ -177,7 +174,7 @@ class MenuItem extends CoreEntity
      *
      * @param string $class_name CSS class name to be added.
      */
-    public function add_class(string $class_name)
+    public function add_class(string $class_name): void
     {
         // Class name is already there
         if (\in_array($class_name, $this->classes, true)) {
@@ -192,7 +189,7 @@ class MenuItem extends CoreEntity
      *
      * @param string $class_name CSS class name to be added.
      */
-    public function remove_class(string $class_name)
+    public function remove_class(string $class_name): void
     {
         // Class name is already there
         if (!\in_array($class_name, $this->classes, true)) {
@@ -233,7 +230,7 @@ class MenuItem extends CoreEntity
      * @see \Timber\MenuItem::name()
      * @return string The label for the menu item.
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->name();
     }
@@ -303,7 +300,7 @@ class MenuItem extends CoreEntity
      *
      * @param MenuItem $item The menu item to add.
      */
-    public function add_child(MenuItem $item)
+    public function add_child(MenuItem $item): void
     {
         $this->children[] = $item;
         $item->level = $this->level + 1;
@@ -336,7 +333,7 @@ class MenuItem extends CoreEntity
      *
      * @param array|object $data to import.
      */
-    public function import_classes($data)
+    public function import_classes($data): void
     {
         if (\is_array($data)) {
             $data = (object) $data;
@@ -591,7 +588,7 @@ class MenuItem extends CoreEntity
         /**
          * @see Walker_Nav_Menu::start_el()
          */
-        $title = \apply_filters('nav_menu_item_title', $this->title, $this->wp_object, $this->menu->args ? $this->menu->args : new stdClass(), $this->level);
+        $title = \apply_filters('nav_menu_item_title', $this->title, $this->wp_object, $this->menu->args ?: new stdClass(), $this->level);
         return $title;
     }
 

@@ -20,9 +20,7 @@ class CoAuthorsPlusIntegration implements IntegrationInterface
     {
         \add_filter('timber/post/authors', [$this, 'authors'], 10, 2);
 
-        \add_filter('timber/user/class', function ($class, WP_User $user) {
-            return CoAuthorsPlusUser::class;
-        }, 10, 2);
+        \add_filter('timber/user/class', fn ($class, WP_User $user) => CoAuthorsPlusUser::class, 10, 2);
     }
 
     /**

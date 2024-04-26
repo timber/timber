@@ -5,10 +5,9 @@ namespace Timber\Cache;
 class KeyGenerator
 {
     /**
-     * @param mixed $value
      * @return string
      */
-    public function generateKey($value)
+    public function generateKey(mixed $value)
     {
         if (\is_a($value, 'Timber\Cache\TimberKeyGeneratorInterface')) {
             return $value->_get_cache_key();
@@ -20,7 +19,7 @@ class KeyGenerator
 
         $key = \md5(\json_encode($value));
         if (\is_object($value)) {
-            $key = \get_class($value) . ';' . $key;
+            $key = $value::class . ';' . $key;
         }
 
         // Replace any of the reserved characters.

@@ -3,6 +3,7 @@
 namespace Timber;
 
 use Exception;
+use Stringable;
 
 /**
  * Class FunctionWrapper
@@ -12,17 +13,13 @@ use Exception;
  * it easier to store the results of an echoing function by using ob_start() and ob_end_clean()
  * behind the scenes.
  */
-class FunctionWrapper
+class FunctionWrapper implements Stringable
 {
     private $_class;
 
     private $_function;
 
-    private $_args;
-
-    private $_use_ob;
-
-    public function __toString()
+    public function __toString(): string
     {
         try {
             return (string) $this->call();
@@ -35,11 +32,14 @@ class FunctionWrapper
      *
      *
      * @param callable $function
-     * @param array   $args
-     * @param bool    $return_output_buffer
+     * @param array $_args
+     * @param bool $_use_ob
      */
-    public function __construct($function, $args = [], $return_output_buffer = false)
-    {
+    public function __construct(
+        $function,
+        private $_args = [],
+        private $_use_ob = false
+    ) {
         if (\is_array($function)) {
             if ((\is_string($function[0]) && \class_exists($function[0])) || \gettype($function[0]) === 'object') {
                 $this->_class = $function[0];
@@ -51,9 +51,6 @@ class FunctionWrapper
         } else {
             $this->_function = $function;
         }
-
-        $this->_args = $args;
-        $this->_use_ob = $return_output_buffer;
     }
 
     /**

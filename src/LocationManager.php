@@ -20,9 +20,7 @@ class LocationManager
         $locs = \array_map('array_unique', $locs);
 
         //now make sure theres a trailing slash on everything
-        $locs = \array_map(function ($loc) {
-            return \array_map('trailingslashit', $loc);
-        }, $locs);
+        $locs = \array_map(fn ($loc) => \array_map('trailingslashit', $loc), $locs);
 
         /**
          * Filters the filesystem paths to search for Twig templates.
@@ -177,7 +175,7 @@ class LocationManager
      * @param mixed $var the variable to test and maybe convert
      * @return array
      */
-    protected static function convert_to_array($var)
+    protected static function convert_to_array(mixed $var)
     {
         if (\is_string($var)) {
             $var = [$var];
@@ -196,9 +194,9 @@ class LocationManager
         if ($caller && \is_string($caller)) {
             $caller = \realpath($caller);
             $parent_theme = \get_template_directory();
-            $parent_slug = \basename($parent_theme);
+            $parent_slug = \basename((string) $parent_theme);
 
-            if ($skip_parent && \strpos($caller, $parent_slug) !== false) {
+            if ($skip_parent && \str_contains($caller, $parent_slug)) {
                 return $locs;
             }
 

@@ -37,7 +37,7 @@ class Site extends Core implements CoreInterface
      *
      * @var WP_Site|null Will only be filled in multisite environments. Otherwise `null`.
      */
-    protected ?WP_Site $wp_object;
+    protected ?WP_Site $wp_object = null;
 
     /**
      * @api
@@ -425,7 +425,7 @@ class Site extends Core implements CoreInterface
      * @param string $key   The key of the site option to update.
      * @param mixed  $value The new value.
      */
-    public function update($key, $value)
+    public function update($key, $value): void
     {
         Helper::deprecated('Timber\Site::update()', 'update_option()', '2.0.0');
 

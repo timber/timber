@@ -89,7 +89,7 @@ class DateTimeHelper
             $format_future = \__('%s from now');
         }
 
-        $to = $to ?? \time();
+        $to ??= \time();
         $to = \is_numeric($to)
             ? new DateTimeImmutable('@' . $to, \wp_timezone())
             : new DateTimeImmutable($to, \wp_timezone());

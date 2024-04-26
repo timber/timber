@@ -2,6 +2,7 @@
 
 namespace Timber;
 
+use Stringable;
 use Timber\Factory\TermFactory;
 use WP_Term;
 
@@ -41,7 +42,7 @@ use WP_Term;
  * </ul>
  * ```
  */
-class Term extends CoreEntity
+class Term extends CoreEntity implements Stringable
 {
     /**
      * The underlying WordPress Core object.
@@ -50,7 +51,7 @@ class Term extends CoreEntity
      *
      * @var WP_Term|null
      */
-    protected ?WP_Term $wp_object;
+    protected ?WP_Term $wp_object = null;
 
     public $object_type = 'term';
 
@@ -96,7 +97,7 @@ class Term extends CoreEntity
      * @api
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->name;
     }
@@ -123,11 +124,9 @@ class Term extends CoreEntity
     }
 
     /* Setup
-    ===================== */
-
+       ===================== */
     /**
      * @internal
-     * @param WP_Term $term
      */
     protected function init(WP_Term $term)
     {
@@ -168,7 +167,7 @@ class Term extends CoreEntity
             global $wpdb;
             $query = $wpdb->prepare("SELECT taxonomy FROM $wpdb->term_taxonomy WHERE term_id = %d LIMIT 1", $tid);
             $tax = $wpdb->get_var($query);
-            if (isset($tax) && \strlen($tax)) {
+            if (isset($tax) && \strlen((string) $tax)) {
                 $this->taxonomy = $tax;
                 return \get_term($tid, $tax);
             }
@@ -178,10 +177,9 @@ class Term extends CoreEntity
 
     /**
      * @internal
-     * @param mixed $tid
      * @return int|array
      */
-    protected static function get_tid($tid)
+    protected static function get_tid(mixed $tid)
     {
         global $wpdb;
         if (\is_numeric($tid)) {
@@ -273,11 +271,11 @@ class Term extends CoreEntity
     {
         $prefix = '<p>';
         $desc = \term_description($this->ID, $this->taxonomy);
-        if (\substr($desc, 0, \strlen($prefix)) == $prefix) {
-            $desc = \substr($desc, \strlen($prefix));
+        if (\str_starts_with((string) $desc, $prefix)) {
+            $desc = \substr((string) $desc, \strlen($prefix));
         }
-        $desc = \preg_replace('/' . \preg_quote('</p>', '/') . '$/', '', $desc);
-        return \trim($desc);
+        $desc = \preg_replace('/' . \preg_quote('</p>', '/') . '$/', '', (string) $desc);
+        return \trim((string) $desc);
     }
 
     /**
@@ -530,7 +528,7 @@ class Term extends CoreEntity
             );
 
             // Honor the non-deprecated posts_per_page param over the deprecated second arg.
-            $query['post_type'] = $query['post_type'] ?? $post_type_or_class;
+            $query['post_type'] ??= $post_type_or_class;
         }
 
         if (\func_num_args() > 2) {
@@ -606,7 +604,7 @@ class Term extends CoreEntity
      * @param string $key   The key of the meta field to update.
      * @param mixed  $value The new value.
      */
-    public function update($key, $value)
+    public function update($key, $value): void
     {
         Helper::deprecated('Timber\Term::update()', 'update_term_meta()', '2.0.0');
 

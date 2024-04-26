@@ -13,14 +13,12 @@ use Timber\ImageHelper;
  */
 class ToWebp extends ImageOperation
 {
-    private $quality;
-
     /**
      * @param string $quality  ranges from 0 (worst quality, smaller file) to 100 (best quality, biggest file)
      */
-    public function __construct($quality)
-    {
-        $this->quality = $quality;
+    public function __construct(
+        private $quality
+    ) {
     }
 
     /**
@@ -58,7 +56,7 @@ class ToWebp extends ImageOperation
         if (isset($ext['ext'])) {
             $ext = $ext['ext'];
         }
-        $ext = \strtolower($ext);
+        $ext = \strtolower((string) $ext);
         $ext = \str_replace('jpg', 'jpeg', $ext);
 
         $imagecreate_function = 'imagecreatefrom' . $ext;

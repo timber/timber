@@ -67,7 +67,7 @@ class Attachment extends Post
      *
      * @var integer|null
      */
-    protected ?int $size;
+    protected ?int $size = null;
 
     /**
      * Gets the src for an attachment.
@@ -136,10 +136,7 @@ class Attachment extends Post
      */
     public function file(): string
     {
-        if (isset($this->file)) {
-            return $this->file;
-        }
-        return $this->file = (string) \get_post_meta($this->ID, '_wp_attached_file', true);
+        return $this->file ?? ($this->file = (string) \get_post_meta($this->ID, '_wp_attached_file', true));
     }
 
     /**
@@ -151,10 +148,7 @@ class Attachment extends Post
      */
     public function file_loc(): string
     {
-        if (isset($this->file_loc)) {
-            return $this->file_loc;
-        }
-        return $this->file_loc = (string) \get_attached_file($this->ID);
+        return $this->file_loc ?? ($this->file_loc = (string) \get_attached_file($this->ID));
     }
 
     /**
@@ -278,10 +272,7 @@ class Attachment extends Post
      */
     public function extension(): string
     {
-        if (isset($this->file_extension)) {
-            return $this->file_extension;
-        }
-        return $this->file_extension = \pathinfo($this->file(), PATHINFO_EXTENSION);
+        return $this->file_extension ?? ($this->file_extension = \pathinfo($this->file(), PATHINFO_EXTENSION));
     }
 
     /**
@@ -340,7 +331,6 @@ class Attachment extends Post
      *
      * This method is used to retrieve the attachment metadata only when it's needed.
      *
-     * @param string|null $key
      * @return array|string|int|null
      */
     protected function metadata(?string $key = null)

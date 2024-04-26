@@ -3,6 +3,7 @@
 namespace Timber;
 
 use SimpleXMLElement;
+use Stringable;
 use Timber\Factory\PostFactory;
 use Timber\Factory\UserFactory;
 use WP_Post;
@@ -48,7 +49,7 @@ use WP_Post;
  * </article>
  * ```
  */
-class Post extends CoreEntity implements DatedInterface, Setupable
+class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
 {
     /**
      * The underlying WordPress Core object.
@@ -57,7 +58,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      *
      * @var WP_Post|null
      */
-    protected ?WP_Post $wp_object;
+    protected ?WP_Post $wp_object = null;
 
     /**
      * @var string What does this class represent in WordPress terms?
@@ -253,7 +254,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     public function __call($field, $args)
     {
         if ('class' === $field) {
-            $class = isset($args[0]) ? $args[0] : '';
+            $class = $args[0] ?? '';
             return $this->css_class($class);
         }
 
@@ -352,7 +353,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * @api
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->title();
     }
@@ -360,7 +361,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     protected function get_post_preview_object()
     {
         global $wp_query;
-        if ($this->is_previewing()) {
+        if (static::is_previewing()) {
             $revision_id = $this->get_post_preview_id($wp_query);
             return Timber::get_post($revision_id);
         }
@@ -406,7 +407,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * @param string $field The key of the meta field to update.
      * @param mixed  $value The new value.
      */
-    public function update($field, $value)
+    public function update($field, $value): void
     {
         Helper::deprecated('Timber\Post::update()', 'update_post_meta()', '2.0.0');
 
@@ -498,11 +499,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     {
         $link = \_wp_link_page($i);
         $link = new SimpleXMLElement($link . '</a>');
-        if (isset($link['href'])) {
-            return $link['href'];
-        }
 
-        return null;
+        return $link['href'] ?? null;
     }
 
     /**
@@ -780,7 +778,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * @deprecated since 2.0.0
      * @param string $field_name
      */
-    public function import_field($field_name)
+    public function import_field($field_name): void
     {
         Helper::deprecated(
             "Importing field data onto an object",
@@ -818,7 +816,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         $post = $this;
 
         $class_array = \get_post_class($class, $this->ID);
-        if ($this->is_previewing()) {
+        if (static::is_previewing()) {
             $class_array = \get_post_class($class, $this->post_parent);
         }
         $class_array = \implode(' ', $class_array);
@@ -1242,8 +1240,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable
          *
          * @see WP_Query::generate_postdata()
          */
-        if ($page && false !== \strpos($content, '<!--nextpage-->')) {
-            $content = \str_replace("\n<!--nextpage-->\n", '<!--nextpage-->', $content);
+        if ($page && \str_contains((string) $content, '<!--nextpage-->')) {
+            $content = \str_replace("\n<!--nextpage-->\n", '<!--nextpage-->', (string) $content);
             $content = \str_replace("\n<!--nextpage-->", '<!--nextpage-->', $content);
             $content = \str_replace("<!--nextpage-->\n", '<!--nextpage-->', $content);
 
@@ -1252,7 +1250,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
             $content = \str_replace('<!-- /wp:nextpage -->', '', $content);
 
             // Ignore nextpage at the beginning of the content.
-            if (0 === \strpos($content, '<!--nextpage-->')) {
+            if (\str_starts_with($content, '<!--nextpage-->')) {
                 $content = \substr($content, 15);
             }
 
@@ -1303,7 +1301,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      */
     protected function content_handle_no_teaser_block($content)
     {
-        if ((\strpos($content, 'noTeaser:true') !== false || \strpos($content, '"noTeaser":true') !== false) && \strpos($content, '<!-- /wp:more -->') !== false) {
+        if ((\str_contains($content, 'noTeaser:true') || \str_contains($content, '"noTeaser":true')) && \str_contains($content, '<!-- /wp:more -->')) {
             $arr = \explode('<!-- /wp:more -->', $content);
             return \trim($arr[1]);
         }
@@ -1867,7 +1865,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         global $post;
         $old_global = $post;
         $post = $this;
-        $within_taxonomy = ($in_same_term) ? $in_same_term : 'category';
+        $within_taxonomy = $in_same_term ?: 'category';
         $adjacent = \get_adjacent_post(($in_same_term), '', true, $within_taxonomy);
         $prev_in_taxonomy = false;
         if ($adjacent) {
@@ -1982,11 +1980,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      */
     private function partition_tax_queries(array $query, array $taxonomies): array
     {
-        return \array_map(function (string $tax) use ($query): array {
-            return \array_merge($query, [
-                'taxonomy' => [$tax],
-            ]);
-        }, $taxonomies);
+        return \array_map(fn (string $tax): array => \array_merge($query, [
+            'taxonomy' => [$tax],
+        ]), $taxonomies);
     }
 
     /**

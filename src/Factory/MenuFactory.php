@@ -21,12 +21,10 @@ class MenuFactory
      *
      * Note that this method has pitfalls and might not be the most performant way to get a menu.
      *
-     * @param mixed $params
-     * @param array $args
      *
      * @return Menu|null
      */
-    public function from($params, array $args = []): ?Menu
+    public function from(mixed $params, array $args = []): ?Menu
     {
         $menu = null;
 
@@ -60,7 +58,6 @@ class MenuFactory
     /**
      * Get a Menu from its location
      *
-     * @param array $args
      * @return Menu|null
      */
     protected function from_nav_menu_terms(array $args = []): ?Menu
@@ -81,8 +78,6 @@ class MenuFactory
     /**
      * Get a Menu from its location
      *
-     * @param string $location
-     * @param array $args
      * @return Menu|null
      */
     public function from_location(string $location, array $args = []): ?Menu
@@ -175,7 +170,7 @@ class MenuFactory
 
         throw new InvalidArgumentException(\sprintf(
             'Expected an instance of Timber\CoreInterface or WP_Term, got %s',
-            \get_class($obj)
+            $obj::class
         ));
     }
 
@@ -222,7 +217,7 @@ class MenuFactory
         }
 
         // Fallback on the default class
-        $class = $class ?? Menu::class;
+        $class ??= Menu::class;
 
         /**
          * Filters the menu class based on your custom criteria.
@@ -254,7 +249,6 @@ class MenuFactory
     /**
      * Get the menu location
      *
-     * @param WP_Term $term
      * @return string|null
      */
     protected function get_menu_location(WP_Term $term): ?string
@@ -266,7 +260,6 @@ class MenuFactory
     /**
      * Build menu
      *
-     * @param WP_Term $term
      * @param array $args
      * @return CoreInterface
      */

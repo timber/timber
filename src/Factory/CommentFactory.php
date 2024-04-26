@@ -60,7 +60,7 @@ class CommentFactory
 
         throw new InvalidArgumentException(\sprintf(
             'Expected an instance of Timber\CoreInterface or WP_Comment, got %s',
-            \get_class($comment)
+            $comment::class
         ));
     }
 
@@ -105,7 +105,7 @@ class CommentFactory
             $class = $class($comment);
         }
 
-        $class = $class ?? Comment::class;
+        $class ??= Comment::class;
 
         /**
          * Filters the comment class based on your custom criteria.

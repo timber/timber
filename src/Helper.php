@@ -174,7 +174,7 @@ class Helper
      * @param string $slug
      * @param integer $lock_timeout
      */
-    public static function _lock_transient($slug, $lock_timeout)
+    public static function _lock_transient($slug, $lock_timeout): void
     {
         \set_transient($slug . '_lock', true, $lock_timeout);
     }
@@ -183,7 +183,7 @@ class Helper
      * @internal
      * @param string $slug
      */
-    public static function _unlock_transient($slug)
+    public static function _unlock_transient($slug): void
     {
         \delete_transient($slug . '_lock');
     }
@@ -285,7 +285,7 @@ class Helper
      * @param mixed $error The error that you want to error_log().
      * @return void
      */
-    public static function error_log($error)
+    public static function error_log(mixed $error)
     {
         global $timber_disable_error_log;
         if (!WP_DEBUG || $timber_disable_error_log) {
@@ -306,7 +306,7 @@ class Helper
      *
      * @return void
      */
-    public static function warn($message)
+    public static function warn($message): void
     {
         if (!WP_DEBUG) {
             return;
@@ -336,7 +336,7 @@ class Helper
      * @param string $message  A message explaining what has been done incorrectly.
      * @param string $version  The version of Timber where the message was added.
      */
-    public static function doing_it_wrong($function, $message, $version)
+    public static function doing_it_wrong($function, $message, $version): void
     {
         /**
          * Fires when the given function is being used incorrectly.
@@ -416,7 +416,7 @@ class Helper
      *
      * @return void
      */
-    public static function deprecated($function, $replacement, $version)
+    public static function deprecated($function, $replacement, $version): void
     {
         /**
          * Fires when a deprecated function is being used.
@@ -487,7 +487,7 @@ class Helper
          */
         $separator = \apply_filters_deprecated('timber_wp_title_seperator', [$separator], '2.0.0', 'timber/helper/wp_title_separator');
 
-        return \trim(\wp_title($separator, false, $seplocation));
+        return \trim((string) \wp_title($separator, false, $seplocation));
     }
 
     /**
@@ -500,11 +500,9 @@ class Helper
      *
      * @return void
      */
-    public static function osort(&$array, $prop)
+    public static function osort(&$array, $prop): void
     {
-        \usort($array, function ($a, $b) use ($prop) {
-            return $a->$prop > $b->$prop ? 1 : -1;
-        });
+        \usort($array, fn ($a, $b) => $a->$prop > $b->$prop ? 1 : -1);
     }
 
     /**
@@ -545,10 +543,9 @@ class Helper
      *
      * @param array   $array
      * @param string  $key
-     * @param mixed   $value
      * @return bool|int
      */
-    public static function get_object_index_by_property($array, $key, $value)
+    public static function get_object_index_by_property($array, $key, mixed $value)
     {
         if (\is_array($array)) {
             $i = 0;
@@ -573,11 +570,10 @@ class Helper
      *
      * @param array   $array
      * @param string  $key
-     * @param mixed   $value
      * @return array|null
      * @throws Exception
      */
-    public static function get_object_by_property($array, $key, $value)
+    public static function get_object_by_property($array, $key, mixed $value)
     {
         if (\is_array($array)) {
             foreach ($array as $arr) {
@@ -606,15 +602,13 @@ class Helper
     }
 
     /* Bool Utilities
-    ======================== */
-
+       ======================== */
     /**
      * @api
      *
-     * @param mixed   $value
      * @return bool
      */
-    public static function is_true($value)
+    public static function is_true(mixed $value)
     {
         if (isset($value)) {
             if (\is_string($value)) {
@@ -716,7 +710,7 @@ class Helper
      * @param mixed $obj WP Object
      * @return mixed Instance of equivalent Timber object, or the argument if no match is found
      */
-    public static function convert_wp_object($obj)
+    public static function convert_wp_object(mixed $obj)
     {
         if ($obj instanceof WP_Post) {
             static $postFactory;

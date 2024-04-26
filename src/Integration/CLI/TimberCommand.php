@@ -39,10 +39,10 @@ class TimberCommand extends WP_CLI_Command
      * @subcommand clear-cache
      * @alias clear_cache
      */
-    public function clear_cache($args = [])
+    public function clear_cache($args = []): void
     {
         $mode = $args[0] ?? 'all';
-        $mode_string = 'all' !== $mode ? \ucfirst($mode) : $mode;
+        $mode_string = 'all' !== $mode ? \ucfirst((string) $mode) : $mode;
 
         WP_CLI::log("Clearing {$mode_string} caches …");
 

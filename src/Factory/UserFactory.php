@@ -34,7 +34,7 @@ class UserFactory
      * * an associative array (interpreted as arguments for a WP_User_Query)
      * @return \Timber\User|array|null
      */
-    public function from($params)
+    public function from(mixed $params)
     {
         if (\is_int($params) || \is_string($params) && \is_numeric($params)) {
             return $this->from_id($params);
@@ -82,7 +82,7 @@ class UserFactory
 
         throw new InvalidArgumentException(\sprintf(
             'Expected an instance of Timber\CoreInterface or WP_User, got %s',
-            \get_class($obj)
+            $obj::class
         ));
     }
 

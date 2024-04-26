@@ -15,7 +15,7 @@ class PostsIterator extends ArrayIterator
      * @var null|Post The last post that was returned by the iterator. Used
      *                   to skip the logic in `current()`.
      */
-    protected ?Post $last_post;
+    protected ?Post $last_post = null;
 
     /**
      * Prepares the state before working on a post.
@@ -29,7 +29,7 @@ class PostsIterator extends ArrayIterator
     public function current()
     {
         static $factory;
-        $factory = $factory ?? new PostFactory();
+        $factory ??= new PostFactory();
 
         // Fire action when the loop has just started.
         if (0 === $this->key()) {

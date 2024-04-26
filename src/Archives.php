@@ -94,7 +94,7 @@ class Archives extends Core
      * @param array|string $args
      * @param string       $base
      */
-    public function init($args = null, $base = '')
+    public function init($args = null, $base = ''): void
     {
         $this->base = $base;
         $this->items = $this->items($args);
@@ -265,7 +265,7 @@ class Archives extends Core
             $limit = \absint($args['limit']);
             $limit = ' LIMIT ' . $limit;
         }
-        $order = \strtoupper($order);
+        $order = \strtoupper((string) $order);
         if ($order !== 'ASC') {
             $order = 'DESC';
         }
@@ -372,7 +372,7 @@ class Archives extends Core
                         $text = $result->ID;
                         if ($result->post_title) {
                             /** This filter is documented in wp-includes/post-template.php */
-                            $text = \strip_tags(\apply_filters('the_title', $result->post_title, $result->ID));
+                            $text = \strip_tags((string) \apply_filters('the_title', $result->post_title, $result->ID));
                         }
                         $output[] = $this->get_archives_link($url, $text);
                     }

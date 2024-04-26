@@ -18,15 +18,13 @@ use Timber\ImageHelper;
  */
 class Retina extends ImageOperation
 {
-    private $factor;
-
     /**
      * Construct our operation
      * @param float   $factor to multiply original dimensions by
      */
-    public function __construct($factor)
-    {
-        $this->factor = $factor;
+    public function __construct(
+        private $factor
+    ) {
     }
 
     /**

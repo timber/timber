@@ -35,9 +35,9 @@ class ImageHelper
     public static function init()
     {
         self::$home_url = \get_home_url();
-        \add_action('delete_attachment', [__CLASS__, 'delete_attachment']);
-        \add_filter('wp_generate_attachment_metadata', [__CLASS__, 'generate_attachment_metadata'], 10, 2);
-        \add_filter('upload_dir', [__CLASS__, 'add_relative_upload_dir_key']);
+        \add_action('delete_attachment', [self::class, 'delete_attachment']);
+        \add_filter('wp_generate_attachment_metadata', [self::class, 'generate_attachment_metadata'], 10, 2);
+        \add_filter('upload_dir', [self::class, 'add_relative_upload_dir_key']);
         return true;
     }
 
@@ -136,7 +136,7 @@ class ImageHelper
      */
     public static function is_animated_gif($file)
     {
-        if (\strpos(\strtolower($file), '.gif') === false) {
+        if (!\str_contains(\strtolower($file), '.gif')) {
             //doesn't have .gif, bail
             return false;
         }
@@ -259,7 +259,7 @@ class ImageHelper
      * @since 1.5.0
      * @param int   $post_id An attachment ID.
      */
-    public static function delete_attachment($post_id)
+    public static function delete_attachment($post_id): void
     {
         self::_delete_generated_if_image($post_id);
     }
@@ -289,7 +289,7 @@ class ImageHelper
      */
     public static function add_relative_upload_dir_key($arr)
     {
-        $arr['relative'] = \str_replace(self::$home_url, '', $arr['baseurl']);
+        $arr['relative'] = \str_replace(self::$home_url, '', (string) $arr['baseurl']);
         return $arr;
     }
 
@@ -298,7 +298,7 @@ class ImageHelper
      *
      * @param int $post_id An attachment ID.
      */
-    public static function _delete_generated_if_image($post_id)
+    public static function _delete_generated_if_image($post_id): void
     {
         if (\wp_attachment_is_image($post_id)) {
             $attachment = Timber::get_post($post_id);
@@ -315,7 +315,7 @@ class ImageHelper
      * @param string $local_file ex: /var/www/wp-content/uploads/2015/my-pic.jpg
      *                           or: http://example.org/wp-content/uploads/2015/my-pic.jpg
      */
-    public static function delete_generated_files($local_file)
+    public static function delete_generated_files($local_file): void
     {
         if (URLHelper::is_absolute($local_file)) {
             $local_file = URLHelper::url_to_file_system($local_file);
@@ -370,7 +370,7 @@ class ImageHelper
     public static function get_server_location($url)
     {
         // if we're already an absolute dir, just return.
-        if (0 === \strpos($url, ABSPATH)) {
+        if (\str_starts_with($url, (string) ABSPATH)) {
             return $url;
         }
         // otherwise, analyze URL then build mapping path
@@ -441,13 +441,13 @@ class ImageHelper
          * @ticket 1098
          * @link https://github.com/timber/timber/issues/1098
          */
-        \add_filter('upload_dir', [__CLASS__, 'set_sideload_image_upload_dir']);
+        \add_filter('upload_dir', [self::class, 'set_sideload_image_upload_dir']);
 
         $loc = self::get_sideloaded_file_loc($file);
         if (\file_exists($loc)) {
             $url = URLHelper::file_system_to_url($loc);
 
-            \remove_filter('upload_dir', [__CLASS__, 'set_sideload_image_upload_dir']);
+            \remove_filter('upload_dir', [self::class, 'set_sideload_image_upload_dir']);
 
             return $url;
         }
@@ -470,7 +470,7 @@ class ImageHelper
         // delete tmp file
         @\unlink($file_array['tmp_name']);
 
-        \remove_filter('upload_dir', [__CLASS__, 'set_sideload_image_upload_dir']);
+        \remove_filter('upload_dir', [self::class, 'set_sideload_image_upload_dir']);
 
         return $file['url'];
     }
@@ -516,7 +516,7 @@ class ImageHelper
 
         if (!empty($subdir)) {
             // Remove slashes before or after.
-            $subdir = \trim($subdir, '/');
+            $subdir = \trim((string) $subdir, '/');
 
             $upload['subdir'] = '/' . $subdir;
             $upload['path'] = $upload['basedir'] . $upload['subdir'];
@@ -592,14 +592,14 @@ class ImageHelper
 
         $upload_dir = \wp_upload_dir();
         $tmp = $url;
-        if (\str_starts_with($tmp, ABSPATH) || \str_starts_with($tmp, '/srv/www/')) {
+        if (\str_starts_with($tmp, (string) ABSPATH) || \str_starts_with($tmp, '/srv/www/')) {
             // we've been given a dir, not an url
             $result['absolute'] = true;
-            if (\str_starts_with($tmp, $upload_dir['basedir'])) {
+            if (\str_starts_with($tmp, (string) $upload_dir['basedir'])) {
                 $result['base'] = self::BASE_UPLOADS; // upload based
                 $tmp = URLHelper::remove_url_component($tmp, $upload_dir['basedir']);
             }
-            if (\str_starts_with($tmp, WP_CONTENT_DIR)) {
+            if (\str_starts_with($tmp, (string) WP_CONTENT_DIR)) {
                 $result['base'] = self::BASE_CONTENT; // content based
                 $tmp = URLHelper::remove_url_component($tmp, WP_CONTENT_DIR);
             }
@@ -619,7 +619,7 @@ class ImageHelper
         $parts = PathHelper::pathinfo($tmp);
         $result['subdir'] = ($parts['dirname'] === '/') ? '' : $parts['dirname'];
         $result['filename'] = $parts['filename'];
-        $result['extension'] = (isset($parts['extension']) ? \strtolower($parts['extension']) : '');
+        $result['extension'] = (isset($parts['extension']) ? \strtolower((string) $parts['extension']) : '');
         $result['basename'] = $parts['basename'];
 
         return $result;
@@ -694,7 +694,7 @@ class ImageHelper
             return false;
         }
 
-        if (0 === \strpos($path, (string) $root)) {
+        if (\str_starts_with($path, (string) $root)) {
             return true;
         } else {
             return false;
@@ -743,7 +743,7 @@ class ImageHelper
      */
     protected static function maybe_realpath($path)
     {
-        if (\strstr($path, '../') !== false) {
+        if (\str_contains($path, '../')) {
             return \realpath($path);
         }
         return $path;
@@ -876,8 +876,8 @@ class ImageHelper
         }
         // otherwise generate result file
         if ($op->run($source_path, $destination_path)) {
-            if (\get_class($op) === 'Timber\Image\Operation\Resize' && $external) {
-                $new_url = \strtolower($new_url);
+            if ($op::class === Operation\Resize::class && $external) {
+                $new_url = \strtolower((string) $new_url);
             }
             return $new_url;
         } else {
