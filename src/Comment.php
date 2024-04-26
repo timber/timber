@@ -132,7 +132,7 @@ class Comment extends CoreEntity
      * @internal
      * @param WP_Comment $wp_comment a native WP_Comment instance
      */
-    public static function build(WP_Comment $wp_comment): self
+    public static function build(WP_Comment $wp_comment): static
     {
         $comment = new static();
         $comment->import($wp_comment);

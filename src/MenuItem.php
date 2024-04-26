@@ -122,7 +122,7 @@ class MenuItem extends CoreEntity
      * @param Menu $menu The `Menu` object the menu item is associated with.
      * @return MenuItem a new MenuItem instance
      */
-    public static function build($data, ?Menu $menu = null): self
+    public static function build($data, ?Menu $menu = null): static
     {
         return new static($data, $menu);
     }
