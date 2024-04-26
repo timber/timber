@@ -43,26 +43,25 @@
     "docs": "https://timber.github.io/docs/"
   },
   "require": {
-    "php": "^7.4 || ^8.0",
-    "composer/installers": "^1.0 || ^2.0",
-    "symfony/polyfill-php80": "^1.27",
-    "twig/twig": "^2.15.3 || ^3.0"
+    "php": "^8.1",
+    "twig/twig": "^3.5"
   },
   "require-dev": {
     "ergebnis/composer-normalize": "^2.28",
     "php-parallel-lint/php-parallel-lint": "^1.3",
     "php-stubs/acf-pro-stubs": "^6.0",
     "php-stubs/wp-cli-stubs": "^2.0",
-    "phpro/grumphp": "^1.12",
+    "phpro/grumphp": "^2.0",
     "phpstan/extension-installer": "^1.1",
     "phpstan/phpstan": "^1.7",
+    "phpunit/phpunit": "^9.0",
     "squizlabs/php_codesniffer": "^3.0",
     "symplify/easy-coding-standard": "^12.0",
     "szepeviktor/phpstan-wordpress": "^1.1",
     "twig/cache-extra": "^3.3",
-    "wpackagist-plugin/advanced-custom-fields": "^5.0 || ^6.0",
-    "wpackagist-plugin/co-authors-plus": "^3.3",
-    "yoast/wp-test-utils": "^1.0"
+    "wpackagist-plugin/advanced-custom-fields": "^6.0",
+    "wpackagist-plugin/co-authors-plus": "^3.6",
+    "yoast/wp-test-utils": "^1.2"
   },
   "suggest": {
     "php-coveralls/php-coveralls": "^2.0 for code coverage",
@@ -101,7 +100,8 @@
       "ergebnis/composer-normalize": true,
       "phpro/grumphp": true,
       "phpstan/extension-installer": true
-    }
+    },
+    "sort-packages": true
   },
   "scripts": {
     "analyze": "phpstan analyse --memory-limit=1G",
