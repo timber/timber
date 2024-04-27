@@ -170,7 +170,7 @@ For site options, it’s also possible to access it directly through its name:
 Please be aware that using this might conflict with existing Timber methods on the `Timber\Site` object. That’s why the `option()` method is the preferred way to retrieve site options.
 
 
-You cannot fetch ACF options with `site.option()`. You will need to add the fields to the context yourself. This process is described in [Getting data from ACF](../integrations/advanced-custom-fields.md#options-page).
+You cannot fetch ACF options with `site.option()`. You will need to add the fields to the context yourself. This process is described in the [ACF integration](https://timber.github.io/docs/v2/integrations/advanced-custom-fields/#options-page) documentation.
 
 ## Query by custom field value
 
