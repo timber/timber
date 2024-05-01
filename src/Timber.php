@@ -2,7 +2,6 @@
 
 namespace Timber;
 
-use InvalidArgumentException;
 use Timber\Factory\CommentFactory;
 use Timber\Factory\MenuFactory;
 use Timber\Factory\PagesMenuFactory;
@@ -658,10 +657,6 @@ class Timber
                 );
 
                 return null;
-            }
-
-            if (!ImageHelper::is_protocol_allowed($ident)) {
-                throw new InvalidArgumentException('The output file scheme is not supported.');
             }
 
             if (!\file_exists($ident)) {
