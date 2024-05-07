@@ -148,7 +148,7 @@ function my_acf_block_render_callback($attributes, $content = '', $is_preview = 
     );
 }
 ```
-We call this function in the `renderCallback` object in the block.json file of our block. This function will work for all blocks as long as we follow the naming convention of `acf/your-block-name` for the name property in the block.json and name the template `your-block-name.twig` in the blocks folder inside the root of your theme.
+We call this function in the `renderCallback` object in the block.json file of our block. This function will work for all blocks as long as we follow the naming convention of `acf/your-block-name` for the name property in the block.json and name the template `your-block-name.twig` in the `blocks/your-block-name` folder inside the root of your theme.
 
 #### Create fields in ACF
 
