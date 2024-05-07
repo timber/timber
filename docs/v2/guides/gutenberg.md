@@ -128,7 +128,7 @@ Now that we have our block registered, we need to create a function to render ou
  */
 function my_acf_block_render_callback($attributes, $content = '', $is_preview = false, $post_id = 0, $wp_block = null) {
     // Create the slug of the block using the name property in the block.json.
-    $slug = str_replace( 'acf/', '', $block['name'] );
+    $slug = str_replace( 'acf/', '', $attributes['name'] );
 
     $context = Timber::context();
 
@@ -148,7 +148,7 @@ function my_acf_block_render_callback($attributes, $content = '', $is_preview = 
     );
 }
 ```
-We call this function in the `renderCallback` object in the block.json file of our block. This function will work for all blocks as long as we follow the naming convention of `acf/your-block-name` for the name property in the block.json and name the template `your-block-name.twig` in the blocks folder inside the views directory.
+We call this function in the `renderCallback` object in the block.json file of our block. This function will work for all blocks as long as we follow the naming convention of `acf/your-block-name` for the name property in the block.json and name the template `your-block-name.twig` in the `blocks/your-block-name` folder inside the root of your theme.
 
 #### Create fields in ACF
 
