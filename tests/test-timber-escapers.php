@@ -74,4 +74,23 @@ class TestTimberFilterEscapers extends Timber_UnitTestCase
 
         $this->assertEquals($native, $result);
     }
+
+    public function testOldEscaper()
+    {
+        $dirty_url = 'https://example.com/?foo=1&bar=2';
+        $other_protocol_url = 'ftp://example.com/?foo=1&bar=2';
+
+        $native = esc_url($dirty_url);
+        $other_protocol_native = esc_url($other_protocol_url);
+        $result = Timber::compile_string('<a href="{{ url|e("esc_url") }}">', [
+            'url' => $dirty_url,
+        ]);
+
+        $other_protocol_result = Timber::compile_string('{{ url|e("esc_url") }}', [
+            'url' => $other_protocol_url,
+        ]);
+
+        $this->assertEquals('<a href="' . $native . '">', $result);
+        $this->assertEquals($other_protocol_native, $other_protocol_result);
+    }
 }

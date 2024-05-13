@@ -10,6 +10,8 @@ use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
 use Twig\Environment;
 use Twig\Extension\CoreExtension;
+use Twig\Extension\EscaperExtension;
+use Twig\Runtime\EscaperRuntime;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 
@@ -553,13 +555,20 @@ class Twig
             return \esc_js($string);
         };
 
-        if (\class_exists('Twig\Extension\EscaperExtension')) {
-            $escaper_extension = $twig->getExtension('Twig\Extension\EscaperExtension');
+        if (\class_exists(EscaperRuntime::class)) {
+            $escaper_extension = $twig->getRuntime(EscaperRuntime::class);
+            $escaper_extension->setEscaper('esc_url', '\esc_url');
+            $escaper_extension->setEscaper('wp_kses_post', '\wp_kses_post');
+            $escaper_extension->setEscaper('esc_html', '\esc_html');
+            $escaper_extension->setEscaper('esc_js', '\esc_js');
+        } elseif ($twig->hasExtension(EscaperExtension::class)) {
+            $escaper_extension = $twig->getExtension(EscaperExtension::class);
             $escaper_extension->setEscaper('esc_url', $esc_url);
             $escaper_extension->setEscaper('wp_kses_post', $wp_kses_post);
             $escaper_extension->setEscaper('esc_html', $esc_html);
             $escaper_extension->setEscaper('esc_js', $esc_js);
         }
+
         return $twig;
     }
 
