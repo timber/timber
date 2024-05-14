@@ -497,7 +497,7 @@ class PostExcerpt
 
         // Build an excerpt text from the post’s content.
         if (empty($text)) {
-            $text = $this->post->content();
+            $text = $this->post->content(0, -1, true);
             $text = TextHelper::remove_tags($text, $this->destroy_tags);
             $text_before_trim = \trim($text);
             $text_before_char_trim = '';
