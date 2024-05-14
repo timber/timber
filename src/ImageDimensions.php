@@ -2,8 +2,6 @@
 
 namespace Timber;
 
-use InvalidArgumentException;
-
 /**
  * Class FileSize
  *
@@ -117,10 +115,6 @@ class ImageDimensions
         // Load from internal cache.
         if (isset($this->dimensions)) {
             return $this->get_dimension_loaded($dimension);
-        }
-
-        if (!ImageHelper::is_protocol_allowed($this->file_loc)) {
-            throw new InvalidArgumentException('The output file scheme is not supported.');
         }
 
         // Load dimensions.

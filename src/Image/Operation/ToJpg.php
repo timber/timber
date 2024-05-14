@@ -2,7 +2,6 @@
 
 namespace Timber\Image\Operation;
 
-use InvalidArgumentException;
 use Timber\Image\Operation as ImageOperation;
 use Timber\ImageHelper;
 
@@ -45,10 +44,6 @@ class ToJpg extends ImageOperation
      */
     public function run($load_filename, $save_filename)
     {
-        if (!ImageHelper::is_protocol_allowed($load_filename)) {
-            throw new InvalidArgumentException('The output file scheme is not supported.');
-        }
-
         if (!\file_exists($load_filename)) {
             return false;
         }
