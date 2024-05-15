@@ -32,13 +32,13 @@ class FunctionWrapper implements Stringable
      *
      *
      * @param callable $function
-     * @param array $_args
-     * @param bool $_use_ob
+     * @param array $args
+     * @param bool $return_output_buffer
      */
     public function __construct(
         $function,
-        private $_args = [],
-        private $_use_ob = false
+        private $args = [],
+        private $return_output_buffer = false
     ) {
         if (\is_array($function)) {
             if ((\is_string($function[0]) && \class_exists($function[0])) || \gettype($function[0]) === 'object') {
