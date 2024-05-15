@@ -226,7 +226,7 @@ class Comment extends CoreEntity
      * <img src="{{comment.avatar(36,template_uri~"/img/dude.jpg")}}" alt="Image of {{comment.author.name}}" />
      * ```
      * ```html
-     * <img src="http://gravatar.com/i/sfsfsdfasdfsfa.jpg" alt="Image of Katherine Rich" />
+     * <img src="https://gravatar.com/i/sfsfsdfasdfsfa.jpg" alt="Image of Katherine Rich" />
      * ```
      * @param int|mixed    $size     Size of avatar.
      * @param string       $default  Default avatar URL.
@@ -558,9 +558,9 @@ class Comment extends CoreEntity
             $host = 'https://secure.gravatar.com';
         } else {
             if (!empty($email_hash)) {
-                $host = \sprintf("http://%d.gravatar.com", (\hexdec($email_hash[0]) % 2));
+                $host = \sprintf("https://%d.gravatar.com", (\hexdec($email_hash[0]) % 2));
             } else {
-                $host = 'http://0.gravatar.com';
+                $host = 'https://0.gravatar.com';
             }
         }
         return $host;
@@ -597,7 +597,7 @@ class Comment extends CoreEntity
             $default = '';
         } elseif ('gravatar_default' == $default) {
             $default = $host . '/avatar/?s=' . $size;
-        } elseif (empty($email) && !\strstr($default, 'http://')) {
+        } elseif (empty($email) && !\strstr($default, 'https://')) {
             $default = $host . '/avatar/?d=' . $default . '&amp;s=' . $size;
         }
         return $default;

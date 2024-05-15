@@ -26,7 +26,7 @@ Note: If the WordPress size (e.g `medium`) has not been generated, it will retur
 
 ## Arbitrary resizing of images
 
-Want to resize an image? Here we’re going to use [Twig Filters](http://twig.symfony.com/doc/filters/index.html).
+Want to resize an image? Here we’re going to use [Twig Filters](https://twig.symfony.com/doc/filters/index.html).
 
 ```twig
 <img src="{{ post.thumbnail.src|resize(300, 200) }}" />
@@ -95,7 +95,7 @@ Unfortunately, it’s not possible to use the `|retina()` filter in combination 
 
 ## Using images in custom fields
 
-Let’s say you're using a custom field plugin (like the amazing [Advanced Custom Fields](http://www.advancedcustomfields.com/)). You can use the resulting images in your Twig templates very easily.
+Let’s say you're using a custom field plugin (like the amazing [Advanced Custom Fields](https://www.advancedcustomfields.com/)). You can use the resulting images in your Twig templates very easily.
 
 When setting up your custom fields you’ll want to save the `image_id` to the field. The image object, url, etc. _will_ work but it’s not as fool-proof.
 

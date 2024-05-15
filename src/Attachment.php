@@ -92,8 +92,8 @@ class Attachment extends Post
      * <a href="{{ image.link }}"><img src="{{ image.src }} "></a>
      * ```
      * ```html
-     * <a href="http://example.org/my-cool-picture">
-     *     <img src="http://example.org/wp-content/uploads/2015/whatever.jpg"/>
+     * <a href="https://example.org/my-cool-picture">
+     *     <img src="https://example.org/wp-content/uploads/2015/whatever.jpg"/>
      * </a>
      * ```
      *
@@ -166,7 +166,7 @@ class Attachment extends Post
      * <a href="{{ get_attachment(post.meta('job_pdf')).src }}" download>
      * ```
      * ```html
-     * <a href="http://example.org/wp-content/uploads/2015/08/job-ad-5noe2304i.pdf" download>
+     * <a href="https://example.org/wp-content/uploads/2015/08/job-ad-5noe2304i.pdf" download>
      * ```
      *
      * @return string
