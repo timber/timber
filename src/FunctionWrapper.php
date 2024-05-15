@@ -60,10 +60,10 @@ class FunctionWrapper implements Stringable
      */
     public function call()
     {
-        $args = $this->_parse_args(\func_get_args(), $this->_args);
+        $args = $this->_parse_args(\func_get_args(), $this->args);
         $callable = (isset($this->_class)) ? [$this->_class, $this->_function] : $this->_function;
 
-        if ($this->_use_ob) {
+        if ($this->return_output_buffer) {
             return Helper::ob_function($callable, $args);
         } else {
             return \call_user_func_array($callable, $args);
