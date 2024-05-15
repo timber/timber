@@ -8,6 +8,7 @@ parameters:
         - vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
         - vendor/php-stubs/acf-pro-stubs/acf-pro-stubs.php
     excludePaths:
+        - rector.php
         - tests/*
         - docs/*
     ignoreErrors:
