@@ -3,26 +3,22 @@
 namespace Timber;
 
 use AllowDynamicProperties;
+use Stringable;
 
 /**
  * Wrapper for the post_type object provided by WordPress
  * @since 1.0.4
 */
 #[AllowDynamicProperties]
-class PostType
+class PostType implements Stringable
 {
     /**
-     * @var string
+     * @param string $slug
      */
-    private $slug;
-
-    /**
-     * @param string $post_type
-     */
-    public function __construct($post_type)
-    {
-        $this->slug = $post_type;
-        $this->init($post_type);
+    public function __construct(
+        private $slug
+    ) {
+        $this->init($this->slug);
     }
 
     public function __toString()

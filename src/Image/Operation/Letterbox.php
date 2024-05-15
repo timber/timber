@@ -18,22 +18,16 @@ use Timber\PathHelper;
  */
 class Letterbox extends ImageOperation
 {
-    private $w;
-
-    private $h;
-
-    private $color;
-
     /**
      * @param int    $w     width of result image
      * @param int    $h     height
      * @param string $color hex string, for color of padding bands
      */
-    public function __construct($w, $h, $color)
-    {
-        $this->w = $w;
-        $this->h = $h;
-        $this->color = $color;
+    public function __construct(
+        private $w,
+        private $h,
+        private $color
+    ) {
     }
 
     /**

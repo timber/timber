@@ -23,17 +23,17 @@ class AcfIntegration implements IntegrationInterface
 
     public function init(): void
     {
-        \add_filter('timber/post/pre_meta', [__CLASS__, 'post_get_meta_field'], 10, 5);
-        \add_filter('timber/post/meta_object_field', [__CLASS__, 'post_meta_object'], 10, 3);
-        \add_filter('timber/term/pre_meta', [__CLASS__, 'term_get_meta_field'], 10, 5);
-        \add_filter('timber/user/pre_meta', [__CLASS__, 'user_get_meta_field'], 10, 5);
+        \add_filter('timber/post/pre_meta', [self::class, 'post_get_meta_field'], 10, 5);
+        \add_filter('timber/post/meta_object_field', [self::class, 'post_meta_object'], 10, 3);
+        \add_filter('timber/term/pre_meta', [self::class, 'term_get_meta_field'], 10, 5);
+        \add_filter('timber/user/pre_meta', [self::class, 'user_get_meta_field'], 10, 5);
 
         /**
          * Allowed a user to set a meta value
          *
          * @deprecated 2.0.0 with no replacement
          */
-        \add_filter('timber/term/meta/set', [__CLASS__, 'term_set_meta'], 10, 4);
+        \add_filter('timber/term/meta/set', [self::class, 'term_set_meta'], 10, 4);
     }
 
     /**
@@ -274,15 +274,15 @@ class AcfIntegration implements IntegrationInterface
         \remove_filter('acf/format_value/type=taxonomy', [$taxonomy_field_type, 'format_value']);
         \remove_filter('acf/format_value/type=user', [$user_field_type, 'format_value']);
 
-        \add_filter('acf/format_value/type=file', [__CLASS__, 'transform_file'], 10, 3);
-        \add_filter('acf/format_value/type=image', [__CLASS__, 'transform_image'], 10, 3);
-        \add_filter('acf/format_value/type=gallery', [__CLASS__, 'transform_gallery'], 10, 3);
-        \add_filter('acf/format_value/type=date_picker', [__CLASS__, 'transform_date_picker'], 10, 3);
-        \add_filter('acf/format_value/type=date_time_picker', [__CLASS__, 'transform_date_picker'], 10, 3);
-        \add_filter('acf/format_value/type=post_object', [__CLASS__, 'transform_post_object'], 10, 3);
-        \add_filter('acf/format_value/type=relationship', [__CLASS__, 'transform_relationship'], 10, 3);
-        \add_filter('acf/format_value/type=taxonomy', [__CLASS__, 'transform_taxonomy'], 10, 3);
-        \add_filter('acf/format_value/type=user', [__CLASS__, 'transform_user'], 10, 3);
+        \add_filter('acf/format_value/type=file', [self::class, 'transform_file'], 10, 3);
+        \add_filter('acf/format_value/type=image', [self::class, 'transform_image'], 10, 3);
+        \add_filter('acf/format_value/type=gallery', [self::class, 'transform_gallery'], 10, 3);
+        \add_filter('acf/format_value/type=date_picker', [self::class, 'transform_date_picker'], 10, 3);
+        \add_filter('acf/format_value/type=date_time_picker', [self::class, 'transform_date_picker'], 10, 3);
+        \add_filter('acf/format_value/type=post_object', [self::class, 'transform_post_object'], 10, 3);
+        \add_filter('acf/format_value/type=relationship', [self::class, 'transform_relationship'], 10, 3);
+        \add_filter('acf/format_value/type=taxonomy', [self::class, 'transform_taxonomy'], 10, 3);
+        \add_filter('acf/format_value/type=user', [self::class, 'transform_user'], 10, 3);
 
         $value = \get_field($field_name, $id, true);
 
@@ -296,15 +296,15 @@ class AcfIntegration implements IntegrationInterface
         \add_filter('acf/format_value/type=taxonomy', [$taxonomy_field_type, 'format_value'], 10, 3);
         \add_filter('acf/format_value/type=user', [$taxonomy_field_type, 'format_value'], 10, 3);
 
-        \remove_filter('acf/format_value/type=file', [__CLASS__, 'transform_file']);
-        \remove_filter('acf/format_value/type=image', [__CLASS__, 'transform_image']);
-        \remove_filter('acf/format_value/type=gallery', [__CLASS__, 'transform_gallery']);
-        \remove_filter('acf/format_value/type=date_picker', [__CLASS__, 'transform_date_picker']);
-        \remove_filter('acf/format_value/type=date_time_picker', [__CLASS__, 'transform_date_picker']);
-        \remove_filter('acf/format_value/type=post_object', [__CLASS__, 'transform_post_object']);
-        \remove_filter('acf/format_value/type=relationship', [__CLASS__, 'transform_relationship']);
-        \remove_filter('acf/format_value/type=taxonomy', [__CLASS__, 'transform_taxonomy']);
-        \remove_filter('acf/format_value/type=user', [__CLASS__, 'transform_user']);
+        \remove_filter('acf/format_value/type=file', [self::class, 'transform_file']);
+        \remove_filter('acf/format_value/type=image', [self::class, 'transform_image']);
+        \remove_filter('acf/format_value/type=gallery', [self::class, 'transform_gallery']);
+        \remove_filter('acf/format_value/type=date_picker', [self::class, 'transform_date_picker']);
+        \remove_filter('acf/format_value/type=date_time_picker', [self::class, 'transform_date_picker']);
+        \remove_filter('acf/format_value/type=post_object', [self::class, 'transform_post_object']);
+        \remove_filter('acf/format_value/type=relationship', [self::class, 'transform_relationship']);
+        \remove_filter('acf/format_value/type=taxonomy', [self::class, 'transform_taxonomy']);
+        \remove_filter('acf/format_value/type=user', [self::class, 'transform_user']);
 
         return $value;
     }

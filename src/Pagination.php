@@ -64,7 +64,7 @@ class Pagination
 
         $args['total'] = \ceil($wp_query->found_posts / $ppp);
         if ($wp_rewrite->using_permalinks()) {
-            $url = \explode('?', \get_pagenum_link(0, false));
+            $url = \explode('?', (string) \get_pagenum_link(0, false));
             if (isset($url[1])) {
                 $query = [];
                 \wp_parse_str($url[1], $query);
@@ -75,7 +75,7 @@ class Pagination
         } else {
             $big = 999999999;
             $pagination_link = \get_pagenum_link($big, false);
-            $args['base'] = \str_replace('paged=' . $big, '', $pagination_link);
+            $args['base'] = \str_replace('paged=' . $big, '', (string) $pagination_link);
             $args['format'] = '?paged=%#%';
         }
 
@@ -191,7 +191,7 @@ class Pagination
                         || $n > (int) $args['total'] - (int) $args['end_size']
                     )
                 ) {
-                    $link = \str_replace('%_%', 1 == $n ? '' : $args['format'], $args['base']);
+                    $link = \str_replace('%_%', 1 == $n ? '' : $args['format'], (string) $args['base']);
                     $link = \str_replace('%#%', $n, $link);
 
                     // we first follow the user trailing slash configuration
@@ -240,8 +240,8 @@ class Pagination
     {
         $format_args = [];
 
-        $format = \explode('?', \str_replace('%_%', $args['format'], $args['base']));
-        $format_query = isset($format[1]) ? $format[1] : '';
+        $format = \explode('?', \str_replace('%_%', $args['format'], (string) $args['base']));
+        $format_query = $format[1] ?? '';
 
         \wp_parse_str($format_query, $format_args);
 
@@ -250,7 +250,7 @@ class Pagination
             unset($args['add_args'][\urlencode_deep($format_arg)]);
         }
 
-        $url_parts = \explode('?', $args['base']);
+        $url_parts = \explode('?', (string) $args['base']);
 
         if (isset($url_parts[1])) {
             // Find the query args of the requested URL.

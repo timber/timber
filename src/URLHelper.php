@@ -47,9 +47,9 @@ class URLHelper
      */
     public static function starts_with($haystack, $starts_with)
     {
-        $haystack = \str_replace('https', 'http', \strtolower($haystack));
-        $starts_with = \str_replace('https', 'http', \strtolower($starts_with));
-        if (0 === \strpos($haystack, $starts_with)) {
+        $haystack = \str_replace('https', 'http', \strtolower((string) $haystack));
+        $starts_with = \str_replace('https', 'http', \strtolower((string) $starts_with));
+        if (\str_starts_with($haystack, $starts_with)) {
             return true;
         }
         return false;
@@ -79,7 +79,7 @@ class URLHelper
     public static function get_path_base()
     {
         $struc = \get_option('permalink_structure');
-        $struc = \explode('/', $struc);
+        $struc = \explode('/', (string) $struc);
         $p = '/';
         foreach ($struc as $s) {
             if (!\strstr($s, '%') && \strlen($s)) {
@@ -298,7 +298,7 @@ class URLHelper
             'timber/url_helper/get_content_subdir/home_url'
         );
 
-        return \str_replace($home_url, '', WP_CONTENT_URL);
+        return \str_replace($home_url, '', (string) WP_CONTENT_URL);
     }
 
     /**
@@ -308,7 +308,7 @@ class URLHelper
      */
     public static function get_rel_path($src)
     {
-        if (\str_contains($src, ABSPATH)) {
+        if (\str_contains($src, (string) ABSPATH)) {
             return \str_replace(ABSPATH, '', $src);
         }
         // its outside the WordPress directory, alternate setups:
@@ -390,7 +390,7 @@ class URLHelper
      */
     public static function preslashit($path)
     {
-        if (\strpos($path, '/') !== 0) {
+        if (!\str_starts_with($path, '/')) {
             $path = '/' . $path;
         }
         return $path;
@@ -444,11 +444,11 @@ class URLHelper
         // otherwise you run into errors with sites that:
         // 1. use WPML plugin
         // 2. or redefine content directory.
-        $is_content_url = \strstr($url, \content_url());
+        $is_content_url = \strstr($url, (string) \content_url());
 
         // this case covers when the upload directory has been redefined.
         $upload_dir = \wp_upload_dir();
-        $is_upload_url = \strstr($url, $upload_dir['baseurl']);
+        $is_upload_url = \strstr($url, (string) $upload_dir['baseurl']);
 
         return $is_content_url || $is_upload_url;
     }
@@ -581,7 +581,7 @@ class URLHelper
      */
     public static function get_params($i = false)
     {
-        $uri = \trim($_SERVER['REQUEST_URI']);
+        $uri = \trim((string) $_SERVER['REQUEST_URI']);
         $params = \array_values(\array_filter(\explode('/', $uri)));
 
         if (false === $i) {
@@ -605,7 +605,7 @@ class URLHelper
      */
     public static function maybe_secure_url($url)
     {
-        if (\is_ssl() && \strpos($url, 'https') !== 0 && \strpos($url, 'http') === 0) {
+        if (\is_ssl() && !\str_starts_with($url, 'https') && \str_starts_with($url, 'http')) {
             $url = 'https' . \substr($url, \strlen('http'));
         }
 

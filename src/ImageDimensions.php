@@ -22,17 +22,18 @@ class ImageDimensions
     protected $dimensions;
 
     /**
-     * File location.
-     *
-     * @api
-     * @var string The absolute path to the image in the filesystem
-     *             (Example: `/var/www/htdocs/wp-content/uploads/2015/08/my-pic.jpg`)
+     * @param string $file_loc
      */
-    public $file_loc;
-
-    public function __construct($file_loc = '')
-    {
-        $this->file_loc = $file_loc;
+    public function __construct(
+        /**
+         * File location.
+         *
+         * @api
+         * @var string The absolute path to the image in the filesystem
+         *             (Example: `/var/www/htdocs/wp-content/uploads/2015/08/my-pic.jpg`)
+         */
+        public $file_loc = ''
+    ) {
     }
 
     /**
@@ -123,7 +124,7 @@ class ImageDimensions
                 $svg_size = $this->get_dimensions_svg($this->file_loc);
                 $this->dimensions = [(int) \round($svg_size->width), (int) \round($svg_size->height)];
             } else {
-                list($width, $height) = \getimagesize($this->file_loc);
+                [$width, $height] = \getimagesize($this->file_loc);
 
                 $this->dimensions = [];
                 $this->dimensions[0] = (int) $width;
@@ -145,7 +146,7 @@ class ImageDimensions
      */
     protected function get_dimension_loaded($dim = null): int
     {
-        $dim = \strtolower($dim);
+        $dim = \strtolower((string) $dim);
 
         if ('h' === $dim || 'height' === $dim) {
             return $this->dimensions[1];

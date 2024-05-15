@@ -84,7 +84,7 @@ class TermFactory
 
         throw new InvalidArgumentException(\sprintf(
             'Expected an instance of Timber\CoreInterface or WP_Term, got %s',
-            \get_class($obj)
+            $obj::class
         ));
     }
 
@@ -131,7 +131,7 @@ class TermFactory
             $class = $class($term);
         }
 
-        $class = $class ?? Term::class;
+        $class ??= Term::class;
 
         /**
          * Filters the term class based on your custom criteria.
@@ -193,9 +193,7 @@ class TermFactory
             'tag' => 'post_tag',
         ];
 
-        return \array_map(function ($taxonomy) use ($corrections) {
-            return $corrections[$taxonomy] ?? $taxonomy;
-        }, $taxonomies);
+        return \array_map(fn ($taxonomy) => $corrections[$taxonomy] ?? $taxonomy, $taxonomies);
     }
 
     protected function filter_query_params(array $params)

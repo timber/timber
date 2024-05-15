@@ -12,14 +12,12 @@ use Timber\ImageHelper;
  */
 class ToJpg extends ImageOperation
 {
-    private $color;
-
     /**
      * @param string $color hex string of color to use for transparent zones
      */
-    public function __construct($color)
-    {
-        $this->color = $color;
+    public function __construct(
+        private $color
+    ) {
     }
 
     /**
@@ -57,7 +55,7 @@ class ToJpg extends ImageOperation
         if (isset($ext['ext'])) {
             $ext = $ext['ext'];
         }
-        $ext = \strtolower($ext);
+        $ext = \strtolower((string) $ext);
         $ext = \str_replace('jpg', 'jpeg', $ext);
 
         $imagecreate_function = 'imagecreatefrom' . $ext;
@@ -71,7 +69,7 @@ class ToJpg extends ImageOperation
             return false;
         }
 
-        list($width, $height) = \getimagesize($load_filename);
+        [$width, $height] = \getimagesize($load_filename);
         $output = \imagecreatetruecolor($width, $height);
         $c = self::hexrgb($this->color);
         $color = \imagecolorallocate($output, $c['red'], $c['green'], $c['blue']);

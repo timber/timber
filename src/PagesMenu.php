@@ -94,7 +94,7 @@ class PagesMenu extends Menu
         }
 
         // Sanitize, mostly to keep spaces out.
-        $args['exclude'] = \preg_replace('/[^0-9,]/', '', $args['exclude']);
+        $args['exclude'] = \preg_replace('/[^0-9,]/', '', (string) $args['exclude']);
 
         // Allow plugins to filter an array of excluded pages (but don't put a nullstring into the array).
         $exclude_array = ($args['exclude'])

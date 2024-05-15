@@ -210,11 +210,7 @@ class Image extends Attachment implements ImageInterface
      */
     public function sizes(): array
     {
-        if (isset($this->sizes)) {
-            return $this->sizes;
-        }
-
-        return $this->sizes = (array) $this->metadata('sizes');
+        return $this->sizes ?? ($this->sizes = (array) $this->metadata('sizes'));
     }
 
     /**
@@ -297,7 +293,7 @@ class Image extends Attachment implements ImageInterface
     public function alt(): ?string
     {
         $alt = $this->meta('_wp_attachment_image_alt');
-        return \trim(\wp_strip_all_tags($alt));
+        return \trim((string) \wp_strip_all_tags($alt));
     }
 
     /**

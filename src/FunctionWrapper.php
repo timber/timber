@@ -3,6 +3,7 @@
 namespace Timber;
 
 use Exception;
+use Stringable;
 
 /**
  * Class FunctionWrapper
@@ -12,15 +13,11 @@ use Exception;
  * it easier to store the results of an echoing function by using ob_start() and ob_end_clean()
  * behind the scenes.
  */
-class FunctionWrapper
+class FunctionWrapper implements Stringable
 {
     private $_class;
 
     private $_function;
-
-    private $_args;
-
-    private $_use_ob;
 
     public function __toString()
     {
@@ -35,11 +32,14 @@ class FunctionWrapper
      *
      *
      * @param callable $function
-     * @param array   $args
-     * @param bool    $return_output_buffer
+     * @param array $args
+     * @param bool $return_output_buffer
      */
-    public function __construct($function, $args = [], $return_output_buffer = false)
-    {
+    public function __construct(
+        $function,
+        private $args = [],
+        private $return_output_buffer = false
+    ) {
         if (\is_array($function)) {
             if ((\is_string($function[0]) && \class_exists($function[0])) || \gettype($function[0]) === 'object') {
                 $this->_class = $function[0];
@@ -51,9 +51,6 @@ class FunctionWrapper
         } else {
             $this->_function = $function;
         }
-
-        $this->_args = $args;
-        $this->_use_ob = $return_output_buffer;
     }
 
     /**
@@ -63,10 +60,10 @@ class FunctionWrapper
      */
     public function call()
     {
-        $args = $this->_parse_args(\func_get_args(), $this->_args);
+        $args = $this->_parse_args(\func_get_args(), $this->args);
         $callable = (isset($this->_class)) ? [$this->_class, $this->_function] : $this->_function;
 
-        if ($this->_use_ob) {
+        if ($this->return_output_buffer) {
             return Helper::ob_function($callable, $args);
         } else {
             return \call_user_func_array($callable, $args);

@@ -29,7 +29,7 @@ class TextHelper
     public static function trim_characters($text, $num_chars = 60, $more = '&hellip;')
     {
         $text = \wp_strip_all_tags($text);
-        $text = \mb_strimwidth($text, 0, $num_chars, $more);
+        $text = \mb_strimwidth((string) $text, 0, $num_chars, $more);
         return $text;
     }
 
@@ -61,10 +61,8 @@ class TextHelper
          * @param string $allowed_tags Allowed tags, separated by one whitespace.
          *                             Default `p a span b i br blockquote`.
          */
-        $allowed_tags_array = \explode(' ', \apply_filters('timber/trim_words/allowed_tags', $allowed_tags));
-        $allowed_tags_array = \array_filter($allowed_tags_array, function ($value) {
-            return $value !== '';
-        });
+        $allowed_tags_array = \explode(' ', (string) \apply_filters('timber/trim_words/allowed_tags', $allowed_tags));
+        $allowed_tags_array = \array_filter($allowed_tags_array, fn ($value) => $value !== '');
         $allowed_tag_string = '<' . \implode('><', $allowed_tags_array) . '>';
 
         $text = \strip_tags($text, $allowed_tag_string);
@@ -73,8 +71,8 @@ class TextHelper
         * enter 'characters_excluding_spaces' or 'characters_including_spaces'. Otherwise, enter 'words'.
         * Do not translate into your own language.
         */
-        if ('characters' == \_x('words', 'Word count type. Do not translate!') && \preg_match('/^utf\-?8$/i', \get_option('blog_charset'))) {
-            $text = \trim(\preg_replace("/[\n\r\t ]+/", ' ', $text), ' ');
+        if ('characters' == \_x('words', 'Word count type. Do not translate!') && \preg_match('/^utf\-?8$/i', (string) \get_option('blog_charset'))) {
+            $text = \trim((string) \preg_replace("/[\n\r\t ]+/", ' ', $text), ' ');
             \preg_match_all('/./u', $text, $words_array);
             $words_array = \array_slice($words_array[0], 0, $num_words + 1);
             $sep = '';
@@ -103,7 +101,7 @@ class TextHelper
      */
     public static function remove_tags($string, $tags = [])
     {
-        return \preg_replace('#<(' . \implode('|', $tags) . ')(?:[^>]+)?>.*?</\1>#s', '', $string);
+        return \preg_replace('#<(' . \implode('|', $tags) . ')(?:[^>]+)?>.*?</\1>#s', '', (string) $string);
     }
 
     /**

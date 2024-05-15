@@ -243,7 +243,7 @@ class Loader
         // Run through template array
         foreach ($templates as $template) {
             // Remove any whitespace around the template name
-            $template = \trim($template);
+            $template = \trim((string) $template);
             // Use the Twig loader to test for existence
             if ($loader->exists($template)) {
                 // Return name of existing template
@@ -448,9 +448,7 @@ class Loader
         if (WP_DEBUG) {
             $twig->addExtension(new \Twig\Extension\DebugExtension());
         } else {
-            $twig->addFunction(new TwigFunction('dump', function () {
-                return null;
-            }));
+            $twig->addFunction(new TwigFunction('dump', fn () => null));
         }
 
         /**
@@ -582,7 +580,7 @@ class Loader
 
         foreach ($items as $key => $value) {
             if (\is_multisite()) {
-                $key = \preg_replace('/^(.*?):/', '', $key);
+                $key = \preg_replace('/^(.*?):/', '', (string) $key);
             }
 
             // If any cache couldn’t be deleted, the result will be false.

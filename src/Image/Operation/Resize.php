@@ -19,10 +19,6 @@ use WP_Image_Editor;
  */
 class Resize extends ImageOperation
 {
-    private $w;
-
-    private $h;
-
     private $crop;
 
     /**
@@ -30,10 +26,11 @@ class Resize extends ImageOperation
      * @param int    $h    height of new image
      * @param string $crop cropping method, one of: 'default', 'center', 'top', 'bottom', 'left', 'right', 'top-center', 'bottom-center'.
      */
-    public function __construct($w, $h, $crop)
-    {
-        $this->w = $w;
-        $this->h = $h;
+    public function __construct(
+        private $w,
+        private $h,
+        $crop
+    ) {
         // Sanitize crop position
         $allowed_crop_positions = ['default', 'center', 'top', 'bottom', 'left', 'right', 'top-center', 'bottom-center'];
         if ($crop !== false && !\in_array($crop, $allowed_crop_positions)) {
@@ -57,7 +54,7 @@ class Resize extends ImageOperation
         if ($this->h) {
             $h = $this->h;
         }
-        $result = $src_filename . '-' . $w . 'x' . $h . '-c-' . ($this->crop ? $this->crop : 'f'); // Crop will be either user named or f (false)
+        $result = $src_filename . '-' . $w . 'x' . $h . '-c-' . ($this->crop ?: 'f'); // Crop will be either user named or f (false)
         if ($src_extension) {
             $result .= '.' . $src_extension;
         }
@@ -92,9 +89,6 @@ class Resize extends ImageOperation
         return $image->writeImages($save_filename, true);
     }
 
-    /**
-     * @param WP_Image_Editor $image
-     */
     protected function get_target_sizes(WP_Image_Editor $image)
     {
         $w = $this->w;
