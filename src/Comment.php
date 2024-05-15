@@ -589,6 +589,7 @@ class Comment extends CoreEntity implements Stringable
                 $default = $avatar_default;
             }
         }
+
         if ('mystery' == $default) {
             $default = $host . '/avatar/ad516503a11cd5ca435acc9bb6523536?s=' . $size;
             // ad516503a11cd5ca435acc9bb6523536 == md5('unknown@gravatar.com')
@@ -598,7 +599,7 @@ class Comment extends CoreEntity implements Stringable
             $default = '';
         } elseif ('gravatar_default' == $default) {
             $default = $host . '/avatar/?s=' . $size;
-        } elseif (empty($email) && !\strstr((string) $default, 'https://')) {
+        } elseif (empty($email) && !\preg_match('/^https?:\/\//', (string) $default)) {
             $default = $host . '/avatar/?d=' . $default . '&amp;s=' . $size;
         }
         return $default;

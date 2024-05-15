@@ -124,7 +124,7 @@ class TestTimberCommentAvatar extends Timber_UnitTestCase
         # pass custom url on different domain. can't check by crawling as
         # i get a 302 regardless of default url
         # so just check it comes back with it in the url
-        $this->valid_avatar($comment, "https://upload.wikimedia.org/wikipedia/en/b/bc/Wiki.png");
+        $this->valid_avatar($comment, 'https://upload.wikimedia.org/wikipedia/en/b/bc/Wiki.png');
 
         # same domain.
         $this->valid_avatar($comment, $theme_url . "/images/default.png");
@@ -148,8 +148,9 @@ class TestTimberCommentAvatar extends Timber_UnitTestCase
             # you get back the default in the avatar url?
             $this->assertEquals($params, "d=$default_url&amp;s=32");
         }
-        # you get back url?
-        $this->assertTrue(substr($avatar, 0, 6) == "https:");
+
+        // Check if we get back an URL (either http:// or https:).
+        $this->assertMatchesRegularExpression("/^https?:.*/", $avatar);
     }
 
     public function crawl($url)
