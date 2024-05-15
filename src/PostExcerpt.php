@@ -207,7 +207,7 @@ class PostExcerpt implements Stringable
      * @api
      * @return string
      */
-    public function __toString(): string
+    public function __toString()
     {
         return (string) $this->run();
     }

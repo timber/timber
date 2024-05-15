@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use Rector\Php80\Rector\Class_\StringableForToStringRector;
 use Rector\Php81\Rector\Array_\FirstClassCallableRector;
-use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
 
 return RectorConfig::configure()
     ->withPaths([
@@ -20,7 +20,5 @@ return RectorConfig::configure()
     )
     ->withSkip([
         FirstClassCallableRector::class,
-    ])
-    ->withRules([
-        AddVoidReturnTypeWhereNoReturnRector::class,
+        StringableForToStringRector::class,
     ]);

@@ -150,7 +150,7 @@ class Comment extends CoreEntity implements Stringable
      * @api
      * @return string
      */
-    public function __toString(): string
+    public function __toString()
     {
         return $this->content();
     }
@@ -159,7 +159,7 @@ class Comment extends CoreEntity implements Stringable
      * @internal
      * @param integer $cid
      */
-    public function init($cid): void
+    public function init($cid)
     {
         $comment_data = $cid;
         if (\is_integer($cid)) {
@@ -311,7 +311,7 @@ class Comment extends CoreEntity implements Stringable
      * @api
      * @param int $depth Level of depth.
      */
-    public function update_depth($depth = 0): void
+    public function update_depth($depth = 0)
     {
         $this->_depth = $depth;
         $children = $this->children();

@@ -19,7 +19,7 @@ class FunctionWrapper implements Stringable
 
     private $_function;
 
-    public function __toString(): string
+    public function __toString()
     {
         try {
             return (string) $this->call();

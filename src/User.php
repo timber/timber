@@ -127,7 +127,7 @@ class User extends CoreEntity implements Stringable
      *
      * @return string a fallback for Timber\User::name()
      */
-    public function __toString(): string
+    public function __toString()
     {
         return $this->name();
     }

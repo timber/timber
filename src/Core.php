@@ -25,7 +25,7 @@ abstract class Core
      * @link https://twig.symfony.com/doc/2.x/recipes.html#using-dynamic-object-properties
      * @return boolean
      */
-    public function __isset($field): bool
+    public function __isset($field)
     {
         return isset($this->$field);
     }
@@ -129,7 +129,7 @@ abstract class Core
      * ```
      * @param array|object $info an object or array you want to grab data from to attach to the Timber object
      */
-    public function import($info, $force = false, $only_declared_properties = false): void
+    public function import($info, $force = false, $only_declared_properties = false)
     {
         if (\is_object($info)) {
             $info = \get_object_vars($info);
@@ -162,7 +162,7 @@ abstract class Core
      * @param string $key   The key of the meta field to update.
      * @param mixed  $value The new value.
      */
-    public function update($key, mixed $value): void
+    public function update($key, mixed $value)
     {
         Helper::deprecated('Timber\Core::update()', 'update_metadata()', '2.0.0');
         \update_metadata($this->object_type, $this->ID, $key, $value);

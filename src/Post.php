@@ -353,7 +353,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      * @api
      * @return string
      */
-    public function __toString(): string
+    public function __toString()
     {
         return $this->title();
     }
@@ -407,7 +407,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      * @param string $field The key of the meta field to update.
      * @param mixed  $value The new value.
      */
-    public function update($field, $value): void
+    public function update($field, $value)
     {
         Helper::deprecated('Timber\Post::update()', 'update_post_meta()', '2.0.0');
 
@@ -778,7 +778,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      * @deprecated since 2.0.0
      * @param string $field_name
      */
-    public function import_field($field_name): void
+    public function import_field($field_name)
     {
         Helper::deprecated(
             "Importing field data onto an object",

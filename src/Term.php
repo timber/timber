@@ -97,7 +97,7 @@ class Term extends CoreEntity implements Stringable
      * @api
      * @return string
      */
-    public function __toString(): string
+    public function __toString()
     {
         return $this->name;
     }
@@ -604,7 +604,7 @@ class Term extends CoreEntity implements Stringable
      * @param string $key   The key of the meta field to update.
      * @param mixed  $value The new value.
      */
-    public function update($key, $value): void
+    public function update($key, $value)
     {
         Helper::deprecated('Timber\Term::update()', 'update_term_meta()', '2.0.0');
 

@@ -1593,7 +1593,7 @@ class Timber
      * @param string $string A string with Twig variables.
      * @param array  $data   An array of data to use in Twig template.
      */
-    public static function render_string($string, $data = []): void
+    public static function render_string($string, $data = [])
     {
         $compiled = self::compile_string($string, $data);
         echo $compiled;

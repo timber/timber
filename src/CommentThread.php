@@ -123,7 +123,7 @@ class CommentThread extends ArrayObject
    * @internal
      * @param array $args Optional.
      */
-    public function init($args = []): void
+    public function init($args = [])
     {
         global $overridden_cpage;
         $args = self::merge_args($args);

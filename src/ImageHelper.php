@@ -259,7 +259,7 @@ class ImageHelper
      * @since 1.5.0
      * @param int   $post_id An attachment ID.
      */
-    public static function delete_attachment($post_id): void
+    public static function delete_attachment($post_id)
     {
         self::_delete_generated_if_image($post_id);
     }
@@ -298,7 +298,7 @@ class ImageHelper
      *
      * @param int $post_id An attachment ID.
      */
-    public static function _delete_generated_if_image($post_id): void
+    public static function _delete_generated_if_image($post_id)
     {
         if (\wp_attachment_is_image($post_id)) {
             $attachment = Timber::get_post($post_id);
@@ -315,7 +315,7 @@ class ImageHelper
      * @param string $local_file ex: /var/www/wp-content/uploads/2015/my-pic.jpg
      *                           or: https://example.org/wp-content/uploads/2015/my-pic.jpg
      */
-    public static function delete_generated_files($local_file): void
+    public static function delete_generated_files($local_file)
     {
         if (URLHelper::is_absolute($local_file)) {
             $local_file = URLHelper::url_to_file_system($local_file);

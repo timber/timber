@@ -21,7 +21,7 @@ class PostType implements Stringable
         $this->init($this->slug);
     }
 
-    public function __toString(): string
+    public function __toString()
     {
         return $this->slug;
     }

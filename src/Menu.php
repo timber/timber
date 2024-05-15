@@ -555,7 +555,7 @@ class Menu extends CoreEntity implements Stringable
         return $current;
     }
 
-    public function __toString(): string
+    public function __toString()
     {
         static $menu_id_slugs = [];
 

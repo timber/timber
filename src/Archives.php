@@ -94,7 +94,7 @@ class Archives extends Core
      * @param array|string $args
      * @param string       $base
      */
-    public function init($args = null, $base = ''): void
+    public function init($args = null, $base = '')
     {
         $this->base = $base;
         $this->items = $this->items($args);

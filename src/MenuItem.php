@@ -174,7 +174,7 @@ class MenuItem extends CoreEntity implements Stringable
      *
      * @param string $class_name CSS class name to be added.
      */
-    public function add_class(string $class_name): void
+    public function add_class(string $class_name)
     {
         // Class name is already there
         if (\in_array($class_name, $this->classes, true)) {
@@ -189,7 +189,7 @@ class MenuItem extends CoreEntity implements Stringable
      *
      * @param string $class_name CSS class name to be added.
      */
-    public function remove_class(string $class_name): void
+    public function remove_class(string $class_name)
     {
         // Class name is already there
         if (!\in_array($class_name, $this->classes, true)) {
@@ -300,7 +300,7 @@ class MenuItem extends CoreEntity implements Stringable
      *
      * @param MenuItem $item The menu item to add.
      */
-    public function add_child(MenuItem $item): void
+    public function add_child(MenuItem $item)
     {
         $this->children[] = $item;
         $item->level = $this->level + 1;
@@ -333,7 +333,7 @@ class MenuItem extends CoreEntity implements Stringable
      *
      * @param array|object $data to import.
      */
-    public function import_classes($data): void
+    public function import_classes($data)
     {
         if (\is_array($data)) {
             $data = (object) $data;

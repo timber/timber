@@ -617,7 +617,7 @@ class Loader
      *
      * @param string|false $dirPath
      */
-    public static function rrmdir($dirPath): void
+    public static function rrmdir($dirPath)
     {
         if (!\is_dir($dirPath)) {
             throw new InvalidArgumentException("$dirPath must be a directory");

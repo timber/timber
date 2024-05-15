@@ -174,7 +174,7 @@ class Helper
      * @param string $slug
      * @param integer $lock_timeout
      */
-    public static function _lock_transient($slug, $lock_timeout): void
+    public static function _lock_transient($slug, $lock_timeout)
     {
         \set_transient($slug . '_lock', true, $lock_timeout);
     }
@@ -183,7 +183,7 @@ class Helper
      * @internal
      * @param string $slug
      */
-    public static function _unlock_transient($slug): void
+    public static function _unlock_transient($slug)
     {
         \delete_transient($slug . '_lock');
     }
@@ -306,7 +306,7 @@ class Helper
      *
      * @return void
      */
-    public static function warn($message): void
+    public static function warn($message)
     {
         if (!WP_DEBUG) {
             return;
@@ -336,7 +336,7 @@ class Helper
      * @param string $message  A message explaining what has been done incorrectly.
      * @param string $version  The version of Timber where the message was added.
      */
-    public static function doing_it_wrong($function, $message, $version): void
+    public static function doing_it_wrong($function, $message, $version)
     {
         /**
          * Fires when the given function is being used incorrectly.
@@ -416,7 +416,7 @@ class Helper
      *
      * @return void
      */
-    public static function deprecated($function, $replacement, $version): void
+    public static function deprecated($function, $replacement, $version)
     {
         /**
          * Fires when a deprecated function is being used.
@@ -500,7 +500,7 @@ class Helper
      *
      * @return void
      */
-    public static function osort(&$array, $prop): void
+    public static function osort(&$array, $prop)
     {
         \usort($array, fn ($a, $b) => $a->$prop > $b->$prop ? 1 : -1);
     }
