@@ -598,7 +598,7 @@ class Comment extends CoreEntity implements Stringable
             $default = '';
         } elseif ('gravatar_default' == $default) {
             $default = $host . '/avatar/?s=' . $size;
-        } elseif (empty($email) && !\strstr((string) $default, 'http://')) {
+        } elseif (empty($email) && !\strstr((string) $default, 'https://')) {
             $default = $host . '/avatar/?d=' . $default . '&amp;s=' . $size;
         }
         return $default;
