@@ -170,7 +170,7 @@ class User extends CoreEntity implements Stringable
      * Get the URL of the user's profile
      *
      * @api
-     * @return string http://example.org/author/lincoln
+     * @return string https://example.org/author/lincoln
      */
     public function link()
     {

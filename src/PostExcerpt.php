@@ -82,7 +82,7 @@ class PostExcerpt implements Stringable
     /**
      * Read more text.
      *
-     * @var string
+     * @var string|bool
      */
     protected $read_more = 'Read More';
 
@@ -297,7 +297,7 @@ class PostExcerpt implements Stringable
      * <p>{{ post.excerpt.read_more('Learn more') }}</p>
      * ```
      *
-     * @param string $text Text for the link. Default 'Read More'.
+     * @param string|bool $text Text for the link. Default 'Read More'.
      *
      * @return PostExcerpt
      */

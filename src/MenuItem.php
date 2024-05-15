@@ -547,7 +547,7 @@ class MenuItem extends CoreEntity implements Stringable
      *     <li><a href="{{ item.link }}">{{ item.title }}</a></li>
      * {% endfor %}
      * ```
-     * @return string A full URL, like `http://mysite.com/thing/`.
+     * @return string A full URL, like `https://mysite.com/thing/`.
      */
     public function link()
     {

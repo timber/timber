@@ -34,7 +34,7 @@ namespace Timber;
  *
  * ```html
  * <article>
- *   <img src="http://example.org/wp-content/uploads/2015/06/nevermind.jpg" class="cover-image" />
+ *   <img src="https://example.org/wp-content/uploads/2015/06/nevermind.jpg" class="cover-image" />
  *   <h1 class="headline">Now you've done it!</h1>
  *   <div class="body">
  *     Whatever whatever
@@ -185,8 +185,8 @@ class ExternalImage implements ImageInterface
      * <img src="{{ post.thumbnail.src('medium') }}">
      * ```
      * ```html
-     * <img src="http://example.org/wp-content/uploads/2015/08/pic.jpg" />
-     * <img src="http://example.org/wp-content/uploads/2015/08/pic-800-600.jpg">
+     * <img src="https://example.org/wp-content/uploads/2015/08/pic.jpg" />
+     * <img src="https://example.org/wp-content/uploads/2015/08/pic-800-600.jpg">
      * ```
      *
      * @param string $size Ignored. For compatibility with Timber\Image.
@@ -313,7 +313,7 @@ class ExternalImage implements ImageInterface
      * <img src="{{ image.src }}" width="{{ image.width }}" />
      * ```
      * ```html
-     * <img src="http://example.org/wp-content/uploads/2015/08/pic.jpg" width="1600" />
+     * <img src="https://example.org/wp-content/uploads/2015/08/pic.jpg" width="1600" />
      * ```
      *
      * @return int|null The width of the image in pixels. Null if the width can’t be read, e.g. because the file doesn’t
@@ -333,7 +333,7 @@ class ExternalImage implements ImageInterface
      * <img src="{{ image.src }}" height="{{ image.height }}" />
      * ```
      * ```html
-     * <img src="http://example.org/wp-content/uploads/2015/08/pic.jpg" height="900" />
+     * <img src="https://example.org/wp-content/uploads/2015/08/pic.jpg" height="900" />
      * ```
      *
      * @return int|null The height of the image in pixels. Null if the height can’t be read, e.g. because the file
@@ -453,7 +453,7 @@ class ExternalImage implements ImageInterface
      * ```
      * ```html
      * <img
-     *     src="http://example.org/wp-content/uploads/2015/08/pic.jpg"
+     *     src="https://example.org/wp-content/uploads/2015/08/pic.jpg"
      *     alt="You should always add alt texts to your images for better accessibility"
      * />
      * ```

@@ -527,7 +527,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      * Gets the comment form for use on a single article page
      *
      * @api
-     * @param array $args see [WordPress docs on comment_form](http://codex.wordpress.org/Function_Reference/comment_form)
+     * @param array $args see [WordPress docs on comment_form](https://codex.wordpress.org/Function_Reference/comment_form)
      *                    for reference on acceptable parameters
      * @return string of HTML for the form
      */
@@ -1652,7 +1652,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      * ```twig
      * <a href="{{post.link}}">Read my post</a>
      * ```
-     * @return string ex: http://example.org/2015/07/my-awesome-post
+     * @return string ex: https://example.org/2015/07/my-awesome-post
      */
     public function link()
     {
@@ -1825,7 +1825,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
     }
 
     /**
-     * Gets the relative path of a WP Post, so while link() will return http://example.org/2015/07/my-cool-post
+     * Gets the relative path of a WP Post, so while link() will return https://example.org/2015/07/my-cool-post
      * this will return just /2015/07/my-cool-post
      *
      * @api

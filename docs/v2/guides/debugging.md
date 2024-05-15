@@ -132,5 +132,5 @@ The [**Timber Debugger**](https://github.com/djboris88/timber-debugger) package 
 
 ## Using Timber Debug Bar plugin
 
-There’s a [Timber add-on](http://wordpress.org/plugins/debug-bar-timber/) for the [WordPress debug bar](https://wordpress.org/plugins/debug-bar/).
+There’s a [Timber add-on](https://wordpress.org/plugins/debug-bar-timber/) for the [WordPress debug bar](https://wordpress.org/plugins/debug-bar/).
 **Warning:** this currently requires PHP 5.4.

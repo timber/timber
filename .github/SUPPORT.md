@@ -1,6 +1,6 @@
 # Looking for support? We want to help
 
-Please post your question to Stack Overflow (http://stackoverflow.com/questions/tagged/timber) using the Timber tag.
+Please post your question to Stack Overflow (https://stackoverflow.com/questions/tagged/timber) using the Timber tag.
 
 ## Other places
 

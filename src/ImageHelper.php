@@ -52,7 +52,7 @@ class ImageHelper
      * <img src="{{ image.src | resize(300, 200, 'top') }}" />
      * ```
      * ```html
-     * <img src="http://example.org/wp-content/uploads/pic-300x200-c-top.jpg" />
+     * <img src="https://example.org/wp-content/uploads/pic-300x200-c-top.jpg" />
      * ```
      *
      * @param string     $src   A URL (absolute or relative) to the original image.
@@ -221,7 +221,7 @@ class ImageHelper
      * @api
      *
      * @param string $src   A URL or path to the image
-     *                      (http://example.org/wp-content/uploads/2014/image.jpg) or
+     *                      (https://example.org/wp-content/uploads/2014/image.jpg) or
      *                      (/wp-content/uploads/2014/image.jpg).
      * @param string $bghex The hex color to use for transparent zones.
      * @return string The URL of the processed image.
@@ -236,7 +236,7 @@ class ImageHelper
      * Generates a new image by converting the source into WEBP if supported by the server.
      *
      * @param string $src     A URL or path to the image
-     *                        (http://example.org/wp-content/uploads/2014/image.webp) or
+     *                        (https://example.org/wp-content/uploads/2014/image.webp) or
      *                        (/wp-content/uploads/2014/image.webp).
      * @param int    $quality Range from `0` (worst quality, smaller file) to `100` (best quality,
      *                        biggest file).
@@ -313,7 +313,7 @@ class ImageHelper
      * Deletes the auto-generated files for resize and letterboxing created by Timber.
      *
      * @param string $local_file ex: /var/www/wp-content/uploads/2015/my-pic.jpg
-     *                           or: http://example.org/wp-content/uploads/2015/my-pic.jpg
+     *                           or: https://example.org/wp-content/uploads/2015/my-pic.jpg
      */
     public static function delete_generated_files($local_file): void
     {
@@ -628,7 +628,7 @@ class ImageHelper
     /**
      * Converts a URL located in a theme directory into the raw file path.
      *
-     * @param string  $src A URL (http://example.org/wp-content/themes/twentysixteen/images/home.jpg).
+     * @param string  $src A URL (https://example.org/wp-content/themes/twentysixteen/images/home.jpg).
      * @return string Full path to the file in question.
      */
     public static function theme_url_to_dir(string $src): string
@@ -664,7 +664,7 @@ class ImageHelper
     /**
      * Converts a URL located in a theme directory into the raw file path.
      *
-     * @param string  $src A URL (http://example.org/wp-content/themes/twentysixteen/images/home.jpg).
+     * @param string  $src A URL (https://example.org/wp-content/themes/twentysixteen/images/home.jpg).
      * @return string Full path to the file in question.
      */
     private static function get_dir_from_theme_url(string $src): string

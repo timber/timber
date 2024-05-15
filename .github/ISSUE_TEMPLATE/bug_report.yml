@@ -17,7 +17,7 @@ body:
 
       Thanks for taking the time to fill out the issue form. We can help best if you provide as much information as possible.
 
-      Is this a support or usage question? Please post it to [Discussions](https://github.com/timber/timber/discussions) or on Stack Overflow (http://stackoverflow.com/questions/tagged/timber) using the *Timber* tag.
+      Is this a support or usage question? Please post it to [Discussions](https://github.com/timber/timber/discussions) or on Stack Overflow (https://stackoverflow.com/questions/tagged/timber) using the *Timber* tag.
 - type: textarea
   attributes:
     label: Expected Behavior

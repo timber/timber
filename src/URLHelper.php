@@ -119,7 +119,7 @@ class URLHelper
      * Some setups like HTTP_HOST, some like SERVER_NAME, it's complicated
      *
      * @api
-     * @link http://stackoverflow.com/questions/2297403/http-host-vs-server-name
+     * @link https://stackoverflow.com/questions/2297403/http-host-vs-server-name
      *
      * @return string the HTTP_HOST or SERVER_NAME
      */
@@ -320,8 +320,8 @@ class URLHelper
      * Look for accidental slashes in a URL and remove them
      *
      * @api
-     * @param  string $url to process (ex: http://nytimes.com//news/article.html)
-     * @return string the result (ex: http://nytimes.com/news/article.html)
+     * @param  string $url to process (ex: https://nytimes.com//news/article.html)
+     * @return string the result (ex: https://nytimes.com/news/article.html)
      */
     public static function remove_double_slashes($url)
     {
@@ -409,7 +409,7 @@ class URLHelper
     }
 
     /**
-     * This will evaluate whether a URL is at an absolute location (like http://example.org/whatever)
+     * This will evaluate wheter a URL is at an aboslute location (like https://example.org/whatever)
      *
      * @param string $path
      * @return boolean true if $path is an absolute url, false if relative.
@@ -496,8 +496,8 @@ class URLHelper
      * @api
      * @since  1.3.3
      * @author jarednova
-     * @param string $haystack ex: http://example.org/wp-content/uploads/dog.jpg
-     * @param string $needle ex: http://example.org/wp-content
+     * @param string $haystack ex: https://example.org/wp-content/uploads/dog.jpg
+     * @param string $needle ex: https://example.org/wp-content
      * @return string
      */
     public static function remove_url_component($haystack, $needle)
@@ -514,7 +514,7 @@ class URLHelper
      * @since  1.3.3
      * @author jarednova
      *
-     * @param  string $url ex: http://example.org/wp-content/uploads/dog.jpg.
+     * @param  string $url ex: https://example.org/wp-content/uploads/dog.jpg.
      * @return string ex: https://example.org/wp-content/uploads/dog.jpg
      */
     public static function swap_protocol($url)
@@ -559,7 +559,7 @@ class URLHelper
      * @example
      * ```php
      * // Given a $_SERVER["REQUEST_URI"] of:
-     * // http://example.org/blog/post/news/2014/whatever
+     * // https://example.org/blog/post/news/2014/whatever
      *
      * $params = URLHelper::get_params();
      * // => ["blog", "post", "news", "2014", "whatever"]
