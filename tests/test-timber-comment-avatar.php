@@ -148,8 +148,9 @@ class TestTimberCommentAvatar extends Timber_UnitTestCase
             # you get back the default in the avatar url?
             $this->assertEquals($params, "d=$default_url&amp;s=32");
         }
-        # you get back url?
-        $this->assertTrue(substr($avatar, 0, 6) == "https:");
+
+        // Check if we get back an URL (either http:// or https:).
+        $this->assertMatchesRegularExpression("/^https?::", $avatar);
     }
 
     public function crawl($url)
