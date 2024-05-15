@@ -10,12 +10,16 @@ class Admin
     public static function init()
     {
         global $wp_version;
-        if (\version_compare('5.3.0', $wp_version) === 1) {
-            // user is running something older that WordPress 5.3 show them an error
+
+        $minimum_version = '6.0.0';
+
+        // Show notice if user is running something older than the required
+        // WordPress version.
+        if (\version_compare($minimum_version, $wp_version) === 1) {
             $upgrade_url = \admin_url('update-core.php');
-            self::show_notice("<a href='https://github.com/timber/timber'>Timber 2.0</a> requires <strong>WordPress 5.3</strong> or greater, but you are running <strong>WordPress $wp_version</strong>. Please <a href='$upgrade_url'>upgrade WordPress</a> in order to use Timber 2.0.");
+
+            self::show_notice("<a href='https://github.com/timber/timber'>Timber 2.0</a> requires <strong>WordPress $minimum_version</strong> or greater, but you are running <strong>WordPress $wp_version</strong>. Please <a href='$upgrade_url'>update WordPress</a> in order to use Timber 2.0.");
         }
-        return true;
     }
 
     /**
