@@ -299,7 +299,7 @@ class PostExcerpt
      * <p>{{ post.excerpt.read_more('Learn more') }}</p>
      * ```
      *
-     * @param string|bool $readmore Text for the link. Default 'Read More'.
+     * @param string|bool $text Text for the link. Default 'Read More'.
      *
      * @return PostExcerpt
      */
