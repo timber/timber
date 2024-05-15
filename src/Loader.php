@@ -244,7 +244,7 @@ class Loader
         foreach ($templates as $template) {
             // Remove any whitespace around the template name
             $template = \trim($template);
-            // Use the Twig loader to test for existance
+            // Use the Twig loader to test for existence
             if ($loader->exists($template)) {
                 // Return name of existing template
                 return $template;
@@ -685,7 +685,7 @@ class Loader
          * @param string $group The cache group.
          * @param string $cache_mode The cache mode.
          */
-        $trans_key = apply_filters('timber/cache/transient_key', $trans_key, $key, $group, $cache_mode);
+        $trans_key = \apply_filters('timber/cache/transient_key', $trans_key, $key, $group, $cache_mode);
 
         if (self::CACHE_TRANSIENT === $cache_mode) {
             $value = \get_transient($trans_key);
@@ -732,7 +732,7 @@ class Loader
          * @param string $group The cache group.
          * @param string $cache_mode The cache mode.
          */
-        $trans_key = apply_filters('timber/cache/transient_key', $trans_key, $key, $group, $cache_mode);
+        $trans_key = \apply_filters('timber/cache/transient_key', $trans_key, $key, $group, $cache_mode);
 
         if (self::CACHE_TRANSIENT === $cache_mode) {
             \set_transient($trans_key, $value, $expires);

@@ -125,7 +125,7 @@ class LocationManager
 
     /**
      * returns an array of the directory inside themes that holds twig files
-     * @return array the names of directores, ie: array('__MAIN__' => ['templats', 'views']);
+     * @return array the names of directories, ie: array('__MAIN__' => ['templates', 'views']);
      */
     public static function get_locations_theme_dir()
     {

@@ -83,7 +83,7 @@ class TestTimberMultisite extends Timber_UnitTestCase
         $this->assertSame(6, count($timber_posts));
         $this->assertSame(6, count($wp_posts));
 
-        // ensure tha the current site's post count is distinct from our test condition
+        // ensure that the current site's post count is distinct from our test condition
         $current_site_all_posts = get_posts([
             'post_type' => 'post',
         ]);
@@ -188,7 +188,7 @@ class TestTimberMultisite extends Timber_UnitTestCase
         $this->assertSame(3, count($timber_posts));
         $this->assertSame(3, count($wp_posts));
 
-        // ensure tha the current site's post count is distinct from our test condition
+        // ensure that the current site's post count is distinct from our test condition
         $current_site_all_posts = get_posts();
         $this->assertSame(5, count($current_site_all_posts));
     }

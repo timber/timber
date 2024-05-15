@@ -10,7 +10,7 @@ Underneath this text you will find an extensive list with guides and the reasons
 
 * Guide: [How do I switch over from the plugin version to the Composer based version of Timber?](https://timber.github.io/docs/v1/getting-started/switch-to-composer/)
 * Backstory: [Why we are dropping support for the plugin in the first place](https://github.com/timber/timber/pull/2005)
-* Github issue: [Road to Timber 2.0](https://github.com/timber/timber/issues/2741)
+* GitHub issue: [Road to Timber 2.0](https://github.com/timber/timber/issues/2741)
 
 ### ~~Via WordPress.org (easy)~~
 

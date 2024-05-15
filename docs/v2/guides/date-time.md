@@ -68,7 +68,7 @@ $datetime = date_create_immutable_from_format(
 $timestamp = $datetime->getTimestamp();
 ```
 
-When the date string already includes the timezone, like when you use the `DATE_ATOM` format, then you don’t need to pass a timezone. When it doesn’t, you may have to pass it, dependening on how you manage/use your dates.
+When the date string already includes the timezone, like when you use the `DATE_ATOM` format, then you don’t need to pass a timezone. When it doesn’t, you may have to pass it, depending on how you manage/use your dates.
 
 If you stored your dates *with* a certain timezone applied, then you will have to create them with a timezone. You can do this by passing `wp_timezone()` as the third parameter.
 

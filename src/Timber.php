@@ -251,21 +251,9 @@ class Timber
      */
     public static function get_post($query = false, $options = [])
     {
-        if (\is_string($query) && !\is_numeric($query)) {
-            Helper::doing_it_wrong(
-                'Timber::get_post()',
-                'Getting a post by post slug or post name was removed from Timber::get_post() in Timber 2.0. Use Timber::get_post_by() instead.',
-                '2.0.0'
-            );
-        }
+        self::check_post_api_deprecations($query, $options, 'Timber::get_post()');
 
         if (\is_string($options)) {
-            Helper::doing_it_wrong(
-                'Timber::get_post()',
-                'The $PostClass parameter for passing in the post class to use in Timber::get_posts() was replaced with an $options array in Timber 2.0. To customize which class to instantiate for your post, use Class Maps instead: https://timber.github.io/docs/v2/guides/class-maps/',
-                '2.0.0'
-            );
-
             $options = [];
         }
 
@@ -315,6 +303,8 @@ class Timber
      */
     public static function get_attachment($query = false, $options = [])
     {
+        self::check_post_api_deprecations($query, $options, 'Timber::get_attachment()');
+
         $post = static::get_post($query, $options);
 
         // No need to instantiate a Post we're not going to use.
@@ -340,6 +330,8 @@ class Timber
      */
     public static function get_image($query = false, $options = [])
     {
+        self::check_post_api_deprecations($query, $options, 'Timber::get_image()');
+
         $post = static::get_post($query, $options);
 
         // No need to instantiate a Post we're not going to use.
@@ -376,6 +368,32 @@ class Timber
         ]);
 
         return ExternalImage::build($url, $args);
+    }
+
+    /**
+     * Checks for deprecated Timber::get_post() API usage.
+     *
+     * @param $query
+     * @param $options
+     * @param $function_name
+     */
+    private static function check_post_api_deprecations($query = false, $options = [], string $function_name = 'Timber::get_post()')
+    {
+        if (\is_string($query) && !\is_numeric($query)) {
+            Helper::doing_it_wrong(
+                $function_name,
+                'Getting a post by post slug or post name was removed from Timber::get_post() in Timber 2.0. Use Timber::get_post_by() instead.',
+                '2.0.0'
+            );
+        }
+
+        if (\is_string($options)) {
+            Helper::doing_it_wrong(
+                $function_name,
+                'The $PostClass parameter for passing in the post class to use in Timber::get_posts() was replaced with an $options array in Timber 2.0. To customize which class to instantiate for your post, use Class Maps instead: https://timber.github.io/docs/v2/guides/class-maps/',
+                '2.0.0'
+            );
+        }
     }
 
     /**
@@ -1447,7 +1465,7 @@ class Timber
         /**
          * Filters the compiled result before it is returned in `Timber::compile()`.
          *
-         * It adds the posibility to filter the output ready for render.
+         * It adds the possibility to filter the output ready for render.
          *
          * @since 2.0.0
          *

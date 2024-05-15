@@ -460,7 +460,7 @@ class URLHelper
      * Otherwise, false.
      *
      * @api
-     * @param  string $url URL to evalute.
+     * @param  string $url URL to evaluate.
      * @return bool
      */
     public static function is_external(string $url): bool

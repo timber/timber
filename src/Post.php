@@ -175,7 +175,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * @internal
      * @return Post
      */
-    public static function build(WP_Post $wp_post): self
+    public static function build(WP_Post $wp_post): static
     {
         $post = new static();
 
@@ -291,7 +291,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         global $post;
         global $wp_query;
 
-        // Mimick WordPress behavior to improve compatibility with third party plugins.
+        // Mimic WordPress behavior to improve compatibility with third party plugins.
         $wp_query->in_the_loop = true;
 
         if (!$this->wp_object) {
@@ -809,7 +809,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      *    {# Some stuff here #}
      * </article>
      * ```
-     * @return string a space-seperated list of classes
+     * @return string a space-separated list of classes
      */
     public function post_class($class = '')
     {
@@ -840,7 +840,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      * </article>
      * ```
      *
-     * @return string a space-seperated list of classes
+     * @return string a space-separated list of classes
      */
     public function css_class($class = '')
     {
@@ -1215,10 +1215,11 @@ class Post extends CoreEntity implements DatedInterface, Setupable
      *
      * @param int $page Optional. The page to show if the content of the post is split into multiple
      *                  pages. Read more about this in the [Pagination Guide](https://timber.github.io/docs/v2/guides/pagination/#paged-content-within-a-post). Default `0`.
-     *
-     * @return string
+     * @param int $len Optional. The number of words to show. Default `-1` (show all).
+     * @param bool $remove_blocks Optional. Whether to remove blocks. Defaults to false. True when called from the $post->excerpt() method.
+     * @return string The content of the post.
      */
-    public function content($page = 0, $len = -1)
+    public function content($page = 0, $len = -1, $remove_blocks = false)
     {
         if ($rd = $this->get_revised_data_from_method('content', [$page, $len])) {
             return $rd;
@@ -1261,6 +1262,25 @@ class Post extends CoreEntity implements DatedInterface, Setupable
             if (\count($pages) > $page) {
                 $content = $pages[$page];
             }
+        }
+
+        /**
+         * Filters whether the content produced by block editor blocks should be removed or not from the content.
+         *
+         * If truthy then block whose content does not belong in the excerpt, will be removed.
+         * This removal is done using WordPress Core `excerpt_remove_blocks` function.
+         *
+         * @since 2.1.1
+         *
+         * @param bool $remove_blocks Whether blocks whose content should not be part of the excerpt should be removed
+         *                            or not from the excerpt.
+         *
+         * @see   excerpt_remove_blocks() The WordPress Core function that will handle the block removal from the excerpt.
+         */
+        $remove_blocks = (bool) \apply_filters('timber/post/content/remove_blocks', $remove_blocks);
+
+        if ($remove_blocks) {
+            $content = \excerpt_remove_blocks($content);
         }
 
         $content = $this->content_handle_no_teaser_block($content);

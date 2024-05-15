@@ -13,7 +13,7 @@ use Timber\User;
 class TestTimberContext extends Timber_UnitTestCase
 {
     /**
-     * This throws an infite loop if memorization isn't working
+     * This throws an infinite loop if memorization isn't working
      */
     public function testContextLoop()
     {

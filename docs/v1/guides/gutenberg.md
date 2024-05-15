@@ -47,7 +47,7 @@ Next, you you have to create your `render_callback()` function:
  *  This is the callback that displays the block.
  *
  * @param   array  $block      The block settings and attributes.
- * @param   string $content    The block content (emtpy string).
+ * @param   string $content    The block content (empty string).
  * @param   bool   $is_preview True during AJAX preview.
  */
 function my_acf_block_render_callback( $block, $content = '', $is_preview = false ) {
