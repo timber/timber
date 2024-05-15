@@ -121,6 +121,8 @@
       "@test",
       "@cs"
     ],
+    "rector": "rector process --dry-run",
+    "rector:fix": "rector process",
     "test": [
       "@test:integration:acf",
       "@test:integration:coauthors-plus",
@@ -146,6 +148,8 @@
     "lint-composer": "Check composer.json for incorrect order and whitespace",
     "lint-composer:fix": "Fix composer.json for incorrect order and whitespace",
     "qa": "Run all quality assurance checks/tests",
+    "rector": "Check Rector rules without applying them",
+    "rector:fix": "Fix Rector rules",
     "test": "Run all integration tests with PHPUnit",
     "test:integration": "Run unit tests for Timber core",
     "test:integration:acf": "Run unit tests related to the ACF integration for Timber",
