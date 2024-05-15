@@ -1,4 +1,4 @@
-name: PHP rector
+name: PHP Rector
 
 on:
   push:
