@@ -282,7 +282,6 @@ class Helper
      * Output a value (string, array, object, etc.) to the error log
      *
      * @api
-     * @param mixed $error The error that you want to error_log().
      * @return void
      */
     public static function error_log(mixed $error)
@@ -707,7 +706,8 @@ class Helper
      *
      * If no match is found the function will return the initial argument.
      *
-     * @param mixed $obj WP Object
+     * @api
+     * @param mixed $obj WP Object to convert
      * @return mixed Instance of equivalent Timber object, or the argument if no match is found
      */
     public static function convert_wp_object(mixed $obj)
