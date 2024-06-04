@@ -10,8 +10,10 @@
 /.scrutinizer.yml export-ignore
 /CONTRIBUTING.md export-ignore
 /README.md export-ignore
+/SECURITY.md export-ignore
 /ecs.php export-ignore
 /grumphp.yml export-ignore
+/rector.php export-ignore
 /phpcs.xml export-ignore
 /phpstan.neon export-ignore
 /phpunit-nocover.xml export-ignore
