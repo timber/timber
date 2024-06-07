@@ -33,6 +33,8 @@ jobs:
 
       - name: Install dependencies
         uses: ./.github/actions/setup
+        with:
+          PHP_TOOLS: cs2pr
 
       - name: Get changed files
         id: changed-files
@@ -40,4 +42,4 @@ jobs:
 
       - name: Run coding standards
         if: steps.changed-files.outputs.all_changed_files != ''
-        run: ./vendor/bin/ecs check ${{ steps.changed-files.outputs.files }}
+        run: ./vendor/bin/ecs check --output-format=checkstyle ${{ join(steps.changed-files.outputs.all_changed_files, ' ') }} | cs2pr
