@@ -153,7 +153,7 @@ So, how does Timber know about your `User` class? Timber will use the [User Clas
 
 ## Querying Users
 
-If you want to get an array of users, you can use `Timber::get_user()`.
+If you want to get an array of users, you can use `Timber::get_users()`.
 
 ```php
 $users = Timber::get_users($query);
