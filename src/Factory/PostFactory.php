@@ -194,6 +194,7 @@ class PostFactory
             'png',
             'svg',
             'webp',
+            'avif',
         ]);
 
         return \in_array($check['ext'], $extensions);
