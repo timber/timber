@@ -20,7 +20,7 @@ If you’ve worked with ACF before, you’re use to use `get_field( 'my_acf_fiel
 $meta = $post->meta('my_acf_field');
 ```
 
-### Transform values to Timber/PHP objects  
+### Transform values to Timber/PHP objects
 Timber by default returns all field values as is based on the return type set in your ACF field setting.
 
 But sometimes you might want to transform values directly into Timber/PHP objects. For example, if you have a relationship field, you might want to transform the values directly into `Timber\Post` objects.
@@ -29,7 +29,7 @@ You can do so using the `timber/meta/transform_value` filter:
 
 **functions.php**
 ```php
-add_filter('timber/meta/transform_value', '__return__true');
+add_filter('timber/meta/transform_value', '__return_true');
 ```
 
 Or you can use the `transform_value` parameter to transform values on a field by field basis:
