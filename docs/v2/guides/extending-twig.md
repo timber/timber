@@ -153,15 +153,15 @@ Here’s the same functions and filters that we add above. But instead of using 
 ```php
 add_filter( 'timber/twig', function( \Twig\Environment $twig ) {
     $twig->addFunction(
-        new TwigFunction( 'edit_post_link', 'edit_post_link' )
+        new \Twig\TwigFunction( 'edit_post_link', 'edit_post_link' )
     );
 
     $twig->addFilter(
-        new TwigFilter( 'price', 'format_price' )
+        new \Twig\TwigFilter( 'price', 'format_price' )
     );
 
     $twig->addFilter(
-        new TwigFilter( 'slugify', 'sanitize_title' )
+        new \Twig\TwigFilter( 'slugify', 'sanitize_title' )
     ];
 
     return $twig;
