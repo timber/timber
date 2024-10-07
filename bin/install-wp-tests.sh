@@ -109,9 +109,17 @@ install_test_suite() {
 		# set up testing suite
 		mkdir -p $WP_TESTS_DIR
 		rm -rf $WP_TESTS_DIR/{includes,data}
-        git clone --depth 1 --branch $WP_VERSION git://develop.git.wordpress.org/ $TMPDIR/wordpress-develop/wordpress
-        cp -r $TMPDIR/wordpress-develop/wordpress/tests/phpunit/includes $WP_TESTS_DIR/includes
-        cp -r $TMPDIR/wordpress-develop/wordpress/tests/phpunit/data $WP_TESTS_DIR/data
+
+		if [ $WP_VERSION == 'latest' ]; then
+			 echo "Using latest version ${LATEST_VERSION} of WordPress for testing."
+			 BRANCH=$LATEST_VERSION
+		else
+			 BRANCH=$WP_VERSION
+		fi
+		
+		git clone --depth 1 --branch $BRANCH git://develop.git.wordpress.org/ $TMPDIR/wordpress-develop/wordpress
+		cp -r $TMPDIR/wordpress-develop/wordpress/tests/phpunit/includes $WP_TESTS_DIR/includes
+		cp -r $TMPDIR/wordpress-develop/wordpress/tests/phpunit/data $WP_TESTS_DIR/data
 	fi
 
 	if [ ! -f wp-tests-config.php ]; then
