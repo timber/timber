@@ -65,8 +65,8 @@ install_wp() {
 	if [[ $WP_VERSION == 'nightly' || $WP_VERSION == 'trunk' ]]; then
 		mkdir -p $TMPDIR/wordpress-trunk
 		rm -rf $TMPDIR/wordpress-trunk/*
-		git clone git://develop.git.wordpress.org/ $TMPDIR/wordpress-trunk/wordpress
-		mv $TMPDIR/wordpress-trunk/wordpress/* $WP_CORE_DIR
+		git clone --depth 1 git://develop.git.wordpress.org/ $TMPDIR/wordpress-trunk/wordpress
+		mv $TMPDIR/wordpress-trunk/wordpress/src/* $WP_CORE_DIR
 	else
 		if [ $WP_VERSION == 'latest' ]; then
 			local ARCHIVE_NAME='latest'
