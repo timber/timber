@@ -367,7 +367,7 @@ class Site extends Core implements CoreInterface
 
     /**
      * @api
-     * @return null|\Timber\Image
+     * @return null|Image
      */
     public function icon()
     {

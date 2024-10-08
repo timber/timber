@@ -19,7 +19,7 @@ interface PostCollectionInterface extends Traversable, Countable, ArrayAccess
      *
      * @api
      * @param array $options optional config options to pass to the \Timber\Pagination constructor.
-     * @return null|\Timber\Pagination a Pagination object if pagination is available for this collection;
+     * @return null|Pagination a Pagination object if pagination is available for this collection;
      * null otherwise.
      */
     public function pagination(array $options = []);

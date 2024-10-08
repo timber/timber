@@ -286,7 +286,7 @@ class Attachment extends Post
      * This image is assigned to {{ image.parent.title }}
      * ```
      *
-     * @return null|\Timber\Post Parent object as a `Timber\Post`. Returns `false` if no parent
+     * @return null|Post Parent object as a `Timber\Post`. Returns `false` if no parent
      *                            object is defined.
      */
     public function parent(): ?Post
