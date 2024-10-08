@@ -220,7 +220,7 @@ class TestMenuFactory extends Timber_UnitTestCase
         ];
         set_theme_mod('nav_menu_locations', $locations);
         $factory = new MenuFactory();
-        $location = $this->callMethod($factory, 'get_menu_location', [get_term($id)]);
+        $location = Timber::get_menu_location(get_term($id));
         $this->assertSame('primary', $location);
     }
 }
