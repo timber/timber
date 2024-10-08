@@ -16,15 +16,6 @@ use WP_Post;
 class MenuItem extends CoreEntity implements Stringable
 {
     /**
-     * The underlying WordPress Core object.
-     *
-     * @since 2.0.0
-     *
-     * @var WP_Post|null
-     */
-    protected ?WP_Post $wp_object;
-
-    /**
      * @var string What does this class represent in WordPress terms?
      */
     public $object_type = 'post';
@@ -123,7 +114,12 @@ class MenuItem extends CoreEntity implements Stringable
      * @param Menu $menu The `Menu` object the menu item is associated with.
      */
     protected function __construct(
-        WP_Post $data, /**
+        /**
+         * The underlying WordPress Core object.
+         *
+         * @since 2.0.0
+         */
+        protected ?WP_Post $wp_object, /**
      * Timber Menu. Previously this was a public property, but converted to a method to avoid
      * recursion (see #2071).
      *
@@ -132,19 +128,17 @@ class MenuItem extends CoreEntity implements Stringable
      */
         protected $menu = null
     ) {
-        $this->wp_object = $data;
-
         /**
          * @property string $title The nav menu item title.
          */
-        $this->title = $data->title;
+        $this->title = $this->wp_object->title;
 
-        $this->import($data);
-        $this->import_classes($data);
-        $this->id = $data->ID;
-        $this->ID = $data->ID;
+        $this->import($this->wp_object);
+        $this->import_classes($this->wp_object);
+        $this->id = $this->wp_object->ID;
+        $this->ID = $this->wp_object->ID;
 
-        $this->_name = $data->name ?? '';
+        $this->_name = $this->wp_object->name ?? '';
         $this->add_class('menu-item-' . $this->ID);
 
         /**
