@@ -281,7 +281,7 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
      * Finds any WP_Post objects and converts them to Timber\Posts
      *
      * @api
-     * @param array|\Timber\CoreEntity $data
+     * @param array|CoreEntity $data
      */
     public function convert($data)
     {

@@ -32,7 +32,7 @@ class UserFactory
      * * a Timber\Core object (presumably a User)
      * * an array of IDs
      * * an associative array (interpreted as arguments for a WP_User_Query)
-     * @return \Timber\User|array|null
+     * @return User|array|null
      */
     public function from(mixed $params)
     {
