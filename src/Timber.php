@@ -1059,6 +1059,9 @@ class Timber
     /**
      * Get the navigation menu location assigned to the given menu.
      *
+     * @api
+     * @since 2.3.0
+     *
      * @param  WP_Term|int $term The menu to find; either a WP_Term object or a Term ID.
      * @return string|null
      */
@@ -1078,6 +1081,9 @@ class Timber
 
     /**
      * Get the navigation menu locations with assigned menus.
+     *
+     * @api
+     * @since 2.3.0
      *
      * @return array<string, (int|string)>
      */
