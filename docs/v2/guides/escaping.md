@@ -37,13 +37,13 @@ You can read more about the basics of [theme security](https://developer.wordpre
 
 Twig offers a variety of [escaping functions](https://twig.symfony.com/doc/filters/escape.html) out of the box. They are intended to escape a string for safe insertion into the final output.
 
-In addition to these standard escaping functions, Timber comes with some valuable custom escapers for your WordPress theme. To use the escaper (see documentation link above), you pipe your content through a function `e` and if you want to use a custom escaper, you would supply an argument to the function, e.g. `e('wp_kses_post')`.
+In addition to these standard escaping functions, Timber comes with some valuable custom escapers for your WordPress theme.
 
 ## wp_kses_post
 
 KSES is a recursive acronym for `KSES Kills Evil Scripts`. It’s goal is to ensure only "allowed" HTML element names, attribute names and attribute values plus only sane HTML entities in the string. Allowed means based on a configuration.
 
-The `wp_kses_post` escaper uses the internal WordPress function [`wp_kses_post()`](https://developer.wordpress.org/reference/functions/wp_kses_post/) that sanitizes content for allowed HTML tags for the post content. The configuration used can be found by running ` wp_kses_allowed_html( 'post' );`.
+The `wp_kses_post` escaper uses the internal WordPress function [`wp_kses_post()`](https://developer.wordpress.org/reference/functions/wp_kses_post/) that sanitizes content for allowed HTML tags for the post content. The configuration used can be found by running ` wp_kses_allowed_html( 'post' );`. We pipe the `wp_kses_post()` function through the `Timber\Twig::kses_allow_null` method to allow for null values.
 
 **Twig**
 

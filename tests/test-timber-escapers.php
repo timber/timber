@@ -75,6 +75,16 @@ class TestTimberFilterEscapers extends Timber_UnitTestCase
         $this->assertEquals($native, $result);
     }
 
+    public function testKsesEscaperAllowNull()
+    {
+
+        $result = Timber::compile_string('{{ text|wp_kses_post(null) }}', [
+            'text' => null,
+        ]);
+
+        $this->assertEquals(null, $result);
+    }
+
     public function testOldEscaper()
     {
         $dirty_url = 'https://example.com/?foo=1&bar=2';
