@@ -43,6 +43,8 @@ class PagesMenu extends Menu
             'after' => '</ul>',
             'item_spacing' => 'discard',
             'walker' => '',
+            'menu' => '',
+            'theme_location' => '',
             'menu_id' => '',
             'menu_class' => 'menu',
             'container' => 'div',
