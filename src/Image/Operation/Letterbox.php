@@ -16,6 +16,7 @@ use Timber\PathHelper;
  * - height of new image
  * - color of padding
  */
+
 class Letterbox extends ImageOperation
 {
     /**
@@ -93,15 +94,16 @@ class Letterbox extends ImageOperation
                 $y = 0;
                 $x = $w / 2 - $owt / 2;
                 $oht = $h;
-                $image->crop(0, 0, $ow, $oh, $owt, $oht);
             } else {
                 $w_scale = $w / $ow;
                 $oht = $oh * $w_scale;
                 $x = 0;
                 $y = $h / 2 - $oht / 2;
                 $owt = $w;
-                $image->crop(0, 0, $ow, $oh, $owt, $oht);
             }
+
+            $image->crop(0, 0, \round($ow), \round($oh), \round($owt), \round($oht));
+
             $result = $image->save($save_filename);
             $func = 'imagecreatefromjpeg';
             $save_func = 'imagejpeg';
