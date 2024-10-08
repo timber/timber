@@ -174,11 +174,9 @@ class TestMenuFactory extends Timber_UnitTestCase
 
         $factory = new MenuFactory();
 
-        $this->add_filter_temporarily('timber/menu/class', function () {
-            return MyMenu::class;
-        });
+        $this->add_filter_temporarily('timber/menu/class', fn () => MyMenu::class);
 
-        $this->assertTrue(MyMenu::class === get_class($factory->from($id)));
+        $this->assertTrue(MyMenu::class === ($factory->from($id) !== null ? $factory->from($id)::class : self::class));
     }
 
     public function testMenuClassMapFilter()
@@ -196,13 +194,11 @@ class TestMenuFactory extends Timber_UnitTestCase
             'custom' => $id,
         ]);
 
-        $this->add_filter_temporarily('timber/menu/classmap', function () {
-            return [
-                'custom' => MyMenu::class,
-            ];
-        });
+        $this->add_filter_temporarily('timber/menu/classmap', fn () => [
+            'custom' => MyMenu::class,
+        ]);
 
-        $this->assertTrue(MyMenu::class === get_class($factory->from($id)));
+        $this->assertTrue(MyMenu::class === ($factory->from($id) !== null ? $factory->from($id)::class : self::class));
     }
 
     /**
