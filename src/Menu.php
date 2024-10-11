@@ -293,10 +293,7 @@ class Menu extends CoreEntity implements Stringable
         }
 
         // Set theme location if available
-        $locations = \array_flip(\array_filter(\get_nav_menu_locations(), fn ($location) => \is_string($location) || \is_int($location)));
-
-        $this->theme_location = $locations[$term->term_id] ?? null;
-
+        $this->theme_location = Timber::get_menu_location($term);
         if ($this->theme_location) {
             $this->args->theme_location = $this->theme_location;
         }
