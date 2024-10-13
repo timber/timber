@@ -33,6 +33,8 @@ class PagesMenu extends Menu
          * Default arguments from wp_page_menu() function.
          *
          * @see wp_page_menu()
+         *
+         * @since 2.3.0 The 'menu' and 'theme_location' are added to provide compatibility with Polylang. See ticket #2922.
          */
         $defaults = [
             'sort_column' => 'menu_order, post_title',
