@@ -33,6 +33,9 @@ class PagesMenu extends Menu
          * Default arguments from wp_page_menu() function.
          *
          * @see wp_page_menu()
+         *
+         * @since 2.3.0 The 'menu' and 'theme_location' are added to provide compatibility with Polylang.
+         * @see https://github.com/timber/timber/issues/2922
          */
         $defaults = [
             'sort_column' => 'menu_order, post_title',
@@ -43,6 +46,8 @@ class PagesMenu extends Menu
             'after' => '</ul>',
             'item_spacing' => 'discard',
             'walker' => '',
+            'menu' => '',
+            'theme_location' => '',
             'menu_id' => '',
             'menu_class' => 'menu',
             'container' => 'div',
