@@ -48,7 +48,7 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
             mkdir($dest_dir, 0777, true);
         }
 
-        if (strpos($dest, 'http') === 0) {
+        if (str_starts_with($dest, 'http')) {
             $dest = Timber\URLHelper::url_to_file_system($dest);
         }
 
@@ -147,7 +147,7 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
 
     public function testExternalImageWithExternalUrlAndNoImageExtension()
     {
-        $file = 'https://via.placeholder.com/640x360';
+        $file = 'https://placehold.co/600x400';
         $filename = basename(Timber\ImageHelper::get_sideloaded_file_loc($file));
         $this->delete_existing_sideloaded_image($file);
 
@@ -318,7 +318,7 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
         ]);
 
         $file_location = get_stylesheet_directory_uri() . '/cardinals-120x120-c-default.jpg';
-        if (strpos($file_location, 'http') === 0) {
+        if (str_starts_with($file_location, 'http')) {
             $file_location = Timber\URLHelper::url_to_file_system($file_location);
         }
         $file_location = self::maybe_realpath($file_location);
