@@ -11,7 +11,7 @@ jobs:
         with:
             ref: 2.x
 
-      - uses: lycheeverse/lychee-action@v1.10.0
+      - uses: lycheeverse/lychee-action@v2.0.2
         id: lychee
         with:
             args: --verbose './docs/**/*.md' --max-concurrency 1 --max-retries 0 --accept 200,429 --cache
