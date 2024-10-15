@@ -440,7 +440,7 @@ class Twig
                 'callable' => 'wp_kses',
             ],
             'wp_kses_post' => [
-                'callable' => 'wp_kses_post',
+                'callable' => [$this, 'kses_allow_null'],
             ],
             'esc_attr' => [
                 'callable' => 'esc_attr',
@@ -486,6 +486,23 @@ class Twig
         $escaper_filters = \apply_filters('timber/twig/escapers', $escaper_filters);
 
         return $escaper_filters;
+    }
+
+    /**
+     * Wrapper for `wp_kses_post` that allows `null` values.
+     *
+     * @since 2.3.0
+     * @internal This method is used to provide a workaround for the `wp_kses_post` function that does not allow `null` values.
+     * @param mixed $content The content to sanitize.
+     * @return null|string The sanitized content or `null` if the input was `null`.
+     */
+    public function kses_allow_null(mixed $content)
+    {
+        if (\is_null($content)) {
+            return null;
+        }
+
+        return \wp_kses_post($content);
     }
 
     /**
