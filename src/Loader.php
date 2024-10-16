@@ -80,11 +80,12 @@ class Loader
     /**
      * @param string            $file
      * @param array             $data
-     * @param array|boolean        $expires (array for options, false for none, integer for # of seconds)
+     * @param array|boolean     $expires (array for options, false for none, integer for # of seconds)
      * @param string            $cache_mode
+     * @param string|bool       $block_name
      * @return bool|string
      */
-    public function render($file, $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT)
+    public function render($file, $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT, $block_name = false)
     {
         // Different $expires if user is anonymous or logged in
         if (\is_array($expires)) {
@@ -175,7 +176,12 @@ class Loader
             );
 
             $template = $twig->load($file);
-            $output = $template->render($data);
+
+            if ($block_name && $template->hasBlock($block_name)) {
+                $output = $template->renderBlock($block_name, $data);
+            } else {
+                $output = $template->render($data);
+            }
 
             /**
              * Filters $output before it is cached.

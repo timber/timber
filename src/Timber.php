@@ -1355,9 +1355,10 @@ class Timber
      *                                          Default false.
      * @param string          $cache_mode       Optional. Any of the cache mode constants defined in Timber\Loader.
      * @param bool            $via_render       Optional. Whether to apply optional render or compile filters. Default false.
+     * @param bool            $block_name       Optional. The name of the block to compile. Default false.
      * @return bool|string                      The returned output.
      */
-    public static function compile($filenames, $data = [], $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT, $via_render = false)
+    public static function compile($filenames, $data = [], $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT, $via_render = false, $block_name = false)
     {
         if (!\defined('TIMBER_LOADED')) {
             self::init();
@@ -1477,8 +1478,7 @@ class Timber
                     'timber/compile/data'
                 );
             }
-
-            $output = $loader->render($file, $data, $expires, $cache_mode);
+            $output = $loader->render($file, $data, $expires, $cache_mode, $block_name);
         } else {
             if (\is_array($filenames)) {
                 $filenames = \implode(", ", $filenames);
@@ -1523,6 +1523,11 @@ class Timber
         \do_action_deprecated('timber_compile_done', [], '2.0.0', 'timber/compile/done');
 
         return $output;
+    }
+
+    public static function compile_block($block_name, $filenames, $data = [], $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT)
+    {
+        return self::compile($filenames, $data, $expires, $cache_mode, false, $block_name);
     }
 
     /**
@@ -1614,6 +1619,33 @@ class Timber
     public static function render($filenames, $data = [], $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT): void
     {
         $output = self::compile($filenames, $data, $expires, $cache_mode, true);
+        echo $output;
+    }
+
+    /**
+     * Renders a Twig block from a Twig file.
+     *
+     * Passes data to a Twig file and echoes the output of a specific block.
+     *
+     * @api
+     * @example
+     * ```php
+     * $context = Timber::context();
+     *
+     * Timber::render_block( 'success', 'toasts.twig' $context );
+     * ```
+     * @param string         $block_name     The name of the block to render.
+     * @param array|string   $filenames      Name or full path of the Twig file to render. If this is an array of file
+     *                                       names or paths, Timber will render the first file that exists.
+     * @param array          $data           Optional. An array of data to use in Twig template.
+     * @param bool|int|array $expires        Optional. In seconds. Use false to disable cache altogether. When passed an
+     *                                       array, the first value is used for non-logged in visitors, the second for users.
+     *                                       Default false.
+     * @param string         $cache_mode     Optional. Any of the cache mode constants defined in Timber\Loader.
+     */
+    public static function render_block(string $block_name, string $filenames, array $data = [], $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT)
+    {
+        $output = self::compile_block($block_name, $filenames, $data, $expires, $cache_mode);
         echo $output;
     }
 
