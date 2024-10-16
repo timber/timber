@@ -65,8 +65,8 @@ install_wp() {
 	if [[ $WP_VERSION == 'nightly' || $WP_VERSION == 'trunk' ]]; then
 		mkdir -p $TMPDIR/wordpress-trunk
 		rm -rf $TMPDIR/wordpress-trunk/*
-		svn export --quiet https://core.svn.wordpress.org/trunk $TMPDIR/wordpress-trunk/wordpress
-		mv $TMPDIR/wordpress-trunk/wordpress/* $WP_CORE_DIR
+		git clone --depth 1 git://develop.git.wordpress.org/ $TMPDIR/wordpress-trunk/wordpress
+		mv $TMPDIR/wordpress-trunk/wordpress/src/* $WP_CORE_DIR
 	else
 		if [ $WP_VERSION == 'latest' ]; then
 			local ARCHIVE_NAME='latest'
@@ -109,8 +109,17 @@ install_test_suite() {
 		# set up testing suite
 		mkdir -p $WP_TESTS_DIR
 		rm -rf $WP_TESTS_DIR/{includes,data}
-		svn export --quiet --ignore-externals https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/includes/ $WP_TESTS_DIR/includes
-		svn export --quiet --ignore-externals https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/data/ $WP_TESTS_DIR/data
+
+		if [ $WP_VERSION == 'latest' ]; then
+			 echo "Using latest version ${LATEST_VERSION} of WordPress for testing."
+			 BRANCH=$LATEST_VERSION
+		else
+			 BRANCH=$WP_VERSION
+		fi
+		
+		git clone --depth 1 --branch $BRANCH git://develop.git.wordpress.org/ $TMPDIR/wordpress-develop/wordpress
+		cp -r $TMPDIR/wordpress-develop/wordpress/tests/phpunit/includes $WP_TESTS_DIR/includes
+		cp -r $TMPDIR/wordpress-develop/wordpress/tests/phpunit/data $WP_TESTS_DIR/data
 	fi
 
 	if [ ! -f wp-tests-config.php ]; then

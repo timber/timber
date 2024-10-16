@@ -204,12 +204,12 @@ class Resize extends ImageOperation
 
             $crop = $this->get_target_sizes($image);
             $image->crop(
-                (int) $crop['x'],
-                (int) $crop['y'],
-                (int) $crop['src_w'],
-                (int) $crop['src_h'],
-                (int) $crop['target_w'],
-                (int) $crop['target_h']
+                (int) \round($crop['x']),
+                (int) \round($crop['y']),
+                (int) \round($crop['src_w']),
+                (int) \round($crop['src_h']),
+                (int) \round($crop['target_w']),
+                (int) \round($crop['target_h'])
             );
             $quality = \apply_filters('wp_editor_set_quality', 82, 'image/jpeg');
             $image->set_quality($quality);

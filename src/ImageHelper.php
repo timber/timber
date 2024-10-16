@@ -616,6 +616,14 @@ class ImageHelper
                 $tmp = URLHelper::remove_url_component($tmp, WP_CONTENT_DIR);
             }
         }
+
+        // Remove query and fragment from URL.
+        if (($i = \strpos($tmp, '?')) !== false) {
+            $tmp = \substr($tmp, 0, $i);
+        } elseif (($i = \strpos($tmp, '#')) !== false) {
+            $tmp = \substr($tmp, 0, $i);
+        }
+
         $parts = PathHelper::pathinfo($tmp);
         $result['subdir'] = ($parts['dirname'] === '/') ? '' : $parts['dirname'];
         $result['filename'] = $parts['filename'];

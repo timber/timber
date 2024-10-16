@@ -61,6 +61,36 @@ class TestTimberImageHelperInternals extends TimberAttachment_UnitTestCase
         $this->assertEquals('myimage.jpg', $parts['basename']);
     }
 
+    public function testAnalyzeURLUploadsWithQuery()
+    {
+        $src = 'http://' . $_SERVER['HTTP_HOST'] . '/wp-content/uploads/2017/02/myimage.jpg?foo=A&baz=B';
+
+        $parts = Timber\ImageHelper::analyze_url($src);
+
+        $this->assertEquals('http://' . $_SERVER['HTTP_HOST'] . '/wp-content/uploads/2017/02/myimage.jpg?foo=A&baz=B', $parts['url']);
+        $this->assertSame(true, $parts['absolute']);
+        $this->assertSame(1, $parts['base']);
+        $this->assertEquals('/2017/02', $parts['subdir']);
+        $this->assertEquals('myimage', $parts['filename']);
+        $this->assertEquals('jpg', $parts['extension']);
+        $this->assertEquals('myimage.jpg', $parts['basename']);
+    }
+
+    public function testAnalyzeURLUploadsWithFragment()
+    {
+        $src = 'http://' . $_SERVER['HTTP_HOST'] . '/wp-content/uploads/2017/02/myimage.jpg#foo';
+
+        $parts = Timber\ImageHelper::analyze_url($src);
+
+        $this->assertEquals('http://' . $_SERVER['HTTP_HOST'] . '/wp-content/uploads/2017/02/myimage.jpg#foo', $parts['url']);
+        $this->assertSame(true, $parts['absolute']);
+        $this->assertSame(1, $parts['base']);
+        $this->assertEquals('/2017/02', $parts['subdir']);
+        $this->assertEquals('myimage', $parts['filename']);
+        $this->assertEquals('jpg', $parts['extension']);
+        $this->assertEquals('myimage.jpg', $parts['basename']);
+    }
+
     public function testAnalyzeURLTheme()
     {
         $dest = TestExternalImage::copy_image_to_stylesheet('assets/images');

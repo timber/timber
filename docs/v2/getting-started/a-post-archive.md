@@ -28,7 +28,7 @@ You can then loop over your posts with a [for-loop in Twig](https://twig.symfony
             {% for post in posts %}
                 <li>{{ include('teaser.twig') }}</li>
             {% endfor %}
-        <ul>
+        </ul>
     {% endif %}
 
     {{ include('pagination.twig') }}

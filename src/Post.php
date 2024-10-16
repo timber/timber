@@ -1059,7 +1059,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      *                             on what’s stored in your comments table.
      * @param string $status       Could be 'pending', etc.
      * @see CommentThread for an example with nested comments
-     * @return bool|\Timber\CommentThread
+     * @return bool|CommentThread
      *
      * @example
      *
@@ -1813,7 +1813,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      * ```twig
      * Parent page: <a href="{{ post.parent.link }}">{{ post.parent.title }}</a>
      * ```
-     * @return bool|\Timber\Post
+     * @return bool|Post
      */
     public function parent()
     {
