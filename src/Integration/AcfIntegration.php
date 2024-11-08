@@ -153,7 +153,7 @@ class AcfIntegration implements IntegrationInterface
     public static function transform_date_picker($value, $id, $field)
     {
         if (!$value) {
-            return $value;
+            return null;
         }
         return new DateTimeImmutable(\acf_format_date($value, 'Y-m-d H:i:s'));
     }
