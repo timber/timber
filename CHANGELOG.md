@@ -1,5 +1,30 @@
 # Changelog
 
+## [2.3.0](https://github.com/timber/timber/compare/v2.2.0...v2.3.0) (2024-11-08)
+
+
+### Features
+
+* Add support for avif image format [#3015](https://github.com/timber/timber/issues/3015) ([#3019](https://github.com/timber/timber/issues/3019)) ([92716c1](https://github.com/timber/timber/commit/92716c1b2a9ecee090df9bebfcfcf5acf3192fc5))
+
+
+### Bug Fixes
+
+* add more default arguments to PagesMenu::build method ([#3050](https://github.com/timber/timber/issues/3050)) ([c7aea5d](https://github.com/timber/timber/commit/c7aea5d9b800836bfa51ef11f2b7493d5a8ce91b))
+* Apply Rector code standard on MenuItem.php ([5d64d9a](https://github.com/timber/timber/commit/5d64d9a390664de0e32aa51a7c69c5c4964f9559))
+* Fix menu location compatibility with WPML ([#2733](https://github.com/timber/timber/issues/2733)) ([8603855](https://github.com/timber/timber/commit/86038557c683fa65e0564e078c600ea2fc3ea446))
+* Fix URI to FS parsing in ImageHelper ([#3027](https://github.com/timber/timber/issues/3027)) ([87d3ef4](https://github.com/timber/timber/commit/87d3ef4e81f55ddb783ad6eb7da4c96ca9c643aa)), closes [#3024](https://github.com/timber/timber/issues/3024)
+* fixes an issue where in some cases images would not be rouned properly by image operations. This could lead to artifacts in the generated images. ([#3046](https://github.com/timber/timber/issues/3046)) ([10ab23d](https://github.com/timber/timber/commit/10ab23d5cfcd1b1e777a5f4a65f8e983e272b73d))
+* Run CS fixes on codebase ([#3047](https://github.com/timber/timber/issues/3047)) ([48dc3fc](https://github.com/timber/timber/commit/48dc3fc5a9104251f440af6b65f6a622660a91dc))
+
+
+### Miscellaneous Chores
+
+* add several files to export-ignore ([0cd0cdf](https://github.com/timber/timber/commit/0cd0cdf3e09438f54b8e65bc408b08a98e42cdd7))
+* **deps:** bump lycheeverse/lychee-action from 1.10.0 to 2.0.2 ([#3053](https://github.com/timber/timber/issues/3053)) ([480534f](https://github.com/timber/timber/commit/480534fc95cf7d0b92af0ffc1f64805a352406ea))
+* **deps:** bump tj-actions/changed-files from 44 to 45 ([#3031](https://github.com/timber/timber/issues/3031)) ([880c0ff](https://github.com/timber/timber/commit/880c0ff23df5e7952cc6499d0043996a4d2c89bf))
+* inherit Funding from .github repo ([5623a79](https://github.com/timber/timber/commit/5623a797483542f496df0c3002cc211d9838960e))
+
 ## [2.2.0](https://github.com/timber/timber/compare/v2.1.0...v2.2.0) (2024-05-15)
 
 
