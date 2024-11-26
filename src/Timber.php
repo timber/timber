@@ -1076,7 +1076,7 @@ class Timber
         }
 
         $locations = \array_flip(static::get_menu_locations());
-        return $locations[$term->term_id] ?? null;
+        return $locations[$term_id] ?? null;
     }
 
     /**

@@ -218,5 +218,8 @@ class TestMenuFactory extends Timber_UnitTestCase
         $factory = new MenuFactory();
         $location = Timber::get_menu_location(get_term($id));
         $this->assertSame('primary', $location);
+
+        $location = Timber::get_menu_location($id);
+        $this->assertSame('primary', $location);
     }
 }
