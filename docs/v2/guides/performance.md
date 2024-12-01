@@ -235,4 +235,4 @@ echo Timber\Helper::stop_timer($start);
 ```
 ## Important notes
 
-- Never use `{% spaceless %}` tags to minify your HTML output. These tags are only meant to control whitespace between html tags.
+- Never use `{% apply spaceless %}` tags to minify your HTML output. These tags are only meant to control whitespace between html tags.
