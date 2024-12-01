@@ -54,9 +54,14 @@ This is especially helpful if you only have an image ID and want to convert it t
 It also works if you have an array of post IDs that you want to convert to `Timber\Post` objects.
 
 ```twig
-{% for post in Post(post_ids) %}
-
-{% endfor %}
+{% set post = get_posts(post_ids) %}
+{% if posts is not empty %}
+<ul>
+    {% for post in posts %}
+        <li>{{ post.title }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
 ```
 
 ## Invalid posts

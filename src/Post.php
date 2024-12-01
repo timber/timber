@@ -543,16 +543,18 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      * @example
      * ```twig
      * <section id="job-feed">
-     * {% for post in job %}
-     *     <div class="job">
-     *         <h2>{{ post.title }}</h2>
-     *         <p>{{ post.terms({
-     *             taxonomy: 'category',
-     *             orderby: 'name',
-     *             order: 'ASC'
-     *         })|join(', ') }}</p>
-     *     </div>
-     * {% endfor %}
+     * {% if jobs is not empty %}
+     *   {% for post in jobs %}
+     *       <div class="job">
+     *           <h2>{{ post.title }}</h2>
+     *           <p>{{ post.terms({
+     *               taxonomy: 'category',
+     *               orderby: 'name',
+     *               order: 'ASC'
+     *           })|join(', ') }}</p>
+     *       </div>
+     *   {% endfor %}
+     * {% endif %}
      * </section>
      * ```
      * ```html
@@ -985,7 +987,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      * @api
      * @example
      * ```twig
-     * {% if post.children %}
+     * {% if post.children is not empty %}
      *     Here are the child pages:
      *     {% for child in post.children %}
      *         <a href="{{ child.link }}">{{ child.title }}</a>
