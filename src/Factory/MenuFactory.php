@@ -105,6 +105,10 @@ class MenuFactory
      */
     public function from_id(int $id, array $args = []): ?Menu
     {
+        if (0 === $id) {
+            return null;
+        }
+
         $term = \get_term_by('id', $id, 'nav_menu');
 
         if (!$term) {
