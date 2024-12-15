@@ -270,6 +270,14 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase
         $this->assertSame(16555, $attachment->size());
     }
 
+    public function testFilePath()
+    {
+        $pid = $this->factory->post->create();
+        $iid = self::get_attachment($pid, 'dummy-pdf.pdf');
+        $attachment = Timber::get_post($iid);
+        $this->assertEquals('wp-content/uploads/' . date('Y/m') . '/dummy-pdf.pdf', $attachment->path());
+    }
+
     public function testFileSizeMissingInMetadata()
     {
         $pid = $this->factory->post->create();

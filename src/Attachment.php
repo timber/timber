@@ -124,7 +124,13 @@ class Attachment extends Post
      */
     public function path(): string
     {
-        return URLHelper::get_rel_path($this->src());
+        $src = $this->src();
+        // If src is a URL, convert it to a filesystem path first.
+        if (URLHelper::is_url($src)) {
+            $src = URLHelper::url_to_file_system($src);
+        }
+
+        return URLHelper::get_rel_path($src);
     }
 
     /**
