@@ -44,7 +44,7 @@
   },
   "require": {
     "php": "^8.1",
-    "twig/twig": "^3.5"
+    "twig/twig": "^3.16"
   },
   "require-dev": {
     "ergebnis/composer-normalize": "^2.28",
