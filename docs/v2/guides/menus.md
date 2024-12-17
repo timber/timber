@@ -166,14 +166,9 @@ add_filter('timber/context', 'add_to_context');
 function add_to_context($context)
 {
     // Set all nav menus in context.
-    foreach (array_keys(get_registered_nav_menus()) as $location) {
-        // Set all nav menus in context.
-        foreach (array_keys(get_registered_nav_menus()) as $location) {
-            $menu = Timber::get_menu($location);
-            $context[$location] = $menu;
-        }
-
-        return $context;
+    foreach (array_keys(get_nav_menu_locations()) as $location) {
+        $menu = Timber::get_menu($location);
+        $context[$location] = $menu;
     }
 
     return $context;
