@@ -59,7 +59,7 @@
     "squizlabs/php_codesniffer": "^3.0",
     "symplify/easy-coding-standard": "^12.2",
     "szepeviktor/phpstan-wordpress": "^1.1",
-    "twig/cache-extra": "^3.3",
+    "twig/cache-extra": "^3.17",
     "wpackagist-plugin/advanced-custom-fields": "^6.0",
     "wpackagist-plugin/co-authors-plus": "^3.6",
     "yoast/wp-test-utils": "^1.2"
