@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.3.1](https://github.com/timber/timber/compare/v2.3.0...v2.3.1) (2024-12-18)
+
+
+### Bug Fixes
+
+* fix avatar test ([#3071](https://github.com/timber/timber/issues/3071)) ([0e65e54](https://github.com/timber/timber/commit/0e65e54897fead31d3ba5eb3065242e294dcf51b))
+* Fix bug with Attachment::path() method ([#3073](https://github.com/timber/timber/issues/3073)) ([5434dde](https://github.com/timber/timber/commit/5434dde5889f174bf1d36c0686b94b180d93fa5d))
+* fix get location by id in Timber::get_menu_location() ([#3066](https://github.com/timber/timber/issues/3066)) ([5b33ba8](https://github.com/timber/timber/commit/5b33ba8475361e1e31974ee42a7e9a27e34e8b65))
+* timber::get_menu(0) returns alphabetically first menu instead of nothing ([#3070](https://github.com/timber/timber/issues/3070)) ([d278f95](https://github.com/timber/timber/commit/d278f954f672c0f3bb56e0a40e5d0acf40fc0608))
+* update twig & twig/cache-extra dependency to version 3.17 to fix unit tests ([cbac2e0](https://github.com/timber/timber/commit/cbac2e0fcf0b01c3bc3eaaf7de01bc721003b926))
+* Use correct deprecation_info for Twig callables ([#3064](https://github.com/timber/timber/issues/3064)) ([72a013e](https://github.com/timber/timber/commit/72a013e604ea098cb2819906a7be3454f4a3802d))
+
 ## [2.3.0](https://github.com/timber/timber/compare/v2.2.0...v2.3.0) (2024-11-08)
 
 
