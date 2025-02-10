@@ -328,25 +328,49 @@ class ImageHelper
         self::process_delete_generated_files($filename, $ext, $dir, '-lbox-[0-9999999]*', '-lbox-[0-9]*x[0-9]*-[a-zA-Z0-9]*.');
         self::process_delete_generated_files($filename, 'jpg', $dir, '-tojpg.*');
         self::process_delete_generated_files($filename, 'jpg', $dir, '-tojpg-[0-9999999]*');
+
+        $advanced = \apply_filters('timber/image/advanced_file_names', false);
+
+        if ($advanced) {
+            self::process_delete_generated_files($filename, 'jpg', $dir, '', '', true);
+            self::process_delete_generated_files($filename, 'webp', $dir, '', '', true);
+
+            $filename_without_scaled = \str_replace('-scaled', '', $filename);
+            if ($filename_without_scaled !== $filename) {
+                self::process_delete_generated_files($filename_without_scaled, 'jpg', $dir, '', '', true);
+                self::process_delete_generated_files($filename_without_scaled, 'webp', $dir, '', '', true);
+            }
+        }
     }
 
     /**
      * Deletes resized versions of the supplied file name.
      *
-     * If passed a value like my-pic.jpg, this function will delete my-pic-500x200-c-left.jpg, my-pic-400x400-c-default.jpg, etc.
-     *
-     * Keeping these here so I know what the hell we’re matching
-     * $match = preg_match("/\/srv\/www\/wordpress-develop\/src\/wp-content\/uploads\/2014\/05\/$filename-[0-9]*x[0-9]*-c-[a-z]*.jpg/", $found_file);
-     * $match = preg_match("/\/srv\/www\/wordpress-develop\/src\/wp-content\/uploads\/2014\/05\/arch-[0-9]*x[0-9]*-c-[a-z]*.jpg/", $filename);
+     * If passed a value like my-pic.jpg, this function will delete my-pic-500x200-c-left.jpg,
+     * my-pic-400x400-c-default.jpg, etc.
      *
      * @param string  $filename       ex: my-pic.
      * @param string  $ext            ex: jpg.
      * @param string  $dir            var/www/wp-content/uploads/2015/.
      * @param string  $search_pattern Pattern of files to pluck from.
      * @param string  $match_pattern  Pattern of files to go forth and delete.
+     * @param bool    $advanced       Optional. If true, ignore $search_pattern and $match_pattern and simply delete any file starting with "$filename-".
      */
-    protected static function process_delete_generated_files($filename, $ext, $dir, $search_pattern, $match_pattern = null)
+    protected static function process_delete_generated_files($filename, $ext, $dir, $search_pattern, $match_pattern = null, $advanced = false)
     {
+        if ($advanced) {
+            $pattern = $dir . '/' . $filename . '-*.' . $ext;
+            $files = \glob($pattern);
+            if ($files && \is_array($files)) {
+                foreach ($files as $file) {
+                    if (\basename($file) !== $filename . '.' . $ext) {
+                        @\unlink($file);
+                    }
+                }
+            }
+            return;
+        }
+
         $searcher = '/' . $filename . $search_pattern;
         $files = \glob($dir . $searcher);
         if ($files === false || empty($files)) {
