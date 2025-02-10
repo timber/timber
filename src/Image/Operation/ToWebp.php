@@ -22,13 +22,27 @@ class ToWebp extends ImageOperation
     }
 
     /**
-     * @param   string    $src_filename     the basename of the file (ex: my-awesome-pic)
-     * @param   string    $src_extension    ignored
-     * @return  string    the final filename to be used (ex: my-awesome-pic.webp)
+     * Returns the final filename to be used.
+     *
+     * If the advanced file naming feature is enabled (via the filter
+     * `timber/image/advanced_file_names`), the output filename will include
+     * the "-towebp" suffix (e.g. my-awesome-pic-towebp.webp). Otherwise, it returns
+     * the legacy filename (e.g. my-awesome-pic.webp).
+     *
+     * @param   string $src_filename  The basename of the file (ex: my-awesome-pic).
+     * @param   string $src_extension Ignored.
+     * @return  string The final filename.
      */
     public function filename($src_filename, $src_extension = 'webp')
     {
-        $new_name = $src_filename . '.webp';
+        $advanced = \apply_filters('timber/image/advanced_file_names', false);
+
+        if ($advanced) {
+            $new_name = $src_filename . '-towebp.webp';
+        } else {
+            $new_name = $src_filename . '.webp';
+        }
+
         return $new_name;
     }
 
