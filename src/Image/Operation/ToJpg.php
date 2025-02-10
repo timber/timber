@@ -21,13 +21,27 @@ class ToJpg extends ImageOperation
     }
 
     /**
-     * @param   string    $src_filename     the basename of the file (ex: my-awesome-pic)
-     * @param   string    $src_extension    ignored
-     * @return  string    the final filename to be used (ex: my-awesome-pic.jpg)
+     * Returns the final filename to be used.
+     *
+     * If the advanced file naming feature is enabled (via the filter
+     * `timber/image/advanced_file_names`), the output filename will include
+     * the "-tojpg" suffix (e.g. my-awesome-pic-tojpg.jpg). Otherwise, it returns
+     * the legacy filename (e.g. my-awesome-pic.jpg).
+     *
+     * @param   string $src_filename  The basename of the file (ex: my-awesome-pic).
+     * @param   string $src_extension Ignored.
+     * @return  string The final filename.
      */
     public function filename($src_filename, $src_extension = 'jpg')
     {
-        $new_name = $src_filename . '.jpg';
+        $advanced = \apply_filters('timber/image/advanced_file_names', false);
+
+        if ($advanced) {
+            $new_name = $src_filename . '-tojpg.jpg';
+        } else {
+            $new_name = $src_filename . '.jpg';
+        }
+
         return $new_name;
     }
 
