@@ -28,7 +28,7 @@ interface PostCollectionInterface extends Traversable, Countable, ArrayAccess
      * Get this collection as a numeric array of \Timber\Post objects.
      *
      * @api
-     * @return \Timber\Post[]
+     * @return Post[]
      */
     public function to_array(): array;
 }
