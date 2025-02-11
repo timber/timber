@@ -332,13 +332,13 @@ class ImageHelper
         $advanced = \apply_filters('timber/image/advanced_file_names', false);
 
         if ($advanced) {
-            self::process_delete_generated_files($filename, 'jpg', $dir, '', '', true);
-            self::process_delete_generated_files($filename, 'webp', $dir, '', '', true);
+            self::process_delete_generated_files_advanced($filename, 'jpg', $dir);
+            self::process_delete_generated_files_advanced($filename, 'webp', $dir);
 
             $filename_without_scaled = \str_replace('-scaled', '', $filename);
             if ($filename_without_scaled !== $filename) {
-                self::process_delete_generated_files($filename_without_scaled, 'jpg', $dir, '', '', true);
-                self::process_delete_generated_files($filename_without_scaled, 'webp', $dir, '', '', true);
+                self::process_delete_generated_files_advanced($filename_without_scaled, 'jpg', $dir);
+                self::process_delete_generated_files_advanced($filename_without_scaled, 'webp', $dir);
             }
         }
     }
@@ -349,28 +349,14 @@ class ImageHelper
      * If passed a value like my-pic.jpg, this function will delete my-pic-500x200-c-left.jpg,
      * my-pic-400x400-c-default.jpg, etc.
      *
-     * @param string  $filename       ex: my-pic.
-     * @param string  $ext            ex: jpg.
+     * @param string  $filename       Example: my-pic.
+     * @param string  $ext            Example: jpg.
      * @param string  $dir            var/www/wp-content/uploads/2015/.
      * @param string  $search_pattern Pattern of files to pluck from.
      * @param string  $match_pattern  Pattern of files to go forth and delete.
-     * @param bool    $advanced       Optional. If true, ignore $search_pattern and $match_pattern and simply delete any file starting with "$filename-".
      */
-    protected static function process_delete_generated_files($filename, $ext, $dir, $search_pattern, $match_pattern = null, $advanced = false)
+    protected static function process_delete_generated_files($filename, $ext, $dir, $search_pattern, $match_pattern = null)
     {
-        if ($advanced) {
-            $pattern = $dir . '/' . $filename . '-*.' . $ext;
-            $files = \glob($pattern);
-            if ($files && \is_array($files)) {
-                foreach ($files as $file) {
-                    if (\basename($file) !== $filename . '.' . $ext) {
-                        @\unlink($file);
-                    }
-                }
-            }
-            return;
-        }
-
         $searcher = '/' . $filename . $search_pattern;
         $files = \glob($dir . $searcher);
         if ($files === false || empty($files)) {
@@ -381,6 +367,32 @@ class ImageHelper
             $match = \preg_match($pattern, $found_file);
             if (!$match_pattern || $match) {
                 \unlink($found_file);
+            }
+        }
+    }
+
+    /**
+     * Deletes any files starting with "$filename-".
+     *
+     * If passed a value like my-pic.jpg, this function will delete my-pic-500x200-c-left.jpg,
+     * my-pic-400x400-c-default.jpg, etc.
+     *
+     * @param string  $filename Example: my-pic.
+     * @param string  $ext      Example: jpg.
+     * @param string  $dir      var/www/wp-content/uploads/2015/.
+     */
+    protected static function process_delete_generated_files_advanced($filename, $ext, $dir)
+    {
+        $pattern = $dir . '/' . $filename . '-*.' . $ext;
+        $files = \glob($pattern);
+
+        if (!$files || !\is_array($files)) {
+            return;
+        }
+
+        foreach ($files as $file) {
+            if (\basename($file) !== $filename . '.' . $ext) {
+                @\unlink($file);
             }
         }
     }
