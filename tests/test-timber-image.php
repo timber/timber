@@ -647,6 +647,45 @@ class TestTimberImage extends TimberAttachment_UnitTestCase
         $this->assertFileExists($arch_2night);
     }
 
+    /**
+     * Loops through all the registered WordPress image sizes and checks if all
+     * the generated sizes exist and Timber doesn’t delete them accidentally
+     * when an image is uploaded.
+     *
+     * Timber hooks into wp_generate_attachment_metadata in
+     * Timber\ImageHelper::init(), which then calls Timber image sizes to be
+     * deleted to make sure image sizes are regenerated.
+     *
+     * @see \Timber\ImageHelper::init()
+     */
+    public function testTimberDoesntDeleteWpImageSizes()
+    {
+        $attachment_id = self::get_attachment(0, 'pizza.jpg');
+        $metadata = wp_get_attachment_metadata($attachment_id);
+        $dir = dirname($metadata['file']);
+
+        foreach ($metadata['sizes'] as $size => $data) {
+            $this->assertFileExists(wp_upload_dir()['basedir'] . '/' . $dir . '/' . $data['file']);
+        }
+    }
+
+    /**
+     * The idea behind this is test is the same as for
+     * testTimberDoesntDeleteWpImageSizes, but it checks for scaled images.
+     *
+     * @see \TestTimberImage::testTimberDoesntDeleteWpImageSizes()
+     */
+    public function testTimberDoesntDeleteScaledImages()
+    {
+        $this->add_filter_temporarily('big_image_size_threshold', function () {
+            return 500;
+        });
+
+        $attachment_id = self::get_attachment(0, 'pizza.jpg');
+        $metadata = wp_get_attachment_metadata($attachment_id);
+        $this->assertFileExists(wp_upload_dir()['basedir'] . '/' . $metadata['file']);
+    }
+
     public function testImageDeletion()
     {
         $data = [];

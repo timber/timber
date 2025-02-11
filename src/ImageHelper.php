@@ -335,6 +335,7 @@ class ImageHelper
             self::process_delete_generated_files_advanced($filename, 'jpg', $dir);
             self::process_delete_generated_files_advanced($filename, 'webp', $dir);
 
+            // Delete the original generated files if it is a scaled image.
             $filename_without_scaled = \str_replace('-scaled', '', $filename);
             if ($filename_without_scaled !== $filename) {
                 self::process_delete_generated_files_advanced($filename_without_scaled, 'jpg', $dir);
