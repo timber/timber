@@ -321,25 +321,40 @@ class ImageHelper
             $local_file = URLHelper::url_to_file_system($local_file);
         }
         $info = PathHelper::pathinfo($local_file);
-        $dir = $info['dirname'];
+        $original_dir = $info['dirname'];
         $ext = $info['extension'];
         $filename = $info['filename'];
-        self::process_delete_generated_files($filename, $ext, $dir, '-[0-9999999]*', '-[0-9]*x[0-9]*-c-[a-z]*.');
-        self::process_delete_generated_files($filename, $ext, $dir, '-lbox-[0-9999999]*', '-lbox-[0-9]*x[0-9]*-[a-zA-Z0-9]*.');
-        self::process_delete_generated_files($filename, 'jpg', $dir, '-tojpg.*');
-        self::process_delete_generated_files($filename, 'jpg', $dir, '-tojpg-[0-9999999]*');
+
+        // Re-analyze the URL to see if a generated folder is configured.
+        $au = self::analyze_url($local_file);
+        $generated_folder = \apply_filters('timber/image/generated_folder', false, $au);
+        if ($generated_folder && $au['base'] == self::BASE_UPLOADS) {
+            // If the source has a year/month subfolder, preserve that structure.
+            if (\preg_match('#^/\d{4}/\d{2}$#', (string) $au['subdir'])) {
+                $dest_subdir = '/' . \trim($generated_folder, '/') . $au['subdir'];
+            } else {
+                $dest_subdir = '/' . \trim($generated_folder, '/');
+            }
+            $upload_dir = \wp_upload_dir();
+            $dest_dir = $upload_dir['basedir'] . $dest_subdir;
+        } else {
+            $dest_dir = $original_dir;
+        }
+
+        // Now run deletion logic in the destination directory.
+        self::process_delete_generated_files($filename, $ext, $dest_dir, '-[0-9999999]*', '-[0-9]*x[0-9]*-c-[a-z]*.');
+        self::process_delete_generated_files($filename, $ext, $dest_dir, '-lbox-[0-9999999]*', '-lbox-[0-9]*x[0-9]*-[a-zA-Z0-9]*.');
+        self::process_delete_generated_files($filename, 'jpg', $dest_dir, '-tojpg.*');
+        self::process_delete_generated_files($filename, 'jpg', $dest_dir, '-tojpg-[0-9999999]*');
 
         $advanced = \apply_filters('timber/image/advanced_file_names', false);
-
         if ($advanced) {
-            self::process_delete_generated_files_advanced($filename, 'jpg', $dir);
-            self::process_delete_generated_files_advanced($filename, 'webp', $dir);
-
-            // Delete the original generated files if it is a scaled image.
+            self::process_delete_generated_files_advanced($filename, 'jpg', $dest_dir);
+            self::process_delete_generated_files_advanced($filename, 'webp', $dest_dir);
             $filename_without_scaled = \str_replace('-scaled', '', $filename);
             if ($filename_without_scaled !== $filename) {
-                self::process_delete_generated_files_advanced($filename_without_scaled, 'jpg', $dir);
-                self::process_delete_generated_files_advanced($filename_without_scaled, 'webp', $dir);
+                self::process_delete_generated_files_advanced($filename_without_scaled, 'jpg', $dest_dir);
+                self::process_delete_generated_files_advanced($filename_without_scaled, 'webp', $dest_dir);
             }
         }
     }
@@ -866,22 +881,44 @@ class ImageHelper
 
         // break down URL into components
         $au = self::analyze_url($src);
+        $original_subdir = $au['subdir'];
+
+        // Override subdirectory for generated images if a folder is configured.
+        $generated_folder = \apply_filters('timber/image/generated_folder', false, $au);
+
+        if ($generated_folder && $au['base'] == self::BASE_UPLOADS) {
+            if (\preg_match('#^/\d{4}/\d{2}$#', (string) $au['subdir'])) {
+                $au['subdir'] = '/' . \trim($generated_folder, '/') . $au['subdir'];
+            } else {
+                $au['subdir'] = '/' . \trim($generated_folder, '/');
+            }
+            // Ensure the destination directory exists.
+            $upload_dir = \wp_upload_dir();
+            $dest_dir = $upload_dir['basedir'] . $au['subdir'];
+            if (!\file_exists($dest_dir)) {
+                \mkdir($dest_dir, 0755, true);
+            }
+        }
+        $dest_subdir = $au['subdir']; // new subdir for generated image
 
         // build URL and filenames
         $new_url = self::_get_file_url(
             $au['base'],
-            $au['subdir'],
+            $dest_subdir,
             $op->filename($au['filename'], $au['extension']),
             $au['absolute']
         );
         $destination_path = self::_get_file_path(
             $au['base'],
-            $au['subdir'],
-            $op->filename($au['filename'], $au['extension'])
+            $dest_subdir,
+            $op->filename(
+                $au['filename'],
+                $au['extension']
+            )
         );
         $source_path = self::_get_file_path(
             $au['base'],
-            $au['subdir'],
+            $original_subdir,
             $au['basename']
         );
 
