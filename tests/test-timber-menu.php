@@ -1,8 +1,6 @@
 <?php
 
-class CustomMenuItemClass extends Timber\MenuItem
-{
-}
+class CustomMenuItemClass extends Timber\MenuItem {}
 
 /**
  * @group menus-api
@@ -42,6 +40,14 @@ class TestTimberMenu extends Timber_UnitTestCase
         $menu_items[] = $link_id = wp_update_nav_menu_item($menu_id, 0, [
             'menu-item-title' => 'Upstatement',
             'menu-item-url' => 'https://upstatement.com',
+            'menu-item-status' => 'publish',
+            'menu-item-target' => '_blank',
+        ]);
+
+        // Menu item
+        $menu_items[] = $link_id = wp_update_nav_menu_item($menu_id, 0, [
+            'menu-item-title' => 'Internal Link',
+            'menu-item-url' => '/random-page',
             'menu-item-status' => 'publish',
             'menu-item-target' => '_blank',
         ]);
@@ -445,12 +451,20 @@ class TestTimberMenu extends Timber_UnitTestCase
         ]);
         $this->assertGreaterThanOrEqual(3, count($menu->get_items()));
         $items = $menu->get_items();
-        $item = $items[1];
+
+
+        $external_link = $items[1];
+        $internal_link = $items[2];
+
         $struc = get_option('permalink_structure');
-        $this->assertEquals('https://upstatement.com', $item->link());
-        $this->assertEquals('https://upstatement.com', $item->url);
-        $this->assertTrue($item->is_external());
+        $this->assertEquals('https://upstatement.com', $external_link->link());
+        $this->assertEquals('https://upstatement.com', $external_link->url);
+        $this->assertTrue($external_link->is_external());
+
+        $this->assertEquals('/random-page', $internal_link->link());
+        $this->assertFalse($internal_link->is_external());
     }
+
 
     public function testMenuOptionsInNavMenuCssClassFilter()
     {
@@ -511,7 +525,7 @@ class TestTimberMenu extends Timber_UnitTestCase
         $this->assertTrue($item->is_target_blank());
 
         // Menu item with _menu_item_target set to ''
-        $item = $items[2];
+        $item = $items[3];
         $this->assertFalse($item->is_target_blank());
     }
 
@@ -593,7 +607,7 @@ class TestTimberMenu extends Timber_UnitTestCase
         $this->assertEquals('_blank', $item->target());
 
         // Menu item with _menu_item_target set to ''
-        $item = $items[2];
+        $item = $items[3];
         $this->assertEquals('_self', $item->target());
     }
 
@@ -656,9 +670,9 @@ class TestTimberMenu extends Timber_UnitTestCase
         $menu_arr = self::_createTestMenu();
         $menu = Timber::get_menu($menu_arr['term_id']);
         $items = $menu->get_items();
-        $item = $items[3];
-        $this->assertEquals('#people', $item->link());
         $item = $items[4];
+        $this->assertEquals('#people', $item->link());
+        $item = $items[5];
         $this->assertEquals('http://example.org/#people', $item->link());
         $this->assertEquals('/#people', $item->path());
     }
@@ -668,11 +682,11 @@ class TestTimberMenu extends Timber_UnitTestCase
         $menu_arr = self::_createTestMenu();
         $menu = Timber::get_menu($menu_arr['term_id']);
         $items = $menu->get_items();
-        $item = $items[2];
+        $item = $items[3];
         $this->assertEquals('/', $item->link());
         $this->assertEquals('/', $item->path());
 
-        $item = $items[5];
+        $item = $items[6];
         $this->assertEquals('http://example.org', $item->link());
         //I'm unsure what the expected behavior should be here, so commenting-out for now.
         //$this->assertEquals('/', $item->path() );
@@ -1006,7 +1020,7 @@ class TestTimberMenu extends Timber_UnitTestCase
             array_push($tmis, $tmi);
         }
 
-        $this->assertEquals($tmis[4]->post_title, 'People');
+        $this->assertEquals($tmis[5]->post_title, 'People');
     }
 
     public function testMenuItemObjectProperty()
@@ -1063,7 +1077,7 @@ class TestTimberMenu extends Timber_UnitTestCase
         $str = Timber::compile('assets/child-menu.twig', $context);
         $str = preg_replace('/\s+/', '', $str);
         $str = preg_replace('/\s+/', '', $str);
-        $this->assertStringStartsWith('<ulclass="navnavbar-nav"><li><ahref="http://example.org/home/"class="has-children">HomeSweetHome</a><ulclass="dropdown-menu"role="menu"><li><ahref="http://example.org/child-page/">ChildPage</a></li></ul><li><ahref="https://upstatement.com"class="no-children">Upstatement</a><li><ahref="/"class="no-children">RootHome</a>', $str);
+        $this->assertStringStartsWith('<ulclass="navnavbar-nav"><li><ahref="http://example.org/home/"class="has-children">HomeSweetHome</a><ulclass="dropdown-menu"role="menu"><li><ahref="http://example.org/child-page/">ChildPage</a></li></ul><li><ahref="https://upstatement.com"class="no-children">Upstatement</a><li><ahref="/random-page"class="no-children">InternalLink</a><li><ahref="/"class="no-children">RootHome</a>', $str);
     }
 
     public function testMasterObject()
@@ -1073,8 +1087,8 @@ class TestTimberMenu extends Timber_UnitTestCase
 
         $menu = Timber::get_menu($menu_id);
         $this->assertInstanceOf(Timber\Post::class, $menu->items[0]->master_object());
-        $this->assertInstanceOf(Timber\Term::class, $menu->items[6]->master_object());
-        $this->assertInstanceOf(WP_Post_Type::class, $menu->items[7]->master_object());
+        $this->assertInstanceOf(Timber\Term::class, $menu->items[7]->master_object());
+        $this->assertInstanceOf(WP_Post_Type::class, $menu->items[8]->master_object());
     }
 
     public function testMenuWalker()
