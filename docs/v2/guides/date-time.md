@@ -181,11 +181,11 @@ The date a post was published is accessible through `{{ post.date }}`.
 {{ post.date }}
 ```
 
-Similarly, to get the date a post was modified, you can use `{{ post.modified }}`.
+Similarly, to get the date a post was modified, you can use `{{ post.modified_date }}`.
 
 ```twig
 {# With default date format from Settings → General #}
-{{ post.modified }}
+{{ post.modified_date }}
 ```
 
 If you want to change the display format, use an argument for the function. Check the documentation for [date()](https://www.php.net/manual/en/function.date.php) to see which formatting options you can use.
@@ -194,7 +194,7 @@ If you want to change the display format, use an argument for the function. Chec
 
 ```twig
 {{ post.date('F j, Y @ g:i a') }}
-{{ post.modified('F j, Y @ g:i a') }}
+{{ post.modified_date('F j, Y @ g:i a') }}
 ```
 
 ## Twig filters and functions
@@ -206,7 +206,7 @@ Twig includes a [`date`](https://twig.symfony.com/doc/3.x/filters/date.html) fil
 ```twig
 {{ my_date|date('j. F Y') }}
 {{ post.date|date('j. F Y') }}
-{{ post.modified|date('j. F Y') }}
+{{ post.modified_date|date('j. F Y') }}
 {{ '2020-02-20 20:20'|date('j. F Y') }}
 {{ 'now'|date('j. F Y') }}
 ```
