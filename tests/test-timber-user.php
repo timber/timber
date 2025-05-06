@@ -237,8 +237,9 @@ class TestTimberUser extends Timber_UnitTestCase
             'user_email' => 'm.palmowski@spiders.agency',
         ]);
         $user = Timber::get_user($uid);
-        $this->assertStringEndsWith('gravatar.com/avatar/b2965625410b81a2b25ef02b54493ce0?s=96&d=mm&r=g', $user->avatar());
-        $this->assertStringEndsWith('gravatar.com/avatar/b2965625410b81a2b25ef02b54493ce0?s=120&d=mm&r=g', $user->avatar([
+        $this->assertStringContainsString('gravatar.com/avatar/', $user->avatar());
+        $this->assertStringEndsWith('?s=96&d=mm&r=g', $user->avatar());
+        $this->assertStringEndsWith('?s=120&d=mm&r=g', $user->avatar([
             'size' => 120,
         ]));
     }

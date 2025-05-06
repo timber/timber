@@ -61,13 +61,12 @@ class TestTimberWPFunctions extends Timber_UnitTestCase
         }
         global $wp_scripts;
         $wp_scripts = null;
-        add_action('wp_footer', 'echo_junk');
+        $this->add_action_temporarily('wp_footer', 'echo_junk');
         $fw1 = new FunctionWrapper('wp_footer', [], true);
         $fw2 = new FunctionWrapper('wp_footer', [], true);
         $this->assertEquals($fw1->call(), $fw2->call());
         $pos = strpos($fw2->call(), 'foo');
         $this->assertGreaterThan(-1, $pos);
-        remove_action('wp_footer', 'echo_junk');
     }
 
     public function testInTwig()
