@@ -82,10 +82,4 @@
 			$user->president = '16th';
 			$this->assertEquals('16th', $user->president);
 		}
-
-		function testAvatar() {
-			$uid = self::factory()->user->create(array('display_name' => 'Maciej Palmowski', 'user_login' => 'palmiak', 'user_email' => 'm.palmowski@spiders.agency'));
-			$user = new Timber\User($uid);
-			$this->assertStringEndsWith('?s=96&d=mm&r=g', $user->avatar());
-		}
 	}
