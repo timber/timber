@@ -1478,7 +1478,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      * {# Uses time format set in Settings → General #}
      * Published at {{ post.time }}
      * OR
-     * Published at {{ post.time|time('G:i') }}
+     * Published at {{ post.time('G:i') }}
      * ```
      *
      * ```html
@@ -1524,9 +1524,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      * @example
      * ```twig
      * {# Uses time format set in Settings → General #}
-     * Published at {{ post.time }}
+     * Published at {{ post.modified_time }}
      * OR
-     * Published at {{ post.time|time('G:i') }}
+     * Published at {{ post.modified_time('G:i') }}
      * ```
      *
      * ```html

@@ -415,6 +415,12 @@ class MenuItem extends CoreEntity implements Stringable
         if ($this->type !== 'custom') {
             return false;
         }
+
+        // Additional check for relative/non-URLs
+        if (false === URLHelper::is_url($this->link())) {
+            return false;
+        }
+
         return URLHelper::is_external($this->link());
     }
 

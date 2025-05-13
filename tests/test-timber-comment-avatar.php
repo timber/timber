@@ -133,7 +133,7 @@ class TestTimberCommentAvatar extends Timber_UnitTestCase
         $avatar = $comment->avatar(32, $default_url);
         if (strstr($avatar, '?')) {
             list($url, $params) = explode('?', $avatar);
-            # you get back the absoulte url to default in the avatar url?
+            # you get back the absolute url to default in the avatar url?
             $this->assertEquals($params, "d=$default_url&amp;s=32");
         }
         # you get back url?

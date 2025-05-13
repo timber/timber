@@ -409,7 +409,7 @@ class URLHelper
     }
 
     /**
-     * This will evaluate wheter a URL is at an aboslute location (like https://example.org/whatever)
+     * This will evaluate whether a URL is at an absolute location (like https://example.org/whatever)
      *
      * @param string $path
      * @return boolean true if $path is an absolute url, false if relative.
