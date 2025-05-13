@@ -291,7 +291,7 @@ class ImageHelper {
 
 
 	/**
-	 * Deletes the auto-generated files for resize and letterboxing created by Timber
+	 * Deletes the auto-generated files created by Timber (resize, letterboxing, jpg, webp, retina) 
 	 * @param string  $local_file   ex: /var/www/wp-content/uploads/2015/my-pic.jpg
 	 *	                            or: http://example.org/wp-content/uploads/2015/my-pic.jpg
 	 */
@@ -307,6 +307,8 @@ class ImageHelper {
 		self::process_delete_generated_files($filename, $ext, $dir, '-lbox-[0-9999999]*', '-lbox-[0-9]*x[0-9]*-[a-zA-Z0-9]*.');
 		self::process_delete_generated_files($filename, 'jpg', $dir, '-tojpg.*');
 		self::process_delete_generated_files($filename, 'jpg', $dir, '-tojpg-[0-9999999]*');
+		self::process_delete_generated_files($filename, 'webp', $dir, '-towebp.*');
+		self::process_delete_generated_files($filename, 'webp', $dir, '-towebp-[0-9999999]*');
 	}
 
 	/**

@@ -28,7 +28,8 @@ class ToWebp extends ImageOperation {
 	 * @return  string    the final filename to be used (ex: my-awesome-pic.webp)
 	 */
 	public function filename( $src_filename, $src_extension = 'webp' ) {
-		$new_name = $src_filename  . '.webp';
+		$newbase = $src_filename.'-towebp';
+		$new_name = $newbase  . '.webp';
 		return $new_name;
 	}
 
