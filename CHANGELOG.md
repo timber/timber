@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.3.2](https://github.com/timber/timber/compare/v2.3.1...v2.3.2) (2025-05-13)
+
+
+### Bug Fixes
+
+* Fix MenuItem::is_external() returning false positives for relative URLs ([#3089](https://github.com/timber/timber/issues/3089)) ([2a14525](https://github.com/timber/timber/commit/2a145250d3ad2ea88f7fdabc20a649720e5e3cec))
+* Fix typos in source code([#3077](https://github.com/timber/timber/issues/3077)) ([d7b3b80](https://github.com/timber/timber/commit/d7b3b804c3244083f6ae60e9f760f86aa512b054))
+* **security:** Bump minimum required Twig version to fix security issue in Twig ([#3104](https://github.com/timber/timber/issues/3104)) ([9766a9c](https://github.com/timber/timber/commit/9766a9c1ac58b82dc2433536ab2a1a8442bc3ffa))
+
+
+### Miscellaneous Chores
+
+* **deps:** bump lycheeverse/lychee-action from 2.0.2 to 2.2.0 ([#3078](https://github.com/timber/timber/issues/3078)) ([11a74ba](https://github.com/timber/timber/commit/11a74ba68cd05a109eff14d6fcf19119743626d9))
+* **deps:** bump tj-actions/changed-files from 45 to 46 ([#3105](https://github.com/timber/timber/issues/3105)) ([d8535cf](https://github.com/timber/timber/commit/d8535cf693a5bbdae55b1396b2fa24471dad22d9))
+
 ## [2.3.1](https://github.com/timber/timber/compare/v2.3.0...v2.3.1) (2024-12-18)
 
 
