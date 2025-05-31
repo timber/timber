@@ -14,7 +14,7 @@ function deploy () {
 	composer install --no-dev --optimize-autoloader
 
 	# Install the lowest compatible version of Twig.
-	composer update twig/twig:1.44.7 --no-dev
+	composer update twig/twig:1.44.8 --no-dev
 
 	rm -rf ~/Sites/timber/vendor/upstatement/routes/.git
 	cd ~/Sites/timber-wp
