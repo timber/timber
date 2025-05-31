@@ -22,7 +22,7 @@ class Admin {
 	 */
 	public static function show_deprecation_warning($file, $plugin, $status)
 	{
-		echo '<td colspan="3" class="plugin-update colspanchange"><div class="update-message notice-error notice inline notice-warning notice-alt"><p>We recommend <a target="_blank" href="https://timber.github.io/docs/getting-started/switch-to-composer/">switching to the Composer based version</a> of Timber. <a href="https://github.com/timber/timber/discussions/2804" target="_blank">Why you need to switch.</a></p></div></td>';
+		echo '<td colspan="3" class="plugin-update colspanchange"><div class="update-message notice-error notice inline notice-warning notice-alt"><p>We recommend <a target="_blank" href="https://timber.github.io/docs/v1/getting-started/switch-to-composer/">switching to the Composer based version</a> of Timber. <a href="https://github.com/timber/timber/discussions/2804" target="_blank">Why you need to switch.</a></p></div></td>';
 	}
 
 	/**
@@ -35,8 +35,8 @@ class Admin {
 			unset($links[2]);
 			$links[] = '<a href="' . admin_url( '/wp-admin/plugin-install.php?tab=plugin-information&amp;plugin=timber-library&amp;TB_iframe=true&amp;width=600&amp;height=550' ) . '" class="thickbox" aria-label="More information about Timber" data-title="Timber">View details</a>';
 			$links[] = '<a href="http://upstatement.com/timber" target="_blank">Homepage</a>';
-			$links[] = '<a href="https://timber.github.io/docs/" target="_blank">Documentation</a>';
-			$links[] = '<a href="https://timber.github.io/docs/getting-started/setup/" target="_blank">Starter Guide</a>';
+			$links[] = '<a href="https://timber.github.io/docs/v1/" target="_blank">Documentation</a>';
+			$links[] = '<a href="https://timber.github.io/docs/v1/getting-started/setup/" target="_blank">Starter Guide</a>';
 			return $links;
 		}
 		return $links;
@@ -61,7 +61,7 @@ class Admin {
 
 			<br><strong>Is your theme in active development?</strong> That is, is someone actively in PHP files writing new code? If you answered "no", then <i>do not upgrade</i>. You will not benefit from Timber 1.0<br>';
 
-		$m .= '<br>Read the <strong><a href="https://timber.github.io/docs/upgrade-guides/1.0/">Upgrade Guide</a></strong> for more information<br>';
+		$m .= '<br>Read the <strong><a href="https://timber.github.io/docs/v1/upgrade-guides/1.0/">Upgrade Guide</a></strong> for more information<br>';
 
 		$m .= "<br>You can also <b><a href='https://downloads.wordpress.org/plugin/timber-library.0.22.6.zip'>upgrade to version 0.22.6</a></b> if you want to upgrade, but are unsure if you're ready for 1.0<br>";
 		$m .= self::disable_update();
