@@ -88,7 +88,9 @@ class Timber
      *
      * @codeCoverageIgnore
      */
-    protected function __construct() {}
+    protected function __construct()
+    {
+    }
 
     protected function init_constants()
     {
@@ -1205,16 +1207,9 @@ class Timber
 
         if (\is_singular()) {
             // NOTE: this also handles the is_front_page() case.
-            $context['post'] = Timber::get_post()->setup();
+            $context['post'] = Timber::get_post()?->setup();
         } elseif (\is_home()) {
-            $post = Timber::get_post();
-
-            // When no page_on_front is set, there’s no post we can set up.
-            if ($post) {
-                $post->setup();
-            }
-
-            $context['post'] = $post;
+            $context['post'] = Timber::get_post()?->setup();
             $context['posts'] = Timber::get_posts();
         } elseif (\is_category() || \is_tag() || \is_tax()) {
             $context['term'] = Timber::get_term();
