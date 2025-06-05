@@ -88,9 +88,7 @@ class Timber
      *
      * @codeCoverageIgnore
      */
-    protected function __construct()
-    {
-    }
+    protected function __construct() {}
 
     protected function init_constants()
     {
