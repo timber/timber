@@ -1,0 +1,14 @@
+parameters:
+    editorUrl: 'vscode://file/%%file%%:%%line%%'
+    level: 2 # Increase until "max"
+    paths:
+        - src/
+    scanFiles:
+        - tests/phpstan/bootstrap.php
+        - vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
+    scanDirectories:
+        - wp-content/plugins/advanced-custom-fields
+    excludePaths:
+        - rector.php
+        - tests/*
+        - docs/*

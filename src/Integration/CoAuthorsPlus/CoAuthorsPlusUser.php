@@ -2,7 +2,7 @@
 
 namespace Timber\Integration\CoAuthorsPlus;
 
-use stdclass;
+use stdClass;
 use Timber\User;
 
 class CoAuthorsPlusUser extends User
@@ -14,7 +14,7 @@ class CoAuthorsPlusUser extends User
      */
     protected $thumbnail;
 
-    public static function from_guest_author(stdclass $coauthor)
+    public static function from_guest_author(stdClass $coauthor)
     {
         $user = new static();
         $user->init($coauthor);
@@ -29,7 +29,7 @@ class CoAuthorsPlusUser extends User
     protected function init($coauthor = false)
     {
         /**
-         * @var stdclass $coauthor
+         * @var stdClass $coauthor
          */
         parent::init($coauthor);
 

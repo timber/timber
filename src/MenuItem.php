@@ -102,7 +102,7 @@ class MenuItem extends CoreEntity implements Stringable
      * @internal
      * @param array|object $data The data this MenuItem is wrapping
      * @param Menu $menu The `Menu` object the menu item is associated with.
-     * @return MenuItem a new MenuItem instance
+     * @return static a new MenuItem instance
      */
     public static function build($data, ?Menu $menu = null): static
     {
@@ -119,18 +119,20 @@ class MenuItem extends CoreEntity implements Stringable
          *
          * @since 2.0.0
          */
-        protected ?WP_Post $wp_object, /**
-     * Timber Menu. Previously this was a public property, but converted to a method to avoid
-     * recursion (see #2071).
-     *
-     * @since 1.12.0
-     * @see \Timber\MenuItem::menu()
-     */
+        protected ?WP_Post $wp_object,
+        /**
+         * Timber Menu. Previously this was a public property, but converted to a method to avoid
+         * recursion (see #2071).
+         *
+         * @since 1.12.0
+         * @see \Timber\MenuItem::menu()
+         */
         protected $menu = null
     ) {
         /**
          * @property string $title The nav menu item title.
          */
+        // @phpstan-ignore property.notFound
         $this->title = $this->wp_object->title;
 
         $this->import($this->wp_object);

@@ -1,6 +1,8 @@
 <?php
 
-class CustomMenuItemClass extends Timber\MenuItem {}
+class CustomMenuItemClass extends Timber\MenuItem
+{
+}
 
 /**
  * @group menus-api
@@ -281,7 +283,7 @@ class TestTimberMenu extends Timber_UnitTestCase
             'type' => 'link',
             'link' => '/bar/',
         ];
-        $menu = $this->buildMenu('Blanky', $items);
+        $menu = static::buildMenu('Blanky', $items);
         $menu = Timber::get_menu($menu['term_id']);
         $items = $menu->get_items();
         $this->assertEquals('/', $items[0]->path());
@@ -452,7 +454,6 @@ class TestTimberMenu extends Timber_UnitTestCase
         $this->assertGreaterThanOrEqual(3, count($menu->get_items()));
         $items = $menu->get_items();
 
-
         $external_link = $items[1];
         $internal_link = $items[2];
 
@@ -464,7 +465,6 @@ class TestTimberMenu extends Timber_UnitTestCase
         $this->assertEquals('/random-page', $internal_link->link());
         $this->assertFalse($internal_link->is_external());
     }
-
 
     public function testMenuOptionsInNavMenuCssClassFilter()
     {
@@ -493,12 +493,10 @@ class TestTimberMenu extends Timber_UnitTestCase
         $term = self::_createTestMenu();
         $menu_id = $term['term_id'];
 
-        $filter = function (array $items, WP_Term $menu) {
-            return array_map(function ($item) {
-                $item->classes[] = "test_{$item->ID}";
-                return $item;
-            }, $items);
-        };
+        $filter = (fn (array $items, WP_Term $menu) => array_map(function ($item) {
+            $item->classes[] = "test_{$item->ID}";
+            return $item;
+        }, $items));
 
         $this->add_filter_temporarily('timber/menu/item_objects', $filter, 10, 2);
 
@@ -613,7 +611,7 @@ class TestTimberMenu extends Timber_UnitTestCase
 
     public function testMenuItemMetaAlt()
     {
-        $menu_info = $this->_createSimpleMenu();
+        $menu_info = static::_createSimpleMenu();
         $menu = Timber::get_menu($menu_info['term_id']);
         $item = $menu->items[0];
         $this->assertEquals('molasses', $item->meta('flood'));
@@ -632,7 +630,7 @@ class TestTimberMenu extends Timber_UnitTestCase
 
     public function testMenuItemMeta()
     {
-        $menu_info = $this->_createSimpleMenu();
+        $menu_info = static::_createSimpleMenu();
         $menu = Timber::get_menu($menu_info['term_id']);
         $item = $menu->items[0];
         $this->assertEquals('molasses', $item->meta('flood'));
@@ -749,12 +747,12 @@ class TestTimberMenu extends Timber_UnitTestCase
             'link' => '/bar/',
         ];
 
-        $this->buildMenu('Froggy', $items);
+        static::buildMenu('Froggy', $items);
 
-        $built_menu = $this->buildMenu('Ziggy', $items);
+        $built_menu = static::buildMenu('Ziggy', $items);
         $built_menu_id = $built_menu['term_id'];
 
-        $this->buildMenu('Zappy', $items);
+        static::buildMenu('Zappy', $items);
 
         $this->registerNavMenus([
             'header-menu' => 0,
@@ -782,7 +780,7 @@ class TestTimberMenu extends Timber_UnitTestCase
             'link' => '/bar/',
         ];
 
-        $this->buildMenu('Fancy Suit', $items);
+        static::buildMenu('Fancy Suit', $items);
 
         $menu = Timber::get_menu('Fancy Suit');
         $this->assertSame(3, count($menu->get_items()));
@@ -804,7 +802,7 @@ class TestTimberMenu extends Timber_UnitTestCase
             'link' => '/bar/',
         ];
 
-        $this->buildMenu('Jolly Jeepers', $items);
+        static::buildMenu('Jolly Jeepers', $items);
 
         $menu = Timber::get_menu('jolly-jeepers');
         $this->assertSame(3, count($menu->get_items()));
@@ -826,7 +824,7 @@ class TestTimberMenu extends Timber_UnitTestCase
             'link' => '/stuffy',
         ];
 
-        $this->buildMenu('The Zazziest Menu', $items);
+        static::buildMenu('The Zazziest Menu', $items);
 
         $menu = Timber::get_menu('The Zazziest Menu');
 
@@ -855,7 +853,7 @@ class TestTimberMenu extends Timber_UnitTestCase
             'link' => '/joe-shmoe',
         ];
 
-        $this->buildMenu('Ancestry.com Main Menu', $items);
+        static::buildMenu('Ancestry.com Main Menu', $items);
 
         $menu = Timber::get_menu('Ancestry.com Main Menu');
 

@@ -40,6 +40,8 @@ use WP_User;
  * <p class="article-info">This article is called "Consider the Lobster"
  *     and it’s by David Foster Wallace</p>
  * ```
+ *
+ * @property-read string $display_name
  */
 class User extends CoreEntity implements Stringable
 {

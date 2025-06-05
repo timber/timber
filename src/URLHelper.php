@@ -298,7 +298,7 @@ class URLHelper
             'timber/url_helper/get_content_subdir/home_url'
         );
 
-        return \str_replace($home_url, '', (string) WP_CONTENT_URL);
+        return \str_replace($home_url, '', (string) \content_url());
     }
 
     /**

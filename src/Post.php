@@ -174,7 +174,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      * (i.e. Timber\Post or a subclass).
      *
      * @internal
-     * @return Post
+     * @return static
      */
     public static function build(WP_Post $wp_post): static
     {

@@ -82,7 +82,7 @@ class Term extends CoreEntity implements Stringable
      * @internal
      *
      * @param WP_Term      $wp_term The vanilla WordPress term object to build from.
-     * @return Term
+     * @return static
      */
     public static function build(WP_Term $wp_term): static
     {

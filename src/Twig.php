@@ -8,13 +8,13 @@ use DateTimeInterface;
 use Exception;
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
+use Twig\DeprecatedCallableInfo;
 use Twig\Environment;
 use Twig\Extension\CoreExtension;
 use Twig\Extension\EscaperExtension;
 use Twig\Runtime\EscaperRuntime;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
-use Twig\DeprecatedCallableInfo;
 
 /**
  * Class Twig
