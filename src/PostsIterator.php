@@ -20,8 +20,9 @@ class PostsIterator extends ArrayIterator
     /**
      * Prepares the state before working on a post.
      *
-     * Calls the `setup()` function of the current post to setup post data. Before starting the
-     * loop, it will call the 'loop_start' hook to improve compatibility with WordPress.
+     * Calls the `setup()` function of the current post to setup post data if
+     * we’re in the frontend. Before starting the loop, it will call the
+     * 'loop_start' hook to improve compatibility with WordPress.
      *
      * @return mixed
      */
@@ -47,7 +48,13 @@ class PostsIterator extends ArrayIterator
         // Lazily instantiate a Timber\Post instance exactly once.
         $post = $factory->from($wp_post);
 
-        if ($post instanceof Post) {
+        if ($post instanceof Post && !\is_admin()) {
+            // The setup() method should only run in the frontend.
+            //
+            // If you run Timber::get_posts() in the WordPress admin, it might
+            // overwrite the post global there and mess your posts. By using the
+            // is_admin() check, we make sure that this method only runs in the
+            // frontend of the website.
             $post->setup();
         }
 
