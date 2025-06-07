@@ -58,32 +58,6 @@ class Timber
     public static $context_cache = [];
 
     /**
-     * Caching option for Twig.
-     *
-     * @deprecated 2.0.0
-     * @var bool
-     */
-    public static $twig_cache = false;
-
-    /**
-     * Caching option for Twig.
-     *
-     * Alias for `Timber::$twig_cache`.
-     *
-     * @deprecated 2.0.0
-     * @var bool
-     */
-    public static $cache = false;
-
-    /**
-     * Autoescaping option for Twig.
-     *
-     * @deprecated 2.0.0
-     * @var bool
-     */
-    public static $autoescape = false;
-
-    /**
      * Timber should be loaded with Timber\Timber::init() and not new Timber\Timber();
      *
      * @codeCoverageIgnore
@@ -249,8 +223,6 @@ class Timber
      */
     public static function get_post(mixed $query = false, $options = [])
     {
-        self::check_post_api_deprecations($query, $options, 'Timber::get_post()');
-
         if (\is_string($options)) {
             $options = [];
         }
@@ -301,8 +273,6 @@ class Timber
      */
     public static function get_attachment(mixed $query = false, $options = [])
     {
-        self::check_post_api_deprecations($query, $options, 'Timber::get_attachment()');
-
         $post = static::get_post($query, $options);
 
         // No need to instantiate a Post we're not going to use.
@@ -328,8 +298,6 @@ class Timber
      */
     public static function get_image(mixed $query = false, $options = [])
     {
-        self::check_post_api_deprecations($query, $options, 'Timber::get_image()');
-
         $post = static::get_post($query, $options);
 
         // No need to instantiate a Post we're not going to use.
@@ -366,32 +334,6 @@ class Timber
         ]);
 
         return ExternalImage::build($url, $args);
-    }
-
-    /**
-     * Checks for deprecated Timber::get_post() API usage.
-     *
-     * @param $query
-     * @param $options
-     * @param $function_name
-     */
-    private static function check_post_api_deprecations($query = false, $options = [], string $function_name = 'Timber::get_post()')
-    {
-        if (\is_string($query) && !\is_numeric($query)) {
-            Helper::doing_it_wrong(
-                $function_name,
-                'Getting a post by post slug or post name was removed from Timber::get_post() in Timber 2.0. Use Timber::get_post_by() instead.',
-                '2.0.0'
-            );
-        }
-
-        if (\is_string($options)) {
-            Helper::doing_it_wrong(
-                $function_name,
-                'The $PostClass parameter for passing in the post class to use in Timber::get_posts() was replaced with an $options array in Timber 2.0. To customize which class to instantiate for your post, use Class Maps instead: https://timber.github.io/docs/v2/guides/class-maps/',
-                '2.0.0'
-            );
-        }
     }
 
     /**
@@ -579,38 +521,6 @@ class Timber
         }
 
         return self::get_post($post_id);
-    }
-
-    /**
-     * Query post.
-     *
-     * @api
-     * @deprecated since 2.0.0 Use `Timber::get_post()` instead.
-     *
-     *
-     * @return Post|array|bool|null
-     */
-    public static function query_post(mixed $query = false, array $options = [])
-    {
-        Helper::deprecated('Timber::query_post()', 'Timber::get_post()', '2.0.0');
-
-        return self::get_post($query, $options);
-    }
-
-    /**
-     * Query posts.
-     *
-     * @api
-     * @deprecated since 2.0.0 Use `Timber::get_posts()` instead.
-     *
-     *
-     * @return PostCollectionInterface
-     */
-    public static function query_posts(mixed $query = false, array $options = [])
-    {
-        Helper::deprecated('Timber::query_posts()', 'Timber::get_posts()', '2.0.0');
-
-        return self::get_posts($query, $options);
     }
 
     /**
@@ -1175,20 +1085,6 @@ class Timber
     ================================ */
 
     /**
-     * Get context.
-     * @api
-     * @deprecated 2.0.0, use `Timber::context()` instead.
-     *
-     * @return array
-     */
-    public static function get_context()
-    {
-        Helper::deprecated('get_context', 'context', '2.0.0');
-
-        return self::context();
-    }
-
-    /**
      * Gets the global context.
      *
      * The context always contains the global context with the following variables:
@@ -1326,18 +1222,6 @@ class Timber
              * @param array $context The global context.
              */
             self::$context_cache = \apply_filters('timber/context', self::$context_cache);
-
-            /**
-             * Filters the global Timber context.
-             *
-             * @deprecated 2.0.0, use `timber/context`
-             */
-            self::$context_cache = \apply_filters_deprecated(
-                'timber_context',
-                [self::$context_cache],
-                '2.0.0',
-                'timber/context'
-            );
         }
 
         return self::$context_cache;
@@ -1403,19 +1287,6 @@ class Timber
              * @param string $file The chosen Twig template name to render.
              */
             $file = \apply_filters('timber/render/file', $file);
-
-            /**
-             * Filters the Twig file that should be rendered.
-             *
-             * @codeCoverageIgnore
-             * @deprecated 2.0.0, use `timber/render/file`
-             */
-            $file = \apply_filters_deprecated(
-                'timber_render_file',
-                [$file],
-                '2.0.0',
-                'timber/render/file'
-            );
         } else {
             /**
              * Filters the Twig template that should be compiled.
@@ -1425,18 +1296,6 @@ class Timber
              * @param string $file The chosen Twig template name to compile.
              */
             $file = \apply_filters('timber/compile/file', $file);
-
-            /**
-             * Filters the Twig template that should be compiled.
-             *
-             * @deprecated 2.0.0
-             */
-            $file = \apply_filters_deprecated(
-                'timber_compile_file',
-                [$file],
-                '2.0.0',
-                'timber/compile/file'
-            );
         }
         $output = false;
 
@@ -1455,18 +1314,6 @@ class Timber
                  * @param string $file The name of the Twig template to render.
                  */
                 $data = \apply_filters('timber/render/data', $data, $file);
-                /**
-                 * Filters the data that should be passed for rendering a Twig template.
-                 *
-                 * @codeCoverageIgnore
-                 * @deprecated 2.0.0
-                 */
-                $data = \apply_filters_deprecated(
-                    'timber_render_data',
-                    [$data],
-                    '2.0.0',
-                    'timber/render/data'
-                );
             } else {
                 /**
                  * Filters the data that should be passed for compiling a Twig template.
@@ -1477,18 +1324,6 @@ class Timber
                  * @param string $file The name of the Twig template to compile.
                  */
                 $data = \apply_filters('timber/compile/data', $data, $file);
-
-                /**
-                 * Filters the data that should be passed for compiling a Twig template.
-                 *
-                 * @deprecated 2.0.0, use `timber/compile/data`
-                 */
-                $data = \apply_filters_deprecated(
-                    'timber_compile_data',
-                    [$data],
-                    '2.0.0',
-                    'timber/compile/data'
-                );
             }
             $output = $loader->render($file, $data, $expires, $cache_mode);
         } else {
@@ -1525,14 +1360,6 @@ class Timber
          * @param string            $cache_mode   Any of the cache mode constants defined in Timber\Loader.
          */
         \do_action('timber/compile/done', $output, $file, $data, $expires, $cache_mode);
-
-        /**
-         * Fires after a Twig template was compiled and before the compiled data
-         * is returned.
-         *
-         * @deprecated 2.0.0, use `timber/compile/done`
-         */
-        \do_action_deprecated('timber_compile_done', [], '2.0.0', 'timber/compile/done');
 
         return $output;
     }
@@ -1617,48 +1444,6 @@ class Timber
         $twig = $dummy_loader->get_twig();
         $template = $twig->createTemplate($string);
         return $template->render($data);
-    }
-
-    /**
-     * Fetch function.
-     *
-     * @api
-     * @deprecated 2.0.0 use Timber::compile()
-     * @param array|string $filenames  Name of the Twig file to render. If this is an array of files, Timber will
-     *                                 render the first file that exists.
-     * @param array        $data       Optional. An array of data to use in Twig template.
-     * @param bool|int     $expires    Optional. In seconds. Use false to disable cache altogether. When passed an
-     *                                 array, the first value is used for non-logged in visitors, the second for users.
-     *                                 Default false.
-     * @param string       $cache_mode Optional. Any of the cache mode constants defined in Timber\Loader.
-     * @return bool|string The returned output.
-     */
-    public static function fetch($filenames, $data = [], $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT)
-    {
-        Helper::deprecated(
-            'fetch',
-            'Timber::compile() (see https://timber.github.io/docs/v2/reference/timber/#compile for more information)',
-            '2.0.0'
-        );
-        $output = self::compile($filenames, $data, $expires, $cache_mode, true);
-
-        /**
-         * Filters the compiled result before it is returned.
-         *
-         * @see \Timber\Timber::fetch()
-         * @since 0.16.7
-         * @deprecated 2.0.0 use timber/compile/result
-         *
-         * @param string $output The compiled output.
-         */
-        $output = \apply_filters_deprecated(
-            'timber_compile_result',
-            [$output],
-            '2.0.0',
-            'timber/compile/result'
-        );
-
-        return $output;
     }
 
     /**
@@ -1800,25 +1585,5 @@ class Timber
     public static function get_widgets($widget_id)
     {
         return \trim(Helper::ob_function('dynamic_sidebar', [$widget_id]));
-    }
-
-    /**
-     * Get pagination.
-     *
-     * @api
-     * @deprecated 2.0.0
-     * @link https://timber.github.io/docs/v2/guides/pagination/
-     * @param array $prefs an array of preference data.
-     * @return array|mixed
-     */
-    public static function get_pagination($prefs = [])
-    {
-        Helper::deprecated(
-            'get_pagination',
-            '{{ posts.pagination }} (see https://timber.github.io/docs/v2/guides/pagination/ for more information)',
-            '2.0.0'
-        );
-
-        return Pagination::get_pagination($prefs);
     }
 }

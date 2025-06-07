@@ -7,7 +7,6 @@ use CollectionTestPage;
 use CollectionTestPost;
 use Mantle\Testing\Attributes\PermalinkStructure;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\Attributes\Ticket;
 use SerializablePost;
 use Timber\Post;
@@ -91,17 +90,6 @@ class PostQueryTest extends TimberIntegrationTestCase
         $this->assertStringContainsString('pagination-next-link', $str);
     }
 
-    #[IgnoreDeprecations]
-    public function testGetPostsDeprecated()
-    {
-        $this->setExpectedDeprecated('Timber\PostQuery::get_posts()');
-        static::factory()->post->create_many(3);
-
-        $this->assertCount(3, Timber::get_posts([
-            'post_type' => 'post',
-        ])->get_posts());
-    }
-
     public function testFoundPosts()
     {
         $post_ids = static::factory()->post->create_many(20);
@@ -146,21 +134,6 @@ class PostQueryTest extends TimberIntegrationTestCase
 
         $this->assertSame(true, $posts->query()->query_vars['has_password']);
         $this->assertEquals([$post_ids[0]], $posts->query()->query_vars['post__in']);
-    }
-
-    #[Ticket('https://github.com/timber/timber/issues/2605')]
-    #[IgnoreDeprecations]
-    public function testQueryGetterDeprecated()
-    {
-        $this->setExpectedDeprecated('Timber\PostQuery::get_query()');
-        $post_ids = static::factory()->post->create_many(2);
-
-        $posts = Timber::get_posts([
-            'post_type' => 'post',
-            'post__in' => [$post_ids[0]],
-        ]);
-
-        $this->assertEquals([$post_ids[0]], $posts->get_query()->query_vars['post__in']);
     }
 
     public function testTheLoop()

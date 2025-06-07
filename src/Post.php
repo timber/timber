@@ -517,24 +517,6 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
     }
 
     /**
-     * Updates post_meta of the current object with the given value.
-     *
-     * @deprecated 2.0.0 Use `update_post_meta()` instead.
-     *
-     * @param string $field The key of the meta field to update.
-     * @param mixed  $value The new value.
-     */
-    public function update($field, $value)
-    {
-        Helper::deprecated('Timber\Post::update()', 'update_post_meta()', '2.0.0');
-
-        if (isset($this->ID)) {
-            \update_post_meta($this->ID, $field, $value);
-            $this->$field = $value;
-        }
-    }
-
-    /**
      * Gets a excerpt of your post.
      *
      * If you have an excerpt is set on the post, the excerpt will be used. Otherwise it will try to
@@ -569,40 +551,6 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
     public function excerpt(array $options = [])
     {
         return new PostExcerpt($this, $options);
-    }
-
-    /**
-     * Gets an excerpt of your post.
-     *
-     * If you have an excerpt is set on the post, the excerpt will be used. Otherwise it will try to
-     * pull from an excerpt from `post_content`. If there’s a `<!-- more -->` tag in the post
-     * content, it will use that to mark where to pull through.
-     *
-     * This method returns a `Timber\PostExcerpt` object, which is a **chainable object**. This
-     * means that you can change the output of the excerpt by **adding more methods**. Refer to the
-     * [documentation of the `Timber\PostExcerpt` class](https://timber.github.io/docs/v2/reference/timber-postexcerpt/)
-     * to get an overview of all the available methods.
-     *
-     * @api
-     * @deprecated 2.0.0, use `{{ post.excerpt }}` instead.
-     * @see PostExcerpt
-     * @example
-     * ```twig
-     * {# Use default excerpt #}
-     * <p>{{ post.excerpt }}</p>
-     *
-     * {# Change the post excerpt text #}
-     * <p>{{ post.excerpt.read_more('Continue Reading') }}</p>
-     *
-     * {# Additionally restrict the length to 50 words #}
-     * <p>{{ post.excerpt.length(50).read_more('Continue Reading') }}</p>
-     * ```
-     * @return PostExcerpt
-     */
-    public function preview()
-    {
-        Helper::deprecated('{{ post.preview }}', '{{ post.excerpt }}', '2.0.0');
-        return new PostExcerpt($this);
     }
 
     /**
@@ -702,7 +650,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      * ] );
      * ```
      *
-     * @param string|array $query_args     Any array of term query parameters for getting the terms.
+     * @param string|array $query_args  Any array of term query parameters for getting the terms.
      *                                  See `WP_Term_Query::__construct()` for supported arguments.
      *                                  Use the `taxonomy` argument to choose which taxonomies to
      *                                  get. Defaults to querying all registered taxonomies for the
@@ -727,18 +675,6 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
             $query_args = [
                 'taxonomy' => $query_args,
             ];
-        }
-
-        /**
-         * Handles backwards compatibility for users who use an array with a query property.
-         *
-         * @deprecated 2.0.0 use Post::terms( $query_args, $options )
-         */
-        if (\is_array($query_args) && isset($query_args['query'])) {
-            if (isset($query_args['merge']) && !isset($options['merge'])) {
-                $options['merge'] = $query_args['merge'];
-            }
-            $query_args = $query_args['query'];
         }
 
         // Defaults.
@@ -853,50 +789,6 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
         }
 
         return parent::fetch_meta($field_name, $args, $apply_filters);
-    }
-
-    /**
-     * Gets a post meta value.
-     *
-     * @api
-     * @deprecated 2.0.0, use `{{ post.meta('field_name') }}` instead.
-     * @see \Timber\Post::meta()
-     *
-     * @param string $field_name The field name for which you want to get the value.
-     * @return mixed The meta field value.
-     */
-    public function get_field($field_name = null)
-    {
-        Helper::deprecated(
-            "{{ post.get_field('field_name') }}",
-            "{{ post.meta('field_name') }}",
-            '2.0.0'
-        );
-
-        if ($field_name === null) {
-            // On the off-chance the field is actually named meta.
-            $field_name = 'meta';
-        }
-
-        return $this->meta($field_name);
-    }
-
-    /**
-     * Import field data onto this object
-     *
-     * @api
-     * @deprecated since 2.0.0
-     * @param string $field_name
-     */
-    public function import_field($field_name)
-    {
-        Helper::deprecated(
-            "Importing field data onto an object",
-            "{{ post.meta('field_name') }}",
-            '2.0.0'
-        );
-
-        $this->$field_name = $this->meta($field_name);
     }
 
     /**

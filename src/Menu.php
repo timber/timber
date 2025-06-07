@@ -449,27 +449,6 @@ class Menu extends CoreEntity implements Stringable
     }
 
     /**
-     * Gets a menu meta value.
-     *
-     * @api
-     * @deprecated 2.0.0, use `{{ menu.meta('field_name') }}` instead.
-     * @see \Timber\Menu::meta()
-     *
-     * @param string $field_name The field name for which you want to get the value.
-     * @return mixed The meta field value.
-     */
-    public function get_field($field_name = null)
-    {
-        Helper::deprecated(
-            "{{ menu.get_field('field_name') }}",
-            "{{ menu.meta('field_name') }}",
-            '2.0.0'
-        );
-
-        return $this->meta($field_name);
-    }
-
-    /**
      * Get menu items.
      *
      * Instead of using this function, you can use the `$items` property directly to get the items

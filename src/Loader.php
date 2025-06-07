@@ -65,18 +65,6 @@ class Loader implements LoaderInterface
          *                           Default `Timber\Loader::CACHE_TRANSIENT`.
          */
         $this->cache_mode = \apply_filters('timber/cache/mode', $this->cache_mode);
-
-        /**
-         * Filters the cache mode.
-         *
-         * @deprecated 2.0.0, use `timber/cache/mode`
-         */
-        $this->cache_mode = \apply_filters_deprecated(
-            'timber_cache_mode',
-            [$this->cache_mode],
-            '2.0.0',
-            'timber/cache/mode'
-        );
     }
 
     /**
@@ -137,15 +125,6 @@ class Loader implements LoaderInterface
          */
         $output = \apply_filters('timber/output', $output, $data, $file);
 
-        /**
-         * Filters …
-         *
-         * @todo Add summary
-         *
-         * @deprecated 2.0.0, use `timber/output`
-         */
-        $output = \apply_filters_deprecated('timber_output', [$output], '2.0.0', 'timber/output');
-
         return $output;
     }
 
@@ -200,22 +179,6 @@ class Loader implements LoaderInterface
              * @param string $result
              */
             \do_action('timber/loader/render_file', $result);
-
-            /**
-             * Fires after …
-             *
-             * This action is used by the Timber Debug Bar extension.
-             *
-             * @todo Add summary
-             *
-             * @deprecated 2.0.0, use `timber/loader/render_file`
-             */
-            \do_action_deprecated(
-                'timber_loader_render_file',
-                [$result],
-                '2.0.0',
-                'timber/loader/render_file'
-            );
         }
 
         /**
@@ -229,20 +192,6 @@ class Loader implements LoaderInterface
          * @param string $file
          */
         $data = \apply_filters('timber/loader/render_data', $data, $file);
-
-        /**
-         * Filters …
-         *
-         * @todo Add summary
-         *
-         * @deprecated 2.0.0, use `timber/loader/render_data`
-         */
-        $data = \apply_filters_deprecated(
-            'timber_loader_render_data',
-            [$data],
-            '2.0.0',
-            'timber/loader/render_data'
-        );
 
         $template = $twig->load($file);
         $output = $this->render_twig_template($template, $data);
@@ -311,22 +260,6 @@ class Loader implements LoaderInterface
     {
         $paths = $this->locations;
 
-        /**
-         * Filters the template paths used by the Loader.
-         *
-         * @since 0.20.10
-         *
-         * @deprecated 2.0.0, use `timber/locations`
-         *
-         * @param array $paths
-         */
-        $paths = \apply_filters_deprecated(
-            'timber/loader/paths',
-            [$paths],
-            '2.0.0',
-            'timber/locations'
-        );
-
         $open_basedir = \ini_get('open_basedir');
         $rootPath = '/';
         if ($open_basedir) {
@@ -344,13 +277,6 @@ class Loader implements LoaderInterface
                         $fs->addPath($path, Loader::MAIN_NAMESPACE);
                     }
                 }, $path_locations);
-            } else {
-                Helper::deprecated(
-                    'add_filter( \'timber/loader/paths\', [\'path/to/my/templates\'] ) in a non-associative array',
-                    'add_filter( \'timber/loader/paths\', [ 0 => [ \'path/to/my/templates\' ] ] )',
-                    '2.0.0'
-                );
-                $fs->addPath($path_locations, self::MAIN_NAMESPACE);
             }
         }
 
@@ -420,19 +346,6 @@ class Loader implements LoaderInterface
         );
 
         /**
-         * @deprecated 2.0.0
-         */
-        if (isset(Timber::$autoescape) && false !== Timber::$autoescape) {
-            Helper::deprecated(
-                'Timber::$autoescape',
-                'the \'timber/twig/environment/options filter\'',
-                '2.0.0'
-            );
-
-            $environment_options['autoescape'] = Timber::$autoescape;
-        }
-
-        /**
          * Backwards compatibility fix.
          *
          * The value `true` doesn’t exist anymore for the `autoescape` option. You need to define
@@ -442,49 +355,8 @@ class Loader implements LoaderInterface
             $environment_options['autoescape'] = 'html';
         }
 
-        /**
-         * Alias Timber::$cache can be used for Timber::$twig_cache.
-         *
-         * @deprecated 2.0.0
-         */
-        if (isset(Timber::$cache) && true === Timber::$cache) {
-            Timber::$twig_cache = true;
-        }
-
-        /**
-         * @deprecated 2.0.0
-         */
-        if (isset(Timber::$twig_cache) && false !== Timber::$twig_cache) {
-            Helper::deprecated(
-                'Timber::$cache and Timber::$twig_cache',
-                'the \'timber/twig/environment/options filter\'',
-                '2.0.0'
-            );
-
-            $environment_options['cache'] = Timber::$twig_cache;
-        }
-
         if (true === $environment_options['cache']) {
             $twig_cache_loc = TIMBER_LOC . '/cache/twig';
-
-            /**
-             * Filters the cache location used for Twig.
-             *
-             * Allows you to set a new cache location for Twig. If the folder doesn’t exist yet, it
-             * will be created automatically.
-             *
-             * @since 0.20.10
-             * @deprecated 2.0.0
-             *
-             * @param string $twig_cache_loc Full path to the cache location. Default `/cache/twig`
-             *                               in the Timber root folder.
-             */
-            $twig_cache_loc = \apply_filters_deprecated(
-                'timber/cache/location',
-                [$twig_cache_loc],
-                '2.0.0',
-                'timber/twig/environment/options'
-            );
 
             if (!\file_exists($twig_cache_loc)) {
                 \mkdir($twig_cache_loc, 0777, true);
@@ -526,13 +398,6 @@ class Loader implements LoaderInterface
         $twig = \apply_filters('timber/loader/twig', $twig);
 
         /**
-         * Filters …
-         *
-         * @deprecated 2.0.0, use `timber/twig`
-         */
-        $twig = \apply_filters_deprecated('twig_apply_filters', [$twig], '2.0.0', 'timber/twig');
-
-        /**
          * Filters the Twig environment used in the global context.
          *
          * You can use this filter if you want to add additional functionality to Twig, like global
@@ -563,13 +428,6 @@ class Loader implements LoaderInterface
          * @param Environment $twig The Twig environment.
          */
         $twig = \apply_filters('timber/twig', $twig);
-
-        /**
-         * Filters the Twig environment used in the global context.
-         *
-         * @deprecated 2.0.0
-         */
-        $twig = \apply_filters_deprecated('get_twig', [$twig], '2.0.0', 'timber/twig');
 
         return $twig;
     }

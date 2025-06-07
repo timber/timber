@@ -32,13 +32,6 @@ class AcfIntegration implements IntegrationInterface
         \add_filter('timber/post/meta_object_field', [self::class, 'post_meta_object'], 10, 3);
         \add_filter('timber/term/pre_meta', [self::class, 'term_get_meta_field'], 10, 5);
         \add_filter('timber/user/pre_meta', [self::class, 'user_get_meta_field'], 10, 5);
-
-        /**
-         * Allowed a user to set a meta value
-         *
-         * @deprecated 2.0.0 with no replacement
-         */
-        \add_filter('timber/term/meta/set', [self::class, 'term_set_meta'], 10, 4);
     }
 
     /**
@@ -74,18 +67,6 @@ class AcfIntegration implements IntegrationInterface
     public static function term_get_meta_field($value, $term_id, $field_name, $term, $args)
     {
         return self::get_meta($value, $term->taxonomy . '_' . $term_id, $field_name, $args);
-    }
-
-    /**
-     * @deprecated 2.0.0, with no replacement
-     *
-     * @return mixed
-     */
-    public static function term_set_meta($value, $field, $term_id, $term)
-    {
-        $searcher = $term->taxonomy . '_' . $term->ID;
-        \update_field($field, $value, $searcher);
-        return $value;
     }
 
     /**

@@ -370,19 +370,6 @@ class PostExcerpt implements Stringable
              */
             $read_more_class = \apply_filters('timber/post/excerpt/read_more_class', 'read-more');
 
-            /**
-             * Filters the CSS class used for excerpt links.
-             *
-             * @deprecated 2.0.0
-             * @since 1.0.4
-             */
-            $read_more_class = \apply_filters_deprecated(
-                'timber/post/preview/read_more_class',
-                [$read_more_class],
-                '2.0.0',
-                'timber/post/excerpt/read_more_class'
-            );
-
             $linktext = \trim($this->read_more);
 
             $link = \sprintf(
@@ -407,20 +394,6 @@ class PostExcerpt implements Stringable
                 $this->post,
                 $linktext,
                 $read_more_class
-            );
-
-            /**
-             * Filters the link used for a read more text in an excerpt.
-             *
-             * @deprecated 2.0.0
-             * @since 1.1.3
-             * @ticket #1142
-             */
-            $link = \apply_filters_deprecated(
-                'timber/post/get_preview/read_more_link',
-                [$link],
-                '2.0.0',
-                'timber/post/excerpt/read_more_link'
             );
 
             $text .= $link;

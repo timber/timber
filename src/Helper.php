@@ -94,22 +94,6 @@ class Helper
             $force = \apply_filters('timber/transient/force_transients', $force);
 
             /**
-             * Filters whether to force a locked transients to be regenerated.
-             *
-             * If a transient is locked, it means that another process is currently generating the data.
-             * If you want to force the transient to be regenerated, during that process, you can set this
-             * filter to true.
-             *
-             * @deprecated 2.0.0, use `timber/transient/force_transients`
-             */
-            $force = \apply_filters_deprecated(
-                'timber_force_transients',
-                [$force],
-                '2.0.0',
-                'timber/transient/force_transients'
-            );
-
-            /**
              * Filters whether to force a specific locked transients to be regenerated.
              *
              * If a transient is locked, it means that another process is currently generating the data.
@@ -131,23 +115,6 @@ class Helper
              * @param bool $force Whether to force a locked transient to be regenerated.
              */
             $force = \apply_filters("timber/transient/force_transient_{$slug}", $force);
-
-            /**
-             * Filters whether to force a specific locked transients to be regenerated.
-             *
-             * If a transient is locked, it means that another process is currently generating the data.
-             * If you want to force the transient to be regenerated, during that process, you can set this value to true.
-             * `$slug` The transient slug.
-             *
-             * @param bool $force Whether to force a locked transient to be regenerated.
-             * @deprecated 2.0.0, use `timber/transient/force_transient_{$slug}`
-             */
-            $force = \apply_filters_deprecated(
-                "timber_force_transient_{$slug}",
-                [$force],
-                '2.0.0',
-                "timber/transient/force_transient_{$slug}"
-            );
 
             if (!$force) {
                 //the server is currently executing the process.
@@ -478,13 +445,6 @@ class Helper
          * @param string $separator The separator to use. Default `' '`.
          */
         $separator = \apply_filters('timber/helper/wp_title_separator', $separator);
-
-        /**
-         * Filters the separator used for the page title.
-         *
-         * @deprecated 2.0.0, use `timber/helper/wp_title_separator`
-         */
-        $separator = \apply_filters_deprecated('timber_wp_title_seperator', [$separator], '2.0.0', 'timber/helper/wp_title_separator');
 
         return \trim((string) \wp_title($separator, false, $seplocation));
     }

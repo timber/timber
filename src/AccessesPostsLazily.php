@@ -104,17 +104,6 @@ trait AccessesPostsLazily
     }
 
     /**
-     * @deprecated 2.0.0 use PostCollectionInterface::to_array() instead
-     * @api
-     * @return array
-     */
-    public function get_posts(): array
-    {
-        Helper::deprecated(\sprintf('%s::get_posts()', static::class), \sprintf('%s::to_array()', static::class), '2.0.0');
-        return $this->getArrayCopy();
-    }
-
-    /**
      * Lazily instantiates Timber\Post instances from WP_Post objects.
      *
      * @internal

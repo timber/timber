@@ -211,21 +211,6 @@ class Archives extends Core
     }
 
     /**
-     * Gets archive items.
-     *
-     * @api
-     * @deprecated 2.0.0, use `{{ archives.items }}` instead.
-     * @see \Timber\Archives::items()
-     * @return array|string
-     */
-    public function get_items($args = null)
-    {
-        Helper::warn('{{ archives.get_items }} is deprecated. Use {{ archives.items }} instead.');
-
-        return $this->items($args);
-    }
-
-    /**
      * @api
      * @param array|string $args Optional. Array of arguments.
      * @return array|string

@@ -2,7 +2,6 @@
 
 namespace Timber\Tests;
 
-use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use Timber\Loader;
 use Timber\Timber;
 use Twig\Loader\LoaderInterface;
@@ -50,64 +49,6 @@ class LoaderTest extends TimberIntegrationTestCase
         Timber::$locations = $this->getFixturesDir();
         $str = Timber::compile('assets/single.twig ', []);
         $this->assertEquals('I am single.twig', \trim($str));
-    }
-
-    #[IgnoreDeprecations]
-    public function testTwigPathFilterAdded()
-    {
-        $this->setExpectedDeprecated('timber/loader/paths');
-        $this->setExpectedDeprecated("add_filter( 'timber/loader/paths', ['path/to/my/templates'] ) in a non-associative array");
-        $php_unit = $this;
-        \add_filter('timber/loader/paths', function ($paths) use ($php_unit) {
-            $paths[] = __DIR__ . '/Fixtures/october/';
-            return $paths;
-        });
-        $str = Timber::compile('spooky.twig', []);
-        $this->assertEquals('Boo!', $str);
-    }
-
-    #[IgnoreDeprecations]
-    public function testUpdatedTwigPathFilterAdded()
-    {
-        $this->setExpectedDeprecated('timber/loader/paths');
-        $php_unit = $this;
-        \add_filter('timber/loader/paths', function ($paths) use ($php_unit) {
-            $paths[] = [__DIR__ . '/Fixtures/october/'];
-            return $paths;
-        });
-        $str = Timber::compile('spooky.twig', []);
-        $this->assertEquals('Boo!', $str);
-    }
-
-    #[IgnoreDeprecations]
-    public function testTwigPathFilter()
-    {
-        $this->setExpectedDeprecated('timber/loader/paths');
-        $this->setExpectedDeprecated("add_filter( 'timber/loader/paths', ['path/to/my/templates'] ) in a non-associative array");
-        \switch_theme('timber-test-theme-child');
-
-        $childThemeDir = \trailingslashit(\get_stylesheet_directory());
-        $parentThemeDir = \trailingslashit(\get_template_directory());
-
-        $receivedPaths = null;
-        $filter = function ($paths) use (&$receivedPaths) {
-            $receivedPaths = \call_user_func_array(array_merge(...), \array_values($paths));
-            return $receivedPaths;
-        };
-        \add_filter('timber/loader/paths', $filter);
-
-        Timber::compile('assets/single.twig', []);
-
-        \remove_filter('timber/loader/paths', $filter);
-        \switch_theme('default');
-
-        // Verify essential paths are included
-        $this->assertIsArray($receivedPaths);
-        $this->assertContains($childThemeDir, $receivedPaths, 'Child theme directory should be in paths');
-        $this->assertContains($childThemeDir . 'views/', $receivedPaths, 'Child theme views directory should be in paths');
-        $this->assertContains($parentThemeDir, $receivedPaths, 'Parent theme directory should be in paths');
-        $this->assertContains($parentThemeDir . 'views/', $receivedPaths, 'Parent theme views directory should be in paths');
-        $this->assertContains('/', $receivedPaths, 'Root fallback should be in paths');
     }
 
     public function testTimberLocationsFilterAdded()

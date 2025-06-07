@@ -479,21 +479,6 @@ class TermTest extends TimberIntegrationTestCase
         ], null, 'INCORRECT'));
     }
 
-    #[IgnoreDeprecations]
-    public function testGetPostsDeprecated()
-    {
-        $this->setExpectedDeprecated('{{ term.get_posts }}');
-        $term_id = static::factory()->term->create([
-            'name' => 'Rad',
-        ]);
-        $posts = static::factory()->post->create_many(3, [
-            'tags_input' => 'rad',
-        ]);
-        $term = Timber::get_term($term_id);
-
-        $this->assertCount(3, $term->get_posts());
-    }
-
     public function testPostsWithPostCount()
     {
         $term_id = static::factory()->term->create();

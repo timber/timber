@@ -3,7 +3,6 @@
 namespace Timber\Tests;
 
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use Timber\Site;
 use Timber\Timber;
 
@@ -67,48 +66,6 @@ class TimberPropertyTest extends TimberIntegrationTestCase
         $this->assertEquals('lincoln', $term->abraham);
         $this->assertEquals('lincoln', Timber::compile_string('{{term.abraham}}', [
             'term' => $term,
-        ]));
-    }
-
-    #[IgnoreDeprecations]
-    public function testMeta()
-    {
-        $vars = $this->_initObjects();
-        \extract($vars);
-
-        // Each update() call triggers a deprecation
-        $this->setExpectedDeprecated('Timber\Site::update()');
-        $this->setExpectedDeprecated('Timber\Post::update()');
-        $this->setExpectedDeprecated('Timber\Core::update()'); // user
-        $this->setExpectedDeprecated('Timber\Core::update()'); // user
-        $this->setExpectedDeprecated('Timber\Core::update()'); // user
-        $this->setExpectedDeprecated('Timber\Core::update()'); // comment
-
-        $site->update('bill', 'clinton');
-        $post->update('thomas', 'jefferson');
-        //
-        $user->update('dwight', 'einsenhower');
-        $user->update('teddy', 'roosevelt');
-        $user->update('john', 'kennedy');
-        $comment->update('george', 'washington');
-        $this->assertEquals('jefferson', $post->thomas);
-
-        $this->assertEquals('roosevelt', $user->teddy);
-        $this->assertEquals('washington', $comment->george);
-        $this->assertEquals('clinton', $site->bill);
-
-        $this->assertEquals('jefferson', Timber::compile_string('{{post.thomas}}', [
-            'post' => $post,
-        ]));
-
-        $this->assertEquals('roosevelt', Timber::compile_string('{{user.teddy}}', [
-            'user' => $user,
-        ]));
-        $this->assertEquals('washington', Timber::compile_string('{{comment.george}}', [
-            'comment' => $comment,
-        ]));
-        $this->assertEquals('clinton', Timber::compile_string('{{site.bill}}', [
-            'site' => $site,
         ]));
     }
 }

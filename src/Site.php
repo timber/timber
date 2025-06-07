@@ -88,12 +88,6 @@ class Site extends Core implements CoreInterface
     public $name;
 
     /**
-     * @deprecated 2.0.0, use $pingback_url
-     * @var string for people who like trackback spam
-     */
-    public $pingback;
-
-    /**
      * @api
      * @var string for people who like trackback spam
      */
@@ -396,7 +390,7 @@ class Site extends Core implements CoreInterface
         $this->atom = \get_bloginfo('atom_url');
         $this->language = \get_locale();
         $this->charset = \get_bloginfo('charset');
-        $this->pingback = $this->pingback_url = \get_bloginfo('pingback_url');
+        $this->pingback_url = \get_bloginfo('pingback_url');
     }
 
     /**
@@ -453,19 +447,6 @@ class Site extends Core implements CoreInterface
     }
 
     /**
-     * Get the value for a site option.
-     *
-     * @api
-     * @deprecated 2.0.0, use `{{ site.option }}` instead
-     */
-    public function meta($option)
-    {
-        Helper::deprecated('{{ site.meta() }}', '{{ site.option() }}', '2.0.0');
-
-        return $this->__get($option);
-    }
-
-    /**
      * @api
      * @return null|Image
      */
@@ -515,50 +496,5 @@ class Site extends Core implements CoreInterface
     public function link()
     {
         return $this->url;
-    }
-
-    /**
-     * Updates a site option.
-     *
-     * @deprecated 2.0.0 Use `update_option()` or `update_blog_option()` instead.
-     *
-     * @param string $key   The key of the site option to update.
-     * @param mixed  $value The new value.
-     */
-    public function update($key, $value)
-    {
-        Helper::deprecated('Timber\Site::update()', 'update_option()', '2.0.0');
-
-        /**
-         * Filters a value before it is updated in the site options.
-         *
-         * @since 2.0.0
-         *
-         * @param mixed        $value   The new value.
-         * @param string       $key     The option key.
-         * @param int          $site_id The site ID.
-         * @param Site $site    The site object.
-         */
-        $value = \apply_filters('timber/site/update_option', $value, $key, $this->ID, $this);
-
-        /**
-         * Filters a value before it is updated in the site options.
-         *
-         * @deprecated 2.0.0, use `timber/site/update_option`
-         * @since 0.20.0
-         */
-        $value = \apply_filters_deprecated(
-            'timber_site_set_meta',
-            [$value, $key, $this->ID, $this],
-            '2.0.0',
-            'timber/site/update_option'
-        );
-
-        if (\is_multisite()) {
-            \update_blog_option($this->ID, $key, $value);
-        } else {
-            \update_option($key, $value);
-        }
-        $this->$key = $value;
     }
 }

@@ -32,11 +32,6 @@ abstract class TimberIntegrationTestCase extends Integration_Test_Case
             $this->ignoreIncorrectUsage('wp_maybe_inline_styles');
         }
 
-        // Reset deprecated static properties to prevent test pollution
-        Timber::$twig_cache = false;
-        Timber::$cache = false;
-        Timber::$autoescape = false;
-
         // Reset the context cache to prevent test pollution
         // This ensures filters added in tests affect the context
         Timber::$context_cache = [];

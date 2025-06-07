@@ -513,34 +513,6 @@ class MenuItem extends CoreEntity implements Stringable
     }
 
     /**
-     * Get children of a menu item.
-     *
-     * You can also directly access the children through the `$children` property (`item.children`
-     * in Twig).
-     *
-     * @internal
-     * @deprecated 2.0.0, use `item.children` instead.
-     * @example
-     * ```twig
-     * {% for child in item.get_children %}
-     *     <li class="nav-drop-item">
-     *         <a href="{{ child.link }}">{{ child.title }}</a>
-     *     </li>
-     * {% endfor %}
-     * ```
-     * @return array|bool Array of children of a menu item. Empty if there are no child menu items.
-     */
-    public function get_children()
-    {
-        Helper::deprecated(
-            "{{ item.get_children }}",
-            "{{ item.children }}",
-            '2.0.0'
-        );
-        return $this->children();
-    }
-
-    /**
      * Checks to see if the menu item is an external link.
      *
      * If your site is `example.org`, then `google.com/whatever` is an external link. This is
@@ -641,26 +613,6 @@ class MenuItem extends CoreEntity implements Stringable
     }
 
     /**
-     * Gets a menu item meta value.
-     *
-     * @api
-     * @deprecated 2.0.0, use `{{ item.meta('field_name') }}` instead.
-     * @see \Timber\MenuItem::meta()
-     *
-     * @param string $field_name The field name for which you want to get the value.
-     * @return mixed The meta field value.
-     */
-    public function get_field($field_name = null)
-    {
-        Helper::deprecated(
-            "{{ item.get_field('field_name') }}",
-            "{{ item.meta('field_name') }}",
-            '2.0.0'
-        );
-        return $this->meta($field_name);
-    }
-
-    /**
      * Get the child menu items of a `Timber\MenuItem`.
      *
      * @api
@@ -677,21 +629,6 @@ class MenuItem extends CoreEntity implements Stringable
     public function children()
     {
         return $this->children;
-    }
-
-    /**
-     * Checks to see if the menu item is an external link.
-     *
-     * @api
-     * @deprecated 2.0.0, use `{{ item.is_external }}`
-     * @see \Timber\MenuItem::is_external()
-     *
-     * @return bool Whether the link is external or not.
-     */
-    public function external()
-    {
-        Helper::warn('{{ item.external }} is deprecated. Use {{ item.is_external }} instead.');
-        return $this->is_external();
     }
 
     /**

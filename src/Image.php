@@ -94,58 +94,6 @@ class Image extends Attachment implements ImageInterface
     }
 
     /**
-     * Processes an image's dimensions.
-     * @deprecated 2.0.0, use `{{ image.width }}` or `{{ image.height }}` in Twig
-     * @internal
-     * @param string $dim
-     * @return array|int
-     */
-    protected function get_dimensions($dim)
-    {
-        Helper::deprecated(
-            'Image::get_dimensions()',
-            'Image::get_width() | Image::get_height()',
-            '2.0.0'
-        );
-        return [$this->image_dimensions->width(), $this->image_dimensions->height()];
-    }
-
-    /**
-     * @deprecated 2.0.0, use Image::get_dimension_loaded
-     * @internal
-     * @param string|null $dim
-     * @return array|int
-     */
-    protected function get_dimensions_loaded($dim)
-    {
-        Helper::deprecated(
-            'Image::get_dimensions()',
-            'Image::get_width() or Image::get_height()',
-            '2.0.0'
-        );
-
-        return $this->image_dimensions->get_dimension($dim);
-    }
-
-    /**
-     * @deprecated 2.0.0, use Image::meta to retrieve specific fields
-     * @return array
-     */
-    protected function get_post_custom($iid)
-    {
-        Helper::deprecated(
-            '{{ image.get_post_custom( image.id ) }}',
-            "{{ image.meta('my_field') }}",
-            '2.0.0'
-        );
-        $pc = \get_post_custom($iid);
-        if (\is_bool($pc)) {
-            return [];
-        }
-        return $pc;
-    }
-
-    /**
      * Gets the source URL for the image.
      *
      * You can use WordPress image sizes (including the ones you registered with your theme or
@@ -187,18 +135,6 @@ class Image extends Attachment implements ImageInterface
          * @param int    $id  The image ID.
          */
         $src = \apply_filters('timber/image/src', $src, $this->ID);
-
-        /**
-         * Filters the src URL for a `Timber\Image`.
-         *
-         * @deprecated 2.0.0, use `timber/image/src`
-         */
-        $src = \apply_filters_deprecated(
-            'timber_image_src',
-            [$src, $this->ID],
-            '2.0.0',
-            'timber/image/src'
-        );
 
         return $src;
     }
@@ -294,24 +230,6 @@ class Image extends Attachment implements ImageInterface
     {
         $alt = $this->meta('_wp_attachment_image_alt');
         return \trim((string) \wp_strip_all_tags($alt));
-    }
-
-    /**
-     * Gets dimension for an image.
-     * @deprecated 2.0.0, use `{{ image.width }}` or `{{ image.height }}` in Twig
-     * @internal
-     *
-     * @param string $dimension The requested dimension. Either `width` or `height`.
-     * @return int|null The requested dimension. Null if image file couldn’t be found.
-     */
-    protected function get_dimension($dimension)
-    {
-        Helper::deprecated(
-            'Image::get_dimension()',
-            'Image::get_width() or Image::get_height()',
-            '2.0.0'
-        );
-        return $this->image_dimensions->get_dimension($dimension);
     }
 
     /**

@@ -5,7 +5,6 @@ namespace Timber\Tests;
 use Mantle\Testing\Attributes\PermalinkStructure;
 use Mantle\Testing\Concerns\Refresh_Database;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\Attributes\Ticket;
 use Timber\PostQuery;
 use Timber\Timber;
@@ -34,39 +33,6 @@ class PaginationTest extends TimberIntegrationTestCase
         ]);
     }
 
-    #[IgnoreDeprecations]
-    public function testPaginationSearch()
-    {
-        $this->setExpectedDeprecated('get_pagination');
-        $posts = static::factory()->post->create_many(55, [
-            'post_title' => 'searchable post',
-        ]);
-        $this->get(\home_url('/?s=post'));
-        $pagination = Timber::get_pagination();
-
-        $this->assertEquals(
-            \user_trailingslashit(\esc_url(\home_url('/?paged=5&s=post'))),
-            $pagination['pages'][4]['link']
-        );
-    }
-
-    #[IgnoreDeprecations]
-    public function testPaginationWithGetPosts()
-    {
-        $this->setExpectedDeprecated('get_pagination');
-        $pids = static::factory()->post->create_many(33);
-        $pids = static::factory()->post->create_many(55, [
-            'post_type' => 'portfolio',
-        ]);
-        $this->get(\home_url('/'));
-        Timber::get_posts([
-            'post_type' => 'portfolio',
-        ]);
-        $pagination = Timber::get_pagination();
-
-        $this->assertCount(4, $pagination['pages']);
-    }
-
     public function testPaginationWithPostQuery()
     {
         $pids = static::factory()->post->create_many(33);
@@ -82,65 +48,6 @@ class PaginationTest extends TimberIntegrationTestCase
         $this->assertCount(6, $query->pagination()->pages);
     }
 
-    #[IgnoreDeprecations]
-    public function testPaginationOnLaterPage()
-    {
-        $this->setExpectedDeprecated('get_pagination');
-        $pids = static::factory()->post->create_many(55, [
-            'post_type' => 'portfolio',
-        ]);
-        $this->get(\home_url('?post_type=portfolio&paged=3'));
-        $pagination = Timber::get_pagination();
-        $this->assertSame(6, \count($pagination['pages']));
-    }
-
-    #[PermalinkStructure('/%postname%/')]
-    #[IgnoreDeprecations]
-    public function testSanitizeNextPagination()
-    {
-        $this->setExpectedDeprecated('get_pagination');
-        $pids = static::factory()->post->create_many(55, [
-            'post_type' => 'portfolio',
-        ]);
-        $this->get(\home_url('/portfolio/page/3?whscheck="><svg/onload=alert()>'));
-        $pagination = Timber::get_pagination();
-        $this->assertEquals('http://example.org/portfolio/page/4/?whscheck=%22%3E%3Csvg%2Fonload%3Dalert%28%29%3E', $pagination['next']['link']);
-    }
-
-    #[PermalinkStructure('/%postname%/')]
-    #[IgnoreDeprecations]
-    public function testMaliciousGetParameter()
-    {
-        $this->setExpectedDeprecated('get_pagination');
-        static::factory()->post->create_many(33, [
-            'post_type' => 'portfolio',
-        ]);
-        $this->get(\home_url('/portfolio/page/3?wx9um%2522%253e%253cscript%253ealert%25281%2529%253c%252fscript%
-253eaq86s=1'));
-        $pagination = Timber::get_pagination();
-        $this->assertEquals('http://example.org/portfolio/page/4/?wx9umscriptalert(1)/script%_253eaq86s=1', $pagination['next']['link']);
-    }
-
-    #[PermalinkStructure('/%postname%/')]
-    #[IgnoreDeprecations]
-    public function testMaliciousGetParameter2()
-    {
-        $this->setExpectedDeprecated('get_pagination');
-        static::factory()->post->create_many(33, [
-            'post_type' => 'portfolio',
-        ]);
-
-        $encoded_once = '?%22%3E%3Cscript%3Ealert(%22XSS%20XSS%22)%3C%2Fscript%3E%3D1';
-        $this->get(\home_url("/portfolio/page/3?{$encoded_once}"));
-        $pagination = Timber::get_pagination();
-        $this->assertEquals("http://example.org/portfolio/page/4/?scriptalert(XSS_XSS)/script=1", $pagination['next']['link']);
-        $encoded_twice = '?%2522%253E%253Cscript%253Ealert(%2522XSS%2520XSS%2522)%253C%252Fscript%253E%253D1';
-        $this->get(\home_url("/portfolio/page/3?{$encoded_twice}"));
-        $pagination = Timber::get_pagination();
-        $this->assertEquals("http://example.org/portfolio/page/4/?scriptalert(XSS_XSS)/script=1", $pagination['next']['link']);
-    }
-
-    #[PermalinkStructure('/%postname%/')]
     public function testDoubleEncodedPaginationUrl()
     {
         static::factory()->post->create_many(33, [
@@ -170,109 +77,6 @@ class PaginationTest extends TimberIntegrationTestCase
         $this->assertEquals('http://example.org/portfolio/page/4/?wx9umscriptalert(1)/script%_253eaq86s=1', $link);
     }
 
-    #[IgnoreDeprecations]
-    public function testPaginationWithSize()
-    {
-        $this->setExpectedDeprecated('get_pagination');
-        $pids = static::factory()->post->create_many(99, [
-            'post_type' => 'portfolio',
-        ]);
-        $this->get(\home_url('?post_type=portfolio'));
-        $pagination = Timber::get_pagination(4);
-        $this->assertSame(5, \count($pagination['pages']));
-    }
-
-    #[PermalinkStructure('/%postname%/')]
-    #[IgnoreDeprecations]
-    public function testPaginationSearchPrettyWithPostname()
-    {
-        $this->setExpectedDeprecated('get_pagination');
-        static::factory()->post->create_many(55, [
-            'post_title' => 'searchable post',
-        ]);
-        $archive = \home_url('?s=post');
-        $this->get($archive);
-        $pagination = Timber::get_pagination();
-
-        $this->assertEquals('http://example.org/page/5/?s=post', $pagination['pages'][4]['link']);
-    }
-
-    #[PermalinkStructure('/%postname%/')]
-    #[IgnoreDeprecations]
-    public function testPaginationSearchPrettyWithPostnameNext()
-    {
-        $this->setExpectedDeprecated('get_pagination');
-        static::factory()->post->create_many(55, [
-            'post_title' => 'searchable post',
-        ]);
-        $archive = \home_url('?s=post');
-        $this->get($archive);
-        $pagination = Timber::get_pagination();
-
-        $this->assertEquals('http://example.org/page/2/?s=post', $pagination['next']['link']);
-    }
-
-    #[PermalinkStructure('/%postname%/')]
-    #[IgnoreDeprecations]
-    public function testPaginationSearchPrettyWithPostnamePrev()
-    {
-        $this->setExpectedDeprecated('get_pagination');
-        static::factory()->post->create_many(55, [
-            'post_title' => 'searchable post',
-        ]);
-
-        $archive = \home_url('page/4/?s=post');
-        $this->get($archive);
-        $pagination = Timber::get_pagination();
-
-        $this->assertEquals('http://example.org/page/3/?s=post', $pagination['prev']['link']);
-    }
-
-    #[PermalinkStructure('/blog/%year%/%monthnum%/%postname%/')]
-    #[IgnoreDeprecations]
-    public function testPaginationSearchPrettyx()
-    {
-        $this->setExpectedDeprecated('get_pagination');
-        static::factory()->post->create_many(55, [
-            'post_title' => 'searchable post',
-        ]);
-
-        $archive = \home_url('?s=post');
-        $this->get($archive);
-        $pagination = Timber::get_pagination();
-
-        $this->assertEquals('http://example.org/page/5/?s=post', $pagination['pages'][4]['link']);
-    }
-
-    #[PermalinkStructure('/%postname%/')]
-    #[IgnoreDeprecations]
-    public function testPaginationHomePrettyTrailingSlash()
-    {
-        $this->setExpectedDeprecated('get_pagination');
-        static::factory()->post->create_many(55, [
-            'post_title' => 'searchable post',
-        ]);
-
-        $this->get(\home_url('/'));
-        $pagination = Timber::get_pagination();
-
-        $this->assertEquals(\user_trailingslashit('http://example.org/page/3/'), $pagination['pages'][2]['link']);
-        $this->assertEquals(\user_trailingslashit('http://example.org/page/2/'), $pagination['next']['link']);
-    }
-
-    #[PermalinkStructure('/%postname%')]
-    #[IgnoreDeprecations]
-    public function testPaginationHomePrettyNonTrailingSlash()
-    {
-        $this->setExpectedDeprecated('get_pagination');
-        static::factory()->post->create_many(55);
-        $this->get(\home_url('/'));
-        $pagination = Timber::get_pagination();
-
-        $this->assertEquals('http://example.org/page/3', $pagination['pages'][2]['link']);
-        $this->assertEquals('http://example.org/page/2', $pagination['next']['link']);
-    }
-
     public function testPaginationInCategory()
     {
         static::factory()->post->create_many(73);
@@ -292,51 +96,6 @@ class PaginationTest extends TimberIntegrationTestCase
         $pagination = Timber::get_posts()->pagination();
 
         $this->assertCount(4, $pagination->pages);
-    }
-
-    #[PermalinkStructure('/%postname%/')]
-    #[IgnoreDeprecations]
-    public function testPaginationNextUsesBaseAndFormatArgs()
-    {
-        $this->setExpectedDeprecated('get_pagination');
-        static::factory()->post->create_many(55);
-        $this->get(\home_url('/'));
-        $pagination = Timber::get_pagination([
-            'base' => '/apricot/%_%',
-            'format' => '?pagination=%#%',
-        ]);
-
-        $this->assertEquals('/apricot/?pagination=2', $pagination['next']['link']);
-    }
-
-    #[PermalinkStructure('/%postname%/')]
-    #[IgnoreDeprecations]
-    public function testPaginationPrevUsesBaseAndFormatArgs()
-    {
-        $this->setExpectedDeprecated('get_pagination');
-        static::factory()->post->create_many(55);
-        $this->get(\home_url('/apricot/page=3'));
-        \query_posts('paged=3');
-        $GLOBALS['paged'] = 3;
-        $pagination = Timber::get_pagination([
-            'base' => '/apricot/%_%',
-            'format' => 'pagination/%#%',
-        ]);
-
-        $this->assertEquals('/apricot/pagination/2/', $pagination['prev']['link']);
-    }
-
-    #[PermalinkStructure('/%postname%/')]
-    #[IgnoreDeprecations]
-    public function testPaginationWithMoreThan10Pages()
-    {
-        $this->setExpectedDeprecated('get_pagination');
-        static::factory()->post->create_many(150);
-        $this->get(\home_url('/page/13'));
-        $pagination = Timber::get_pagination();
-        $expected_next_link = \user_trailingslashit('http://example.org/page/14/');
-
-        $this->assertEquals($expected_next_link, $pagination['next']['link']);
     }
 
     // tests for pagination object set on PostCollection

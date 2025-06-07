@@ -12,7 +12,6 @@ class LocationManager
     {
         //priority: user locations, caller (but not theme), child theme, parent theme, caller, open_basedir
         $locs = [];
-        $locs = \array_merge_recursive($locs, self::get_locations_user());
         $locs = \array_merge_recursive($locs, self::get_locations_caller($caller, true));
         $locs = \array_merge_recursive($locs, self::get_locations_theme());
         $locs = \array_merge_recursive($locs, self::get_locations_caller($caller));
@@ -42,13 +41,6 @@ class LocationManager
          * @param array $locs An array of filesystem paths to search for Twig templates.
          */
         $locs = \apply_filters('timber/locations', $locs);
-
-        /**
-         * Filters the filesystem paths to search for Twig templates.
-         *
-         * @deprecated 2.0.0, use `timber/locations`
-         */
-        $locs = \apply_filters_deprecated('timber_locations', [$locs], '2.0.0', 'timber/locations');
 
         return $locs;
     }
@@ -133,39 +125,6 @@ class LocationManager
             ];
         }
         return Timber::$dirname;
-    }
-
-    /**
-     * @deprecated since 2.0.0 Use `add_filter('timber/locations', $locations)` instead.
-     * @return array
-     */
-    protected static function get_locations_user()
-    {
-        $locs = [];
-        if (isset(Timber::$locations)) {
-            if (\is_string(Timber::$locations)) {
-                Timber::$locations = [Timber::$locations];
-            }
-            foreach (Timber::$locations as $tloc => $namespace_or_tloc) {
-                if (\is_string($tloc)) {
-                    $namespace = $namespace_or_tloc;
-                } else {
-                    $tloc = $namespace_or_tloc;
-                    $namespace = null;
-                }
-
-                $tloc = \realpath($tloc);
-                if (\is_dir($tloc)) {
-                    if (!\is_string($namespace)) {
-                        $locs[Loader::MAIN_NAMESPACE][] = $tloc;
-                    } else {
-                        $locs[$namespace][] = $tloc;
-                    }
-                }
-            }
-        }
-
-        return $locs;
     }
 
     /**

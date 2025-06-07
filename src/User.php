@@ -251,27 +251,6 @@ class User extends CoreEntity implements Stringable
     }
 
     /**
-     * Gets a user meta value.
-     *
-     * @api
-     * @deprecated 2.0.0, use `{{ user.meta('field_name') }}` instead.
-     * @see \Timber\User::meta()
-     *
-     * @param string $field_name The field name for which you want to get the value.
-     * @return mixed The meta field value.
-     */
-    public function get_field($field_name = null)
-    {
-        Helper::deprecated(
-            "{{ user.get_field('field_name') }}",
-            "{{ user.meta('field_name') }}",
-            '2.0.0'
-        );
-
-        return $this->meta($field_name);
-    }
-
-    /**
      * Check if the user object is the current user
      *
      * @api
@@ -320,45 +299,6 @@ class User extends CoreEntity implements Stringable
     public function slug()
     {
         return $this->user_nicename;
-    }
-
-    /**
-     * Gets a user meta value.
-     *
-     * @api
-     * @deprecated 2.0.0, use `{{ user.meta('field_name') }}` instead.
-     *
-     * @param string $field_name The field name for which you want to get the value.
-     * @return mixed The meta field value.
-     */
-    public function get_meta_field($field_name)
-    {
-        Helper::deprecated(
-            "{{ user.get_meta_field('field_name') }}",
-            "{{ user.meta('field_name') }}",
-            '2.0.0'
-        );
-
-        return $this->meta($field_name);
-    }
-
-    /**
-     * Gets a user meta value.
-     *
-     * @api
-     * @deprecated 2.0.0, use `{{ user.meta('field_name') }}` instead.
-     *
-     * @param string $field_name The field name for which you want to get the value.
-     * @return mixed The meta field value.
-     */
-    public function get_meta($field_name)
-    {
-        Helper::deprecated(
-            "{{ user.get_meta('field_name') }}",
-            "{{ user.meta('field_name') }}",
-            '2.0.0'
-        );
-        return $this->meta($field_name);
     }
 
     /**

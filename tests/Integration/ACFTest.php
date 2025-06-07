@@ -3,7 +3,6 @@
 namespace Timber\Tests\Integration;
 
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\Attributes\Ticket;
 use Timber\Image;
 use Timber\Post;
@@ -398,46 +397,6 @@ class ACFTest extends TimberIntegrationTestCase
         ]);
         $this->assertInstanceOf(User::class, $users[0]);
         $this->assertEquals($user_2_id, $users[1]->ID);
-    }
-
-    #[IgnoreDeprecations]
-    public function testPostGetFieldDeprecated()
-    {
-        $this->setExpectedDeprecated("{{ post.get_field('field_name') }}");
-        $post_id = static::factory()->post->create();
-        $post = Timber::get_post($post_id);
-
-        $post->get_field('field_name');
-    }
-
-    #[IgnoreDeprecations]
-    public function testTermGetFieldDeprecated()
-    {
-        $this->setExpectedDeprecated("{{ term.get_field('field_name') }}");
-        $term_id = static::factory()->term->create();
-        $term = Timber::get_term($term_id);
-
-        $term->get_field('field_name');
-    }
-
-    #[IgnoreDeprecations]
-    public function testUserGetFieldDeprecated()
-    {
-        $this->setExpectedDeprecated("{{ user.get_field('field_name') }}");
-        $user_id = static::factory()->user->create();
-        $user = Timber::get_user($user_id);
-
-        $user->get_field('field_name');
-    }
-
-    #[IgnoreDeprecations]
-    public function testCommentGetFieldDeprecated()
-    {
-        $this->setExpectedDeprecated("{{ comment.get_field('field_name') }}");
-        $comment_id = static::factory()->comment->create();
-        $comment = Timber::get_comment($comment_id);
-
-        $comment->get_field('field_name');
     }
 
     public function testACFContentField()

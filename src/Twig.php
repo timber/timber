@@ -8,7 +8,6 @@ use DateTimeInterface;
 use Exception;
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
-use Twig\DeprecatedCallableInfo;
 use Twig\Environment;
 use Twig\Error\RuntimeError;
 use Twig\Extension\CoreExtension;
@@ -101,126 +100,6 @@ class Twig
                     $caller = LocationManager::get_locations();
                     Timber::render_twig_block($block_name, $filenames, $data, $caller, $expires, $cache_mode);
                 },
-            ],
-            'Post' => [
-                'callable' => function ($post_id) use ($post_factory) {
-                    Helper::deprecated('{{ Post() }}', '{{ get_post() }} or {{ get_posts() }}', '2.0.0');
-                    return $post_factory->from($post_id);
-                },
-                'options' => [
-                    'deprecation_info' => new DeprecatedCallableInfo(
-                        package: 'timber/timber',
-                        version: '2.0.0',
-                        altName: '{{ get_post() }} or {{ get_posts() }}',
-                        altPackage: null,
-                        altVersion: null
-                    ),
-                ],
-            ],
-            'TimberPost' => [
-                'callable' => function ($post_id) use ($post_factory) {
-                    Helper::deprecated('{{ TimberPost() }}', '{{ get_post() }} or {{ get_posts() }}', '2.0.0');
-                    return $post_factory->from($post_id);
-                },
-                'options' => [
-                    'deprecation_info' => new DeprecatedCallableInfo(
-                        package: 'timber/timber',
-                        version: '2.0.0',
-                        altName: '{{ get_post() }} or {{ get_posts() }}',
-                        altPackage: null,
-                        altVersion: null
-                    ),
-                ],
-            ],
-            'Image' => [
-                'callable' => function ($post_id) use ($post_factory) {
-                    Helper::deprecated('{{ Image() }}', '{{ get_image() }}, {{ get_post() }}, {{ get_posts() }}, {{ get_attachment() }} or {{ get_attachment_by() }}', '2.0.0');
-                    return $post_factory->from($post_id);
-                },
-                'options' => [
-                    'deprecation_info' => new DeprecatedCallableInfo(
-                        package: 'timber/timber',
-                        version: '2.0.0',
-                        altName: '{{ get_image() }}',
-                        altPackage: null,
-                        altVersion: null
-                    ),
-                ],
-            ],
-            'TimberImage' => [
-                'callable' => function ($post_id) use ($post_factory) {
-                    Helper::deprecated('{{ TimberImage() }}', '{{ get_image() }}, {{ get_post() }}, {{ get_posts() }}, {{ get_attachment() }} or {{ get_attachment_by() }}', '2.0.0');
-                    return $post_factory->from($post_id);
-                },
-                'options' => [
-                    'deprecation_info' => new DeprecatedCallableInfo(
-                        package: 'timber/timber',
-                        version: '2.0.0',
-                        altName: '{{ get_image() }}',
-                        altPackage: null,
-                        altVersion: null
-                    ),
-                ],
-            ],
-            'Term' => [
-                'callable' => function ($term_id) use ($termFactory) {
-                    Helper::deprecated('{{ Term() }}', '{{ get_term() }} or {{ get_terms() }}', '2.0.0');
-                    return $termFactory->from($term_id);
-                },
-                'options' => [
-                    'deprecation_info' => new DeprecatedCallableInfo(
-                        package: 'timber/timber',
-                        version: '2.0.0',
-                        altName: '{{ get_term() }}',
-                        altPackage: null,
-                        altVersion: null
-                    ),
-                ],
-            ],
-            'TimberTerm' => [
-                'callable' => function ($term_id) use ($termFactory) {
-                    Helper::deprecated('{{ TimberTerm() }}', '{{ get_term() }} or {{ get_terms() }}', '2.0.0');
-                    return $termFactory->from($term_id);
-                },
-                'options' => [
-                    'deprecation_info' => new DeprecatedCallableInfo(
-                        package: 'timber/timber',
-                        version: '2.0.0',
-                        altName: '{{ get_term() }} or {{ get_terms() }}',
-                        altPackage: null,
-                        altVersion: null
-                    ),
-                ],
-            ],
-            'User' => [
-                'callable' => function ($user_id) {
-                    Helper::deprecated('{{ User() }}', '{{ get_user() }} or {{ get_users() }}', '2.0.0');
-                    return Timber::get_user($user_id);
-                },
-                'options' => [
-                    'deprecation_info' => new DeprecatedCallableInfo(
-                        package: 'timber/timber',
-                        version: '2.0.0',
-                        altName: '{{ get_user() }} or {{ get_users() }}',
-                        altPackage: null,
-                        altVersion: null
-                    ),
-                ],
-            ],
-            'TimberUser' => [
-                'callable' => function ($user_id) {
-                    Helper::deprecated('{{ TimberUser() }}', '{{ get_user() }} or {{ get_users() }}', '2.0.0');
-                    return Timber::get_user($user_id);
-                },
-                'options' => [
-                    'deprecation_info' => new DeprecatedCallableInfo(
-                        package: 'timber/timber',
-                        version: '2.0.0',
-                        altName: '{{ get_user() }} or {{ get_users() }}',
-                        altPackage: null,
-                        altVersion: null
-                    ),
-                ],
             ],
             'shortcode' => [
                 'callable' => 'do_shortcode',
@@ -346,38 +225,6 @@ class Twig
             ],
             'towebp' => [
                 'callable' => [ImageHelper::class, 'img_to_webp'],
-            ],
-
-            // Debugging filters.
-            'get_class' => [
-                'callable' => function ($obj) {
-                    Helper::deprecated('{{ my_object | get_class }}', "{{ function('get_class', my_object) }}", '2.0.0');
-                    return $obj::class;
-                },
-                'options' => [
-                    'deprecation_info' => new DeprecatedCallableInfo(
-                        package: 'timber/timber',
-                        version: '2.0.0',
-                        altName: "{{ function('get_class', my_object) }}",
-                        altPackage: null,
-                        altVersion: null
-                    ),
-                ],
-            ],
-            'print_r' => [
-                'callable' => function ($arr) {
-                    Helper::deprecated('{{ my_object | print_r }}', '{{ dump(my_object) }}', '2.0.0');
-                    return \print_r($arr, true);
-                },
-                'options' => [
-                    'deprecation_info' => new DeprecatedCallableInfo(
-                        package: 'timber/timber',
-                        version: '2.0.0',
-                        altName: '{{ dump(my_object) }}',
-                        altPackage: null,
-                        altVersion: null
-                    ),
-                ],
             ],
 
             // Other filters.
@@ -749,51 +596,6 @@ class Twig
     public function convert_pre_entities($matches)
     {
         return \str_replace($matches[1], \htmlentities((string) $matches[1]), (string) $matches[0]);
-    }
-
-    /**
-     * Formats a date.
-     *
-     * @deprecated 2.0.0
-     *
-     * @param null|string|false    $format Optional. PHP date format. Will use the `date_format`
-     *                                     option as a default.
-     * @param string|int|DateTime $date   A date.
-     *
-     * @return string
-     */
-    public function intl_date($date, $format = null)
-    {
-        Helper::deprecated('intl_date', 'DateTimeHelper::wp_date', '2.0.0');
-
-        return DateTimeHelper::wp_date($format, $date);
-    }
-
-    /**
-     *
-     * @deprecated 2.0.0
-     *
-     * Returns the difference between two times in a human readable format.
-     *
-     * Differentiates between past and future dates.
-     *
-     * @see \human_time_diff()
-     *
-     * @param int|string $from          Base date as a timestamp or a date string.
-     * @param int|string $to            Optional. Date to calculate difference to as a timestamp or
-     *                                  a date string. Default to current time.
-     * @param string     $format_past   Optional. String to use for past dates. To be used with
-     *                                  `sprintf()`. Default `%s ago`.
-     * @param string     $format_future Optional. String to use for future dates. To be used with
-     *                                  `sprintf()`. Default `%s from now`.
-     *
-     * @return string
-     */
-    public static function time_ago($from, $to = null, $format_past = null, $format_future = null)
-    {
-        Helper::deprecated('time_ago', 'DateTimeHelper::time_ago', '2.0.0');
-
-        return DateTimeHelper::time_ago($from, $to, $format_past, $format_future);
     }
 
     /**

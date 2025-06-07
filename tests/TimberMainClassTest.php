@@ -6,7 +6,6 @@ use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Concerns\Reset_Server;
 use Person;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\Attributes\Ticket;
 use Timber\LocationManager;
 use Timber\Post;
@@ -536,16 +535,6 @@ class TimberMainClassTest extends TimberIntegrationTestCase
         $this->assertCount(15, $posts);
     }
 
-    #[IgnoreDeprecations]
-    public function testBlankQueryPost()
-    {
-        $this->setExpectedDeprecated('Timber::query_post()');
-        $pid = static::factory()->post->create();
-        $this->get(\home_url('/?p=' . $pid));
-        $post = Timber::query_post();
-        $this->assertEquals($pid, $post->ID);
-    }
-
     public function testGetPostWithMergeDefault()
     {
         $cat = static::factory()->term->create([
@@ -825,86 +814,5 @@ class TimberMainClassTest extends TimberIntegrationTestCase
         $this->get('/');
 
         $this->assertCount(10, Timber::get_posts());
-    }
-
-    public function testDeprecatedGetPostFromSlug()
-    {
-        $this->setExpectedIncorrectUsage('Timber::get_post()');
-        $post_id = static::factory()->post->create([
-            'post_name' => 'mycoolpost',
-        ]);
-        $this->assertNull(Timber::get_post('mycoolpost'));
-    }
-
-    public function testDeprecatedPostClassParameterForGetPost()
-    {
-        $this->setExpectedIncorrectUsage('Timber::get_post()');
-        $post_id = static::factory()->post->create();
-        $post = Timber::get_post($post_id, 'Deprecated class name param');
-
-        $this->assertInstanceOf(Post::class, $post);
-    }
-
-    public function testDeprecatedPostClassParameterForGetPosts()
-    {
-        $this->setExpectedIncorrectUsage('Timber::get_posts()');
-        static::factory()->post->create_many(2);
-
-        $posts = Timber::get_posts([
-            'post_type' => 'post',
-        ], 'Deprecated class name param');
-
-        $this->assertInstanceOf(Post::class, $posts[0]);
-    }
-
-    public function testDeprecatedQueryStringsForGetPosts()
-    {
-        $this->setExpectedIncorrectUsage('Timber::get_posts()');
-        static::factory()->post->create_many(2);
-
-        $posts = Timber::get_posts('post_type=post');
-        $this->assertCount(2, $posts);
-    }
-
-    public function testDeprecatedReturnCollectionParameterInGetPosts()
-    {
-        $this->setExpectedIncorrectUsage('Timber::get_posts()');
-        static::factory()->post->create_many(2);
-
-        $posts = Timber::get_posts(
-            [
-                'post_type' => 'post',
-            ],
-            Post::class,
-            true
-        );
-
-        $this->assertEquals(Post::class, $posts[0]::class);
-    }
-
-    #[IgnoreDeprecations]
-    public function testDeprecatedQueryPost()
-    {
-        $this->setExpectedDeprecated('Timber::query_post()');
-        $post_id = static::factory()->post->create([
-            'post_type' => 'post',
-        ]);
-        $post = Timber::query_post($post_id);
-
-        $this->assertEquals($post->ID, $post_id);
-    }
-
-    #[IgnoreDeprecations]
-    public function testDeprecatedQueryPosts()
-    {
-        $this->setExpectedDeprecated('Timber::query_posts()');
-        $post_ids = static::factory()->post->create_many(3, [
-            'post_type' => 'post',
-        ]);
-        $posts = Timber::query_posts([
-            'post_type' => 'post',
-        ]);
-
-        $this->assertCount(3, $posts);
     }
 }

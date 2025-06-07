@@ -144,32 +144,6 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
                 $this,
                 $args
             );
-
-            if ($object_type !== 'term') {
-                /**
-                 * Filters the value for a post meta field before it is fetched from the database.
-                 *
-                 * @deprecated 2.0.0, use `timber/{object_type}/pre_meta`
-                 */
-                $object_meta = \apply_filters_deprecated(
-                    "timber_{$object_type}_get_meta_field_pre",
-                    [$object_meta, $this->ID, $field_name, $this],
-                    '2.0.0',
-                    "timber/{$object_type}/pre_meta"
-                );
-
-                /**
-                 * Filters post meta data before it is fetched from the database.
-                 *
-                 * @deprecated 2.0.0, use `timber/{object_type}/pre_meta`
-                 */
-                \do_action_deprecated(
-                    "timber_{$object_type}_get_meta_pre",
-                    [$object_meta, $this->ID, $this],
-                    '2.0.0',
-                    "timber/{$object_type}/pre_meta"
-                );
-            }
         }
 
         if (null === $object_meta) {
@@ -228,44 +202,6 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
                 $field_name,
                 $this,
                 $args
-            );
-
-            if ($object_type === 'term') {
-                /**
-                 * Filters the value for a term meta field.
-                 *
-                 * @deprecated 2.0.0, use `timber/term/meta`
-                 */
-                $object_meta = \apply_filters_deprecated(
-                    'timber/term/meta/field',
-                    [$object_meta, $this->ID, $field_name, $this],
-                    '2.0.0',
-                    'timber/term/meta'
-                );
-            }
-
-            /**
-             * Filters the value for an object meta field.
-             *
-             * @deprecated 2.0.0, use `timber/{object_type}/meta`
-             */
-            $object_meta = \apply_filters_deprecated(
-                "timber_{$object_type}_get_meta_field",
-                [$object_meta, $this->ID, $field_name, $this],
-                '2.0.0',
-                "timber/{$object_type}/meta"
-            );
-
-            /**
-             * Filters object meta data fetched from the database.
-             *
-             * @deprecated 2.0.0, use `timber/{object_type}/meta`
-             */
-            $object_meta = \apply_filters_deprecated(
-                "timber_{$object_type}_get_meta",
-                [$object_meta, $this->ID, $this],
-                '2.0.0',
-                "timber/{$object_type}/meta"
             );
 
             // Maybe convert values to Timber objects.

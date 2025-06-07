@@ -1230,20 +1230,6 @@ class PostTest extends TimberIntegrationTestCase
         $this->assertEquals($attachment_id, $post->thumbnail_id());
     }
 
-    public function testDeprecatedPostThumbnailIdProperty()
-    {
-        $this->setExpectedIncorrectUsage('Accessing the thumbnail ID through {{ post._thumbnail_id }}');
-
-        // Add attachment to post.
-        $post_id = static::factory()->post->create();
-        $attachment_id = static::factory()->attachment->create();
-        \add_post_meta($post_id, '_thumbnail_id', $attachment_id, true);
-
-        $post = Timber::get_post($post_id);
-
-        $this->assertEquals($attachment_id, $post->_thumbnail_id);
-    }
-
     public function testWPObject()
     {
         $post_id = static::factory()->post->create();

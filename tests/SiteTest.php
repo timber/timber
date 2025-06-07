@@ -3,10 +3,8 @@
 namespace Timber\Tests;
 
 use AllowDynamicProperties;
-use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use Timber\Image;
 use Timber\Site;
-use Timber\Tests\Support\Attributes\WithOption;
 use Timber\Tests\Support\Attributes\WithTheme;
 use Timber\Timber;
 use Timber\URLHelper;
@@ -105,16 +103,6 @@ class SiteTest extends TimberIntegrationTestCase
         $this->assertEquals('barr', $result);
     }
 
-    #[IgnoreDeprecations]
-    public function testSiteMeta()
-    {
-        $this->setExpectedDeprecated('{{ site.meta() }}');
-        $ts = new Site();
-        \update_option('foo', 'magoo');
-        $this->assertEquals('magoo', $ts->meta('foo'));
-    }
-
-    #[WithOption('date_format', 'j. F Y')]
     public function testSiteOption()
     {
         $ts = new Site();

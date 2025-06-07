@@ -3,7 +3,6 @@
 namespace Timber\Tests;
 
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use Timber\Timber;
 use Twig\Error\SyntaxError;
 use Twig\TwigFilter;
@@ -149,20 +148,6 @@ class TwigTest extends TimberIntegrationTestCase
         ])));
     }
 
-    #[IgnoreDeprecations]
-    public function testFilterFunction()
-    {
-        $this->setExpectedDeprecated('{{ my_object | get_class }}');
-        $pid = static::factory()->post->create([
-            'post_title' => 'Foo',
-        ]);
-        $post = Timber::get_post($pid);
-        $str = 'I am a {{post | get_class }}';
-        $this->assertEquals('I am a Timber\Post', Timber::compile_string($str, [
-            'post' => $post,
-        ]));
-    }
-
     public function testFilterTruncate()
     {
         $gettysburg = 'Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal.';
@@ -306,24 +291,6 @@ class TwigTest extends TimberIntegrationTestCase
 
         $str = Timber::compile_string('{{shortcode("[duck]Lauren[/duck]")}}');
         $this->assertEquals('Lauren says quack!', $str);
-    }
-
-    #[IgnoreDeprecations]
-    public function testAutoescapeVariableDeprecated()
-    {
-        $this->setExpectedDeprecated('Timber::$autoescape');
-        Timber::$autoescape = true;
-
-        $str = Timber::compile_string('The {{ region }} remembers…', [
-            'region' => '<strong>North</strong>',
-        ]);
-
-        $this->assertEquals(
-            'The &lt;strong&gt;North&lt;/strong&gt; remembers…',
-            $str
-        );
-
-        Timber::$autoescape = false;
     }
 
     public function testAutoescapeTrueBackwardsCompatibilityWithFilter()

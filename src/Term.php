@@ -3,7 +3,6 @@
 namespace Timber;
 
 use Stringable;
-use Timber\Factory\TermFactory;
 use WP_Term;
 
 /**
@@ -163,27 +162,6 @@ class Term extends CoreEntity implements Stringable
         return $this->name;
     }
 
-    /**
-     *
-     * @deprecated 2.0.0, use TermFactory::from instead.
-     *
-     * @param $tid
-     * @param $taxonomy
-     *
-     * @return static
-     */
-    public static function from($tid, $taxonomy = null)
-    {
-        Helper::deprecated(
-            "Term::from()",
-            "Timber\Factory\TermFactory->from()",
-            '2.0.0'
-        );
-
-        $termFactory = new TermFactory();
-        return $termFactory->from($tid);
-    }
-
     /* Setup
        ===================== */
     /**
@@ -277,33 +255,6 @@ class Term extends CoreEntity implements Stringable
     public function wp_object(): ?WP_Term
     {
         return $this->wp_object;
-    }
-
-    /**
-     * @deprecated 2.0.0, use `{{ term.edit_link }}` instead.
-     * @return string
-     */
-    public function get_edit_url()
-    {
-        Helper::deprecated('{{ term.get_edit_url }}', '{{ term.edit_link }}', '2.0.0');
-        return $this->edit_link();
-    }
-
-    /**
-     * Gets a term meta value.
-     * @deprecated 2.0.0, use `{{ term.meta('field_name') }}` instead.
-     *
-     * @param string $field_name The field name for which you want to get the value.
-     * @return string The meta field value.
-     */
-    public function get_meta_field($field_name)
-    {
-        Helper::deprecated(
-            "{{ term.get_meta_field('field_name') }}",
-            "{{ term.meta('field_name') }}",
-            '2.0.0'
-        );
-        return $this->meta($field_name);
     }
 
     /**
@@ -406,40 +357,7 @@ class Term extends CoreEntity implements Stringable
          */
         $link = \apply_filters('timber/term/link', $link, $this);
 
-        /**
-         * Filters the link to the term archive page.
-         *
-         * @deprecated 0.21.9, use `timber/term/link`
-         */
-        $link = \apply_filters_deprecated(
-            'timber_term_link',
-            [$link, $this],
-            '2.0.0',
-            'timber/term/link'
-        );
-
         return $link;
-    }
-
-    /**
-     * Gets a term meta value.
-     *
-     * @api
-     * @deprecated 2.0.0, use `{{ term.meta('field_name') }}` instead.
-     * @see \Timber\Term::meta()
-     *
-     * @param string $field_name The field name for which you want to get the value.
-     * @return mixed The meta field value.
-     */
-    public function get_field($field_name = null)
-    {
-        Helper::deprecated(
-            "{{ term.get_field('field_name') }}",
-            "{{ term.meta('field_name') }}",
-            '2.0.0'
-        );
-
-        return $this->meta($field_name);
     }
 
     /**
@@ -477,18 +395,6 @@ class Term extends CoreEntity implements Stringable
          * @param Term $term The term object.
          */
         $rel = \apply_filters('timber/term/path', $rel, $this);
-
-        /**
-         * Filters the relative link (path) to a term archive page.
-         *
-         * @deprecated 2.0.0, use `timber/term/path`
-         */
-        $rel = \apply_filters_deprecated(
-            'timber_term_path',
-            [$rel, $this],
-            '2.0.0',
-            'timber/term/path'
-        );
 
         return $rel;
     }
@@ -545,61 +451,27 @@ class Term extends CoreEntity implements Stringable
      * </ul>
      * ```
      *
-     * @param int|array $query           Optional. Either the number of posts or an array of
-     *                                   arguments for the post query to be performed.
-     *                                   Default is an empty array, the equivalent of:
-     *                                   ```php
-     *                                   [
-     *                                     'posts_per_page' => get_option('posts_per_page'),
-     *                                     'post_type'      => 'any',
-     *                                     'tax_query'      => [ ...tax query for this Term... ]
-     *                                   ]
-     *                                   ```
-     * @param string $post_type_or_class Deprecated. Before Timber 2.x this was a post_type to be
-     *                                   used for querying posts OR the Timber\Post subclass to
-     *                                   instantiate for each post returned. As of Timber 2.0.0,
-     *                                   specify `post_type` in the `$query` array argument. To
-     *                                   specify the class, use Class Maps.
+     * @param int|array $query Optional. Either the number of posts or an array of arguments for
+     *                         the post query to be performed. Default is an empty array, the
+     *                         equivalent of:
+     *                         ```php
+     *                         [
+     *                           'posts_per_page' => get_option('posts_per_page'),
+     *                           'post_type'      => 'any',
+     *                           'tax_query'      => [ ...tax query for this Term... ]
+     *                         ]
+     *                         ```
      * @see https://timber.github.io/docs/v2/guides/posts/
      * @see https://timber.github.io/docs/v2/guides/class-maps/
-     * @return PostQuery
+     * @return ?PostCollectionInterface
      */
-    public function posts($query = [], $post_type_or_class = null)
+    public function posts($query = [])
     {
-        if (\is_string($query)) {
-            Helper::doing_it_wrong(
-                'Passing a query string to Term::posts()',
-                'Pass a query array instead: e.g. `"posts_per_page=3"` should be replaced with `["posts_per_page" => 3]`',
-                '2.0.0'
-            );
-
-            return false;
-        }
-
         if (\is_int($query)) {
             $query = [
                 'posts_per_page' => $query,
                 'post_type' => 'any',
             ];
-        }
-
-        if (isset($post_type_or_class)) {
-            Helper::deprecated(
-                'Passing post_type_or_class',
-                'Pass post_type as part of the $query argument. For specifying class, use Class Maps: https://timber.github.io/docs/v2/guides/class-maps/',
-                '2.0.0'
-            );
-
-            // Honor the non-deprecated posts_per_page param over the deprecated second arg.
-            $query['post_type'] ??= $post_type_or_class;
-        }
-
-        if (\func_num_args() > 2) {
-            Helper::doing_it_wrong(
-                'Passing a post class',
-                'Use Class Maps instead: https://timber.github.io/docs/v2/guides/class-maps/',
-                '2.0.0'
-            );
         }
 
         $tax_query = [
@@ -625,80 +497,5 @@ class Term extends CoreEntity implements Stringable
     public function title()
     {
         return $this->name;
-    }
-
-    /** DEPRECATED DOWN HERE
-     * ======================
-     **/
-
-    /**
-     * Get Posts that have been "tagged" with the particular term
-     *
-     * @api
-     * @deprecated 2.0.0 use `{{ term.posts }}` instead
-     *
-     * @param int $numberposts
-     * @return array|bool|null
-     */
-    public function get_posts($numberposts = 10)
-    {
-        Helper::deprecated('{{ term.get_posts }}', '{{ term.posts }}', '2.0.0');
-        return $this->posts($numberposts);
-    }
-
-    /**
-     * @api
-     * @deprecated 2.0.0, use `{{ term.children }}` instead.
-     *
-     * @return array
-     */
-    public function get_children()
-    {
-        Helper::deprecated('{{ term.get_children }}', '{{ term.children }}', '2.0.0');
-
-        return $this->children();
-    }
-
-    /**
-     * Updates term_meta of the current object with the given value.
-     *
-     * @deprecated 2.0.0 Use `update_term_meta()` instead.
-     *
-     * @param string $key   The key of the meta field to update.
-     * @param mixed  $value The new value.
-     */
-    public function update($key, $value)
-    {
-        Helper::deprecated('Timber\Term::update()', 'update_term_meta()', '2.0.0');
-
-        /**
-         * Filters term meta value that is going to be updated.
-         *
-         * @deprecated 2.0.0 with no replacement
-         */
-        $value = \apply_filters_deprecated(
-            'timber_term_set_meta',
-            [$value, $key, $this->ID, $this],
-            '2.0.0',
-            false,
-            'This filter will be removed in a future version of Timber. There is no replacement.'
-        );
-
-        /**
-         * Filters term meta value that is going to be updated.
-         *
-         * This filter is used by the ACF Integration.
-         *
-         * @deprecated 2.0.0, with no replacement
-         */
-        $value = \apply_filters_deprecated(
-            'timber/term/meta/set',
-            [$value, $key, $this->ID, $this],
-            '2.0.0',
-            false,
-            'This filter will be removed in a future version of Timber. There is no replacement.'
-        );
-
-        $this->$key = $value;
     }
 }

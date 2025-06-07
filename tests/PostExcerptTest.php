@@ -3,7 +3,6 @@
 namespace Timber\Tests;
 
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\Attributes\Ticket;
 use Timber\PostExcerpt;
 use Timber\Timber;
@@ -52,24 +51,6 @@ class PostExcerptTest extends TimberIntegrationTestCase
         ]);
 
         $this->add_filter_temporarily('timber/post/excerpt/read_more_link', fn ($link) => ' Foobar');
-
-        $this->assertEquals('Let this be the excerpt! Foobar', (string) $excerpt);
-    }
-
-    #[IgnoreDeprecations]
-    public function testReadMoreLinkFilterDeprecated()
-    {
-        $this->setExpectedDeprecated('timber/post/get_preview/read_more_link');
-        $post_id = static::factory()->post->create([
-            'post_excerpt' => 'Let this be the excerpt!',
-        ]);
-
-        $post = Timber::get_post($post_id);
-        $excerpt = $post->excerpt([
-            'always_add_read_more' => true,
-        ]);
-
-        $this->add_filter_temporarily('timber/post/get_preview/read_more_link', fn ($link) => ' Foobar');
 
         $this->assertEquals('Let this be the excerpt! Foobar', (string) $excerpt);
     }

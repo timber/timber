@@ -3,7 +3,6 @@
 namespace Timber\Tests\Cache;
 
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use Timber\Cache\KeyGenerator;
 use Timber\Cache\TimberKeyGeneratorInterface;
 use Timber\Helper;
@@ -214,52 +213,6 @@ class CacheTest extends TimberIntegrationTestCase
         $second_value = Helper::transient($transient, fn () => 'second_value', 1);
 
         $this->assertEquals('second_value', $second_value);
-    }
-
-    #[IgnoreDeprecations]
-    public function testTwigCacheDeprecated()
-    {
-        $this->setExpectedDeprecated('Timber::$cache and Timber::$twig_cache');
-        $cache_dir = __DIR__ . '/../../cache/twig';
-        if (\is_dir($cache_dir)) {
-            Loader::rrmdir($cache_dir);
-        }
-        $this->assertFileDoesNotExist($cache_dir);
-        Timber::$twig_cache = true;
-        $pid = static::factory()->post->create();
-        $post = Timber::get_post($pid);
-        Timber::compile('assets/single-post.twig', [
-            'post' => $post,
-        ]);
-        \sleep(1);
-        $this->assertFileExists($cache_dir);
-        $loader = new Loader();
-        $loader->clear_cache_twig();
-        Timber::$twig_cache = false;
-        $this->assertFileDoesNotExist($cache_dir);
-    }
-
-    #[IgnoreDeprecations]
-    public function testTwigCacheAliasDeprecated()
-    {
-        $this->setExpectedDeprecated('Timber::$cache and Timber::$twig_cache');
-        $cache_dir = __DIR__ . '/../../cache/twig';
-        if (\is_dir($cache_dir)) {
-            Loader::rrmdir($cache_dir);
-        }
-        $this->assertFileDoesNotExist($cache_dir);
-        Timber::$cache = true;
-        $pid = static::factory()->post->create();
-        $post = Timber::get_post($pid);
-        Timber::compile('assets/single-post.twig', [
-            'post' => $post,
-        ]);
-        $this->assertFileExists($cache_dir);
-        $loader = new Loader();
-        $loader->clear_cache_twig();
-        Timber::$cache = false;
-        Timber::$twig_cache = false;
-        $this->assertFileDoesNotExist($cache_dir);
     }
 
     public function testTwigCache()

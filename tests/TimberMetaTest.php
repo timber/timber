@@ -7,7 +7,6 @@ use MetaPost;
 use MetaTerm;
 use MetaUser;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use Timber\Integration\AcfIntegration;
 use Timber\Timber;
 use Twig\Environment;
@@ -892,86 +891,6 @@ class TimberMetaTest extends TimberIntegrationTestCase
 
         $this->assertEquals('I am a meta value', $comment_string);
         $this->assertEquals('I am a meta value', $comment->protected_property);
-    }
-
-    /**
-     * Tests when you try to directly access a custom field value through the custom property.
-     */
-    #[IgnoreDeprecations]
-    public function testPostMetaDirectAccessInaccessibleCustomProperty()
-    {
-        $this->setExpectedDeprecated('Accessing a meta value through {{ post.custom }}');
-        $post_id = static::factory()->post->create();
-
-        \update_post_meta($post_id, 'inaccessible', 'Boo!');
-
-        $post = Timber::get_post($post_id);
-        $string = Timber::compile_string('{{ post.custom.inaccessible }}', [
-            'post' => $post,
-        ]);
-
-        $this->assertSame('', $string);
-        $this->assertSame(false, $post->custom);
-    }
-
-    /**
-     * Tests when you try to directly access a custom field value through the custom property.
-     */
-    #[IgnoreDeprecations]
-    public function testTermMetaDirectAccessInaccessibleCustomProperty()
-    {
-        $this->setExpectedDeprecated('Accessing a meta value through {{ term.custom }}');
-        $term_id = static::factory()->term->create();
-
-        \update_term_meta($term_id, 'inaccessible', 'Boo!');
-
-        $term = Timber::get_term($term_id);
-        $string = Timber::compile_string('{{ term.custom.inaccessible }}', [
-            'term' => $term,
-        ]);
-
-        $this->assertSame('', $string);
-        $this->assertSame(false, $term->custom);
-    }
-
-    /**
-     * Tests when you try to directly access a custom field value through the custom property.
-     */
-    #[IgnoreDeprecations]
-    public function testUserMetaDirectAccessInaccessibleCustomProperty()
-    {
-        $this->setExpectedDeprecated('Accessing a meta value through {{ user.custom }}');
-        $user_id = static::factory()->user->create();
-
-        \update_user_meta($user_id, 'inaccessible', 'Boo!');
-
-        $user = Timber::get_user($user_id);
-        $string = Timber::compile_string('{{ user.custom.inaccessible }}', [
-            'user' => $user,
-        ]);
-
-        $this->assertSame('', $string);
-        $this->assertSame(false, $user->custom);
-    }
-
-    /**
-     * Tests when you try to directly access a custom field value through the custom property.
-     */
-    #[IgnoreDeprecations]
-    public function testCommentMetaDirectAccessInaccessibleCustomProperty()
-    {
-        $this->setExpectedDeprecated('Accessing a meta value through {{ comment.custom }}');
-        $comment_id = static::factory()->comment->create();
-
-        \update_comment_meta($comment_id, 'inaccessible', 'Boo!');
-
-        $comment = Timber::get_comment($comment_id);
-        $string = Timber::compile_string('{{ comment.custom.inaccessible }}', [
-            'comment' => $comment,
-        ]);
-
-        $this->assertSame('', $string);
-        $this->assertSame(false, $comment->custom);
     }
 
     /**

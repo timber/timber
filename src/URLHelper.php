@@ -202,18 +202,6 @@ class URLHelper
          */
         $url_parts['path'] = \apply_filters('timber/url_helper/url_to_file_system/path', $url_parts['path']);
 
-        /**
-         * Filters the path of a parsed URL.
-         *
-         * @deprecated 2.0.0, use `timber/url_helper/url_to_file_system/path`
-         */
-        $url_parts['path'] = \apply_filters_deprecated(
-            'timber/URLHelper/url_to_file_system/path',
-            [$url_parts['path']],
-            '2.0.0',
-            'timber/url_helper/url_to_file_system/path'
-        );
-
         $path = ABSPATH . $url_parts['path'];
         $path = \str_replace('//', '/', $path);
         return $path;
@@ -246,21 +234,6 @@ class URLHelper
          */
         $url = \apply_filters('timber/url_helper/file_system_to_url', $url);
 
-        /**
-         * Filters the URL in URLHelper::file_system_to_url
-         *
-         * You can use this filter to alter the returned URL.
-         * This filter is used by the WPML integration.
-         *
-         * @param string $url The current url
-         * @deprecated 2.0.0, use `timber/url_helper/file_system_to_url`
-         */
-        $url = \apply_filters_deprecated(
-            'timber/URLHelper/file_system_to_url',
-            [$url],
-            '2.0.0',
-            'timber/url_helper/file_system_to_url'
-        );
         return $url;
     }
 
@@ -285,18 +258,6 @@ class URLHelper
          *                         Default value of `home_url()`.
          */
         $home_url = \apply_filters('timber/url_helper/get_content_subdir/home_url', $home_url);
-
-        /**
-         * Filters the home URL that is used to get the path relative to the content directory.
-         *
-         * @deprecated 2.0.0, use `timber/url_helper/get_content_subdir/home_url`
-         */
-        $home_url = \apply_filters_deprecated(
-            'timber/URLHelper/get_content_subdir/home_url',
-            [$home_url],
-            '2.0.0',
-            'timber/url_helper/get_content_subdir/home_url'
-        );
 
         return \str_replace($home_url, '', (string) \content_url());
     }

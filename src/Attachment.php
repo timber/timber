@@ -306,22 +306,6 @@ class Attachment extends Post
     /**
      * Get a PHP array with pathinfo() info from the file
      *
-     * @deprecated 2.0.0, use Attachment::pathinfo() instead
-     * @return array
-     */
-    public function get_pathinfo()
-    {
-        Helper::deprecated(
-            "{{ image.get_pathinfo }}",
-            "{{ image.pathinfo }}",
-            '2.0.0'
-        );
-        return PathHelper::pathinfo($this->file());
-    }
-
-    /**
-     * Get a PHP array with pathinfo() info from the file
-     *
      * @return array
      */
     public function pathinfo()

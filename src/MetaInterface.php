@@ -34,15 +34,4 @@ interface MetaInterface
      * @return mixed The raw meta field value.
      */
     public function raw_meta($field_name = '');
-
-    /**
-     * Gets a meta value.
-     *
-     * @api
-     * @deprecated 2.0.0
-     *
-     * @param string $field_name The field name for which you want to get the value.
-     * @return mixed The meta field value.
-     */
-    public function get_field($field_name);
 }

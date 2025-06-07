@@ -468,26 +468,6 @@ class Comment extends CoreEntity implements Stringable
     }
 
     /**
-     * Gets a comment meta value.
-     *
-     * @api
-     * @deprecated 2.0.0, use `{{ comment.meta('field_name') }}` instead.
-     *
-     * @param string $field_name The field name for which you want to get the value.
-     * @return mixed The meta field value.
-     */
-    public function get_meta_field($field_name)
-    {
-        Helper::deprecated(
-            "{{ comment.get_meta_field('field_name') }}",
-            "{{ comment.meta('field_name') }}",
-            '2.0.0'
-        );
-
-        return $this->meta($field_name);
-    }
-
-    /**
      * Checks if the comment is a child.
      *
      * @api
@@ -496,27 +476,6 @@ class Comment extends CoreEntity implements Stringable
     public function is_child()
     {
         return $this->comment_parent > 0;
-    }
-
-    /**
-     * Gets a comment meta value.
-     *
-     * @api
-     * @deprecated 2.0.0, use `{{ comment.meta('field_name') }}` instead.
-     * @see \Timber\Comment::meta()
-     *
-     * @param string $field_name The field name for which you want to get the value.
-     * @return mixed The meta field value.
-     */
-    public function get_field($field_name = null)
-    {
-        Helper::deprecated(
-            "{{ comment.get_field('field_name') }}",
-            "{{ comment.meta('field_name') }}",
-            '2.0.0'
-        );
-
-        return $this->meta($field_name);
     }
 
     /**
