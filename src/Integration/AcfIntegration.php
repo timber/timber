@@ -295,7 +295,7 @@ class AcfIntegration implements IntegrationInterface
         \add_filter('acf/format_value/type=post_object', [$post_object_field_type, 'format_value'], 10, 3);
         \add_filter('acf/format_value/type=relationship', [$relationship_field_type, 'format_value'], 10, 3);
         \add_filter('acf/format_value/type=taxonomy', [$taxonomy_field_type, 'format_value'], 10, 3);
-        \add_filter('acf/format_value/type=user', [$taxonomy_field_type, 'format_value'], 10, 3);
+        \add_filter('acf/format_value/type=user', [$user_field_type, 'format_value'], 10, 3);
 
         \remove_filter('acf/format_value/type=file', [self::class, 'transform_file']);
         \remove_filter('acf/format_value/type=image', [self::class, 'transform_image']);
