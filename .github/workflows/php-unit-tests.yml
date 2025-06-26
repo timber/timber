@@ -8,7 +8,7 @@ on:
     paths:
       - '**workflows/php-unit-tests.yml'
       - '**.php'
-      - '**composer.json'
+      - '**composer.*'
       - '**phpunit.xml'
   pull_request:
     branches:
@@ -17,7 +17,7 @@ on:
     paths:
       - '**workflows/php-unit-tests.yml'
       - '**.php'
-      - '**composer.json'
+      - '**composer.*'
       - '**phpunit.xml'
     types:
       - opened
