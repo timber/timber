@@ -31,7 +31,8 @@ runs:
         php-version: ${{ inputs.PHP_VERSION }}
         tools: ${{ format('composer,{0}', inputs.PHP_TOOLS) }}
     - name: Remove lock file
-      run: shell rm -f composer.lock
+      shell: bash
+      run: rm -f composer.lock
     - name: Install Composer dependencies
       if: ${{ inputs.INSTALL_DEPS == 'true' }}
       uses: ramsey/composer-install@v3
