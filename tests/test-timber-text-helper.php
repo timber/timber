@@ -31,4 +31,12 @@ class TestTimberTextHelper extends Timber_UnitTestCase
         $result = Timber::compile_string($str);
         $this->assertEquals(wp_trim_words($this->gettysburg, 5), $result);
     }
+
+    public function testNullTruncate()
+    {
+        $chars = null;
+        $str = '{{ null|truncate( 5, true ) }}';
+        $result = Timber::compile_string($str);
+        $this->assertEquals('', $result);
+    }
 }
