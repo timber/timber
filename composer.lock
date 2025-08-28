@@ -3358,16 +3358,16 @@
         },
         {
             "name": "phpro/grumphp",
-            "version": "v2.14.0",
+            "version": "v2.15.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpro/grumphp.git",
-                "reference": "cb139d7c3ed1aa1c8acbdc527f11d80a3d5a27a8"
+                "reference": "49baf651c5309f63590d8ba5c6251f4101069953"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpro/grumphp/zipball/cb139d7c3ed1aa1c8acbdc527f11d80a3d5a27a8",
-                "reference": "cb139d7c3ed1aa1c8acbdc527f11d80a3d5a27a8",
+                "url": "https://api.github.com/repos/phpro/grumphp/zipball/49baf651c5309f63590d8ba5c6251f4101069953",
+                "reference": "49baf651c5309f63590d8ba5c6251f4101069953",
                 "shasum": ""
             },
             "require": {
@@ -3470,9 +3470,9 @@
             "description": "A composer plugin that enables source code quality checks.",
             "support": {
                 "issues": "https://github.com/phpro/grumphp/issues",
-                "source": "https://github.com/phpro/grumphp/tree/v2.14.0"
+                "source": "https://github.com/phpro/grumphp/tree/v2.15.0"
             },
-            "time": "2025-07-25T08:35:57+00:00"
+            "time": "2025-08-28T11:50:51+00:00"
         },
         {
             "name": "phpstan/extension-installer",
