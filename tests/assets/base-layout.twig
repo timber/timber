@@ -1,0 +1,26 @@
+{# base-layout.twig - Base template for testing inheritance #}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Default Title{% endblock %}</title>
+</head>
+<body>
+    <header>
+        {% block header %}
+            <h1>Default Header</h1>
+        {% endblock %}
+    </header>
+    
+    <main>
+        {% block content %}
+            <p>Default content</p>
+        {% endblock %}
+    </main>
+    
+    <footer>
+        {% block footer %}
+            <p>&copy; 2024 Default Footer</p>
+        {% endblock %}
+    </footer>
+</body>
+</html>
