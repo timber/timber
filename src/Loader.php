@@ -82,7 +82,7 @@ class Loader
      * @param array             $data
      * @param array|boolean     $expires (array for options, false for none, integer for # of seconds)
      * @param string            $cache_mode
-     * @param string|bool       $block_name
+     * @param string|bool       $block_name (Optional) Name of block to render instead of full template.
      * @return bool|string
      */
     public function render($file, $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT, $block_name = false)
