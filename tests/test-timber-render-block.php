@@ -267,6 +267,59 @@ class TestTimberRenderBlock extends Timber_UnitTestCase
     }
 
     /**
+     * Test render_twig_block Twig function usage within templates
+     */
+    public function testRenderTwigBlockTwigFunction()
+    {
+        $data = [
+            'toast_type' => 'success',
+            'toast_message' => 'Function test message',
+        ];
+        $php_unit = $this;
+        add_filter('timber/locations', function ($paths) use ($php_unit) {
+            $paths[] = [__DIR__];
+            return $paths;
+        });
+        // First, let's test if the function exists and can be called manually
+        $manual_output = Timber::compile_twig_block('success', 'assets/toasts.twig', $data);
+        $this->assertStringContainsString('bg-green-500', $manual_output);
+
+        // Now test if the Twig function works
+        $output = Timber::compile('assets/test-twig-function.twig', $data);
+
+        // Debug: Print the actual output to see what's happening
+        echo "\n\nActual output:\n" . $output . "\n\n";
+
+        // Should contain the rendered block content
+        $this->assertStringContainsString('bg-green-500', $output); // Success toast styling
+        $this->assertStringContainsString('Function test message', $output);
+        $this->assertStringContainsString('Main Content', $output); // Main template content
+        $this->assertStringContainsString('<html lang="en">', $output); // Full HTML structure
+    }
+
+    /**
+     * Test render_twig_block Twig function with invalid block name
+     */
+    public function testRenderTwigBlockTwigFunctionInvalidBlock()
+    {
+        $php_unit = $this;
+        add_filter('timber/locations', function ($paths) use ($php_unit) {
+            $paths[] = [__DIR__];
+            return $paths;
+        });
+        $data = [
+            'toast_type' => 'nonexistent',
+            'toast_message' => 'This should fallback to full template',
+        ];
+
+        $output = Timber::compile('assets/test-twig-function.twig', $data);
+
+        // Should contain fallback content when block doesn't exist
+        $this->assertStringContainsString('This is the default template content', $output);
+        $this->assertStringContainsString('Main Content', $output); // Main template still renders
+    }
+
+    /**
      * Test rendering different blocks from a layout template
      */
     public function testCompileTwigBlockFromLayout()
