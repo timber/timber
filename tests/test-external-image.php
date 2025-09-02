@@ -57,6 +57,14 @@ class TestExternalImage extends TimberAttachment_UnitTestCase
         return $dest;
     }
 
+    public function testFailingToSideloadImage()
+    {
+        $image =  Timber\ImageHelper::sideload_image('invalid-url');
+
+        // Sideloading an invalid URL should return an empty string
+        $this->assertSame($image, '');
+    }
+
     public function delete_existing_sideloaded_image($file)
     {
         // @see \Timber\ImageHelper::sideload_image()

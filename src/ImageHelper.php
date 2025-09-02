@@ -461,9 +461,11 @@ class ImageHelper
 
         $file_array = [];
         $file_array['tmp_name'] = $tmp;
-        // If error storing temporarily, do not use
+        // If error storing temporarily, return empty string
         if (\is_wp_error($tmp)) {
-            $file_array['tmp_name'] = '';
+            \remove_filter('upload_dir', [self::class, 'set_sideload_image_upload_dir']);
+
+            return '';
         }
         // do the validation and storage stuff
         $locinfo = PathHelper::pathinfo($loc);
