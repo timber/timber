@@ -1650,7 +1650,7 @@ class Timber
      * ```php
      * $context = Timber::context();
      *
-     * Timber::render_twig_block( 'success', 'toasts.twig' $context );
+     * Timber::render_twig_block( 'success', 'toasts.twig', $context );
      * ```
      * @param string         $block_name     The name of the block to render.
      * @param array|string   $filenames      Name or full path of the Twig file to render. If this is an array of file
