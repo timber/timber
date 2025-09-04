@@ -1528,7 +1528,7 @@ class Timber
      * ```php
      * $context = Timber::context();
      *
-     * $output = Timber::compile_twig_block( 'index.twig', 'content', $context );
+     * $output = Timber::compile_twig_block( 'content', 'index.twig', $context );
      * ```
      * @param string         $block_name     The name of the block to render.
      * @param array|string   $filenames      Name or full path of the Twig file to render. If this is an array of file
