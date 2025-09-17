@@ -1,5 +1,30 @@
 # Changelog
 
+## [2.3.3](https://github.com/timber/timber/compare/v2.3.2...v2.3.3) (2025-09-17)
+
+
+### Bug Fixes
+
+* Fix deprecation notice in `trim_words` method when `null` is passed. ([#3131](https://github.com/timber/timber/issues/3131)) ([78d928d](https://github.com/timber/timber/commit/78d928d792af7113bc032b96571ce8560a366e9c))
+* Fix incorrect ACF user filter ([#3121](https://github.com/timber/timber/issues/3121)) ([6f0a6dd](https://github.com/timber/timber/commit/6f0a6dd0bc24cee4468f16e374c590401be13492))
+* Make sure Post(s) exists before we call setup() ([#3114](https://github.com/timber/timber/issues/3114)) ([54cf691](https://github.com/timber/timber/commit/54cf69191a4a1a50089da8f244972203a780ec68))
+* Prevent ValueError for faulty or empty sideloaded image URLs ([#3125](https://github.com/timber/timber/issues/3125)) ([c2accc4](https://github.com/timber/timber/commit/c2accc44fee762adce061696ab3dea5050d9ff9e))
+* Update Helper::deprecated to use E_USER_DEPRECATED instead of the default E_USER_NOTICE ([#3113](https://github.com/timber/timber/issues/3113)) ([3cabe81](https://github.com/timber/timber/commit/3cabe81be179b943a709648a9bb1e5113bc4de2e))
+
+
+### Miscellaneous Chores
+
+* commit composer.lock file ([#3119](https://github.com/timber/timber/issues/3119)) ([e974e25](https://github.com/timber/timber/commit/e974e252851af262426319aca4991fb09afbe6b1))
+* **deps:** bump actions/checkout from 4 to 5 ([#3134](https://github.com/timber/timber/issues/3134)) ([97ad233](https://github.com/timber/timber/commit/97ad2339dfe3c2c21a9bdf124d721c3b82a1a42c))
+* **deps:** bump lycheeverse/lychee-action from 2.2.0 to 2.4.1 ([#3108](https://github.com/timber/timber/issues/3108)) ([edbd398](https://github.com/timber/timber/commit/edbd39809fb2d47390744cdff432b16b16950f78))
+* **deps:** bump lycheeverse/lychee-action from 2.4.1 to 2.5.0 ([#3133](https://github.com/timber/timber/issues/3133)) ([ffe9901](https://github.com/timber/timber/commit/ffe9901580d4aba1bfe2398a6d7c5e4b3f7f6f44))
+* **deps:** bump lycheeverse/lychee-action from 2.5.0 to 2.6.1 ([#3137](https://github.com/timber/timber/issues/3137)) ([fbafff9](https://github.com/timber/timber/commit/fbafff9263fc33b35ce77130dc60e9119c34ff2d))
+* **deps:** bump tj-actions/changed-files from 46 to 47 ([#3147](https://github.com/timber/timber/issues/3147)) ([cee39ed](https://github.com/timber/timber/commit/cee39edf85d37d3790eca371549f7dad1b566cf3))
+* **deps:** update .lock file and update ci steps ([af8c48f](https://github.com/timber/timber/commit/af8c48f1dc480c8c730f91d51bfb2c49d097e592))
+* Update Composer dependencies ([#3130](https://github.com/timber/timber/issues/3130)) ([46942a3](https://github.com/timber/timber/commit/46942a34833c44fcd2ec5f747d9e82d8e4a7f48d))
+* Update composer.lock file with PHP 8.1 ([#3132](https://github.com/timber/timber/issues/3132)) ([184d99a](https://github.com/timber/timber/commit/184d99a6767992c40467d0a625564cfe06dd611f))
+* Upgrade dev dependencies ([#3118](https://github.com/timber/timber/issues/3118)) ([8293d1a](https://github.com/timber/timber/commit/8293d1aae15a1907543fe28f2db9419e73c6acee))
+
 ## [2.3.2](https://github.com/timber/timber/compare/v2.3.1...v2.3.2) (2025-05-13)
 
 
