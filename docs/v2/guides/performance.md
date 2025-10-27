@@ -189,7 +189,7 @@ You can also use some [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_
 ```php
 $context = Timber::context();
 
-$context['main_stories'] = TimberHelper::transient('main_stories', function () {
+$context['main_stories'] = Timber\Helper::transient('main_stories', function () {
     $posts = Timber::get_posts();
 
     // As an example, do something expensive with these posts
