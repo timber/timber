@@ -857,6 +857,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      */
     public function get_method_values(): array
     {
+        $ret['ancestors'] = $this->ancestors();
         $ret['author'] = $this->author();
         $ret['categories'] = $this->categories();
         $ret['category'] = $this->category();
@@ -876,6 +877,29 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
         $ret['thumbnail'] = $this->thumbnail();
         $ret['title'] = $this->title();
         return $ret;
+    }
+
+    /**
+     * Returns an array of ancestors of the post as Timber\Posts
+     * (or other class as you define).
+     *
+     * @api
+     * @example
+     * ```twig
+     * {% if post.ancestors is not empty %}
+     *     Here are the ancestor pages:
+     *     {% for ancestor in post.ancestors %}
+     *         <a href="{{ ancestor.link }}">{{ ancestor.title }}</a>
+     *     {% endfor %}
+     * {% endif %}
+     * ```
+     * @return PostCollectionInterface
+     */
+    public function ancestors()
+    {
+        $ancestors = \array_reverse(\get_post_ancestors($this->ID));
+
+        return $this->factory()->from($ancestors);
     }
 
     /**
