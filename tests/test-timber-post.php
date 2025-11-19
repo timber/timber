@@ -665,6 +665,84 @@ class TestTimberPost extends Timber_UnitTestCase
         ])));
     }
 
+    public function testPostAncestors()
+    {
+        // $parent_id = $this->factory->post->create();
+        // $ancestors = $this->factory->post->create_many(8, [
+        //     'post_parent' => $parent_id,
+        // ]);
+        // $parent = Timber::get_post($parent_id);
+        // $this->assertSame(8, count($parent->ancestors()));
+    }
+
+    public function testPostAncestorsOfInheritStatus()
+    {
+        // $parent_id = $this->factory->post->create();
+        // $ancestors = $this->factory->post->create_many(4, [
+        //     'post_parent' => $parent_id,
+        // ]);
+        // $ancestors = $this->factory->post->create_many(4, [
+        //     'post_parent' => $parent_id,
+        //     'post_status' => 'inherit',
+        // ]);
+        // $parent = Timber::get_post($parent_id);
+        // $this->assertSame(8, count($parent->ancestors()));
+    }
+
+    public function testPostAncestorsOfParentType()
+    {
+        // $parent_id = $this->factory->post->create([
+        //     'post_type' => 'foo',
+        // ]);
+        // $ancestors = $this->factory->post->create_many(8, [
+        //     'post_parent' => $parent_id,
+        // ]);
+        // $ancestors = $this->factory->post->create_many(4, [
+        //     'post_parent' => $parent_id,
+        //     'post_type' => 'foo',
+        // ]);
+        // $parent = Timber::get_post($parent_id);
+        // $this->assertSame(4, count($parent->ancestors('parent')));
+    }
+
+    public function testPostAncestorsWithArray()
+    {
+        // $parent_id = $this->factory->post->create([
+        //     'post_type' => 'foo',
+        // ]);
+        // $ancestors = $this->factory->post->create_many(8, [
+        //     'post_parent' => $parent_id,
+        //     'post_type' => 'bar',
+        // ]);
+        // $ancestors = $this->factory->post->create_many(4, [
+        //     'post_parent' => $parent_id,
+        //     'post_type' => 'foo',
+        // ]);
+        // $parent = Timber::get_post($parent_id);
+        // $this->assertSame(12, count($parent->ancestors(['foo', 'bar'])));
+    }
+
+    public function testPostAncestorsWithArguments()
+    {
+        // $parent_id = $this->factory->post->create([
+        //     'post_type' => 'foo',
+        // ]);
+        // $ancestors = $this->factory->post->create_many(4, [
+        //     'post_parent' => $parent_id,
+        //     'post_type' => 'foo',
+        //     'post_status' => 'private',
+        // ]);
+        // $ancestors = $this->factory->post->create_many(8, [
+        //     'post_parent' => $parent_id,
+        //     'post_type' => 'foo',
+        // ]);
+        // $parent = Timber::get_post($parent_id);
+        // $this->assertSame(4, count($parent->ancestors([
+        //     'post_type' => 'foo',
+        //     'post_status' => 'private',
+        // ])));
+    }
+
     public function testPostNoConstructorArgument()
     {
         $pid = $this->factory->post->create();
