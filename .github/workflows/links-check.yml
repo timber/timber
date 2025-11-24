@@ -7,7 +7,7 @@ jobs:
     name: Link Checker
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
             ref: 2.x
 
