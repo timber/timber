@@ -91,6 +91,12 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      */
     protected $_prev = [];
 
+
+    /**
+     * @var array Stores the results of the ancestors of the post as Timber\Posts
+     */
+    protected $_ancestors = [];
+
     /**
      * @var string Stores the CSS classes for the post (ex: "post post-type-book post-123")
      */
@@ -897,9 +903,14 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      */
     public function ancestors()
     {
-        $ancestors = \array_reverse(\get_post_ancestors($this->ID));
+        if (!empty($this->_ancestors)) {
+            return $this->_ancestors;
+        }
 
-        return $this->factory()->from($ancestors);
+        $ancestors = \array_reverse(\get_post_ancestors($this->ID));
+        $this->_ancestors = $this->factory()->from($ancestors);
+
+        return $this->_ancestors;
     }
 
     /**
