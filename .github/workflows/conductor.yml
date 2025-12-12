@@ -16,7 +16,7 @@ jobs:
         runs-on: "ubuntu-latest"
 
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@v6
 
             # Install PHP. You can also replace this step by
             # reusing an existing workflow that sets up PHP.

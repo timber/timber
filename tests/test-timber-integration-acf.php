@@ -239,6 +239,7 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
             'transform_value' => true,
         ]);
         $this->assertInstanceOf('DateTimeImmutable', $date);
+        $this->assertEquals($date->getTimezone(), wp_timezone());
         $this->assertEquals('2021-02-22', $date->format('Y-m-d'));
     }
 
@@ -255,6 +256,7 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase
             'transform_value' => true,
         ]);
         $this->assertInstanceOf('DateTimeImmutable', $date_time);
+        $this->assertEquals($date_time->getTimezone(), wp_timezone());
         $this->assertEquals('2021-02-22 17:30:25', $date_time->format('Y-m-d H:i:s'));
     }
 

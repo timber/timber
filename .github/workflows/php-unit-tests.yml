@@ -85,7 +85,7 @@ jobs:
     name: PHP ${{ matrix.php }} ${{ matrix.extensions == 'imagick' && ' (Imagick)' || '' }}${{ matrix.coverage && ' (with coverage)' || '' }} ${{ matrix.webp && ' (webp)' || '' }} | WP ${{ matrix.wp }}${{ matrix.multisite == 1 && ' (MS)' || '' }} | ${{ matrix.dependency-version }}
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Install Subversion
         run: |

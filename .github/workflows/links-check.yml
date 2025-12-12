@@ -7,11 +7,11 @@ jobs:
     name: Link Checker
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
             ref: 2.x
 
-      - uses: lycheeverse/lychee-action@v2.6.1
+      - uses: lycheeverse/lychee-action@v2.7.0
         id: lychee
         with:
             args: --verbose './docs/**/*.md' --max-concurrency 1 --max-retries 0 --accept 200,429 --cache
@@ -20,7 +20,7 @@ jobs:
 
       - name: Create Issue From File
         if: env.lychee_exit_code != 0
-        uses: peter-evans/create-issue-from-file@v5
+        uses: peter-evans/create-issue-from-file@v6
         with:
           title: Link Checker Report
           content-filepath: ./lychee/out.md

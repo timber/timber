@@ -1,9 +1,9 @@
 # Timber Core
-/src        @gchtr @jarednova @nlemoine
+/src        @gchtr @Levdbas @nlemoine
 
 # Documentation
-/docs       @gchtr
-.md         @gchtr
+/docs       @gchtr @Levdbas
+.md         @gchtr @Levdbas
 
 # Tooling
-*.yml       @jarednova @nlemoine
+*.yml       @nlemoine

@@ -156,7 +156,7 @@ class AcfIntegration implements IntegrationInterface
         if (!$value) {
             return $value;
         }
-        return new DateTimeImmutable(\acf_format_date($value, 'Y-m-d H:i:s'));
+        return new DateTimeImmutable(\acf_format_date($value, 'Y-m-d H:i:s'), \wp_timezone());
     }
 
     /**
