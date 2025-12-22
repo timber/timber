@@ -1,6 +1,8 @@
 <?php
 
-class CustomComment extends Timber\Comment
+use Timber\Comment;
+
+class CustomComment extends Comment
 {
     public function foo()
     {

@@ -1,10 +1,12 @@
 <?php
 
+use Timber\Loader;
+
 class TimberBenchmark
 {
     public static function testLoader()
     {
-        $TimberLoader = new Timber\Loader();
+        $TimberLoader = new Loader();
         for ($i = 0; $i < 5000; $i++) {
             $loader = $TimberLoader->get_loader();
         }

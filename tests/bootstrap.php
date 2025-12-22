@@ -1,68 +1,88 @@
 <?php
 
-use Yoast\WPTestUtils\WPIntegration;
+use function Mantle\Testing\manager;
 
-require_once dirname(__DIR__) . '/vendor/yoast/wp-test-utils/src/WPIntegration/bootstrap-functions.php';
+require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-$_tests_dir = Yoast\WPTestUtils\WPIntegration\get_path_to_wp_test_dir();
+$rootDir = realpath(__DIR__ . '/..');
 
-if (!is_file("{$_tests_dir}/includes/functions.php")) {
-    echo "Could not find {$_tests_dir}/includes/functions.php, have you run bin/install-wp-tests.sh <db-name> <db-user> <db-pass> [db-host] [wp-version] [skip-database-creation]?" . PHP_EOL; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-    exit(1);
-}
+// phpcs:disable WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_putenv
+putenv("WP_CORE_DIR=$rootDir/tmp/wordpress");
+putenv("CACHEDIR=$rootDir/tmp/test-cache");
 
-// Get access to tests_add_filter() function.
-require_once $_tests_dir . '/includes/functions.php';
+// Pre-download SQLite from develop branch for PHP 8.5 compatibility.
+// Mantle expects sqlite-database-integration-main.zip with -main folder inside.
+cache_sqlite_develop(getenv('CACHEDIR'));
 
-function tt_get_arg(string $key)
+function cache_sqlite_develop(string $cacheDir): void
 {
-    foreach ($_SERVER['argv'] as $index => $arg) {
-        if ($key === substr($arg, 0, strlen($key))) {
-            return [
-                'index' => $index,
-                $key => str_replace("{$key}=", '', $arg),
-            ];
-        }
+    $sqliteZip = $cacheDir . '/sqlite-database-integration-main.zip';
+
+    if (is_file($sqliteZip)) {
+        return;
     }
-    return false;
+
+    if (!is_dir($cacheDir)) {
+        mkdir($cacheDir, 0755, true);
+    }
+
+    // Download develop branch, extract, rename folder, re-zip with correct name
+    $url = 'https://github.com/WordPress/sqlite-database-integration/archive/refs/heads/develop.zip';
+    shell_exec("curl -sL " . escapeshellarg($url) . " -o " . escapeshellarg("$cacheDir/tmp.zip"));
+    shell_exec("unzip -q " . escapeshellarg("$cacheDir/tmp.zip") . " -d " . escapeshellarg($cacheDir));
+    rename("$cacheDir/sqlite-database-integration-develop", "$cacheDir/sqlite-database-integration-main");
+    shell_exec("cd " . escapeshellarg($cacheDir) . " && zip -rq sqlite-database-integration-main.zip sqlite-database-integration-main");
+    shell_exec("rm -rf " . escapeshellarg("$cacheDir/tmp.zip") . " " . escapeshellarg("$cacheDir/sqlite-database-integration-main"));
 }
 
-function tt_is_group(string $group_name)
+/**
+ * Parse TIMBER_TEST_PLUGINS environment variable.
+ *
+ * @return array List of plugins to activate (e.g., ['acf', 'coauthors-plus', 'wpml'])
+ */
+function timber_get_test_plugins(): array
 {
-    $group = tt_get_arg('--group');
-    if (false === $group) {
-        return false;
+    $plugins = getenv('TIMBER_TEST_PLUGINS');
+    if (empty($plugins)) {
+        return [];
     }
-
-    $group_name_index = ++$group['index'];
-
-    if (!isset($_SERVER['argv'][$group_name_index])) {
-        return false;
-    }
-
-    return ($group_name === $_SERVER['argv'][$group_name_index]);
+    return array_filter(array_map(trim(...), explode(',', $plugins)));
 }
 
-// Add plugin to active mu-plugins to make sure it gets loaded.
-tests_add_filter('muplugins_loaded', function () {
-    // Load Timber
-    Timber\Timber::init();
+/**
+ * Check if a specific plugin should be activated for this test run.
+ */
+function timber_test_has_plugin(string $plugin): bool
+{
+    return in_array($plugin, timber_get_test_plugins(), true);
+}
 
-    if (tt_is_group('acf')) {
-        require __DIR__ . '/../wp-content/plugins/advanced-custom-fields/acf.php';
+/**
+ * Map plugin shortnames to their main file path (relative to wp-content/plugins/).
+ */
+function timber_get_plugin_map(): array
+{
+    return [
+        'acf' => 'advanced-custom-fields/acf.php',
+        'coauthors-plus' => 'co-authors-plus/co-authors-plus.php',
+    ];
+}
+
+/**
+ * Get full path to a test plugin.
+ */
+function timber_get_plugin_path(string $plugin): ?string
+{
+    $map = timber_get_plugin_map();
+    if (!isset($map[$plugin])) {
+        return null;
     }
 
-    if (tt_is_group('coauthors-plus')) {
-        require __DIR__ . '/../wp-content/plugins/co-authors-plus/co-authors-plus.php';
-    }
+    return dirname(__DIR__) . '/wp-content/plugins/' . $map[$plugin];
+}
 
-    if (tt_is_group('wpml')) {
-        // WPML integration
-        define('ICL_LANGUAGE_CODE', 'en');
-    }
-});
-
-if (tt_is_group('wpml')) {
+// WPML mock function - must be defined before WordPress loads
+if (timber_test_has_plugin('wpml')) {
     /**
      * Mocked function for testing menus in WPML
      */
@@ -72,30 +92,70 @@ if (tt_is_group('wpml')) {
     }
 }
 
-/**
- * Bootstrap the CLI dependencies.
- *
- * This is important to test the CLI classes.
- */
-if (!defined('WP_CLI_ROOT')) {
-    define('WP_CLI_ROOT', "phar://{$_tests_dir}/wp-cli.phar/vendor/wp-cli/wp-cli");
+// Load test helper classes (global namespace)
+require_once __DIR__ . '/Support/timber-mock-classes.php';
+foreach (glob(__DIR__ . '/Support/*.php') as $file) {
+    // Skip CustomGuestAuthor - loaded later after Timber is initialized
+    if (basename($file) === 'CustomGuestAuthor.php') {
+        continue;
+    }
+    require_once $file;
 }
+require_once __DIR__ . '/Fixtures/assets/Sport.php';
 
-require_once WP_CLI_ROOT . '/php/utils.php';
-require_once WP_CLI_ROOT . '/php/dispatcher.php';
-require_once WP_CLI_ROOT . '/php/class-wp-cli.php';
-require_once WP_CLI_ROOT . '/php/class-wp-cli-command.php';
+$manager = manager();
 
-\WP_CLI\Utils\load_dependencies();
+// Enable multisite based on WP_MULTISITE env var
+$isMultisite = filter_var(getenv('WP_MULTISITE'), FILTER_VALIDATE_BOOLEAN);
+$manager->with_multisite($isMultisite);
 
-require_once __DIR__ . '/WpCliLogger.php';
+$manager
+    ->with_sqlite()
+    ->after(function () {
+        // Copy test themes to WP install (after WordPress is installed, before it loads)
+        $themes_src = __DIR__ . '/Fixtures/themes';
+        $themes_dest = getenv('WP_CORE_DIR') . '/wp-content/themes';
 
-WP_CLI::set_logger(new WpCliLogger(false));
+        // Ensure themes directory exists (may not be created by Mantle)
+        if (!is_dir($themes_dest)) {
+            mkdir($themes_dest, 0755, true);
+        }
 
-error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+        foreach (glob($themes_src . '/*', GLOB_ONLYDIR) as $theme_dir) {
+            $theme_name = basename($theme_dir);
+            $dest_dir = $themes_dest . '/' . $theme_name;
+            if (!is_dir($dest_dir)) {
+                shell_exec("cp -R " . escapeshellarg($theme_dir) . " " . escapeshellarg($dest_dir));
+            }
+        }
 
-/*
- * Bootstrap WordPress. This will also load the Composer autoload file, the PHPUnit Polyfills
- * and the custom autoloader for the TestCase and the mock object classes.
- */
-WPIntegration\bootstrap_it();
+    })
+    ->loaded(function () {
+        // Load Timber
+        Timber\Timber::init();
+
+        // Load plugins based on TIMBER_TEST_PLUGINS environment variable
+        if (timber_test_has_plugin('acf')) {
+            $path = timber_get_plugin_path('acf');
+            if ($path && file_exists($path)) {
+                require_once $path;
+            }
+        }
+
+        if (timber_test_has_plugin('coauthors-plus')) {
+            $path = timber_get_plugin_path('coauthors-plus');
+            if ($path && file_exists($path)) {
+                require_once $path;
+            }
+            // Load CustomGuestAuthor after Timber and CoAuthors are loaded
+            require_once __DIR__ . '/Support/CustomGuestAuthor.php';
+        }
+
+        // WPML mock - define the language constant
+        if (timber_test_has_plugin('wpml')) {
+            if (!defined('ICL_LANGUAGE_CODE')) {
+                define('ICL_LANGUAGE_CODE', 'en');
+            }
+        }
+    })
+    ->install();

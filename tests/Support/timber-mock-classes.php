@@ -1,21 +1,23 @@
 <?php
 
+use Timber\Post;
+
 class MyState
 {
 }
 
-class job extends Timber\Post
+class job extends Post
 {
 }
 
-class Person extends Timber\Post
+class Person extends Post
 {
 }
 
-class TimberAlert extends Timber\Post
+class TimberAlert extends Post
 {
 }
 
-class TimberPortfolio extends Timber\Post
+class TimberPortfolio extends Post
 {
 }

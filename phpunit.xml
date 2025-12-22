@@ -1,25 +1,90 @@
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd" bootstrap="./tests/bootstrap.php" colors="true" convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true" backupGlobals="false" stopOnFailure="false">
-  <coverage processUncoveredFiles="true">
+<?xml version="1.0"?>
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd"
+    bootstrap="./tests/bootstrap.php"
+    colors="true"
+    backupGlobals="false"
+    stopOnFailure="false"
+    failOnWarning="true"
+    failOnDeprecation="true"
+    cacheDirectory=".phpunit.cache"
+>
+  <testsuites>
+    <!--
+      Default suite: runs all core tests that don't require special setup.
+      Use: phpunit (or) phpunit - -testsuite default
+    -->
+    <testsuite name="default">
+      <directory suffix="Test.php">./tests/</directory>
+      <!-- Exclude plugin integrations (require plugin activation) -->
+      <exclude>./tests/Integration/ACFTest.php</exclude>
+      <exclude>./tests/Integration/CoAuthorsTest.php</exclude>
+      <exclude>./tests/Integration/WPMLTest.php</exclude>
+      <!-- Exclude multisite tests (require WP_MULTISITE=1) -->
+      <exclude>./tests/TimberMultisiteTest.php</exclude>
+      <exclude>./tests/Image/ImageMultisiteTest.php</exclude>
+      <!-- Exclude isolated tests (must run last, sets constants) -->
+      <exclude>./tests/Image/ImageIsolatedTest.php</exclude>
+    </testsuite>
+    <!--
+      Multisite suite: tests that require multisite mode.
+      Use: WP_MULTISITE=1 phpunit - -testsuite multisite
+    -->
+    <testsuite name="multisite">
+      <file>./tests/TimberMultisiteTest.php</file>
+      <file>./tests/Image/ImageMultisiteTest.php</file>
+    </testsuite>
+    <!--
+      Image suite: all image-related tests for coverage with different editors.
+      Use: phpunit - -testsuite image (with GD or Imagick)
+    -->
+    <testsuite name="image">
+      <directory suffix="Test.php">./tests/Image/</directory>
+      <exclude>./tests/Image/ImageIsolatedTest.php</exclude>
+      <exclude>./tests/Image/ImageMultisiteTest.php</exclude>
+    </testsuite>
+    <!--
+      ACF integration suite.
+      Use: TIMBER_TEST_PLUGINS=acf phpunit - -testsuite acf
+    -->
+    <testsuite name="acf">
+      <file>./tests/Integration/ACFTest.php</file>
+    </testsuite>
+    <!--
+      Co-Authors Plus integration suite.
+      Use: TIMBER_TEST_PLUGINS=coauthors-plus phpunit - -testsuite coauthors
+    -->
+    <testsuite name="coauthors">
+      <file>./tests/Integration/CoAuthorsTest.php</file>
+    </testsuite>
+    <!--
+      WPML integration suite.
+      Use: TIMBER_TEST_PLUGINS=wpml phpunit - -testsuite wpml
+    -->
+    <testsuite name="wpml">
+      <file>./tests/Integration/WPMLTest.php</file>
+    </testsuite>
+    <!--
+      Isolated suite: tests that MUST run last (they set constants).
+      Use: phpunit - -testsuite isolated
+    -->
+    <testsuite name="isolated">
+      <file>./tests/Image/ImageIsolatedTest.php</file>
+    </testsuite>
+  </testsuites>
+  <logging/>
+  <extensions>
+    <bootstrap class="Ergebnis\PHPUnit\SlowTestDetector\Extension">
+      <parameter name="maximum-duration" value="500"/>
+      <parameter name="maximum-count" value="10"/>
+    </bootstrap>
+  </extensions>
+  <source ignoreIndirectDeprecations="true">
     <include>
       <directory suffix=".php">./src</directory>
     </include>
     <exclude>
       <directory>./vendor</directory>
     </exclude>
-    <report>
-      <html outputDirectory="build/logs"/>
-    </report>
-  </coverage>
-  <testsuites>
-    <testsuite name="all">
-      <directory prefix="test-" suffix=".php">./tests/</directory>
-    </testsuite>
-    <!-- The suite below HAS to be last to run,
-		as it includes a test that sets some const and would contaminate
-		the other tests as well. -->
-    <testsuite name="all-but-last">
-      <directory prefix="testX-" suffix=".php">./tests/</directory>
-    </testsuite>
-  </testsuites>
-  <logging/>
+  </source>
 </phpunit>

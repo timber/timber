@@ -1,9 +1,11 @@
 <?php
 
+use Timber\Comment;
+
 /**
  * Class MetaComment
  */
-class MetaComment extends Timber\Comment
+class MetaComment extends Comment
 {
     /**
      * Public property.

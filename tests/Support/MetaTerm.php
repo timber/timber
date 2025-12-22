@@ -1,9 +1,11 @@
 <?php
 
+use Timber\Term;
+
 /**
  * Class MetaTerm
  */
-class MetaTerm extends Timber\Term
+class MetaTerm extends Term
 {
     /**
      * Public property.

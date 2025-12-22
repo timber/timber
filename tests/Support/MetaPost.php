@@ -1,9 +1,11 @@
 <?php
 
+use Timber\Post;
+
 /**
  * Class MetaPost
  */
-class MetaPost extends Timber\Post
+class MetaPost extends Post
 {
     /**
      * Public property.

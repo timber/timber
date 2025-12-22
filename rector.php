@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 use Rector\Php80\Rector\Class_\StringableForToStringRector;
-use Rector\Php81\Rector\Array_\FirstClassCallableRector;
+use Rector\Php81\Rector\Array_\ArrayToFirstClassCallableRector;
 
 return RectorConfig::configure()
     ->withPaths([
         __DIR__ . '/src',
+        __DIR__ . '/tests',
     ])
     ->withPhpSets(
-        php81: true,
+        php82: true,
     )
     ->withPreparedSets(
         // deadCode: true,
@@ -19,6 +20,6 @@ return RectorConfig::configure()
         // earlyReturn: true,
     )
     ->withSkip([
-        FirstClassCallableRector::class,
+        ArrayToFirstClassCallableRector::class,
         StringableForToStringRector::class,
     ]);

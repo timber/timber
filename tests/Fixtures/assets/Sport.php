@@ -1,6 +1,8 @@
 <?php
 
-class Sport extends Timber\Post
+use Timber\Post;
+
+class Sport extends Post
 {
     public function channel()
     {

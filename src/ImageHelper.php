@@ -141,7 +141,7 @@ class ImageHelper
             return false;
         }
         // Its a gif so test
-        if (!($fh = @\fopen($file, 'rb'))) {
+        if (!\file_exists($file) || !($fh = \fopen($file, 'rb'))) {
             return false;
         }
         $count = 0;

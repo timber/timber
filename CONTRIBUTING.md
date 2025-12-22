@@ -279,29 +279,41 @@ As soon as the todo is resolved, the `@todo` tag can be removed.
 
 ## Unit tests
 
-### Install WordPress test suite
-
-Run the following command to install the test suite on your local environment:
-
-```bash
-bash bin/install-wp-tests.sh {db_name} {db_user} {db_password} {db_host} {wp_version}
-```
-
-Replace variables with appropriate values.
+Timber uses [Mantle Testing Framework](https://mantle.alley.com/) with SQLite for running tests. No database setup is required.
 
 ### Run unit tests
 
-Run PHPUnit test suite with the default settings and ensure your code does not break existing features.
+Run the default PHPUnit test suite:
 
 ```bash
 composer test
 ```
 
-You can also run the tests without coverage.
+You can also run the tests without coverage:
 
 ```bash
 composer test:no-cov
 ```
+
+### Test suites
+
+Tests are organized into multiple suites for different scenarios:
+
+| Command | Description |
+|---------|-------------|
+| `composer test` | Run default test suite (core tests) |
+| `composer test:multisite` | Run WordPress multisite tests |
+| `composer test:acf` | Run Advanced Custom Fields integration tests |
+| `composer test:coauthors` | Run Co-Authors Plus integration tests |
+| `composer test:wpml` | Run WPML integration tests |
+
+### Environment variables
+
+Test behavior can be configured via environment variables:
+
+- `TIMBER_TEST_PLUGINS` – Comma-separated list of plugins to activate (e.g., `acf`, `coauthors-plus`)
+- `WP_MULTISITE` – Set to `1` to run tests in multisite mode
+- `WP_VERSION` – WordPress version to test against (default: `latest`)
 
 ## Process
 

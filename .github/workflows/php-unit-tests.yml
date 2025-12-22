@@ -29,68 +29,59 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  php-unit-tests:
+  # =============================================================================
+  # Detect PHP versions from composer.json
+  # =============================================================================
+  php-versions:
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mariadb:latest
-        env:
-          MYSQL_USER: root
-          MYSQL_ALLOW_EMPTY_PASSWORD: true
-          MYSQL_ROOT_PASSWORD: ''
-          MYSQL_DATABASE: wordpress_test
-        ports:
-          - 3306
-        options: --health-cmd="healthcheck.sh --connect --innodb_initialized" --health-interval=10s --health-timeout=5s --health-retries=3
+    outputs:
+      versions: ${{ steps.versions.outputs.version }}
+    steps:
+      - uses: actions/checkout@v6
+      - id: versions
+        uses: WyriHaximus/github-action-composer-php-versions-in-range@v1
+        with:
+          upcomingReleases: true
+
+  # =============================================================================
+  # Compatibility tests: PHP versions x WP versions
+  # =============================================================================
+  php-unit-tests:
+    needs: php-versions
+    runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.1', '8.2', '8.3']
-        wp: ['latest', '6.3']
-        multisite: ['0', '1']
+        php: ${{ fromJson(needs.php-versions.outputs.versions) }}
+        wp: ['latest']
         dependency-version: ['highest', 'lowest']
-        webp: [false]
-        coverage: [false]
-        extensions: ['gd']
         experimental: [false]
+        coverage: [false]
         include:
-          # PHP 8.4 / experimental
-          - php: '8.4'
-            wp: 'trunk'
+          # Oldest supported WP with lowest deps
+          - php: '8.2'
+            wp: '6.3'
+            dependency-version: 'lowest'
+            experimental: false
+            coverage: false
+          # Coverage: PHP 8.2, WP latest, highest deps
+          - php: '8.2'
+            wp: 'latest'
             dependency-version: 'highest'
-            multisite: '0'
-            experimental: true
-          # PHP 8.3 / experimental
+            experimental: false
+            coverage: true
+          # Trunk (experimental)
           - php: '8.5'
             wp: 'trunk'
             dependency-version: 'highest'
-            multisite: '0'
             experimental: true
-          # PHP with Imagick
-          - php: '8.1'
-            wp: 'latest'
-            dependency-version: 'highest'
-            multisite: '0'
-            extensions: 'imagick'
-            experimental: false
-          # Coverage
-          - php: '8.1'
-            wp: 'latest'
-            dependency-version: 'highest'
-            multisite: '0'
-            coverage: true
-            experimental: false
+            coverage: false
 
-    name: PHP ${{ matrix.php }} ${{ matrix.extensions == 'imagick' && ' (Imagick)' || '' }}${{ matrix.coverage && ' (with coverage)' || '' }} ${{ matrix.webp && ' (webp)' || '' }} | WP ${{ matrix.wp }}${{ matrix.multisite == 1 && ' (MS)' || '' }} | ${{ matrix.dependency-version }}
+    name: PHP ${{ matrix.php }} | WP ${{ matrix.wp }} | ${{ matrix.dependency-version }}${{ matrix.coverage && ' | coverage' || '' }}
 
     steps:
-      - uses: actions/checkout@v6
-
-      - name: Install Subversion
-        run: |
-          sudo apt-get install -y subversion
-          sudo apt-get update
+      - uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -98,50 +89,75 @@ jobs:
           php-version: ${{ matrix.php }}
           coverage: ${{ matrix.coverage && 'pcov' || 'none' }}
           tools: composer:v2
-          extensions: curl, date, dom, iconv, json, libxml, mysql, ${{ matrix.extensions }}
-          ini-values: pcov.directory=src
+          extensions: curl, date, dom, iconv, json, libxml, gd, sqlite3
+          ini-values: ${{ matrix.coverage && 'pcov.directory=src' || '' }}
 
-      - name: Shutdown default MySQL service
-        run: sudo service mysql stop
-
-      - name: Verify MariaDB connection
+      - name: Setup problem matchers
         run: |
-          while ! mysqladmin ping -h"127.0.0.1" -P"${{ job.services.mysql.ports[3306] }}" --silent; do
-            sleep 1
-          done
-
-      - name: Setup problem matchers for PHP
-        run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
-
-      - name: Setup problem matchers for PHPUnit
-        run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+          echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+          echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
       - uses: ramsey/composer-install@v3
         with:
           dependency-versions: ${{ matrix.dependency-version }}
 
-      - name: Install tests
-        run: bash bin/install-wp-tests.sh wordpress_test root '' 127.0.0.1:${{ job.services.mysql.ports['3306'] }} ${{ matrix.wp }} true
+      # PHP 8.5: Collision and curl have deprecations we can't fix
+      - name: Disable failOnDeprecation for PHP 8.5
+        if: matrix.experimental
+        run: sed -i 's/failOnDeprecation="true"/failOnDeprecation="false"/' phpunit.xml
 
-      - name: Run tests
-        if: ${{ !matrix.webp }}
-        run: composer run test
+      - name: Create coverage directory
+        if: matrix.coverage
+        run: mkdir -p build/logs
+
+      - name: Run default testsuite
+        run: composer test ${{ matrix.coverage && '-- --coverage-php build/coverage-default.cov' || '' }}
         env:
-          WP_MULTISITE: ${{ matrix.multisite }}
+          WP_VERSION: ${{ matrix.wp }}
 
-      - name: Run tests with coverage
-        if: matrix.coverage == true
-        run: |
-          composer run test:integration:codecov
-
-      - name: Upload coverage results to Coveralls
-        if: matrix.coverage == true
+      - name: Run multisite testsuite
+        run: composer test:multisite ${{ matrix.coverage && '-- --coverage-php build/coverage-multisite.cov' || '' }}
         env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          composer global require php-coveralls/php-coveralls
-          php-coveralls --coverage_clover=${GITHUB_WORKSPACE}/build/logs/clover.xml -v
+          WP_VERSION: ${{ matrix.wp }}
 
-      - name: Run webp tests
-        if: matrix.webp
-        run: vendor/phpunit/phpunit/phpunit -c phpunit.xml --verbose --filter 'TestTimberImageToWEBP'
+      - name: Run ACF integration testsuite
+        run: composer test:acf ${{ matrix.coverage && '-- --coverage-php build/coverage-acf.cov' || '' }}
+        env:
+          WP_VERSION: ${{ matrix.wp }}
+
+      - name: Run Co-Authors Plus integration testsuite
+        run: composer test:coauthors ${{ matrix.coverage && '-- --coverage-php build/coverage-coauthors.cov' || '' }}
+        env:
+          WP_VERSION: ${{ matrix.wp }}
+
+      - name: Run WPML integration testsuite
+        run: composer test:wpml ${{ matrix.coverage && '-- --coverage-php build/coverage-wpml.cov' || '' }}
+        env:
+          WP_VERSION: ${{ matrix.wp }}
+
+      - name: Run isolated testsuite
+        run: composer test:isolated ${{ matrix.coverage && '-- --coverage-php build/coverage-isolated.cov' || '' }}
+        env:
+          WP_VERSION: ${{ matrix.wp }}
+
+      - name: Merge coverage
+        if: matrix.coverage
+        run: |
+          echo "Coverage files generated:"
+          ls -la build/*.cov || echo "No .cov files found"
+          composer require --dev phpunit/phpcov --quiet
+          vendor/bin/phpcov merge build --clover build/logs/clover.xml
+
+      - name: Upload coverage to Codecov
+        if: matrix.coverage
+        uses: codecov/codecov-action@v5
+        with:
+          files: build/logs/clover.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload coverage to Coveralls
+        if: matrix.coverage
+        uses: coverallsapp/github-action@v2
+        with:
+          file: build/logs/clover.xml
+          github-token: ${{ secrets.GITHUB_TOKEN }}

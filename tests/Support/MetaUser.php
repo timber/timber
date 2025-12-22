@@ -1,9 +1,11 @@
 <?php
 
+use Timber\User;
+
 /**
  * Class MetaUser
  */
-class MetaUser extends Timber\User
+class MetaUser extends User
 {
     /**
      * Public property.
