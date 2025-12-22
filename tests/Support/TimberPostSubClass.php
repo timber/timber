@@ -1,6 +1,6 @@
 <?php
 
-class TimberPostSubclass extends Timber\Post
+class TimberPostSubClass extends Timber\Post
 {
     public function foo()
     {
