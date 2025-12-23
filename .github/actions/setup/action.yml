@@ -3,7 +3,7 @@ description: 'Setup PHP & installs composer dependencies'
 inputs:
   PHP_VERSION:
     description: PHP version
-    default: "8.1"
+    default: "8.2"
     required: false
     type: string
   PHP_TOOLS:
