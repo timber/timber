@@ -39,7 +39,11 @@ jobs:
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v47
+        with:
+          files: |
+            src/**/*.php
+            phpstan/**/*.php
 
       - name: Run static analysis
         if: steps.changed-files.outputs.all_changed_files != ''
-        run: ./vendor/bin/phpstan analyse --memory-limit=-1 --error-format=checkstyle ${{ join(steps.changed-files.outputs.all_changed_files, ' ') }} | cs2pr
+        run: ./vendor/bin/phpstan analyse --memory-limit=-1 --error-format=checkstyle ${{ steps.changed-files.outputs.all_changed_files }} | cs2pr
