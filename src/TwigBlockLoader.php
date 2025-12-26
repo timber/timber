@@ -10,22 +10,17 @@ namespace Timber;
 class TwigBlockLoader extends Loader
 {
     /**
-     * @var string The name of the block to render.
-     */
-    protected $block_name;
-
-    /**
      * Constructor.
      *
      * @param bool|string $caller     The loader instance to copy configuration from,
      *                                        or calling directory/false (same as Loader constructor).
      * @param string             $block_name The name of the block to render.
      */
-    public function __construct($caller, $block_name)
-    {
+    public function __construct(
+        $caller,
+        protected $block_name
+    ) {
         parent::__construct($caller);
-
-        $this->block_name = $block_name;
     }
 
     /**

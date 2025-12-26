@@ -153,10 +153,10 @@ class TestTimberRenderBlock extends Timber_UnitTestCase
         ];
 
         // First call - should cache
-        $output1 = Timber::compile_twig_block('error', 'assets/toasts.twig', $data, 60);
+        $output1 = Timber::compile_twig_block('error', 'assets/toasts.twig', $data, expires: 60);
 
         // Second call - should use cache
-        $output2 = Timber::compile_twig_block('error', 'assets/toasts.twig', $data, 60);
+        $output2 = Timber::compile_twig_block('error', 'assets/toasts.twig', $data, expires: 60);
 
         $expected = '<div class="bg-red-500 text-red-50 font-bold top-0 left-0 w-full p-4" role="alert">Cached message</div>';
         $this->assertEquals($expected, trim($output1));
@@ -178,7 +178,7 @@ class TestTimberRenderBlock extends Timber_UnitTestCase
         $expires = 30;
         $cache_mode = Timber\Loader::CACHE_TRANSIENT;
 
-        $output = Timber::compile_twig_block($block_name, $template, $data, $expires, $cache_mode);
+        $output = Timber::compile_twig_block($block_name, $template, $data, expires: $expires, cache_mode: $cache_mode);
 
         $expected = '<div class="bg-blue-500 text-blue-50 top-0 left-0 w-full p-4" role="alert">Parameter test</div>';
         $this->assertEquals($expected, trim($output));
