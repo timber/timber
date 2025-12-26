@@ -96,16 +96,9 @@ class Twig
             ],
             'render_twig_block' => [
                 'callable' => function ($block_name, $filenames, $data = [], $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT) {
-                    // For Twig functions, we need to use the default location manager
+                    // When called from Twig, use the default locations collection
                     $caller = LocationManager::get_locations();
-                    $block_loader = new TwigBlockLoader($caller, $block_name);
-                    $file = $block_loader->choose_template($filenames);
-
-                    if ($file == false) {
-                        return false;
-                    }
-
-                    echo $block_loader->render($file, $data, $expires, $cache_mode);
+                    Timber::render_twig_block($block_name, $filenames, $data, $caller, $expires, $cache_mode);
                 },
             ],
             'Post' => [
