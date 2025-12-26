@@ -287,7 +287,6 @@ class TestTimberRenderBlock extends Timber_UnitTestCase
         // Now test if the Twig function works
         $output = Timber::compile('assets/test-twig-function.twig', $data);
 
-
         // Should contain the rendered block content
         $this->assertStringContainsString('bg-green-500', $output); // Success toast styling
         $this->assertStringContainsString('Function test message', $output);

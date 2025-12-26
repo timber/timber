@@ -99,14 +99,14 @@ class Twig
                 'callable' => function ($block_name, $filenames, $data = [], $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT) {
                     // For Twig functions, we need to use the default location manager
                     $caller = LocationManager::get_locations();
-                    $loader = new Loader($caller);
-                    $file = $loader->choose_template($filenames);
+                    $block_loader = new TwigBlockLoader($caller, $block_name);
+                    $file = $block_loader->choose_template($filenames);
 
                     if ($file == false) {
                         return false;
                     }
 
-                    echo $loader->render($file, $data, $expires, $cache_mode, $block_name);
+                    echo $block_loader->render($file, $data, $expires, $cache_mode);
                 },
             ],
             'Post' => [

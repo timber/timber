@@ -9,7 +9,7 @@ use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Twig\TwigFunction;
 
-class Loader
+class Loader implements LoaderInterface
 {
     public const CACHEGROUP = 'timberloader';
 
@@ -82,10 +82,9 @@ class Loader
      * @param array             $data
      * @param array|boolean     $expires (array for options, false for none, integer for # of seconds)
      * @param string            $cache_mode
-     * @param string|bool       $block_name (Optional) Name of block to render instead of full template.
      * @return bool|string
      */
-    public function render($file, $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT, $block_name = false)
+    public function render($file, $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT)
     {
         // Different $expires if user is anonymous or logged in
         if (\is_array($expires)) {
@@ -104,95 +103,14 @@ class Loader
         $key = null;
         $output = false;
         if (false !== $expires) {
-            \ksort($data);
-            $encoded = \json_encode($data);
-
-            /**
-             * The encoding might fail, e.g. when an object has a recursion. In that case, we’d rather not cache the
-             * data instead of possibly returning the wrong data.
-             */
-            if (false !== $encoded) {
-                $key = \md5($file . $encoded);
+            $key = $this->get_cache_key($file, $data);
+            if (null !== $key) {
                 $output = $this->get_cache($key, self::CACHEGROUP, $cache_mode);
             }
         }
 
         if (false === $output || null === $output) {
-            $twig = $this->get_twig();
-            if (\strlen($file)) {
-                $loader = $this->get_loader();
-                $result = $loader->getCacheKey($file);
-
-                /**
-                 * Fires after …
-                 *
-                 * @todo Add summary, description parameter description
-                 *
-                 * @param string $result
-                 */
-                \do_action('timber/loader/render_file', $result);
-
-                /**
-                 * Fires after …
-                 *
-                 * This action is used by the Timber Debug Bar extension.
-                 *
-                 * @todo Add summary
-                 *
-                 * @deprecated 2.0.0, use `timber/loader/render_file`
-                 */
-                \do_action_deprecated(
-                    'timber_loader_render_file',
-                    [$result],
-                    '2.0.0',
-                    'timber/loader/render_file'
-                );
-            }
-
-            /**
-             * Filters …
-             *
-             * @todo Add summary, description, example, parameter descriptions
-             *
-             * @since 0.20.10
-             *
-             * @param array  $data
-             * @param string $file
-             */
-            $data = \apply_filters('timber/loader/render_data', $data, $file);
-
-            /**
-             * Filters …
-             *
-             * @todo Add summary
-             *
-             * @deprecated 2.0.0, use `timber/loader/render_data`
-             */
-            $data = \apply_filters_deprecated(
-                'timber_loader_render_data',
-                [$data],
-                '2.0.0',
-                'timber/loader/render_data'
-            );
-
-            $template = $twig->load($file);
-
-            if ($block_name && $template->hasBlock($block_name)) {
-                $output = $template->renderBlock($block_name, $data);
-            } else {
-                $output = $template->render($data);
-            }
-
-            /**
-             * Filters $output before it is cached.
-             *
-             * @since 2.1.0
-             *
-             * @param string $output
-             * @param array  $data
-             * @param string $file
-             */
-            $output = \apply_filters('timber/output/pre-cache', $output, $data, $file);
+            $output = $this->render_template($file, $data);
         }
 
         if (false !== $output && false !== $expires && null !== $key) {
@@ -225,9 +143,128 @@ class Loader
         return $output;
     }
 
-    protected function delete_cache()
+    public function delete_cache()
     {
         Cleaner::delete_transients();
+    }
+
+    /**
+     * Generate a cache key for the template.
+     *
+     * @param string $file The template file.
+     * @param array  $data The data to pass to the template.
+     * @return string|null The cache key or null if encoding failed.
+     */
+    protected function get_cache_key($file, $data)
+    {
+        \ksort($data);
+        $encoded = \json_encode($data);
+
+        /**
+         * The encoding might fail, e.g. when an object has a recursion. In that case, we'd rather not cache the
+         * data instead of possibly returning the wrong data.
+         */
+        if (false === $encoded) {
+            return null;
+        }
+
+        return \md5($file . $encoded);
+    }
+
+    /**
+     * Render the template and return the output.
+     *
+     * @param string $file The template file.
+     * @param array  $data The data to pass to the template.
+     * @return string The rendered output.
+     */
+    protected function render_template($file, $data)
+    {
+        $twig = $this->get_twig();
+
+        if (\strlen($file)) {
+            $loader = $this->get_loader();
+            $result = $loader->getCacheKey($file);
+
+            /**
+             * Fires after …
+             *
+             * @todo Add summary, description parameter description
+             *
+             * @param string $result
+             */
+            \do_action('timber/loader/render_file', $result);
+
+            /**
+             * Fires after …
+             *
+             * This action is used by the Timber Debug Bar extension.
+             *
+             * @todo Add summary
+             *
+             * @deprecated 2.0.0, use `timber/loader/render_file`
+             */
+            \do_action_deprecated(
+                'timber_loader_render_file',
+                [$result],
+                '2.0.0',
+                'timber/loader/render_file'
+            );
+        }
+
+        /**
+         * Filters …
+         *
+         * @todo Add summary, description, example, parameter descriptions
+         *
+         * @since 0.20.10
+         *
+         * @param array  $data
+         * @param string $file
+         */
+        $data = \apply_filters('timber/loader/render_data', $data, $file);
+
+        /**
+         * Filters …
+         *
+         * @todo Add summary
+         *
+         * @deprecated 2.0.0, use `timber/loader/render_data`
+         */
+        $data = \apply_filters_deprecated(
+            'timber_loader_render_data',
+            [$data],
+            '2.0.0',
+            'timber/loader/render_data'
+        );
+
+        $template = $twig->load($file);
+        $output = $this->render_twig_template($template, $data);
+
+        /**
+         * Filters $output before it is cached.
+         *
+         * @since 2.1.0
+         *
+         * @param string $output
+         * @param array  $data
+         * @param string $file
+         */
+        return \apply_filters('timber/output/pre-cache', $output, $data, $file);
+    }
+
+    /**
+     * Render a Twig template.
+     *
+     * This method can be overridden in subclasses to customize rendering behavior.
+     *
+     * @param \Twig\TemplateWrapper $template The Twig template.
+     * @param array                  $data     The data to pass to the template.
+     * @return string The rendered output.
+     */
+    protected function render_twig_template($template, $data)
+    {
+        return $template->render($data);
     }
 
     /**
