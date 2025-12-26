@@ -1,11 +1,16 @@
 <?php
 
+namespace Timber\Tests;
+
+use PHPUnit\Framework\Attributes\Group;
+use Timber\Loader;
+use Timber\Timber;
+
 /**
  * Test Timber's render_twig_block and compile_twig_block functionality
- *
- * @group timber-render-block
  */
-class TestTimberRenderBlock extends Timber_UnitTestCase
+#[Group('timber-render-block')]
+class TimberRenderBlockTest extends TimberIntegrationTestCase
 {
     /**
      * Test compile_twig_block with valid block name
@@ -17,8 +22,8 @@ class TestTimberRenderBlock extends Timber_UnitTestCase
         ];
         $output = Timber::compile_twig_block('error', 'assets/toasts.twig', $data);
 
-        $expected = '<div class="bg-red-500 text-red-50 font-bold top-0 left-0 w-full p-4" role="alert">Test error message</div>';
-        $this->assertEquals($expected, trim($output));
+        $expected = '<div class="top-0 left-0 w-full p-4 font-bold bg-red-500 text-red-50" role="alert">Test error message</div>';
+        $this->assertEquals($expected, \trim($output));
     }
 
     /**
@@ -32,7 +37,7 @@ class TestTimberRenderBlock extends Timber_UnitTestCase
         $output = Timber::compile_twig_block('nested_inner', 'assets/toasts.twig', $data);
 
         $expected = '<p>This is a nested block: nested content</p>';
-        $this->assertEquals($expected, trim($output));
+        $this->assertEquals($expected, \trim($output));
     }
 
     /**
@@ -60,7 +65,7 @@ class TestTimberRenderBlock extends Timber_UnitTestCase
 
         // Should render the entire template when block doesn't exist
         $expected = '<div class="empty-template">This template has no blocks</div>';
-        $this->assertEquals($expected, trim($output));
+        $this->assertEquals($expected, \trim($output));
     }
 
     /**
@@ -71,8 +76,8 @@ class TestTimberRenderBlock extends Timber_UnitTestCase
         $output = Timber::compile_twig_block('error', 'assets/toasts.twig', []);
 
         // Should work with empty message
-        $expected = '<div class="bg-red-500 text-red-50 font-bold top-0 left-0 w-full p-4" role="alert"></div>';
-        $this->assertEquals($expected, trim($output));
+        $expected = '<div class="top-0 left-0 w-full p-4 font-bold bg-red-500 text-red-50" role="alert"></div>';
+        $this->assertEquals($expected, \trim($output));
     }
 
     /**
@@ -83,8 +88,8 @@ class TestTimberRenderBlock extends Timber_UnitTestCase
         $output = Timber::compile_twig_block('info', 'assets/toasts.twig');
 
         // Should work without data parameter
-        $expected = '<div class="bg-blue-500 text-blue-50 top-0 left-0 w-full p-4" role="alert"></div>';
-        $this->assertEquals($expected, trim($output));
+        $expected = '<div class="top-0 left-0 w-full p-4 bg-blue-500 text-blue-50" role="alert"></div>';
+        $this->assertEquals($expected, \trim($output));
     }
 
     /**
@@ -97,13 +102,13 @@ class TestTimberRenderBlock extends Timber_UnitTestCase
         ];
 
         // Capture output from render_twig_block
-        ob_start();
+        \ob_start();
         Timber::render_twig_block('success', 'assets/toasts.twig', $data);
-        $output = ob_get_contents();
-        ob_end_clean();
+        $output = \ob_get_contents();
+        \ob_end_clean();
 
-        $expected = '<div class="bg-green-500 text-green-50 top-0 left-0 w-full p-4" role="alert">Test render message</div>';
-        $this->assertEquals($expected, trim($output));
+        $expected = '<div class="top-0 left-0 w-full p-4 bg-green-500 text-green-50" role="alert">Test render message</div>';
+        $this->assertEquals($expected, \trim($output));
     }
 
     /**
@@ -116,10 +121,10 @@ class TestTimberRenderBlock extends Timber_UnitTestCase
         ];
 
         // Capture output from render_twig_block
-        ob_start();
+        \ob_start();
         Timber::render_twig_block('nonexistent', 'assets/toasts.twig', $data);
-        $output = ob_get_contents();
-        ob_end_clean();
+        $output = \ob_get_contents();
+        \ob_end_clean();
 
         // When block doesn't exist, should render the whole template
         $this->assertStringContainsString('This is the default template content', $output);
@@ -132,15 +137,15 @@ class TestTimberRenderBlock extends Timber_UnitTestCase
     public function testRenderTwigBlockMissingTemplate()
     {
         // Capture output and error suppression
-        ob_start();
+        \ob_start();
         Timber::render_twig_block('error', 'assets/nonexistent.twig', [
             'message' => 'test',
         ]);
-        $output = ob_get_contents();
-        ob_end_clean();
+        $output = \ob_get_contents();
+        \ob_end_clean();
 
         // Should output nothing when template doesn't exist
-        $this->assertEmpty(trim($output));
+        $this->assertEmpty(\trim($output));
     }
 
     /**
@@ -158,9 +163,9 @@ class TestTimberRenderBlock extends Timber_UnitTestCase
         // Second call - should use cache
         $output2 = Timber::compile_twig_block('error', 'assets/toasts.twig', $data, expires: 60);
 
-        $expected = '<div class="bg-red-500 text-red-50 font-bold top-0 left-0 w-full p-4" role="alert">Cached message</div>';
-        $this->assertEquals($expected, trim($output1));
-        $this->assertEquals($expected, trim($output2));
+        $expected = '<div class="top-0 left-0 w-full p-4 font-bold bg-red-500 text-red-50" role="alert">Cached message</div>';
+        $this->assertEquals($expected, \trim($output1));
+        $this->assertEquals($expected, \trim($output2));
         $this->assertEquals($output1, $output2);
     }
 
@@ -176,12 +181,12 @@ class TestTimberRenderBlock extends Timber_UnitTestCase
             'message' => 'Parameter test',
         ];
         $expires = 30;
-        $cache_mode = Timber\Loader::CACHE_TRANSIENT;
+        $cache_mode = Loader::CACHE_TRANSIENT;
 
         $output = Timber::compile_twig_block($block_name, $template, $data, expires: $expires, cache_mode: $cache_mode);
 
-        $expected = '<div class="bg-blue-500 text-blue-50 top-0 left-0 w-full p-4" role="alert">Parameter test</div>';
-        $this->assertEquals($expected, trim($output));
+        $expected = '<div class="top-0 left-0 w-full p-4 bg-blue-500 text-blue-50" role="alert">Parameter test</div>';
+        $this->assertEquals($expected, \trim($output));
     }
 
     /**
@@ -215,13 +220,13 @@ class TestTimberRenderBlock extends Timber_UnitTestCase
         $compiled_output = Timber::compile_twig_block('warning', 'assets/toasts.twig', $data);
 
         // Get output from render_twig_block
-        ob_start();
+        \ob_start();
         Timber::render_twig_block('warning', 'assets/toasts.twig', $data);
-        $rendered_output = ob_get_contents();
-        ob_end_clean();
+        $rendered_output = \ob_get_contents();
+        \ob_end_clean();
 
         // Both should produce identical output
-        $this->assertEquals(trim($compiled_output), trim($rendered_output));
+        $this->assertEquals(\trim($compiled_output), \trim($rendered_output));
     }
 
     /**
@@ -276,7 +281,7 @@ class TestTimberRenderBlock extends Timber_UnitTestCase
             'toast_message' => 'Function test message',
         ];
         $php_unit = $this;
-        add_filter('timber/locations', function ($paths) use ($php_unit) {
+        \add_filter('timber/locations', function ($paths) use ($php_unit) {
             $paths[] = [__DIR__];
             return $paths;
         });
@@ -300,7 +305,7 @@ class TestTimberRenderBlock extends Timber_UnitTestCase
     public function testRenderTwigBlockTwigFunctionInvalidBlock()
     {
         $php_unit = $this;
-        add_filter('timber/locations', function ($paths) use ($php_unit) {
+        \add_filter('timber/locations', function ($paths) use ($php_unit) {
             $paths[] = [__DIR__];
             return $paths;
         });
@@ -325,16 +330,16 @@ class TestTimberRenderBlock extends Timber_UnitTestCase
         $title_output = Timber::compile_twig_block('title', 'assets/base-layout.twig', [
             'page_title' => 'Custom Title',
         ]);
-        $this->assertEquals('Default Title', trim($title_output));
+        $this->assertEquals('Default Title', \trim($title_output));
 
         // Test header block
         $header_output = Timber::compile_twig_block('header', 'assets/base-layout.twig');
-        $this->assertEquals('<h1>Default Header</h1>', trim($header_output));
+        $this->assertEquals('<h1>Default Header</h1>', \trim($header_output));
 
         // Test content block with data
         $content_output = Timber::compile_twig_block('content', 'assets/base-layout.twig', [
             'custom_content' => 'Test content',
         ]);
-        $this->assertEquals('<p>Default content</p>', trim($content_output));
+        $this->assertEquals('<p>Default content</p>', \trim($content_output));
     }
 }

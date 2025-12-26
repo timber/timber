@@ -1,19 +1,19 @@
 {# toasts.twig - Template with multiple blocks for testing #}
 
 {% block error %}
-<div class="bg-red-500 text-red-50 font-bold top-0 left-0 w-full p-4" role="alert">{{ message }}</div>
+<div class="top-0 left-0 w-full p-4 font-bold bg-red-500 text-red-50" role="alert">{{ message }}</div>
 {% endblock %}
 
 {% block warning %}
-<div class="bg-yellow-500 text-yellow-50 top-0 left-0 w-full p-4" role="alert">{{ message }}</div>
+<div class="top-0 left-0 w-full p-4 bg-yellow-500 text-yellow-50" role="alert">{{ message }}</div>
 {% endblock %}
 
 {% block success %}
-<div class="bg-green-500 text-green-50 top-0 left-0 w-full p-4" role="alert">{{ message }}</div>
+<div class="top-0 left-0 w-full p-4 bg-green-500 text-green-50" role="alert">{{ message }}</div>
 {% endblock %}
 
 {% block info %}
-<div class="bg-blue-500 text-blue-50 top-0 left-0 w-full p-4" role="alert">{{ message }}</div>
+<div class="top-0 left-0 w-full p-4 bg-blue-500 text-blue-50" role="alert">{{ message }}</div>
 {% endblock %}
 
 {% block nested %}
