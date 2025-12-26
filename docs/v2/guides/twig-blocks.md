@@ -40,14 +40,25 @@ Returns the rendered block as a string.
 
 ```php
 /**
- * @param string         $block_name  The name of the block to render
- * @param array|string   $filenames   Template file(s) to load
- * @param array          $data        Data to pass to the template
- * @param bool|int|array $expires     Cache expiration (optional)
- * @param string         $cache_mode  Cache mode (optional)
- * @return string|false              The rendered block content
+ * @param string              $block_name  The name of the block to render
+ * @param array|string        $filenames   Template file(s) to load
+ * @param string|array|null   $caller      Optional. Value from a `LocationManager` method to control lookup.
+ *                                         Use `LocationManager::get_calling_script_dir()` (string) or
+ *                                         `LocationManager::get_locations()` (array). When `null`, Timber uses
+ *                                         `LocationManager::get_calling_script_dir(1)`.
+ * @param array               $data        Data to pass to the template
+ * @param bool|int|array      $expires     Cache expiration (optional)
+ * @param string              $cache_mode  Cache mode (optional)
+ * @return string|false                     The rendered block content
  */
-Timber::compile_twig_block($block_name, $filenames, $data = [], $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT)
+Timber::compile_twig_block(
+    $block_name,
+    $filenames,
+    $caller = null,
+    $data = [],
+    $expires = false,
+    $cache_mode = Loader::CACHE_USE_DEFAULT
+)
 ```
 
 ### `Timber::render_twig_block()`
@@ -56,13 +67,24 @@ Directly echoes the rendered block content.
 
 ```php
 /**
- * @param string         $block_name  The name of the block to render
- * @param array|string   $filenames   Template file(s) to load
- * @param array          $data        Data to pass to the template
- * @param bool|int|array $expires     Cache expiration (optional)
- * @param string         $cache_mode  Cache mode (optional)
+ * @param string              $block_name  The name of the block to render
+ * @param array|string        $filenames   Template file(s) to load
+ * @param string|array|null   $caller      Optional. Value from a `LocationManager` method to control lookup.
+ *                                         Use `LocationManager::get_calling_script_dir()` (string) or
+ *                                         `LocationManager::get_locations()` (array). When `null`, Timber uses
+ *                                         `LocationManager::get_calling_script_dir(1)`.
+ * @param array               $data        Data to pass to the template
+ * @param bool|int|array      $expires     Cache expiration (optional)
+ * @param string              $cache_mode  Cache mode (optional)
  */
-Timber::render_twig_block($block_name, $filenames, $data = [], $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT)
+Timber::render_twig_block(
+    $block_name,
+    $filenames,
+    $caller = null,
+    $data = [],
+    $expires = false,
+    $cache_mode = Loader::CACHE_USE_DEFAULT
+)
 ```
 
 ## Twig Function
@@ -356,10 +378,10 @@ Block rendering supports the same caching options as regular template rendering:
 
 ```php
 // Cache for 1 hour
-$cached_block = Timber::compile_twig_block('expensive_block', 'components/complex.twig', $data, 3600);
+$cached_block = Timber::compile_twig_block('expensive_block', 'components/complex.twig', $data, expires: 3600);
 
 // Different cache times for logged-in vs anonymous users
-$user_specific_cache = Timber::compile_twig_block('user_block', 'components/user.twig', $data, [3600, 300]);
+$user_specific_cache = Timber::compile_twig_block('user_block', 'components/user.twig', $data, expires: [3600, 300]);
 ```
 
 ## Real-World Examples
@@ -385,30 +407,6 @@ function ajax_render_component() {
 }
 add_action('wp_ajax_render_component', 'ajax_render_component');
 ```
-
-### Shortcode Integration
-
-Create dynamic shortcodes using block rendering:
-
-```php
-function testimonial_shortcode($atts) {
-    $atts = shortcode_atts([
-        'id' => '',
-        'style' => 'default'
-    ], $atts);
-    
-    $testimonial = get_post($atts['id']);
-    
-    return Timber::compile_twig_block($atts['style'] . '_testimonial', 'components/testimonials.twig', [
-        'testimonial' => Timber::get_post($testimonial),
-        'author' => get_field('author_name', $testimonial->ID),
-        'company' => get_field('company', $testimonial->ID)
-    ]);
-}
-add_shortcode('testimonial', 'testimonial_shortcode');
-```
-
-Use in content: `[testimonial id="123" style="featured"]`
 
 ### Modular Layout Building
 
