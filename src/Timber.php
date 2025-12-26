@@ -1355,10 +1355,9 @@ class Timber
      *                                          Default false.
      * @param string          $cache_mode       Optional. Any of the cache mode constants defined in Timber\Loader.
      * @param bool            $via_render       Optional. Whether to apply optional render or compile filters. Default false.
-     * @param bool            $block_name       Optional. The name of the block to compile. Default false.
      * @return bool|string                      The returned output.
      */
-    public static function compile($filenames, $data = [], $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT, $via_render = false, $block_name = false)
+    public static function compile($filenames, $data = [], $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT, $via_render = false)
     {
         if (!\defined('TIMBER_LOADED')) {
             self::init();
@@ -1478,7 +1477,7 @@ class Timber
                     'timber/compile/data'
                 );
             }
-            $output = $loader->render($file, $data, $expires, $cache_mode, $block_name);
+            $output = $loader->render($file, $data, $expires, $cache_mode);
         } else {
             if (\is_array($filenames)) {
                 $filenames = \implode(", ", $filenames);
@@ -1545,10 +1544,29 @@ class Timber
      *                                       array, the first value is used for non-logged in visitors, the second for users.
      *                                       Default false.
      * @param string         $cache_mode     Optional. Any of the cache mode constants defined in Timber\Loader.
+     * @return bool|string                   The rendered block output or false on failure.
      */
     public static function compile_twig_block($block_name, $filenames, $data = [], $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT)
     {
-        return self::compile($filenames, $data, $expires, $cache_mode, false, $block_name);
+        if (!\defined('TIMBER_LOADED')) {
+            self::init();
+        }
+        $caller = LocationManager::get_calling_script_dir(1);
+        $block_loader = new TwigBlockLoader($caller, $block_name);
+        $file = $block_loader->choose_template($filenames);
+
+        if ($file !== false) {
+            if (\is_null($data)) {
+                $data = [];
+            }
+            return $block_loader->render($file, $data, $expires, $cache_mode);
+        } else {
+            if (\is_array($filenames)) {
+                $filenames = \implode(", ", $filenames);
+            }
+            Helper::error_log('Error loading your template files: ' . $filenames . '. Make sure one of these files exists.');
+            return false;
+        }
     }
 
     /**
