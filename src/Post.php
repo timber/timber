@@ -91,7 +91,6 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      */
     protected $_prev = [];
 
-
     /**
      * @var array Stores the results of the ancestors of the post as Timber\Posts
      */
@@ -903,7 +902,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      */
     public function ancestors()
     {
-        if (null !== $this->_ancestors) {
+        if (isset($this->_ancestors)) {
             return $this->_ancestors;
         }
 
@@ -2017,7 +2016,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      */
     private function partition_tax_queries(array $query, array $taxonomies): array
     {
-        return \array_map(fn(string $tax): array => \array_merge($query, [
+        return \array_map(fn (string $tax): array => \array_merge($query, [
             'taxonomy' => [$tax],
         ]), $taxonomies);
     }
