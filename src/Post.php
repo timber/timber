@@ -92,6 +92,11 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
     protected $_prev = [];
 
     /**
+     * @var array Stores the results of the ancestors of the post as Timber\Posts
+     */
+    protected $_ancestors;
+
+    /**
      * @var string Stores the CSS classes for the post (ex: "post post-type-book post-123")
      */
     protected $_css_class;
@@ -857,6 +862,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      */
     public function get_method_values(): array
     {
+        $ret['ancestors'] = $this->ancestors();
         $ret['author'] = $this->author();
         $ret['categories'] = $this->categories();
         $ret['category'] = $this->category();
@@ -876,6 +882,34 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
         $ret['thumbnail'] = $this->thumbnail();
         $ret['title'] = $this->title();
         return $ret;
+    }
+
+    /**
+     * Returns an array of ancestors of the post as Timber\Posts
+     * (or other class as you define).
+     *
+     * @api
+     * @example
+     * ```twig
+     * {% if post.ancestors is not empty %}
+     *     Here are the ancestor pages:
+     *     {% for ancestor in post.ancestors %}
+     *         <a href="{{ ancestor.link }}">{{ ancestor.title }}</a>
+     *     {% endfor %}
+     * {% endif %}
+     * ```
+     * @return PostCollectionInterface
+     */
+    public function ancestors()
+    {
+        if (isset($this->_ancestors)) {
+            return $this->_ancestors;
+        }
+
+        $ancestors = \array_reverse(\get_post_ancestors($this->ID));
+        $this->_ancestors = $this->factory()->from($ancestors);
+
+        return $this->_ancestors;
     }
 
     /**

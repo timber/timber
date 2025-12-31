@@ -665,6 +665,109 @@ class TestTimberPost extends Timber_UnitTestCase
         ])));
     }
 
+    public function testPostAncestorsNone()
+    {
+        // A top-level post with no parent should have no ancestors
+        $post_id = $this->factory->post->create();
+        $post = Timber::get_post($post_id);
+        $this->assertSame(0, count($post->ancestors()));
+    }
+
+    public function testPostAncestorsSingle()
+    {
+        // A child post should have exactly one ancestor (its parent)
+        $parent_id = $this->factory->post->create([
+            'post_title' => 'Parent Post',
+        ]);
+        $child_id = $this->factory->post->create([
+            'post_parent' => $parent_id,
+            'post_title' => 'Child Post',
+        ]);
+        $child = Timber::get_post($child_id);
+        $ancestors = $child->ancestors();
+        $this->assertSame(1, count($ancestors));
+        $this->assertEquals($parent_id, $ancestors[0]->ID);
+        $this->assertEquals('Parent Post', $ancestors[0]->post_title);
+    }
+
+    public function testPostAncestorsMultiple()
+    {
+        // A deeply nested post should have multiple ancestors in correct order
+        $grandparent_id = $this->factory->post->create([
+            'post_title' => 'Grandparent',
+        ]);
+        $parent_id = $this->factory->post->create([
+            'post_parent' => $grandparent_id,
+            'post_title' => 'Parent',
+        ]);
+        $child_id = $this->factory->post->create([
+            'post_parent' => $parent_id,
+            'post_title' => 'Child',
+        ]);
+
+        $child = Timber::get_post($child_id);
+        $ancestors = $child->ancestors();
+
+        // Should have 2 ancestors: grandparent and parent (furthest ancestor first)
+        $this->assertSame(2, count($ancestors));
+        $this->assertEquals($grandparent_id, $ancestors[0]->ID);
+        $this->assertEquals($parent_id, $ancestors[1]->ID);
+    }
+
+    public function testPostAncestorsWithInheritStatus()
+    {
+        // Test that ancestors includes posts with inherit status
+        $parent_id = $this->factory->post->create([
+            'post_title' => 'Parent Post',
+        ]);
+        $child_id = $this->factory->post->create([
+            'post_parent' => $parent_id,
+            'post_title' => 'Child Post',
+            'post_status' => 'inherit',
+        ]);
+        $child = Timber::get_post($child_id);
+        $ancestors = $child->ancestors();
+        $this->assertSame(1, count($ancestors));
+        $this->assertEquals($parent_id, $ancestors[0]->ID);
+    }
+
+    public function testPostAncestorsDeepNesting()
+    {
+        // Create a chain of 5 nested posts
+        $post_ids = [$this->factory->post->create(['post_title' => 'Level 1'])];
+        for ($i = 2; $i <= 5; $i++) {
+            $post_ids[] = $this->factory->post->create([
+                'post_parent' => $post_ids[$i - 2],
+                'post_title' => "Level $i",
+            ]);
+        }
+
+        $deepest = Timber::get_post($post_ids[4]);
+        $ancestors = $deepest->ancestors();
+
+        // Should have 4 ancestors (all parents up the chain, furthest ancestor first)
+        $this->assertSame(4, count($ancestors));
+        // Verify they're in correct order (furthest ancestor first)
+        $this->assertEquals($post_ids[0], $ancestors[0]->ID);
+        $this->assertEquals($post_ids[1], $ancestors[1]->ID);
+        $this->assertEquals($post_ids[2], $ancestors[2]->ID);
+        $this->assertEquals($post_ids[3], $ancestors[3]->ID);
+    }
+
+    public function testPostAncestorsReturnsTimberPost()
+    {
+        // Verify that ancestors returns Timber\Post objects
+        $parent_id = $this->factory->post->create();
+        $child_id = $this->factory->post->create([
+            'post_parent' => $parent_id,
+        ]);
+        $child = Timber::get_post($child_id);
+        $ancestors = $child->ancestors();
+
+        $this->assertSame(1, count($ancestors));
+        $this->assertInstanceOf(Timber\Post::class, $ancestors[0]);
+    }
+
     public function testPostNoConstructorArgument()
     {
         $pid = $this->factory->post->create();
