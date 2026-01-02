@@ -2,7 +2,10 @@
 
 namespace Timber\Image\Operation;
 
-use Timber\Helper;
+use Timber\Image\Converter\CWebPConverter;
+use Timber\Image\Converter\GDConverter;
+use Timber\Image\Converter\IConverter;
+use Timber\Image\Converter\ImagickConverter;
 use Timber\Image\Operation as ImageOperation;
 use Timber\ImageHelper;
 
@@ -13,12 +16,15 @@ use Timber\ImageHelper;
  */
 class ToWebp extends ImageOperation
 {
+    private $converter_engine;
+
     /**
      * @param string $quality  ranges from 0 (worst quality, smaller file) to 100 (best quality, biggest file)
      */
     public function __construct(
         private $quality
     ) {
+        $this->converter_engine = \apply_filters('webp_converter_engine', 'gd');
     }
 
     /**
@@ -30,6 +36,25 @@ class ToWebp extends ImageOperation
     {
         $new_name = $src_filename . '.webp';
         return $new_name;
+    }
+
+    /**
+     * Factory method to get the appropriate converter instance
+     *
+     * @return IConverter
+     */
+    private function get_converter()
+    {
+        return match ($this->converter_engine) {
+            'imagick' => new ImagickConverter($this->quality),
+            'cwebp' => new CWebPConverter($this->quality),
+            default => new GDConverter($this->quality)
+        };
+    }
+
+    public function get_active_converter_class(): string
+    {
+        return $this->get_converter()::class;
     }
 
     /**
@@ -52,33 +77,7 @@ class ToWebp extends ImageOperation
             return false;
         }
 
-        $ext = \wp_check_filetype($load_filename);
-        if (isset($ext['ext'])) {
-            $ext = $ext['ext'];
-        }
-        $ext = \strtolower((string) $ext);
-        $ext = \str_replace('jpg', 'jpeg', $ext);
-
-        $imagecreate_function = 'imagecreatefrom' . $ext;
-        if (!\function_exists($imagecreate_function)) {
-            return false;
-        }
-
-        $input = $imagecreate_function($load_filename);
-
-        if ($input === false) {
-            return false;
-        }
-
-        if (!\imageistruecolor($input)) {
-            \imagepalettetotruecolor($input);
-        }
-
-        if (!\function_exists('imagewebp')) {
-            Helper::error_log('The function imagewebp does not exist on this server to convert image to ' . $save_filename . '.');
-            return false;
-        }
-
-        return \imagewebp($input, $save_filename, $this->quality);
+        $converter = $this->get_converter();
+        return $converter->convert($load_filename, $save_filename);
     }
 }

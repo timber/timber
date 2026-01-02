@@ -1,5 +1,8 @@
 <?php
 
+use Timber\Image\Converter;
+use Timber\Image\Operation\ToWebp;
+
 class TestTimberImageToWEBP extends Timber_UnitTestCase
 {
     public function set_up()
@@ -17,6 +20,33 @@ class TestTimberImageToWEBP extends Timber_UnitTestCase
             'file' => $filename,
         ]);
         $this->assertEquals($filename, $str);
+    }
+
+    public function testCwebpTIFtoWEB()
+    {
+        $binary_path = '/opt/homebrew/bin/cwebp';
+        if (!file_exists($binary_path)) {
+            $this->markTestSkipped('cwebp binary not available at ' . $binary_path);
+        }
+
+        add_filter('webp_converter_engine', fn ($engine) => 'cwebp');
+        add_filter('webp_cwebp_path', fn ($path) => '/opt/homebrew/bin/cwebp');
+
+        $converter = new ToWebp(80);
+        $converter_class = $converter->get_active_converter_class();
+        $filename = TestTimberImage::copyTestAttachment('white-castle.tif');
+        $str = Timber::compile_string('{{file|towebp}}', [
+            'file' => $filename,
+        ]);
+        $this->assertTrue(Converter\CWebPConverter::class === $converter_class);
+
+        $upload_dir = wp_upload_dir();
+        $site_url = get_site_url();
+        $relative_path = str_replace($upload_dir['basedir'], '', $filename);
+        $relative_path = dirname($relative_path) . '/' . pathinfo($relative_path, PATHINFO_FILENAME) . '.webp';
+        $expected_url = $site_url . '/wp-content/uploads' . $relative_path;
+
+        $this->assertEquals($expected_url, $str);
     }
 
     public function testPNGtoWEBP()
