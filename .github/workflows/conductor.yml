@@ -26,7 +26,7 @@ jobs:
             - name: Install PHP
               uses: "shivammathur/setup-php@v2"
               with:
-                  php-version: "8.1"
+                  php-version: "8.2"
                   coverage: "none"
                   # Make sure to install any additional extensions that are
                   # required to run the composer install. For more details,
