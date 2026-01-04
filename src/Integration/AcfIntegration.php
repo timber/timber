@@ -9,8 +9,12 @@
 namespace Timber\Integration;
 
 use ACF;
+use acf_field;
 use DateTimeImmutable;
+use Timber\Post;
+use Timber\Term;
 use Timber\Timber;
+use Timber\User;
 
 /**
  * Class used to handle integration with Advanced Custom Fields
@@ -43,7 +47,7 @@ class AcfIntegration implements IntegrationInterface
      * @param string       $value      The field value. Default null.
      * @param int          $post_id    The post ID.
      * @param string       $field_name The name of the meta field to get the value for.
-     * @param \Timber\Post $post       The post object.
+     * @param Post $post       The post object.
      * @param array        $args       An array of arguments.
      * @return mixed|false
      */
@@ -63,7 +67,7 @@ class AcfIntegration implements IntegrationInterface
      * @param string       $value      The field value. Default null.
      * @param int          $term_id    The term ID.
      * @param string       $field_name The name of the meta field to get the value for.
-     * @param \Timber\Term $term       The term object.
+     * @param Term $term       The term object.
      * @param array        $args       An array of arguments.
      * @return mixed|false
      */
@@ -90,7 +94,7 @@ class AcfIntegration implements IntegrationInterface
      * @param string       $value      The field value. Default null.
      * @param int          $user_id    The user ID.
      * @param string       $field_name The name of the meta field to get the value for.
-     * @param \Timber\User $user       The user object.
+     * @param User $user       The user object.
      * @param array        $args       An array of arguments.
      * @return mixed|false
      */
@@ -250,62 +254,48 @@ class AcfIntegration implements IntegrationInterface
 
         /**
          * We use acf()->fields->get_field_type() instead of acf_get_field_type(), because of some function stub issues
-         * in the php-stubs/acf-pro-stubs package. The ACF plugin doesn’t use the right parameter and return values for
+         * in the php-stubs/acf-pro-stubs package. The ACF plugin doesn't use the right parameter and return values for
          * some functions in the DocBlocks.
          *
          * @ticket https://github.com/timber/timber/pull/2630
          */
-        $file_field_type = \acf_get_field_type('file');
-        $image_field_type = \acf_get_field_type('image');
-        $gallery_field_type = \acf_get_field_type('gallery');
-        $date_picker_field_type = \acf_get_field_type('date_picker');
-        $date_time_picker_field_type = \acf_get_field_type('date_time_picker');
-        $post_object_field_type = \acf_get_field_type('post_object');
-        $relationship_field_type = \acf_get_field_type('relationship');
-        $taxonomy_field_type = \acf_get_field_type('taxonomy');
-        $user_field_type = \acf_get_field_type('user');
+        $field_types = \array_filter([
+            'file' => \acf_get_field_type('file'),
+            'image' => \acf_get_field_type('image'),
+            'gallery' => \acf_get_field_type('gallery'),
+            'date_picker' => \acf_get_field_type('date_picker'),
+            'date_time_picker' => \acf_get_field_type('date_time_picker'),
+            'post_object' => \acf_get_field_type('post_object'),
+            'relationship' => \acf_get_field_type('relationship'),
+            'taxonomy' => \acf_get_field_type('taxonomy'),
+            'user' => \acf_get_field_type('user'),
+        ], static fn ($field_type): bool => $field_type instanceof acf_field);
 
-        \remove_filter('acf/format_value/type=file', [$file_field_type, 'format_value']);
-        \remove_filter('acf/format_value/type=image', [$image_field_type, 'format_value']);
-        \remove_filter('acf/format_value/type=gallery', [$gallery_field_type, 'format_value']);
-        \remove_filter('acf/format_value/type=date_picker', [$date_picker_field_type, 'format_value']);
-        \remove_filter('acf/format_value/type=date_time_picker', [$date_time_picker_field_type, 'format_value']);
-        \remove_filter('acf/format_value/type=post_object', [$post_object_field_type, 'format_value']);
-        \remove_filter('acf/format_value/type=relationship', [$relationship_field_type, 'format_value']);
-        \remove_filter('acf/format_value/type=taxonomy', [$taxonomy_field_type, 'format_value']);
-        \remove_filter('acf/format_value/type=user', [$user_field_type, 'format_value']);
+        $timber_transforms = [
+            'file' => [self::class, 'transform_file'],
+            'image' => [self::class, 'transform_image'],
+            'gallery' => [self::class, 'transform_gallery'],
+            'date_picker' => [self::class, 'transform_date_picker'],
+            'date_time_picker' => [self::class, 'transform_date_picker'],
+            'post_object' => [self::class, 'transform_post_object'],
+            'relationship' => [self::class, 'transform_relationship'],
+            'taxonomy' => [self::class, 'transform_taxonomy'],
+            'user' => [self::class, 'transform_user'],
+        ];
 
-        \add_filter('acf/format_value/type=file', [self::class, 'transform_file'], 10, 3);
-        \add_filter('acf/format_value/type=image', [self::class, 'transform_image'], 10, 3);
-        \add_filter('acf/format_value/type=gallery', [self::class, 'transform_gallery'], 10, 3);
-        \add_filter('acf/format_value/type=date_picker', [self::class, 'transform_date_picker'], 10, 3);
-        \add_filter('acf/format_value/type=date_time_picker', [self::class, 'transform_date_picker'], 10, 3);
-        \add_filter('acf/format_value/type=post_object', [self::class, 'transform_post_object'], 10, 3);
-        \add_filter('acf/format_value/type=relationship', [self::class, 'transform_relationship'], 10, 3);
-        \add_filter('acf/format_value/type=taxonomy', [self::class, 'transform_taxonomy'], 10, 3);
-        \add_filter('acf/format_value/type=user', [self::class, 'transform_user'], 10, 3);
+        // Remove ACF's format_value filters and add Timber's transform filters.
+        foreach ($field_types as $type => $field_type) {
+            \remove_filter("acf/format_value/type={$type}", [$field_type, 'format_value']);
+            \add_filter("acf/format_value/type={$type}", $timber_transforms[$type], 10, 3);
+        }
 
         $value = \get_field($field_name, $id, true);
 
-        \add_filter('acf/format_value/type=file', [$file_field_type, 'format_value'], 10, 3);
-        \add_filter('acf/format_value/type=image', [$image_field_type, 'format_value'], 10, 3);
-        \add_filter('acf/format_value/type=gallery', [$gallery_field_type, 'format_value'], 10, 3);
-        \add_filter('acf/format_value/type=date_picker', [$date_picker_field_type, 'format_value'], 10, 3);
-        \add_filter('acf/format_value/type=date_time_picker', [$date_time_picker_field_type, 'format_value'], 10, 3);
-        \add_filter('acf/format_value/type=post_object', [$post_object_field_type, 'format_value'], 10, 3);
-        \add_filter('acf/format_value/type=relationship', [$relationship_field_type, 'format_value'], 10, 3);
-        \add_filter('acf/format_value/type=taxonomy', [$taxonomy_field_type, 'format_value'], 10, 3);
-        \add_filter('acf/format_value/type=user', [$user_field_type, 'format_value'], 10, 3);
-
-        \remove_filter('acf/format_value/type=file', [self::class, 'transform_file']);
-        \remove_filter('acf/format_value/type=image', [self::class, 'transform_image']);
-        \remove_filter('acf/format_value/type=gallery', [self::class, 'transform_gallery']);
-        \remove_filter('acf/format_value/type=date_picker', [self::class, 'transform_date_picker']);
-        \remove_filter('acf/format_value/type=date_time_picker', [self::class, 'transform_date_picker']);
-        \remove_filter('acf/format_value/type=post_object', [self::class, 'transform_post_object']);
-        \remove_filter('acf/format_value/type=relationship', [self::class, 'transform_relationship']);
-        \remove_filter('acf/format_value/type=taxonomy', [self::class, 'transform_taxonomy']);
-        \remove_filter('acf/format_value/type=user', [self::class, 'transform_user']);
+        // Restore ACF's format_value filters and remove Timber's transform filters.
+        foreach ($field_types as $type => $field_type) {
+            \add_filter("acf/format_value/type={$type}", [$field_type, 'format_value'], 10, 3);
+            \remove_filter("acf/format_value/type={$type}", $timber_transforms[$type]);
+        }
 
         return $value;
     }

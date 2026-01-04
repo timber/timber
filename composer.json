@@ -76,7 +76,7 @@
     "symplify/easy-coding-standard": "^13",
     "szepeviktor/phpstan-wordpress": "^2",
     "twig/cache-extra": "^3.17",
-    "wpackagist-plugin/advanced-custom-fields": "^6.0",
+    "wpackagist-plugin/advanced-custom-fields": "^6.5",
     "wpackagist-plugin/co-authors-plus": "^3.6"
   },
   "suggest": {
