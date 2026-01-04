@@ -172,13 +172,12 @@ class TimberCommentAvatarTest extends TimberIntegrationTestCase
 
     private function crawl($url)
     {
-        $handle = \curl_init($url);
-        \curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
-        /* Get the HTML or whatever is linked in $url. */
-        $response = \curl_exec($handle);
-        /* Check for 404 (file not found). */
-        $httpCode = \curl_getinfo($handle, CURLINFO_HTTP_CODE);
-        \curl_close($handle);
-        return $httpCode;
+        $response = \wp_remote_get($url);
+
+        if (\is_wp_error($response)) {
+            return 0;
+        }
+
+        return \wp_remote_retrieve_response_code($response);
     }
 }
