@@ -11,6 +11,9 @@ use Timber\Timber;
 class MyMenu extends Menu
 {
 }
+class MySeconaryMenu extends Menu
+{
+}
 
 #[Group('factory')]
 #[Group('menus-api')]
@@ -188,20 +191,34 @@ class MenuFactoryTest extends TimberIntegrationTestCase
             'name' => 'Main Menu',
             'taxonomy' => 'nav_menu',
         ]);
+        $id_secondary = static::factory()->term->create([
+            'name' => 'Secondary Menu',
+            'taxonomy' => 'nav_menu',
+        ]);
 
         $factory = new MenuFactory();
 
         // Set up our new custom menu location.
         \register_nav_menu('custom', 'Custom nav location');
+        \register_nav_menu('custom_secondary', 'Custom nav secondary location');
         \set_theme_mod('nav_menu_locations', [
             'custom' => $id,
+            'custom_secondary' => $id_secondary,
         ]);
 
-        $this->add_filter_temporarily('timber/menu/classmap', fn () => [
+        \add_filter('timber/menu/classmap', fn () => [
             'custom' => MyMenu::class,
+            'custom_secondary' => function ($menu, $args) use ($id_secondary) {
+                if ($menu->term_id === $id_secondary) {
+                    return MySeconaryMenu::class;
+                }
+
+                return null;
+            },
         ]);
 
-        $this->assertTrue(MyMenu::class === ($factory->from($id) !== null ? $factory->from($id)::class : self::class));
+        $this->assertTrue(MyMenu::class === $factory->from($id)::class);
+        $this->assertTrue(MySeconaryMenu::class === $factory->from($id_secondary)::class);
     }
 
     /**
