@@ -214,7 +214,7 @@ class MenuFactory
 
         $location = Timber::get_menu_location($term);
 
-        $class = $classmap[$location] ?? null;
+        $class = $classmap[$location ?? ''] ?? null;
 
         // If class is a callable, call it to get the actual class name
         if (\is_callable($class)) {
