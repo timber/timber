@@ -843,6 +843,9 @@ class MenuTest extends TimberIntegrationTestCase
 
     public function testGetCurrentItemWithAncestor()
     {
+        // Set REQUEST_URI to a non-matching URL so WordPress doesn't auto-mark any item as current
+        $this->get('/non-existent-test-page');
+
         $items = [];
         $items[] = (object) [
             'type' => 'link',
@@ -890,6 +893,9 @@ class MenuTest extends TimberIntegrationTestCase
 
     public function testGetCurrentItemAntiClimactic()
     {
+        // Set REQUEST_URI to a non-matching URL so WordPress doesn't auto-mark any item as current
+        $this->get('/non-existent-test-page');
+
         $menu_arr = self::_createTestMenu();
         $menu = Timber::get_menu($menu_arr['term_id']);
 
