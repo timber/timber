@@ -218,6 +218,11 @@ abstract class TimberIntegrationTestCase extends Integration_Test_Case
         $destName ??= $file;
         $destination = $upload_dir['path'] . '/' . $destName;
 
+        // Ensure the upload directory exists
+        if (!\is_dir($upload_dir['path'])) {
+            \wp_mkdir_p($upload_dir['path']);
+        }
+
         \copy($this->getFixtureAsset($file), $destination);
 
         return $destination;
