@@ -129,11 +129,11 @@ class ACFTest extends TimberIntegrationTestCase
         $this->remove_filter_temporarily('acf_the_content', 'wp_make_content_images_responsive');
 
         \acf_add_local_field_group([
-            'key' => 'group_1',
+            'key' => 'group_' . \uniqid(),
             'title' => 'Group 1',
             'fields' => [
                 [
-                    'key' => 'field_1',
+                    'key' => 'field_' . \uniqid(),
                     'label' => 'Lead',
                     'name' => 'lead',
                     'type' => 'wysiwyg',
@@ -510,9 +510,10 @@ class ACFTest extends TimberIntegrationTestCase
     private function register_field($field_name, $field_type, $field_args = [])
     {
         $group_key = \sprintf('group_%s', \uniqid());
+        $field_key = \sprintf('field_%s', \uniqid());
 
         $field = \array_merge([
-            'key' => 'field_2',
+            'key' => $field_key,
             'label' => 'Field',
             'name' => $field_name,
             'type' => $field_type,
