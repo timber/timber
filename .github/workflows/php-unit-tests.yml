@@ -81,7 +81,7 @@ jobs:
     name: PHP ${{ matrix.php }} | WP ${{ matrix.wp }} | ${{ matrix.dependency-version }}${{ matrix.coverage && ' | coverage' || '' }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
