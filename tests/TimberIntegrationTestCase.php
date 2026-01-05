@@ -3,19 +3,17 @@
 namespace Timber\Tests;
 
 use Mantle\Testkit\Integration_Test_Case;
+use Timber\Tests\Support\Concerns\InteractsWithState;
 use Timber\Timber;
 
 abstract class TimberIntegrationTestCase extends Integration_Test_Case
 {
+    use InteractsWithState;
+
     /**
      * Maintain a list of action/filter hook removals to perform at the end of each test.
      */
     private $temporary_hook_removals = [];
-
-    /**
-     * Backup variable for saving and restoring themes.
-     */
-    protected $backup_wp_theme_directories;
 
     /**
      * Backup for Timber locations.
@@ -34,10 +32,6 @@ abstract class TimberIntegrationTestCase extends Integration_Test_Case
         // Reset the context cache to prevent test pollution
         // This ensures filters added in tests affect the context
         Timber::$context_cache = [];
-
-        // Ensure locale is reset to prevent test pollution
-        // This handles cases where a previous test changed the locale
-        \restore_current_locale();
 
         // Save original locations and add Fixtures directory for test templates
         $this->backup_timber_locations = Timber::$locations;
@@ -92,17 +86,6 @@ abstract class TimberIntegrationTestCase extends Integration_Test_Case
     public function setSiteUrl($url)
     {
         return 'http://' . $_SERVER['HTTP_HOST'] . '/wp';
-    }
-
-    public function switch_to_locale($locale)
-    {
-        \switch_to_locale($locale);
-        // Load the file after switching to override wp tests languages files
-        $tests_language_mo = __DIR__ . '/Fixtures/languages/' . $locale . '.mo';
-        if (!\is_file($tests_language_mo)) {
-            \wp_die('No language file found for ' . $locale);
-        }
-        \load_textdomain('default', $tests_language_mo);
     }
 
     /**
@@ -203,33 +186,6 @@ abstract class TimberIntegrationTestCase extends Integration_Test_Case
             'term' => $menu_term,
             'item_ids' => $item_ids,
         ];
-    }
-
-    public function clean_themes_cache()
-    {
-        global $wp_theme_directories;
-
-        parent::set_up();
-
-        $this->backup_wp_theme_directories = $wp_theme_directories;
-        $wp_theme_directories = [WP_CONTENT_DIR . '/themes'];
-
-        \wp_clean_themes_cache();
-        unset($GLOBALS['wp_themes']);
-    }
-
-    public function restore_themes()
-    {
-        if (!$this->backup_wp_theme_directories) {
-            return;
-        }
-
-        global $wp_theme_directories;
-
-        $wp_theme_directories = $this->backup_wp_theme_directories;
-
-        \wp_clean_themes_cache();
-        unset($GLOBALS['wp_themes']);
     }
 
     public function isWordPressVersion(string $version, string $operator = '=')

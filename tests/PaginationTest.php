@@ -3,6 +3,7 @@
 namespace Timber\Tests;
 
 use Mantle\Testing\Attributes\PermalinkStructure;
+use Mantle\Testing\Concerns\Refresh_Database;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\Attributes\Ticket;
@@ -16,11 +17,21 @@ use WP_Query;
 #[Group('pagination')]
 class PaginationTest extends TimberIntegrationTestCase
 {
+    use Refresh_Database;
+
     public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
-        \register_post_type('portfolio');
+        \register_post_type('portfolio', [
+            'public' => true,
+            'has_archive' => true,
+        ]);
+
+        \register_post_type('my_cpt', [
+            'public' => true,
+            'has_archive' => true,
+        ]);
     }
 
     #[IgnoreDeprecations]
@@ -78,8 +89,7 @@ class PaginationTest extends TimberIntegrationTestCase
         $pids = static::factory()->post->create_many(55, [
             'post_type' => 'portfolio',
         ]);
-        $this->get(\home_url('/portfolio/page/3'));
-        \query_posts('post_type=portfolio&paged=3');
+        $this->get(\home_url('?post_type=portfolio&paged=3'));
         $pagination = Timber::get_pagination();
         $this->assertSame(6, \count($pagination['pages']));
     }
@@ -93,7 +103,6 @@ class PaginationTest extends TimberIntegrationTestCase
             'post_type' => 'portfolio',
         ]);
         $this->get(\home_url('/portfolio/page/3?whscheck="><svg/onload=alert()>'));
-        \query_posts('post_type=portfolio&paged=3');
         $pagination = Timber::get_pagination();
         $this->assertEquals('http://example.org/portfolio/page/4/?whscheck=%22%3E%3Csvg%2Fonload%3Dalert%28%29%3E', $pagination['next']['link']);
     }
@@ -108,7 +117,6 @@ class PaginationTest extends TimberIntegrationTestCase
         ]);
         $this->get(\home_url('/portfolio/page/3?wx9um%2522%253e%253cscript%253ealert%25281%2529%253c%252fscript%
 253eaq86s=1'));
-        \query_posts('post_type=portfolio&paged=3');
         $pagination = Timber::get_pagination();
         $this->assertEquals('http://example.org/portfolio/page/4/?wx9umscriptalert(1)/script%_253eaq86s=1', $pagination['next']['link']);
     }
@@ -124,12 +132,10 @@ class PaginationTest extends TimberIntegrationTestCase
 
         $encoded_once = '?%22%3E%3Cscript%3Ealert(%22XSS%20XSS%22)%3C%2Fscript%3E%3D1';
         $this->get(\home_url("/portfolio/page/3?{$encoded_once}"));
-        \query_posts('post_type=portfolio&paged=3');
         $pagination = Timber::get_pagination();
         $this->assertEquals("http://example.org/portfolio/page/4/?scriptalert(XSS_XSS)/script=1", $pagination['next']['link']);
         $encoded_twice = '?%2522%253E%253Cscript%253Ealert(%2522XSS%2520XSS%2522)%253C%252Fscript%253E%253D1';
         $this->get(\home_url("/portfolio/page/3?{$encoded_twice}"));
-        \query_posts('post_type=portfolio&paged=3');
         $pagination = Timber::get_pagination();
         $this->assertEquals("http://example.org/portfolio/page/4/?scriptalert(XSS_XSS)/script=1", $pagination['next']['link']);
     }
@@ -142,7 +148,6 @@ class PaginationTest extends TimberIntegrationTestCase
         ]);
         $this->get(\home_url('/portfolio/page/3?wx9um%2522%253e%253cscript%253ealert%25281%2529%253c%252fscript%
 253eaq86s=1'));
-        \query_posts('post_type=portfolio&paged=3');
 
         $link = Timber::compile_string("{{ posts.pagination.next.link|e('esc_url') }}", [
             'posts' => new PostQuery($GLOBALS['wp_query']),
@@ -158,7 +163,6 @@ class PaginationTest extends TimberIntegrationTestCase
         ]);
         $this->get(\home_url('/portfolio/page/3?wx9um%2522%253e%253cscript%253ealert%25281%2529%253c%252fscript%
 253eaq86s=1'));
-        \query_posts('post_type=portfolio&paged=3');
 
         $link = Timber::compile_string("{{ posts.pagination.next.link|e('esc_html') }}", [
             'posts' => new PostQuery($GLOBALS['wp_query']),
@@ -173,7 +177,7 @@ class PaginationTest extends TimberIntegrationTestCase
         $pids = static::factory()->post->create_many(99, [
             'post_type' => 'portfolio',
         ]);
-        \query_posts('post_type=portfolio');
+        $this->get(\home_url('?post_type=portfolio'));
         $pagination = Timber::get_pagination(4);
         $this->assertSame(5, \count($pagination['pages']));
     }
@@ -188,7 +192,6 @@ class PaginationTest extends TimberIntegrationTestCase
         ]);
         $archive = \home_url('?s=post');
         $this->get($archive);
-        \query_posts('s=post');
         $pagination = Timber::get_pagination();
 
         $this->assertEquals('http://example.org/page/5/?s=post', $pagination['pages'][4]['link']);
@@ -204,7 +207,6 @@ class PaginationTest extends TimberIntegrationTestCase
         ]);
         $archive = \home_url('?s=post');
         $this->get($archive);
-        \query_posts('s=post');
         $pagination = Timber::get_pagination();
 
         $this->assertEquals('http://example.org/page/2/?s=post', $pagination['next']['link']);
@@ -221,7 +223,6 @@ class PaginationTest extends TimberIntegrationTestCase
 
         $archive = \home_url('page/4/?s=post');
         $this->get($archive);
-        \query_posts('s=post&paged=4');
         $pagination = Timber::get_pagination();
 
         $this->assertEquals('http://example.org/page/3/?s=post', $pagination['prev']['link']);
@@ -285,8 +286,7 @@ class PaginationTest extends TimberIntegrationTestCase
             \wp_set_object_terms($post, $news_id, 'category');
         }
 
-        // Overwrite the main query.
-        \query_posts('category_name=news');
+        $this->get(\home_url('?cat=' . $news_id));
 
         // Let Timber fall back on the main query.
         $pagination = Timber::get_posts()->pagination();
@@ -474,6 +474,9 @@ class PaginationTest extends TimberIntegrationTestCase
     #[PermalinkStructure('/%postname%/')]
     public function testCollectionPaginationPrevUsesBaseAndFormatArgs()
     {
+        // Reset REQUEST_URI - custom base/format pagination shouldn't inherit query params
+        $this->get('/');
+
         for ($i = 1; $i < 30; $i++) {
             static::factory()->post->create([
                 'post_title' => 'post' . $i,
@@ -494,6 +497,9 @@ class PaginationTest extends TimberIntegrationTestCase
     #[PermalinkStructure('/%postname%/')]
     public function testCollectionPaginationPrevUsesBaseAndFormatArgsPage()
     {
+        // Reset REQUEST_URI - custom base/format pagination shouldn't inherit query params
+        $this->get('/');
+
         static::factory()->post->create_many(30);
 
         // Query for the third page of posts. Exactly two pages should precede this page.
@@ -576,22 +582,15 @@ class PaginationTest extends TimberIntegrationTestCase
     #[Ticket('#1459')]
     public function test1459Pagintion()
     {
-        global $paged;
-        \register_post_type('my_cpt', [
-            'public' => true,
-            'has_archive' => true,
-        ]);
-        $posts = static::factory()->post->create_many(9, [
+        static::factory()->post->create_many(9, [
             'post_type' => 'my_cpt',
         ]);
-        if (!isset($paged) || !$paged) {
-            $paged = 1;
-        }
+
         $this->get(\home_url('my_cpt'));
         $data['posts'] = Timber::get_posts([
             'post_type' => 'my_cpt',
             'posts_per_page' => 4,
-            'paged' => $paged,
+            'paged' => 1,
         ]);
         \wp_reset_query(); // for good measure
         $pagination = $data['posts']->pagination();

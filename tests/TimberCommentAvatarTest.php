@@ -41,17 +41,22 @@ class TimberCommentAvatarTest extends TimberIntegrationTestCase
 
     public function testAvatarFalse()
     {
+        $original_show_avatars = \get_option('show_avatars');
         \update_option('show_avatars', false);
-        $post_id = static::factory()->post->create();
-        $comment_id = static::factory()->comment->create([
-            'comment_post_ID' => $post_id,
-        ]);
-        $comment = Timber::get_comment($comment_id);
+        try {
+            $post_id = static::factory()->post->create();
+            $comment_id = static::factory()->comment->create([
+                'comment_post_ID' => $post_id,
+            ]);
+            $comment = Timber::get_comment($comment_id);
 
-        # test default gravatr holding image
-        $avatar = $comment->avatar();
+            # test default gravatr holding image
+            $avatar = $comment->avatar();
 
-        $this->assertFalse($avatar);
+            $this->assertFalse($avatar);
+        } finally {
+            \update_option('show_avatars', $original_show_avatars);
+        }
     }
 
     public function testAvatarBlank()

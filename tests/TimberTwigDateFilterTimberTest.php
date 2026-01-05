@@ -4,6 +4,8 @@ namespace Timber\Tests;
 
 use DateTime;
 use PHPUnit\Framework\Attributes\Group;
+use Timber\Tests\Support\Attributes\WithLocale;
+use Timber\Tests\Support\Attributes\WithOption;
 use Timber\Timber;
 
 /**
@@ -41,30 +43,21 @@ class TimberTwigDateFilterTimberTest extends TimberIntegrationTestCase
         $this->assertSame($now, $str);
     }
 
+    #[WithLocale('es_ES')]
     public function testTwigFilterDateI18n()
     {
-        //Set to Spanish in wp-config to test
-        //define("WPLANG", "es_ES");
-        if (WPLANG == 'es_ES') {
-            global $wp_locale;
-            $data['day'] = '1983-09-28 20:14:48';
-            $str = Timber::compile_string("{{day|date('F jS, Y g:ia')}}", $data);
-            $this->assertEquals('septiembre 28th, 1983 8:14pm', $str);
-            return;
-        }
-        $this->markTestSkipped('WPLANG needs to be set to `es_ES` to test');
+        $data['day'] = '1983-09-28 20:14:48';
+        $str = Timber::compile_string("{{day|date('F jS, Y g:ia')}}", $data);
+        $this->assertEquals('septiembre 28th, 1983 8:14pm', $str);
     }
 
+    #[WithLocale('es_ES')]
+    #[WithOption('date_format', 'j F, Y')]
     public function testTwigFilterDateI18nWordPressOption()
     {
-        if (WPLANG == 'es_ES') {
-            global $wp_locale;
-            $data['day'] = '1983-09-28';
-            $str = Timber::compile_string("{{day|date}}", $data);
-            $this->assertEquals('28 septiembre, 1983', $str);
-            return;
-        }
-        $this->markTestSkipped('WPLANG needs to be set to `es_ES` to test');
+        $data['day'] = '1983-09-28';
+        $str = Timber::compile_string("{{day|date}}", $data);
+        $this->assertEquals('28 septiembre, 1983', $str);
     }
 
     public function testTwigFilterDateWordPressOption()

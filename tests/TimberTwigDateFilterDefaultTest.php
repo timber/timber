@@ -3,21 +3,16 @@
 namespace Timber\Tests;
 
 use PHPUnit\Framework\Attributes\Group;
+use Timber\Tests\Support\Attributes\WithOption;
 use Timber\Timber;
 
 /**
  * Replicates Twig tests from twig/twig/tests/Fixtures/filters/date_default*.test
  */
 #[Group('\Timber\Date')]
+#[WithOption('date_format', 'Y-m-d')]
 class TimberTwigDateFilterDefaultTest extends TimberIntegrationTestCase
 {
-    public static function setUpBeforeClass(): void
-    {
-        parent::setUpBeforeClass();
-
-        \update_option('date_format', 'Y-m-d');
-    }
-
     public function get_context()
     {
         return [

@@ -6,21 +6,20 @@ use AllowDynamicProperties;
 use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use Timber\Image;
 use Timber\Site;
+use Timber\Tests\Support\Attributes\WithOption;
+use Timber\Tests\Support\Attributes\WithTheme;
 use Timber\Timber;
 use Timber\URLHelper;
 
 #[AllowDynamicProperties]
 class SiteTest extends TimberIntegrationTestCase
 {
+    #[WithTheme('timber-test-theme')]
     public function testStandardThemeLocation()
     {
-        \switch_theme('timber-test-theme');
-
         $site = new Site();
         $content_subdir = URLHelper::get_content_subdir();
         $this->assertEquals($content_subdir . '/themes/timber-test-theme', $site->theme->path);
-
-        \switch_theme('default');
     }
 
     public function testLanguageAttributes()
@@ -31,37 +30,29 @@ class SiteTest extends TimberIntegrationTestCase
         $this->assertEquals('lang="en-US"', $lang);
     }
 
+    #[WithTheme('timber-test-theme-child')]
     public function testChildParentThemeLocation()
     {
         $content_subdir = URLHelper::get_content_subdir();
         $this->assertFileExists(WP_CONTENT_DIR . '/themes/timber-test-theme-child/style.css');
 
-        \switch_theme('timber-test-theme-child');
         $site = new Site();
         $this->assertEquals($content_subdir . '/themes/timber-test-theme-child', $site->theme->path);
         $this->assertEquals($content_subdir . '/themes/timber-test-theme', $site->theme->parent->path);
-
-        \switch_theme('default');
     }
 
+    #[WithTheme('timber-test-theme')]
     public function testThemeFromContext()
     {
-        \switch_theme('timber-test-theme');
-
         $context = Timber::context();
         $this->assertEquals('timber-test-theme', $context['theme']->slug);
-
-        \switch_theme('default');
     }
 
+    #[WithTheme('timber-test-theme')]
     public function testThemeFromSiteContext()
     {
-        \switch_theme('timber-test-theme');
-
         $context = Timber::context();
         $this->assertEquals('timber-test-theme', $context['site']->theme->slug);
-
-        \switch_theme('default');
     }
 
     public function testSiteURL()
@@ -123,10 +114,10 @@ class SiteTest extends TimberIntegrationTestCase
         $this->assertEquals('magoo', $ts->meta('foo'));
     }
 
+    #[WithOption('date_format', 'j. F Y')]
     public function testSiteOption()
     {
         $ts = new Site();
-        \update_option('date_format', 'j. F Y');
         $this->assertEquals('j. F Y', $ts->option('date_format'));
     }
 
@@ -136,17 +127,5 @@ class SiteTest extends TimberIntegrationTestCase
 
         $ts = new Site();
         $this->assertNull($ts->wp_object());
-    }
-
-    public function set_up()
-    {
-        parent::set_up();
-        $this->clean_themes_cache();
-    }
-
-    public function tear_down()
-    {
-        $this->restore_themes();
-        parent::tear_down();
     }
 }

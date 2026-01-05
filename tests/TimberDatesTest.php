@@ -8,6 +8,8 @@ use DateTimeZone;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Ticket;
 use Timber\DateTimeHelper;
+use Timber\Tests\Support\Attributes\WithLocale;
+use Timber\Tests\Support\Attributes\WithOption;
 use Timber\Timber;
 
 /**
@@ -163,11 +165,9 @@ class TimberDatesTest extends TimberIntegrationTestCase
         $this->assertEquals('I am from ' . \date(\get_option('date_format')), $str);
     }
 
+    #[WithOption('timezone_string', 'America/Los_Angeles')]
     public function testPostDisplayDateTimezoneDifference()
     {
-        // Switch timezone.
-        \update_option('timezone_string', 'America/Los_Angeles');
-
         $date_format = DATE_ATOM;
         $timezone = new DateTimeZone('Australia/Sydney');
 
@@ -329,22 +329,18 @@ class TimberDatesTest extends TimberIntegrationTestCase
         $this->assertEquals(\wp_date('F j, Y @ g:i a'), $str);
     }
 
+    #[WithLocale('de_DE')]
     public function testTimeAgoFutureTranslated()
     {
-        $this->switch_to_locale('de_DE');
         $str = DateTimeHelper::time_ago('2016-12-01 20:00:00', '2016-11-30, 20:00:00');
         $this->assertEquals('1 Tag ab jetzt', $str);
-
-        \restore_current_locale();
     }
 
+    #[WithLocale('de_DE')]
     public function testTimeAgoPastTranslated()
     {
-        $this->switch_to_locale('de_DE');
         $str = DateTimeHelper::time_ago('2016-11-29 20:00:00', '2016-11-30, 20:00:00');
         $this->assertEquals('vor 1 Tag', $str);
-
-        \restore_current_locale();
     }
 
     public function testPostDateWithFilter()

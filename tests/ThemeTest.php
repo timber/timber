@@ -3,30 +3,23 @@
 namespace Timber\Tests;
 
 use Mantle\Testing\Attributes\PermalinkStructure;
+use Timber\Tests\Support\Attributes\WithOption;
+use Timber\Tests\Support\Attributes\WithTheme;
 use Timber\Theme;
 use Timber\Timber;
 
 class ThemeTest extends TimberIntegrationTestCase
 {
-    private string $theme_slug = 'timber-test-theme';
-
-    public function set_up()
-    {
-        parent::set_up();
-        // Ensure we start with the default theme to prevent test pollution
-        \switch_theme('default');
-    }
-
+    #[WithTheme('timber-test-theme')]
     public function testThemeVersion()
     {
-        \switch_theme($this->theme_slug);
         $theme = new Theme();
         $this->assertSame('1.0.1', $theme->version);
     }
 
+    #[WithTheme('timber-test-theme')]
     public function testThemeParentWithNoParent()
     {
-        \switch_theme($this->theme_slug);
         $context = Timber::context();
         $theme = $context['site']->theme;
         $output = Timber::compile_string('{{ site.theme.parent.slug }}', $context);
@@ -52,10 +45,9 @@ class ThemeTest extends TimberIntegrationTestCase
     }
 
     #[PermalinkStructure('/%postname%/')]
+    #[WithTheme('timber-test-theme')]
     public function testPathWithPort()
     {
-        \switch_theme($this->theme_slug);
-
         /* setUp */
         \update_option('siteurl', 'http://example.org:3000', true);
         \update_option('home', 'http://example.org:3000', true);
@@ -75,9 +67,9 @@ class ThemeTest extends TimberIntegrationTestCase
         \update_option('home', 'http://example.org', true);
     }
 
+    #[WithOption('siteurl', 'http://example.org/wordpress')]
     public function testPathOnSubdirectoryInstall()
     {
-        \update_option('siteurl', 'http://example.org/wordpress', true);
         $context = Timber::context();
         $theme = $context['site']->theme;
         $output = Timber::compile_string('{{site.theme.path}}', $context);
@@ -92,34 +84,34 @@ class ThemeTest extends TimberIntegrationTestCase
         $this->assertEquals('http://example.org/wp-content/themes/' . $theme->slug, $output);
     }
 
+    #[WithOption('siteurl', 'http://example.org/wordpress')]
     public function testLinkOnSubdirectoryInstall()
     {
-        \update_option('siteurl', 'http://example.org/wordpress', true);
         $context = Timber::context();
         $theme = $context['site']->theme;
         $output = Timber::compile_string('{{site.theme.link}}', $context);
         $this->assertEquals('http://example.org/wp-content/themes/' . $theme->slug, $output);
     }
 
+    #[WithTheme('timber-test-theme')]
     public function testThemeGet()
     {
-        \switch_theme($this->theme_slug);
         $context = Timber::context();
         $output = Timber::compile_string('{{site.theme.get("Name")}}', $context);
         $this->assertEquals('Timber Tests Theme', $output);
     }
 
+    #[WithTheme('timber-test-theme')]
     public function testThemeDisplay()
     {
-        \switch_theme($this->theme_slug);
         $context = Timber::context();
         $output = Timber::compile_string('{{site.theme.display("Description")}}', $context);
         $this->assertEquals("Parent Theme", $output);
     }
 
+    #[WithTheme('timber-test-theme-child')]
     public function testTimberThemeJsonSerialize()
     {
-        \switch_theme('timber-test-theme-child');
 
         $theme = new Theme('timber-test-theme-child');
 

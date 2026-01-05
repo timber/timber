@@ -4,6 +4,7 @@ namespace Timber\Tests;
 
 use CustomComment;
 use PHPUnit\Framework\Attributes\Group;
+use Timber\Tests\Support\Attributes\WithOption;
 use Timber\Timber;
 
 require_once __DIR__ . '/Support/CustomComment.php';
@@ -108,9 +109,9 @@ class TimberPostCommentsTest extends TimberIntegrationTestCase
         $this->assertSame(1, \count($post->comments()));
     }
 
+    #[WithOption('comment_order', 'ASC')]
     public function testMultilevelThreadedComments()
     {
-        \update_option('comment_order', 'ASC');
         $post_id = static::factory()->post->create([
             'post_title' => 'Gobbles',
         ]);
@@ -138,9 +139,9 @@ class TimberPostCommentsTest extends TimberIntegrationTestCase
         $this->assertSame(2, \count($grand_children));
     }
 
+    #[WithOption('comment_order', 'ASC')]
     public function testMultilevelThreadedCommentsCorrectParents()
     {
-        \update_option('comment_order', 'ASC');
         $post_id = static::factory()->post->create([
             'post_title' => 'Gobbles',
             'post_date' => '2016-11-28 12:00:00',

@@ -11,9 +11,21 @@ class URLHelperTest extends TimberIntegrationTestCase
 {
     private $mockUploadDir = false;
 
+    private $original_server_port;
+
     public function set_up()
     {
+        parent::set_up();
+        $this->original_server_port = $_SERVER['SERVER_PORT'] ?? 80;
         $_SERVER['SERVER_PORT'] = 80;
+    }
+
+    public function tear_down()
+    {
+        $_SERVER['SERVER_PORT'] = $this->original_server_port;
+        unset($_SERVER['HTTPS']);
+
+        parent::tear_down();
     }
 
     public function testHTTPSCurrentURL()
@@ -23,8 +35,6 @@ class URLHelperTest extends TimberIntegrationTestCase
         $_SERVER['SERVER_PORT'] = 443;
         $url = URLHelper::get_current_url();
         $this->assertEquals('https://example.org/', \trailingslashit($url));
-        $_SERVER['HTTPS'] = 'off';
-        unset($_SERVER['HTTPS']);
     }
 
     public function testSwapProtocolHTTPtoHTTPS()

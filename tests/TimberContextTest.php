@@ -7,6 +7,7 @@ use PHPUnit\Framework\Attributes\Ticket;
 use Timber\Post;
 use Timber\PostQuery;
 use Timber\Term;
+use Timber\Tests\Support\Attributes\WithOption;
 use Timber\Timber;
 use Timber\User;
 
@@ -47,14 +48,14 @@ class TimberContextTest extends TimberIntegrationTestCase
         $this->assertEquals('http://example.org', $context['http_host']);
     }
 
+    #[WithOption('show_on_front', 'posts')]
     public function testPostsContextHomePosts()
     {
-        \update_option('show_on_front', 'posts');
         $id = static::factory()->post->create([
             'post_title' => 'Blog',
             'post_type' => 'page',
         ]);
-        \update_option('page_for_posts', $id);
+        $this->setOptionTemporarily('page_for_posts', $id);
         static::factory()->post->create_many(3);
         $this->get('/');
 
@@ -67,12 +68,11 @@ class TimberContextTest extends TimberIntegrationTestCase
     }
 
     #[Ticket('https://github.com/timber/timber/issues/2470')]
+    #[WithOption('show_on_front', 'posts')]
+    #[WithOption('page_for_posts', 0)]
+    #[WithOption('page_on_front', 0)]
     public function testPostsContextWithPostOnFrontAndNoPageForPosts()
     {
-        \update_option('show_on_front', 'posts');
-        \update_option('page_for_posts', 0);
-        \update_option('page_on_front', 0);
-
         $this->get('/');
 
         $context = Timber::context();
@@ -80,13 +80,13 @@ class TimberContextTest extends TimberIntegrationTestCase
         $this->assertNotContains('post', $context);
     }
 
+    #[WithOption('show_on_front', 'page')]
     public function testPostsContextHomePage()
     {
-        \update_option('show_on_front', 'page');
         $id = static::factory()->post->create([
             'post_type' => 'page',
         ]);
-        \update_option('page_on_front', $id);
+        $this->setOptionTemporarily('page_on_front', $id);
         $this->get('/');
 
         $context = Timber::context();

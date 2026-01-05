@@ -3,6 +3,7 @@
 namespace Timber\Tests;
 
 use PHPUnit\Framework\Attributes\Group;
+use Timber\Tests\Support\Attributes\WithOption;
 use Timber\Timber;
 
 #[Group('posts-api')]
@@ -14,7 +15,7 @@ class TimberStaticPagesTest extends TimberIntegrationTestCase
         $page_id = static::factory()->post->create([
             'post_type' => 'page',
         ]);
-        \update_option('page_for_posts', $page_id);
+        $this->setOptionTemporarily('page_for_posts', $page_id);
         $this->get(\home_url('/?page_id=' . $page_id));
         $page = Timber::get_post();
         $this->assertEquals($page_id, $page->ID);
@@ -39,7 +40,7 @@ class TimberStaticPagesTest extends TimberIntegrationTestCase
         $page_id = static::factory()->post->create([
             'post_type' => 'page',
         ]);
-        \update_option('page_on_front', $page_id);
+        $this->setOptionTemporarily('page_on_front', $page_id);
         $this->get(\home_url('/'));
         global $wp_query;
         $wp_query->queried_object = \get_post($page_id);
@@ -47,6 +48,7 @@ class TimberStaticPagesTest extends TimberIntegrationTestCase
         $this->assertEquals($page_id, $page->ID);
     }
 
+    #[WithOption('show_on_front', 'page')]
     public function testFrontPageAsPage()
     {
         $spaceballs = "What's the matter, Colonel Sandurz? Chicken?";
@@ -55,13 +57,13 @@ class TimberStaticPagesTest extends TimberIntegrationTestCase
             'post_content' => $spaceballs,
             'post_type' => 'page',
         ]);
-        \update_option('show_on_front', 'page');
-        \update_option('page_on_front', $page_id);
+        $this->setOptionTemporarily('page_on_front', $page_id);
         $this->get(\home_url('/'));
         $post = Timber::get_post();
         $this->assertEquals($page_id, $post->ID);
     }
 
+    #[WithOption('show_on_front', 'page')]
     public function testStaticPostPage()
     {
         $page_id = static::factory()->post->create([
@@ -72,8 +74,7 @@ class TimberStaticPagesTest extends TimberIntegrationTestCase
             'post_title' => 'Timmy',
         ]);
 
-        \update_option('show_on_front', 'page');
-        \update_option('page_for_posts', $page_id);
+        $this->setOptionTemporarily('page_for_posts', $page_id);
         $this->get(\get_permalink($page_id));
 
         $posts = Timber::get_posts();
@@ -87,7 +88,7 @@ class TimberStaticPagesTest extends TimberIntegrationTestCase
             'post_title' => 'Gobbles',
             'post_type' => 'page',
         ]);
-        \update_option('page_for_posts', $page_id);
+        $this->setOptionTemporarily('page_for_posts', $page_id);
         $post_id = static::factory()->post->create([
             'post_title' => 'My Real post',
             'post_type' => 'post',

@@ -56,6 +56,7 @@ class CommentThreadTest extends TimberIntegrationTestCase
 
         $_GET['unapproved'] = $comment->comment_ID;
         $_GET['moderation-hash'] = \wp_hash($comment->comment_date_gmt);
+
         $post = Timber::get_post($post_id);
         if (!\function_exists('wp_get_unapproved_comment_author_email')) {
             $this->assertSame(0, \count($post->comments()));
