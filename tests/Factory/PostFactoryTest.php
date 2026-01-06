@@ -369,4 +369,26 @@ class PostFactoryTest extends TimberIntegrationTestCase
 
         $this->assertTrue(Post::class === $res[0]::class);
     }
+
+    public function testFromEmptyArray()
+    {
+        // Create a post to ensure there's a "current" post in the context
+        $post_id = static::factory()->post->create([
+            'post_type' => 'post',
+            'post_title' => 'Current Post',
+        ]);
+
+        // Set up the global post to simulate being on a page/post
+        global $post;
+        $post = \get_post($post_id);
+        \setup_postdata($post);
+
+        $postFactory = new PostFactory();
+        $result = $postFactory->from([]);
+
+        // Passing an empty array should return null, not the current post
+        $this->assertNull($result);
+
+        \wp_reset_postdata();
+    }
 }
