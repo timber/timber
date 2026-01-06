@@ -3,6 +3,7 @@
 namespace Timber\Tests;
 
 use Mantle\Testing\Attributes\PermalinkStructure;
+use Mantle\Testing\Concerns\Reset_Server;
 use PHPUnit\Framework\Attributes\Group;
 use Timber\MenuItem;
 use Timber\Post;
@@ -20,6 +21,8 @@ class CustomMenuItemClass extends MenuItem
 #[Group('menus-api')]
 class MenuTest extends TimberIntegrationTestCase
 {
+    use Reset_Server;
+
     public const MENU_NAME = 'Menu One';
 
     public static function _createTestMenu()
@@ -28,18 +31,29 @@ class MenuTest extends TimberIntegrationTestCase
             'has_archive' => true,
         ]);
 
+        // Use unique suffix to avoid collisions when tests run in random order
+        $unique_suffix = \uniqid();
+
+        // Use unique menu name
+        $menu_name = self::MENU_NAME . ' ' . $unique_suffix;
         $menu_id = static::factory()->term->create([
-            'name' => self::MENU_NAME,
+            'name' => $menu_name,
             'taxonomy' => 'nav_menu',
         ]);
         $menu_term = \get_term($menu_id, 'nav_menu', ARRAY_A);
         $menu_items = [];
 
+        // Store slugs in menu_term for tests that need them
+        $home_slug = 'home-' . $unique_suffix;
+        $child_slug = 'child-page-' . $unique_suffix;
+        $grandchild_slug = 'grandchild-page-' . $unique_suffix;
+        $other_grandchild_slug = 'other-grandchild-page-' . $unique_suffix;
+
         // Page
         $parent_page = static::factory()->post->create([
             'post_title' => 'Home',
             'post_status' => 'publish',
-            'post_name' => 'home',
+            'post_name' => $home_slug,
             'post_type' => 'page',
             'menu_order' => 1,
         ]);
@@ -73,7 +87,7 @@ class MenuTest extends TimberIntegrationTestCase
         $child_id = static::factory()->post->create([
             'post_title' => 'Child Page',
             'post_status' => 'publish',
-            'post_name' => 'child-page',
+            'post_name' => $child_slug,
             'post_type' => 'page',
             'menu_order' => 3,
         ]);
@@ -90,7 +104,7 @@ class MenuTest extends TimberIntegrationTestCase
         $grandchild_id = static::factory()->post->create([
             'post_title' => 'Grandchild Page',
             'post_status' => 'publish',
-            'post_name' => 'grandchild-page',
+            'post_name' => $grandchild_slug,
             'post_type' => 'page',
         ]);
         $menu_items[] = $grandchild_menu_item_id = \wp_update_nav_menu_item($menu_id, 0, [
@@ -106,7 +120,7 @@ class MenuTest extends TimberIntegrationTestCase
         $other_grandchild_id = static::factory()->post->create([
             'post_title' => 'Other Grandchild Page',
             'post_status' => 'publish',
-            'post_name' => 'other-grandchild-page',
+            'post_name' => $other_grandchild_slug,
             'post_type' => 'page',
         ]);
         $menu_items[] = $other_grandchild_menu_item = \wp_update_nav_menu_item($menu_id, 0, [
@@ -147,7 +161,7 @@ class MenuTest extends TimberIntegrationTestCase
         ]);
 
         $some_category_id = static::factory()->term->create([
-            'name' => 'Some Category',
+            'name' => 'Some Category ' . \uniqid(),
             'taxonomy' => 'category',
         ]);
         $menu_items[] = \wp_update_nav_menu_item($menu_id, 0, [
@@ -166,13 +180,21 @@ class MenuTest extends TimberIntegrationTestCase
         foreach ($menu_items as $menu_item_id) {
             \update_post_meta($menu_item_id, 'tobias', 'funke');
         }
+
+        // Add slug info for tests that need them
+        $menu_term['home_slug'] = $home_slug;
+        $menu_term['child_slug'] = $child_slug;
+        $menu_term['grandchild_slug'] = $grandchild_slug;
+        $menu_term['other_grandchild_slug'] = $other_grandchild_slug;
         return $menu_term;
     }
 
     public static function buildMenu($name, $items)
     {
+        // Use unique menu name to avoid collisions when tests run in random order
+        $unique_name = $name . ' ' . \uniqid();
         $menu_id = static::factory()->term->create([
-            'name' => $name,
+            'name' => $unique_name,
             'taxonomy' => 'nav_menu',
         ]);
         $menu_term = \get_term($menu_id, 'nav_menu', ARRAY_A);
@@ -210,15 +232,19 @@ class MenuTest extends TimberIntegrationTestCase
 
     public static function _createSimpleMenu($name = 'My Menu')
     {
+        // Use unique menu name to avoid collisions when tests run in random order
+        $unique_name = $name . ' ' . \uniqid();
         $menu_id = static::factory()->term->create([
-            'name' => $name,
+            'name' => $unique_name,
             'taxonomy' => 'nav_menu',
         ]);
         $menu_term = \get_term($menu_id, 'nav_menu', ARRAY_A);
+        // Use unique slug to avoid collisions when tests run in random order
+        $unique_slug = 'home-' . \uniqid();
         $parent_page = static::factory()->post->create([
             'post_title' => 'Home',
             'post_status' => 'publish',
-            'post_name' => 'home',
+            'post_name' => $unique_slug,
             'post_type' => 'page',
             'menu_order' => 1,
         ]);
@@ -230,6 +256,8 @@ class MenuTest extends TimberIntegrationTestCase
         ]);
         \update_post_meta($menu_item_id, 'flood', 'molasses');
 
+        // Return both term info and slug for tests that need the actual slug
+        $menu_term['home_slug'] = $unique_slug;
         return $menu_term;
     }
 
@@ -268,19 +296,19 @@ class MenuTest extends TimberIntegrationTestCase
     #[PermalinkStructure('/%postname%/')]
     public function testBlankMenu()
     {
-        self::_createTestMenu();
-        $menu = Timber::get_menu();
-        $nav_menu = \wp_nav_menu([
+        $menu_arr = self::_createTestMenu();
+        $home_slug = $menu_arr['home_slug'];
+        $menu = Timber::get_menu($menu_arr['term_id']);
+        \wp_nav_menu([
             'echo' => false,
         ]);
         $this->assertGreaterThanOrEqual(3, \count($menu->get_items()));
         $items = $menu->get_items();
         $item = $items[0];
-        $this->assertEquals('home', $item->slug());
+        $this->assertEquals($home_slug, $item->slug());
         $this->assertFalse($item->is_external());
-        $struc = \get_option('permalink_structure');
-        $this->assertEquals('http://example.org/home/', $item->link());
-        $this->assertEquals('/home/', $item->path());
+        $this->assertEquals('http://example.org/' . $home_slug . '/', $item->link());
+        $this->assertEquals('/' . $home_slug . '/', $item->path());
     }
 
     #[PermalinkStructure('/%postname%/')]
@@ -341,8 +369,8 @@ class MenuTest extends TimberIntegrationTestCase
 
     public function testImportClasses()
     {
-        $menu = self::_createSimpleMenu('Main Tester');
-        $menu = Timber::get_menu('Main Tester');
+        $menu_term = self::_createSimpleMenu('Main Tester');
+        $menu = Timber::get_menu($menu_term['term_id']);
         $items = $menu->get_items();
         $item = $items[0];
         $array = [
@@ -357,7 +385,7 @@ class MenuTest extends TimberIntegrationTestCase
      */
     public function testNavMenuFilters()
     {
-        self::_createTestMenu();
+        $menu_arr = self::_createTestMenu();
 
         $this->add_filter_temporarily('wp_nav_menu_objects', function ($menu_items) {
             // Be careful with indexes, they are strings here
@@ -369,7 +397,7 @@ class MenuTest extends TimberIntegrationTestCase
         $arguments = [
             'depth' => 1,
         ];
-        $menu = Timber::get_menu('Menu One', $arguments);
+        $menu = Timber::get_menu($menu_arr['term_id'], $arguments);
         $menu_items = $menu->get_items();
 
         $this->assertTrue($menu_items[7]->current);
@@ -415,8 +443,8 @@ class MenuTest extends TimberIntegrationTestCase
         $args = \wp_parse_args([
             'depth' => 1,
         ], $defaults);
-        $menu = Timber::get_menu('Menu One', $args);
-        $args['menu'] = 'Menu One';
+        $menu = Timber::get_menu($menu_arr['term_id'], $args);
+        $args['menu'] = $menu_arr['term_id'];
         $this->assertIsInt($menu->depth);
         $this->assertSame(1, $menu->depth);
         $this->assertIsArray($menu->raw_args);
@@ -428,18 +456,18 @@ class MenuTest extends TimberIntegrationTestCase
         $args = [
             'depth' => 'boogie',
         ];
-        $menu = Timber::get_menu('Menu One', $args);
+        $menu = Timber::get_menu($menu_arr['term_id'], $args);
         $this->assertIsInt($menu->depth);
         $this->assertSame(0, $menu->depth);
     }
 
     public function testMenuOptions_Depth()
     {
-        self::_createTestMenu();
+        $menu_arr = self::_createTestMenu();
         $arguments = [
             'depth' => 1,
         ];
-        $menu = Timber::get_menu('Menu One', $arguments);
+        $menu = Timber::get_menu($menu_arr['term_id'], $arguments);
 
         // Confirm that none of them have "children" set.
         $items = $menu->get_items();
@@ -451,7 +479,7 @@ class MenuTest extends TimberIntegrationTestCase
         $arguments = [
             'depth' => 2,
         ];
-        $menu = Timber::get_menu('Menu One', $arguments);
+        $menu = Timber::get_menu($menu_arr['term_id'], $arguments);
         foreach ($items as $item) {
             if ($item->children) {
                 foreach ($item->children as $child) {
@@ -548,10 +576,11 @@ class MenuTest extends TimberIntegrationTestCase
     #[PermalinkStructure('/%postname%/')]
     public function testMenuTwigWithClasses()
     {
-        self::_createTestMenu();
-        $this->get(\home_url('/home'));
+        $menu_arr = self::_createTestMenu();
+        $home_slug = $menu_arr['home_slug'];
+        $this->get(\home_url('/' . $home_slug));
         $context = Timber::context();
-        $context['menu'] = Timber::get_menu();
+        $context['menu'] = Timber::get_menu($menu_arr['term_id']);
         $str = Timber::compile('assets/menu-classes.twig', $context);
         $str = \trim($str);
         $this->assertStringContainsString('current_page_item', $str);
@@ -604,8 +633,8 @@ class MenuTest extends TimberIntegrationTestCase
 
         $wpdb->query($query);
         $this->get(\home_url('/gallery'));
-        $menu = Timber::get_menu();
-        $this->assertContains('current-page-item', $menu->items[0]->classes);
+        $timber_menu = Timber::get_menu($mid);
+        $this->assertContains('current-page-item', $timber_menu->items[0]->classes);
     }
 
     public function testMenuItemTarget()
@@ -779,7 +808,8 @@ class MenuTest extends TimberIntegrationTestCase
         ]);
 
         $menu = Timber::get_menu('extra-menu');
-        $this->assertEquals('Ziggy', $menu->name);
+        // Menu name includes unique suffix now
+        $this->assertStringStartsWith('Ziggy', $menu->name);
     }
 
     public function testConstructMenuByName()
@@ -798,9 +828,10 @@ class MenuTest extends TimberIntegrationTestCase
             'link' => '/bar/',
         ];
 
-        static::buildMenu('Fancy Suit', $items);
+        $menu_term = static::buildMenu('Fancy Suit', $items);
 
-        $menu = Timber::get_menu('Fancy Suit');
+        // Use the actual generated name (includes unique suffix)
+        $menu = Timber::get_menu($menu_term['name']);
         $this->assertSame(3, \count($menu->get_items()));
     }
 
@@ -820,14 +851,18 @@ class MenuTest extends TimberIntegrationTestCase
             'link' => '/bar/',
         ];
 
-        static::buildMenu('Jolly Jeepers', $items);
+        $menu_term = static::buildMenu('Jolly Jeepers', $items);
 
-        $menu = Timber::get_menu('jolly-jeepers');
+        // Use the actual generated slug (includes unique suffix)
+        $menu = Timber::get_menu($menu_term['slug']);
         $this->assertSame(3, \count($menu->get_items()));
     }
 
     public function testGetCurrentItem()
     {
+        // Set REQUEST_URI to a non-matching URL so WordPress doesn't auto-mark any item as current
+        $_SERVER['REQUEST_URI'] = '/non-existent-test-page';
+
         $items = [];
         $items[] = (object) [
             'type' => 'link',
@@ -842,9 +877,9 @@ class MenuTest extends TimberIntegrationTestCase
             'link' => '/stuffy',
         ];
 
-        static::buildMenu('The Zazziest Menu', $items);
+        $menu_term = static::buildMenu('The Zazziest Menu', $items);
 
-        $menu = Timber::get_menu('The Zazziest Menu');
+        $menu = Timber::get_menu($menu_term['term_id']);
 
         // force a specific MenuItem to be the current one,
         // and put it on the Zazz Train to Zazzville
@@ -858,7 +893,7 @@ class MenuTest extends TimberIntegrationTestCase
     public function testGetCurrentItemWithAncestor()
     {
         // Set REQUEST_URI to a non-matching URL so WordPress doesn't auto-mark any item as current
-        $this->get('/non-existent-test-page');
+        $_SERVER['REQUEST_URI'] = '/non-existent-test-page';
 
         $items = [];
         $items[] = (object) [
@@ -874,9 +909,9 @@ class MenuTest extends TimberIntegrationTestCase
             'link' => '/joe-shmoe',
         ];
 
-        static::buildMenu('Ancestry.com Main Menu', $items);
+        $menu_term = static::buildMenu('Ancestry.com Main Menu', $items);
 
-        $menu = Timber::get_menu('Ancestry.com Main Menu');
+        $menu = Timber::get_menu($menu_term['term_id']);
 
         // force a MenuItem of olde to be the current one,
         // and listen reverently to its stories
@@ -908,7 +943,7 @@ class MenuTest extends TimberIntegrationTestCase
     public function testGetCurrentItemAntiClimactic()
     {
         // Set REQUEST_URI to a non-matching URL so WordPress doesn't auto-mark any item as current
-        $this->get('/non-existent-test-page');
+        $_SERVER['REQUEST_URI'] = '/non-existent-test-page';
 
         $menu_arr = self::_createTestMenu();
         $menu = Timber::get_menu($menu_arr['term_id']);
@@ -1085,7 +1120,9 @@ class MenuTest extends TimberIntegrationTestCase
     {
         $context = Timber::context();
         $menu_arr = self::_createTestMenu();
-        $this->get(\home_url('/child-page'));
+        $home_slug = $menu_arr['home_slug'];
+        $child_slug = $menu_arr['child_slug'];
+        $this->get(\home_url('/' . $child_slug));
 
         // To check if the filter is applied
         $this->add_filter_temporarily('nav_menu_item_title', function ($title, WP_Post $item) {
@@ -1099,7 +1136,9 @@ class MenuTest extends TimberIntegrationTestCase
         $str = Timber::compile('assets/child-menu.twig', $context);
         $str = \preg_replace('/\s+/', '', $str);
         $str = \preg_replace('/\s+/', '', (string) $str);
-        $this->assertStringStartsWith('<ulclass="navnavbar-nav"><li><ahref="http://example.org/home/"class="has-children">HomeSweetHome</a><ulclass="dropdown-menu"role="menu"><li><ahref="http://example.org/child-page/">ChildPage</a></li></ul><li><ahref="https://upstatement.com"class="no-children">Upstatement</a><li><ahref="/random-page"class="no-children">InternalLink</a><li><ahref="/"class="no-children">RootHome</a>', $str);
+        // Build expected string with dynamic slugs
+        $expected = '<ulclass="navnavbar-nav"><li><ahref="http://example.org/' . $home_slug . '/"class="has-children">HomeSweetHome</a><ulclass="dropdown-menu"role="menu"><li><ahref="http://example.org/' . $child_slug . '/">ChildPage</a></li></ul><li><ahref="https://upstatement.com"class="no-children">Upstatement</a><li><ahref="/random-page"class="no-children">InternalLink</a><li><ahref="/"class="no-children">RootHome</a>';
+        $this->assertStringStartsWith($expected, $str);
     }
 
     public function testMasterObject()
@@ -1144,7 +1183,7 @@ class MenuTest extends TimberIntegrationTestCase
 
     public function testMenuCanEdit()
     {
-        self::_createTestMenu();
+        $menu_term = self::_createTestMenu();
 
         $admin_id = static::factory()->user->create([
             'display_name' => 'Admin User',
@@ -1158,7 +1197,7 @@ class MenuTest extends TimberIntegrationTestCase
             'role' => 'subscriber',
         ]);
 
-        $menu = Timber::get_menu('Menu One');
+        $menu = Timber::get_menu($menu_term['term_id']);
 
         // Test admin role.
         \wp_set_current_user($admin_id);
@@ -1173,7 +1212,7 @@ class MenuTest extends TimberIntegrationTestCase
 
     public function testMenuItemCanEdit()
     {
-        self::_createTestMenu();
+        $menu_term = self::_createTestMenu();
 
         $admin_id = static::factory()->user->create([
             'display_name' => 'Admin User',
@@ -1187,7 +1226,7 @@ class MenuTest extends TimberIntegrationTestCase
             'role' => 'subscriber',
         ]);
 
-        $menu = Timber::get_menu('Menu One');
+        $menu = Timber::get_menu($menu_term['term_id']);
         $menu_items = $menu->get_items();
 
         // Test admin role.

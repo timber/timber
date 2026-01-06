@@ -24,6 +24,14 @@ abstract class TimberIntegrationTestCase extends Integration_Test_Case
     {
         parent::set_up();
 
+        // WP 7.0+ triggers _doing_it_wrong for wp_maybe_inline_styles when
+        // stylesheets lack proper paths. This happens during $this->get() calls
+        // in tests because the test environment doesn't have real stylesheets.
+        // Note: version_compare considers '7.0-alpha' < '7.0', so we check >6.9
+        if ($this->isWordPressVersion('6.9', '>')) {
+            $this->ignoreIncorrectUsage('wp_maybe_inline_styles');
+        }
+
         // Reset deprecated static properties to prevent test pollution
         Timber::$twig_cache = false;
         Timber::$cache = false;
