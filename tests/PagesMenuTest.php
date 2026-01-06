@@ -15,12 +15,15 @@ class PagesMenuTest extends TimberIntegrationTestCase
 
     public static function _createTestMenu()
     {
-        $menu_term = \wp_insert_term(self::MENU_NAME, 'nav_menu');
-        $menu_id = $menu_term['term_id'];
+        $menu_id = static::factory()->term->create([
+            'name' => self::MENU_NAME,
+            'taxonomy' => 'nav_menu',
+        ]);
+        $menu_term = \get_term($menu_id, 'nav_menu', ARRAY_A);
         $menu_items = [];
 
         // Page
-        $parent_page = \wp_insert_post([
+        $parent_page = static::factory()->post->create([
             'post_title' => 'Home',
             'post_status' => 'publish',
             'post_name' => 'home',
@@ -46,7 +49,7 @@ class PagesMenuTest extends TimberIntegrationTestCase
 
         /* make a child page */
         // Page
-        $child_id = \wp_insert_post([
+        $child_id = static::factory()->post->create([
             'post_title' => 'Child Page',
             'post_status' => 'publish',
             'post_name' => 'child-page',
@@ -63,7 +66,7 @@ class PagesMenuTest extends TimberIntegrationTestCase
         ]);
 
         /* make a grandchild page */
-        $grandchild_id = \wp_insert_post([
+        $grandchild_id = static::factory()->post->create([
             'post_title' => 'Grandchild Page',
             'post_status' => 'publish',
             'post_name' => 'grandchild-page',
@@ -79,7 +82,7 @@ class PagesMenuTest extends TimberIntegrationTestCase
         ]);
 
         /* make another grandchild page */
-        $other_grandchild_id = \wp_insert_post([
+        $other_grandchild_id = static::factory()->post->create([
             'post_title' => 'Other Grandchild Page',
             'post_status' => 'publish',
             'post_name' => 'other-grandchild-page',
@@ -122,9 +125,12 @@ class PagesMenuTest extends TimberIntegrationTestCase
             'menu-item-position' => 8,
         ]);
 
-        $some_category = \wp_insert_term('Some Category', 'category');
-        $menu_items[] = $link_id = \wp_update_nav_menu_item($menu_id, 0, [
-            'menu-item-object-id' => $some_category['term_id'],
+        $some_category_id = static::factory()->term->create([
+            'name' => 'Some Category',
+            'taxonomy' => 'category',
+        ]);
+        $menu_items[] = \wp_update_nav_menu_item($menu_id, 0, [
+            'menu-item-object-id' => $some_category_id,
             'menu-item-object' => 'category',
             'menu-item-type' => 'taxonomy',
             'menu-item-status' => 'publish',
@@ -141,12 +147,16 @@ class PagesMenuTest extends TimberIntegrationTestCase
 
     public static function buildMenu($name, $items)
     {
-        $menu_term = \wp_insert_term($name, 'nav_menu');
+        $menu_id = static::factory()->term->create([
+            'name' => $name,
+            'taxonomy' => 'nav_menu',
+        ]);
+        $menu_term = \get_term($menu_id, 'nav_menu', ARRAY_A);
         $menu_items = [];
         $i = 0;
         foreach ($items as $item) {
             if ($item->type == 'link') {
-                $pid = \wp_insert_post([
+                $pid = static::factory()->post->create([
                     'post_title' => '',
                     'post_status' => 'publish',
                     'post_type' => 'nav_menu_item',
@@ -185,18 +195,20 @@ class PagesMenuTest extends TimberIntegrationTestCase
 
     public static function _createSimpleMenu($name = 'My Menu')
     {
-        $menu_term = \wp_insert_term($name, 'nav_menu');
+        $menu_id = static::factory()->term->create([
+            'name' => $name,
+            'taxonomy' => 'nav_menu',
+        ]);
+        $menu_term = \get_term($menu_id, 'nav_menu', ARRAY_A);
         $menu_items = [];
-        $parent_page = \wp_insert_post(
-            [
-                'post_title' => 'Home',
-                'post_status' => 'publish',
-                'post_name' => 'home',
-                'post_type' => 'page',
-                'menu_order' => 1,
-            ]
-        );
-        $parent_id = \wp_insert_post([
+        $parent_page = static::factory()->post->create([
+            'post_title' => 'Home',
+            'post_status' => 'publish',
+            'post_name' => 'home',
+            'post_type' => 'page',
+            'menu_order' => 1,
+        ]);
+        $parent_id = static::factory()->post->create([
             'post_title' => '',
             'post_status' => 'publish',
             'post_type' => 'nav_menu_item',
