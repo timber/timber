@@ -812,7 +812,8 @@ class ImageTest extends TimberAttachmentTestCase
             'url' => $attachment->src(),
         ]);
 
-        $this->assertEquals('arch.jpg', \basename($src));
+        // Compare against actual attachment filename (WordPress may rename duplicates)
+        $this->assertEquals(\basename($attachment->src()), \basename($src));
     }
 
     public function testResizeNamed()
