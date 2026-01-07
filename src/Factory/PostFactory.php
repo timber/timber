@@ -42,7 +42,7 @@ class PostFactory
             return $this->from_id($params['ID']);
         }
 
-        if (\is_array($params) && !empty($params)) {
+        if (\is_array($params) && [] !== $params) {
             return $this->from_wp_query(new WP_Query($params));
         }
 
@@ -210,7 +210,7 @@ class PostFactory
 
     protected function is_numeric_array($arr)
     {
-        if (!\is_array($arr) || empty($arr)) {
+        if (!\is_array($arr) || [] === $arr) {
             return false;
         }
         foreach (\array_keys($arr) as $k) {

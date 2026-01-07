@@ -379,16 +379,12 @@ class PostFactoryTest extends TimberIntegrationTestCase
         ]);
 
         // Set up the global post to simulate being on a page/post
-        global $post;
-        $post = \get_post($post_id);
-        \setup_postdata($post);
+        $this->get(\get_permalink($post_id));
 
         $postFactory = new PostFactory();
         $result = $postFactory->from([]);
 
         // Passing an empty array should return null, not the current post
         $this->assertNull($result);
-
-        \wp_reset_postdata();
     }
 }
