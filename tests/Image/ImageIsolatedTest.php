@@ -22,12 +22,21 @@ class ImageIsolatedTest extends TimberIntegrationTestCase
     }
 
     /*
-     * This test HAS to be in a separate file, otherwise the UPLOADS const bleeds
-     * in the other tests.
+     * Tests that image resizing works correctly with custom uploads directory.
+     * Uses the upload_dir filter instead of defining the UPLOADS constant to avoid test pollution.
      */
-    public function testResizeFileNamingWithUploadsConst()
+    public function testResizeFileNamingWithCustomUploadsDir()
     {
-        \define('UPLOADS', 'my/up');
+        // Filter to modify the uploads directory path
+        $custom_upload_filter = function ($upload) {
+            $upload['subdir'] = '/my/up';
+            $upload['path'] = $upload['basedir'] . '/my/up';
+            $upload['url'] = $upload['baseurl'] . '/my/up';
+            return $upload;
+        };
+
+        $this->add_filter_temporarily('upload_dir', $custom_upload_filter);
+
         $file_loc = self::copyTestImage('eastern.jpg');
         $upload_dir = \wp_upload_dir();
         $url_src = $upload_dir['url'] . '/eastern.jpg';
