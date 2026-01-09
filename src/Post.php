@@ -906,10 +906,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
             return $this->_ancestors;
         }
 
-        $ancestors = \array_reverse(\get_post_ancestors($this->ID));
-        $this->_ancestors = $this->factory()->from($ancestors);
+        $ancestors = $this->factory()->from(\array_reverse(\get_post_ancestors($this->ID)));
 
-        return $this->_ancestors;
+        return $this->_ancestors = \is_iterable($ancestors) ? $ancestors : new PostArrayObject([]);
     }
 
     /**
