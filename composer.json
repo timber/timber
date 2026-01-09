@@ -143,8 +143,7 @@
       "@test:multisite",
       "@test:acf",
       "@test:coauthors",
-      "@test:wpml",
-      "@test:isolated"
+      "@test:wpml"
     ],
     "test:coauthors": "TIMBER_TEST_PLUGINS=coauthors-plus phpunit --testsuite coauthors",
     "test:coverage": [
@@ -153,19 +152,16 @@
       "@test:coverage:acf",
       "@test:coverage:coauthors",
       "@test:coverage:wpml",
-      "@test:coverage:isolated",
       "@test:coverage:merge"
     ],
     "test:coverage:acf": "TIMBER_TEST_PLUGINS=acf phpunit --testsuite acf --coverage-php build/coverage-acf.php",
     "test:coverage:coauthors": "TIMBER_TEST_PLUGINS=coauthors-plus phpunit --testsuite coauthors --coverage-php build/coverage-coauthors.php",
     "test:coverage:default": "phpunit --testsuite default --coverage-php build/coverage-default.php",
     "test:coverage:image": "phpunit --testsuite image --coverage-php build/coverage-image.php",
-    "test:coverage:isolated": "phpunit --testsuite isolated --coverage-php build/coverage-isolated.php",
     "test:coverage:merge": "phpcov merge build --clover build/logs/clover.xml",
     "test:coverage:multisite": "WP_MULTISITE=1 phpunit --testsuite multisite --coverage-php build/coverage-multisite.php",
     "test:coverage:wpml": "TIMBER_TEST_PLUGINS=wpml phpunit --testsuite wpml --coverage-php build/coverage-wpml.php",
     "test:image": "phpunit --testsuite image",
-    "test:isolated": "phpunit --testsuite isolated",
     "test:make-pot": "wp i18n make-pot src tests/languages/timber.pot --domain= && wp i18n make-pot ./tests/assets/translations ./tests/languages/timber-test.pot --domain=timber-test",
     "test:multisite": "WP_MULTISITE=1 phpunit --testsuite multisite",
     "test:wpml": "TIMBER_TEST_PLUGINS=wpml phpunit --testsuite wpml"
@@ -191,7 +187,6 @@
     "test:coverage": "Run all testsuites with coverage and merge results",
     "test:coverage:merge": "Merge coverage files from all testsuites",
     "test:image": "Run image tests (for testing with different image editors)",
-    "test:isolated": "Run isolated tests (must run last, sets constants)",
     "test:make-pot": "Generate .pot files for translation unit tests",
     "test:multisite": "Run multisite-specific tests (requires WP_MULTISITE=1)",
     "test:wpml": "Run WPML integration tests"

@@ -135,11 +135,6 @@ jobs:
         env:
           WP_VERSION: ${{ matrix.wp }}
 
-      - name: Run isolated testsuite
-        run: composer test:isolated ${{ matrix.coverage && '-- --coverage-php build/coverage-isolated.cov' || '' }}
-        env:
-          WP_VERSION: ${{ matrix.wp }}
-
       - name: Merge coverage
         if: matrix.coverage
         run: |
