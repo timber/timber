@@ -45,7 +45,7 @@ class PathHelper
 
         if (\is_array($info)) {
             // Decode all keys in the array.
-            return \array_map('rawurldecode', $info);
+            return \array_map(rawurldecode(...), $info);
         } else {
             // Decode the string when requesting a single path component.
             return \rawurldecode($info);

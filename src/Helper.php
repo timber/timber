@@ -515,7 +515,7 @@ class Helper
         if (!\is_array($arr)) {
             return false;
         }
-        return (bool) \count(\array_filter(\array_keys($arr), 'is_string'));
+        return (bool) \count(\array_filter(\array_keys($arr), is_string(...)));
     }
 
     /**

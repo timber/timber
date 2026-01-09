@@ -10,6 +10,7 @@ use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
 use Twig\DeprecatedCallableInfo;
 use Twig\Environment;
+use Twig\Error\RuntimeError;
 use Twig\Extension\CoreExtension;
 use Twig\Extension\EscaperExtension;
 use Twig\Runtime\EscaperRuntime;
@@ -629,7 +630,7 @@ class Twig
      *
      * @since 2.0.0
      *
-     * @throws \Twig\Error\RuntimeError
+     * @throws RuntimeError
      * @param Environment $twig Twig Environment.
      *
      * @return Environment
