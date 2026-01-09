@@ -848,6 +848,29 @@ class ImageTest extends TimberAttachmentTestCase
         $this->assertEquals('<img src="' . $url . '" />', \trim($result));
     }
 
+    /**
+     * Tests that image resizing works correctly with custom uploads directory.
+     * Uses the upload_dir filter instead of defining the UPLOADS constant to avoid test pollution.
+     */
+    public function testResizeFileNamingWithCustomUploadsDir()
+    {
+        // Filter to modify the uploads directory path
+        $custom_upload_filter = function ($upload) {
+            $upload['subdir'] = '/my/up';
+            $upload['path'] = $upload['basedir'] . '/my/up';
+            $upload['url'] = $upload['baseurl'] . '/my/up';
+            return $upload;
+        };
+
+        $this->add_filter_temporarily('upload_dir', $custom_upload_filter);
+
+        $file_loc = $this->copyImageToUploads('eastern.jpg');
+        $upload_dir = \wp_upload_dir();
+        $url_src = $upload_dir['url'] . '/eastern.jpg';
+        $filename = ImageHelper::get_resize_file_url($url_src, 300, 500, 'default');
+        $this->assertEquals($upload_dir['url'] . '/eastern-300x500-c-default.jpg', $filename);
+    }
+
     public function testPostThumbnailsNamed()
     {
         \add_image_size('timber-testPostThumbnailsNamed', $width = 100, $height = 50, $crop = true);
