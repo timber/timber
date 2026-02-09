@@ -51,7 +51,7 @@ In Twig, we can then use it like this:
 
 Timber already comes with a list of functions it adds by default. You can read more about these functions in the [Functions Guide](https://timber.github.io/docs/v2/guides/functions/).
 
-If you want to check out the functions that Timber provides, you can do a debug dump using `var_dump()`.
+You can also var dump all filters directly by adding the following code to your `functions.php` file:
 
 **functions.php**
 
