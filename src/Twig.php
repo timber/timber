@@ -412,7 +412,7 @@ class Twig
             ],
 
             'relative' => [
-                'callable' => fn($link) => URLHelper::get_rel_url($link, true),
+                'callable' => fn ($link) => URLHelper::get_rel_url($link, true),
             ],
 
             /**
@@ -428,7 +428,7 @@ class Twig
                 'callable' => [DateTimeHelper::class, 'time_ago'],
             ],
             'truncate' => [
-                'callable' => fn($text, $len) => TextHelper::trim_words($text, $len),
+                'callable' => fn ($text, $len) => TextHelper::trim_words($text, $len),
             ],
 
             // Numbers filters
