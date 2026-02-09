@@ -31,7 +31,7 @@ add_filter('timber/twig/functions', function ($functions) {
 
 The `$functions` variable is an array of functions that Timber already adds by default.
 
-In the example above, we add a `edit_post_link` function by defining  an array with a `callable` key that contains the name of the PHP function we want to call. In this case: [`edit_post_link()`](https://developer.wordpress.org/reference/functions/edit_post_link/).
+In the example above, we add a `edit_post_link` function by defining an array with a `callable` key that contains the name of the PHP function we want to call. In this case: [`edit_post_link()`](https://developer.wordpress.org/reference/functions/edit_post_link/).
 
 In Twig, we can then use it like this:
 
@@ -49,7 +49,9 @@ In Twig, we can then use it like this:
 
 ### Functions that Timber provides
 
-Timber already comes with a list of functions it adds by default. If you want to check out the functions that Timber provides, you can do a debug dump using `var_dump()`.
+Timber already comes with a list of functions it adds by default. You can read more about these functions in the [Functions Guide](https://timber.github.io/docs/v2/guides/functions/).
+
+If you want to check out the functions that Timber provides, you can do a debug dump using `var_dump()`.
 
 **functions.php**
 
@@ -79,11 +81,9 @@ add_filter('timber/twig/functions', function ($functions) {
 });
 ```
 
-### function_wrapper
-
-In Timber versions lower than 1.3, you could use `function_wrapper` to make functions available in Twig. This method is now deprecated. Instead, use the method above.
-
 ## Filters
+
+Timber comes with a set of filters that you can use in your Twig templates. You can read more about these filters in the [Twig Filters Guide](https://timber.github.io/docs/v2/guides/twig-filters/).
 
 To extend Twig with your own filters, you can use the `timber/twig/filters` filter in PHP. The benefit of filters is that they make your code somewhat more readable, because you chain filters with pipes (`|`) instead of nesting a value inside function calls.
 
