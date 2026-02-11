@@ -34,7 +34,7 @@ These functions allow you to fetch posts, terms, users, and comments:
 
 ### Utility Functions
 
-- `action()` - Execute WordPress actions
+- `action()` - Execute WordPress actions, see [Twig – WordPress Actions](https://timber.github.io/docs/v2/guides/twig/#wordpress-actions)
 - `shortcode()` - Process WordPress shortcodes via `do_shortcode()`
 - `bloginfo()` - Get WordPress site information
 
