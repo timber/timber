@@ -20,7 +20,7 @@ class TimberRenderBlockTest extends TimberIntegrationTestCase
         $data = [
             'message' => 'Test error message',
         ];
-        $output = Timber::compile_twig_block('error', 'assets/toasts.twig', $data);
+        $output = Timber::compile_twig_block('error', 'Fixtures/assets/toasts.twig', $data);
 
         $expected = '<div class="top-0 left-0 w-full p-4 font-bold bg-red-500 text-red-50" role="alert">Test error message</div>';
         $this->assertEquals($expected, \trim($output));
@@ -34,7 +34,7 @@ class TimberRenderBlockTest extends TimberIntegrationTestCase
         $data = [
             'content' => 'nested content',
         ];
-        $output = Timber::compile_twig_block('nested_inner', 'assets/toasts.twig', $data);
+        $output = Timber::compile_twig_block('nested_inner', 'Fixtures/assets/toasts.twig', $data);
 
         $expected = '<p>This is a nested block: nested content</p>';
         $this->assertEquals($expected, \trim($output));
@@ -48,7 +48,7 @@ class TimberRenderBlockTest extends TimberIntegrationTestCase
         $data = [
             'message' => 'Test message',
         ];
-        $output = Timber::compile_twig_block('nonexistent', 'assets/toasts.twig', $data);
+        $output = Timber::compile_twig_block('nonexistent', 'Fixtures/assets/toasts.twig', $data);
 
         // When block doesn't exist, should render the whole template
         $this->assertStringContainsString('This is the default template content', $output);
@@ -61,7 +61,7 @@ class TimberRenderBlockTest extends TimberIntegrationTestCase
      */
     public function testCompileTwigBlockNoBlocksInTemplate()
     {
-        $output = Timber::compile_twig_block('nonexistent', 'assets/no-blocks.twig');
+        $output = Timber::compile_twig_block('nonexistent', 'Fixtures/assets/no-blocks.twig');
 
         // Should render the entire template when block doesn't exist
         $expected = '<div class="empty-template">This template has no blocks</div>';
@@ -73,7 +73,7 @@ class TimberRenderBlockTest extends TimberIntegrationTestCase
      */
     public function testCompileTwigBlockEmptyData()
     {
-        $output = Timber::compile_twig_block('error', 'assets/toasts.twig', []);
+        $output = Timber::compile_twig_block('error', 'Fixtures/assets/toasts.twig', []);
 
         // Should work with empty message
         $expected = '<div class="top-0 left-0 w-full p-4 font-bold bg-red-500 text-red-50" role="alert"></div>';
@@ -85,7 +85,7 @@ class TimberRenderBlockTest extends TimberIntegrationTestCase
      */
     public function testCompileTwigBlockNoData()
     {
-        $output = Timber::compile_twig_block('info', 'assets/toasts.twig');
+        $output = Timber::compile_twig_block('info', 'Fixtures/assets/toasts.twig');
 
         // Should work without data parameter
         $expected = '<div class="top-0 left-0 w-full p-4 bg-blue-500 text-blue-50" role="alert"></div>';
@@ -103,7 +103,7 @@ class TimberRenderBlockTest extends TimberIntegrationTestCase
 
         // Capture output from render_twig_block
         \ob_start();
-        Timber::render_twig_block('success', 'assets/toasts.twig', $data);
+        Timber::render_twig_block('success', 'Fixtures/assets/toasts.twig', $data);
         $output = \ob_get_contents();
         \ob_end_clean();
 
@@ -122,7 +122,7 @@ class TimberRenderBlockTest extends TimberIntegrationTestCase
 
         // Capture output from render_twig_block
         \ob_start();
-        Timber::render_twig_block('nonexistent', 'assets/toasts.twig', $data);
+        Timber::render_twig_block('nonexistent', 'Fixtures/assets/toasts.twig', $data);
         $output = \ob_get_contents();
         \ob_end_clean();
 
@@ -138,7 +138,7 @@ class TimberRenderBlockTest extends TimberIntegrationTestCase
     {
         // Capture output and error suppression
         \ob_start();
-        Timber::render_twig_block('error', 'assets/nonexistent.twig', [
+        Timber::render_twig_block('error', 'Fixtures/assets/nonexistent.twig', [
             'message' => 'test',
         ]);
         $output = \ob_get_contents();
@@ -158,10 +158,10 @@ class TimberRenderBlockTest extends TimberIntegrationTestCase
         ];
 
         // First call - should cache
-        $output1 = Timber::compile_twig_block('error', 'assets/toasts.twig', $data, expires: 60);
+        $output1 = Timber::compile_twig_block('error', 'Fixtures/assets/toasts.twig', $data, expires: 60);
 
         // Second call - should use cache
-        $output2 = Timber::compile_twig_block('error', 'assets/toasts.twig', $data, expires: 60);
+        $output2 = Timber::compile_twig_block('error', 'Fixtures/assets/toasts.twig', $data, expires: 60);
 
         $expected = '<div class="top-0 left-0 w-full p-4 font-bold bg-red-500 text-red-50" role="alert">Cached message</div>';
         $this->assertEquals($expected, \trim($output1));
@@ -176,7 +176,7 @@ class TimberRenderBlockTest extends TimberIntegrationTestCase
     {
         // Test all parameters are passed correctly
         $block_name = 'info';
-        $template = 'assets/toasts.twig';
+        $template = 'Fixtures/assets/toasts.twig';
         $data = [
             'message' => 'Parameter test',
         ];
@@ -199,11 +199,11 @@ class TimberRenderBlockTest extends TimberIntegrationTestCase
         ];
 
         // Correct case should work
-        $output_correct = Timber::compile_twig_block('error', 'assets/toasts.twig', $data);
+        $output_correct = Timber::compile_twig_block('error', 'Fixtures/assets/toasts.twig', $data);
         $this->assertStringContainsString('bg-red-500', $output_correct);
 
         // Wrong case should render entire template (block not found)
-        $output_wrong = Timber::compile_twig_block('ERROR', 'assets/toasts.twig', $data);
+        $output_wrong = Timber::compile_twig_block('ERROR', 'Fixtures/assets/toasts.twig', $data);
         $this->assertStringContainsString('This is the default template content', $output_wrong);
     }
 
@@ -217,11 +217,11 @@ class TimberRenderBlockTest extends TimberIntegrationTestCase
         ];
 
         // Get output from compile_twig_block
-        $compiled_output = Timber::compile_twig_block('warning', 'assets/toasts.twig', $data);
+        $compiled_output = Timber::compile_twig_block('warning', 'Fixtures/assets/toasts.twig', $data);
 
         // Get output from render_twig_block
         \ob_start();
-        Timber::render_twig_block('warning', 'assets/toasts.twig', $data);
+        Timber::render_twig_block('warning', 'Fixtures/assets/toasts.twig', $data);
         $rendered_output = \ob_get_contents();
         \ob_end_clean();
 
@@ -234,7 +234,7 @@ class TimberRenderBlockTest extends TimberIntegrationTestCase
      */
     public function testCompileTwigBlockMissingTemplate()
     {
-        $output = Timber::compile_twig_block('error', 'assets/nonexistent.twig', [
+        $output = Timber::compile_twig_block('error', 'Fixtures/assets/nonexistent.twig', [
             'message' => 'test',
         ]);
 
@@ -250,7 +250,7 @@ class TimberRenderBlockTest extends TimberIntegrationTestCase
         $data = [
             'message' => 'Test message',
         ];
-        $output = Timber::compile_twig_block('', 'assets/toasts.twig', $data);
+        $output = Timber::compile_twig_block('', 'Fixtures/assets/toasts.twig', $data);
 
         // Should render entire template when block name is empty
         $this->assertStringContainsString('This is the default template content', $output);
@@ -265,7 +265,7 @@ class TimberRenderBlockTest extends TimberIntegrationTestCase
         $data = [
             'content' => 'inheritance test',
         ];
-        $output = Timber::compile_twig_block('nested', 'assets/toasts.twig', $data);
+        $output = Timber::compile_twig_block('nested', 'Fixtures/assets/toasts.twig', $data);
 
         // Should render the parent block content including nested inner block
         $this->assertStringContainsString('This is a nested block: inheritance test', $output);
@@ -286,11 +286,11 @@ class TimberRenderBlockTest extends TimberIntegrationTestCase
             return $paths;
         });
         // First, let's test if the function exists and can be called manually
-        $manual_output = Timber::compile_twig_block('success', 'assets/toasts.twig', $data);
+        $manual_output = Timber::compile_twig_block('success', 'Fixtures/assets/toasts.twig', $data);
         $this->assertStringContainsString('bg-green-500', $manual_output);
 
         // Now test if the Twig function works
-        $output = Timber::compile('assets/test-twig-function.twig', $data);
+        $output = Timber::compile('Fixtures/assets/test-twig-function.twig', $data);
 
         // Should contain the rendered block content
         $this->assertStringContainsString('bg-green-500', $output); // Success toast styling
@@ -314,7 +314,7 @@ class TimberRenderBlockTest extends TimberIntegrationTestCase
             'toast_message' => 'This should fallback to full template',
         ];
 
-        $output = Timber::compile('assets/test-twig-function.twig', $data);
+        $output = Timber::compile('Fixtures/assets/test-twig-function.twig', $data);
 
         // Should contain fallback content when block doesn't exist
         $this->assertStringContainsString('This is the default template content', $output);
@@ -327,19 +327,71 @@ class TimberRenderBlockTest extends TimberIntegrationTestCase
     public function testCompileTwigBlockFromLayout()
     {
         // Test title block
-        $title_output = Timber::compile_twig_block('title', 'assets/base-layout.twig', [
+        $title_output = Timber::compile_twig_block('title', 'Fixtures/assets/base-layout.twig', [
             'page_title' => 'Custom Title',
         ]);
         $this->assertEquals('Default Title', \trim($title_output));
 
         // Test header block
-        $header_output = Timber::compile_twig_block('header', 'assets/base-layout.twig');
+        $header_output = Timber::compile_twig_block('header', 'Fixtures/assets/base-layout.twig');
         $this->assertEquals('<h1>Default Header</h1>', \trim($header_output));
 
         // Test content block with data
-        $content_output = Timber::compile_twig_block('content', 'assets/base-layout.twig', [
+        $content_output = Timber::compile_twig_block('content', 'Fixtures/assets/base-layout.twig', [
             'custom_content' => 'Test content',
         ]);
         $this->assertEquals('<p>Default content</p>', \trim($content_output));
+    }
+
+    /**
+     * Test compile_twig_block with explicitly null data parameter
+     * This covers the is_null($data) check in Timber.php line 1562
+     */
+    public function testCompileTwigBlockWithNullData()
+    {
+        $output = Timber::compile_twig_block('error', 'Fixtures/assets/toasts.twig', null);
+
+        // Should work with null data parameter (converts to empty array)
+        $expected = '<div class="top-0 left-0 w-full p-4 font-bold bg-red-500 text-red-50" role="alert"></div>';
+        $this->assertEquals($expected, \trim($output));
+    }
+
+    /**
+     * Test compile_twig_block with array of non-existent templates
+     * This covers the implode line in Timber.php line 1567
+     */
+    public function testCompileTwigBlockMissingTemplateArray()
+    {
+        $filenames = ['Fixtures/assets/nonexistent1.twig', 'Fixtures/assets/nonexistent2.twig', 'Fixtures/assets/nonexistent3.twig'];
+        $output = Timber::compile_twig_block('error', $filenames, [
+            'message' => 'test',
+        ]);
+
+        // Should return false when none of the templates exist
+        $this->assertFalse($output);
+    }
+
+    /**
+     * Test compile_twig_block with caching when data contains recursive reference
+     * This tests the caching behavior when json_encode would fail
+     * Covers Loader.php line 166 and TwigBlockLoader.php line 38
+     */
+    public function testCompileTwigBlockWithRecursiveData()
+    {
+        // Create a stdClass object with a recursive reference to trigger json_encode failure
+        $obj = new \stdClass();
+        $obj->self = $obj; // Create circular reference
+
+        $data = [
+            'message' => 'Test message',
+            'recursive' => $obj,
+        ];
+
+        // When json_encode fails, caching should be skipped but rendering should still work
+        $output = Timber::compile_twig_block('error', 'Fixtures/assets/toasts.twig', $data, expires: 60);
+
+        // Should still render despite caching issue
+        $expected = '<div class="top-0 left-0 w-full p-4 font-bold bg-red-500 text-red-50" role="alert">Test message</div>';
+        $this->assertEquals($expected, \trim($output));
     }
 }
