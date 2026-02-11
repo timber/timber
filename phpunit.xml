@@ -65,13 +65,6 @@
     <testsuite name="wpml">
       <file>./tests/Integration/WPMLTest.php</file>
     </testsuite>
-    <!--
-      Isolated suite: tests that MUST run last (they set constants).
-      Use: phpunit - -testsuite isolated
-    -->
-    <testsuite name="isolated">
-      <file>./tests/Image/ImageIsolatedTest.php</file>
-    </testsuite>
   </testsuites>
   <logging/>
   <extensions>

@@ -4,6 +4,8 @@ namespace Timber\Integration;
 
 use CoAuthors_Plus;
 use Timber\Integration\CoAuthorsPlus\CoAuthorsPlusUser;
+use Timber\Post;
+use Timber\Timber;
 use WP_User;
 
 class CoAuthorsPlusIntegration implements IntegrationInterface
@@ -27,7 +29,7 @@ class CoAuthorsPlusIntegration implements IntegrationInterface
      * Filters {{ post.authors }} to return authors stored from Co-Authors Plus
      * @since 1.1.4
      * @param array $author
-     * @param \Timber\Post $post
+     * @param Post $post
      * @return array of User objects
      */
     public function authors($author, $post)
@@ -37,10 +39,10 @@ class CoAuthorsPlusIntegration implements IntegrationInterface
         foreach ($cauthors as $author) {
             $uid = $this->get_user_uid($author);
             if ($uid) {
-                $authors[] = \Timber\Timber::get_user($uid);
+                $authors[] = Timber::get_user($uid);
             } else {
                 $wp_user = new WP_User($author);
-                $user = \Timber\Timber::get_user($wp_user);
+                $user = Timber::get_user($wp_user);
                 $user->import($wp_user->data);
                 unset($user->user_pass);
                 $user->id = $user->ID = (int) $wp_user->ID;

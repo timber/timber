@@ -5,7 +5,61 @@ order: "220"
 
 ## General Filters
 
-Twig offers a variety of [filters](https://twig.symfony.com/doc/filters/index.html) to transform text and other information into the desired output. In addition, Timber has added some valuable custom filters for your WordPress theme:
+Twig offers a variety of [filters](https://twig.symfony.com/doc/filters/index.html) to transform text and other information into the desired output. In addition, Timber has added some extra filters to filter data the WordPress way. Below is a comprehensive list of available filters, categorized by their functionality. Click on any filter name to jump to its detailed documentation and examples.
+
+### Image Filters
+
+- [`resize`](#resize) - Resize an image
+- [`retina`](#retina) - Create a retina-ready image
+- [`letterbox`](#letterbox) - Letterbox an image
+- [`tojpg`](#tojpg) - Convert image to JPG format
+- [`towebp`](#towebp) - Convert image to WebP format
+
+### Text Filters
+
+- [`excerpt`](#excerpt) - Trim text to a word count
+- [`excerpt_chars`](#excerpt_chars) - Trim text to a character count
+- [`truncate`](#truncate) - Trim text to a word count
+- [`wpautop`](#wpautop) - Add paragraph tags automatically
+- [`stripshortcodes`](#stripshortcodes) - Remove WordPress shortcodes
+- [`shortcodes`](#shortcodes) - Process WordPress shortcodes
+- [`pretags`](#pretags) - Convert entities in `<pre>` tags
+- [`sanitize`](#sanitize) - Sanitize title for URLs
+
+### Array & Collection Filters
+
+- [`array`](#array) - Convert value to array
+- [`list`](#list) - Format array as list with separators
+- [`pluck`](#pluck) - Extract specific field from array of objects
+- [`wp_list_filter`](#wp_list_filter) - Filter array of objects
+
+### Date & Time Filters
+
+- [`date`](#date) - Format dates (WordPress-compatible)
+- [`time_ago`](#time_ago) - Display relative time ("5 minutes ago")
+
+### URL Filters
+
+- [`relative`](#relative) - Convert absolute URL to relative URL
+
+### Utility Filters
+
+- [`function`](#function) - Execute a PHP function
+- [`apply_filters`](#apply_filters) - Apply WordPress filters
+- [`size_format`](#size_format) - Format file size for display
+
+### Security & Escaping Filters
+
+These filters help protect against security vulnerabilities:
+
+- [`esc_url`](#esc_url) - Escape URLs for safe use in HTML attributes
+- [`esc_attr`](#esc_attr) - Escape HTML attributes
+- [`esc_html`](#esc_html) - Escape HTML content
+- [`esc_js`](#esc_js) - Escape JavaScript strings
+- [`wp_kses`](#wp_kses) - Strip unwanted HTML tags with allowed list
+- [`wp_kses_post`](#wp_kses_post) - Strip unwanted HTML tags (allows post content tags)
+
+## Available Twig Filters
 
 ## `array`
 
@@ -41,10 +95,11 @@ Trims text to a certain number of words.
 **Output**
 
 ```html
-<p class="intro">Steve-O was born in London, England. His mother,
-Donna Gay (née Wauthier), was Canadian, and his father, Richard
-Glover, was American. His paternal grandfather was English
-and his maternal step-grandfather ...</p>
+<p class="intro">
+  Steve-O was born in London, England. His mother, Donna Gay (née Wauthier), was
+  Canadian, and his father, Richard Glover, was American. His paternal
+  grandfather was English and his maternal step-grandfather ...
+</p>
 ```
 
 ## `excerpt_chars`
@@ -60,9 +115,10 @@ Trims text to a certain number of characters.
 **Output**
 
 ```html
-<p class="intro">Steve-O was born in London, England. His mother,
-Donna Gay (née Wauthier), was Canadian, and his father, Richard
-Glover, was ...</p>
+<p class="intro">
+  Steve-O was born in London, England. His mother, Donna Gay (née Wauthier), was
+  Canadian, and his father, Richard Glover, was ...
+</p>
 ```
 
 ## `function`
@@ -135,7 +191,8 @@ Runs text through WordPress's shortcodes filter. In this example imagine that yo
 
 ```html
 <section class="gallery">
-Here is my gallery <div class="gallery" id="gallery-123"><img src="...." />...</div>
+  Here is my gallery
+  <div class="gallery" id="gallery-123"><img src="...." />...</div>
 </section>
 ```
 
@@ -195,10 +252,15 @@ Adds paragraph breaks to new lines.
 
 ```html
 <div class="body">
-	<p>Sinatra said, "What do you do?"</p>
-	<p>"I'm a plumber," Ellison said.</p>
-	<p>"No, no, he's not," another young man quickly yelled from across the table. "He wrote The Oscar."</p>
-	<p>"Oh, yeah," Sinatra said, "well I've seen it, and it's a piece of crap."</p>
+  <p>Sinatra said, "What do you do?"</p>
+  <p>"I'm a plumber," Ellison said.</p>
+  <p>
+    "No, no, he's not," another young man quickly yelled from across the table.
+    "He wrote The Oscar."
+  </p>
+  <p>
+    "Oh, yeah," Sinatra said, "well I've seen it, and it's a piece of crap."
+  </p>
 </div>
 ```
 
@@ -232,4 +294,197 @@ Contributions made by {{ contributors|list(',', '&') }}
 
 ```html
 Contributions made by Blake Allen, Rachel White & Maddy May
+```
+
+## `pluck`
+
+Extracts a specific attribute or key from each item in an array, useful for getting all values of the same property.
+
+**PHP**
+
+```php
+$context['posts'] = [
+    ['title' => 'First Post', 'author' => 'John'],
+    ['title' => 'Second Post', 'author' => 'Jane'],
+];
+```
+
+**Twig**
+
+```twig
+{% set titles = posts|pluck('title') %}
+Titles: {{ titles|list(', ') }}
+```
+
+**Output**
+
+```
+Titles: First Post, Second Post
+```
+
+## `apply_filters`
+
+Applies a [WordPress filter hook](https://developer.wordpress.org/plugins/hooks/filters/) to the given content. You can read more about this filter in the [Functions Guide](https://timber.github.io/docs/v2/guides/twig/#wordpress-filters).
+
+**Twig**
+
+```twig
+{{ content|apply_filters('my_custom_filter') }}
+```
+
+## `size_format`
+
+Formats a number of bytes into a human-readable file size (e.g., "1 MB", "2.5 GB").
+
+**Twig**
+
+```twig
+File size: {{ 1048576|size_format }} {# 1 MB #}
+Large file: {{ 5368709120|size_format }} {# 5 GB #}
+```
+
+## Image Filters
+
+You can read more about the image filters in the [Image Cookbook](https://timber.github.io/docs/v2/guides/cookbook-images/).
+
+### `resize`
+
+Resizes an image to specific dimensions.
+
+**Twig**
+
+```twig
+<img src="{{ image|resize(400, 300) }}" alt="{{ image.alt }}">
+```
+
+### `retina`
+
+Creates a retina-ready version of an image (doubled dimensions and URL handling).
+
+**Twig**
+
+```twig
+<img src="{{ image|retina }}" alt="{{ image.alt }}">
+```
+
+### `letterbox`
+
+Adds letterboxing to an image to fit specific dimensions while maintaining aspect ratio.
+
+**Twig**
+
+```twig
+<img src="{{ image|letterbox(400, 300) }}" alt="{{ image.alt }}">
+```
+
+### `tojpg`
+
+Converts an image to JPG format.
+
+**Twig**
+
+```twig
+<img src="{{ image|tojpg }}" alt="{{ image.alt }}">
+```
+
+### `towebp`
+
+Converts an image to modern WebP format.
+
+**Twig**
+
+```twig
+<picture>
+    <source srcset="{{ image|towebp }}" type="image/webp">
+    <img src="{{ image }}" alt="{{ image.alt }}">
+</picture>
+```
+
+## `date`
+
+Formats a date using WordPress date formats, while considering the timezone and date format settings you set in your WordPress settings. For more details, see [Twig's date filter documentation](https://twig.symfony.com/doc/3.x/filters/date.html).
+
+**Twig**
+
+```twig
+Posted on {{ post.post_date|date('Y-m-d') }}
+{{ post.post_date|date('F j, Y') }}
+```
+
+**Output**
+
+```
+Posted on 2023-09-15
+September 15, 2023
+```
+
+## Security & Escaping Filters
+
+You can read more about escaping and security filters in the [Escaping Guide](https://timber.github.io/docs/v2/guides/escaping/).
+
+### `esc_url`
+
+Escapes URLs for safe use in HTML attributes. Prevents XSS attacks in URL contexts.
+
+**Twig**
+
+```twig
+<a href="{{ post.link|esc_url }}">{{ post.title }}</a>
+```
+
+### `esc_attr`
+
+Escapes strings for safe use in HTML attributes.
+
+**Twig**
+
+```twig
+<div class="{{ custom_class|esc_attr }}" data-value="{{ custom_data|esc_attr }}">
+    Content
+</div>
+```
+
+### `esc_html`
+
+Escapes HTML content to display as plain text, preventing scripts from executing.
+
+**Twig**
+
+```twig
+<p>{{ user_comment|esc_html }}</p>
+```
+
+### `esc_js`
+
+Escapes strings for safe use in JavaScript contexts.
+
+**Twig**
+
+```twig
+<script>
+var title = "{{ post.title|esc_js }}";
+</script>
+```
+
+### `wp_kses`
+
+Strips unwanted HTML tags while preserving an allowed list of tags. Requires an allowed tags parameter.
+
+**Twig**
+
+```twig
+{# Only allow <b>, <i>, and <em> tags #}
+{{ user_content|wp_kses('<b><i><em>') }}
+```
+
+### `wp_kses_post`
+
+Strips unwanted HTML tags while allowing standard post formatting tags (paragraphs, lists, links, etc.).
+
+**Twig**
+
+```twig
+<div class="entry-content">
+    {{ post.post_content|wp_kses_post }}
+</div>
 ```

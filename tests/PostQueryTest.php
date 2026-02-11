@@ -104,9 +104,13 @@ class PostQueryTest extends TimberIntegrationTestCase
 
     public function testFoundPosts()
     {
-        static::factory()->post->create_many(20);
+        $post_ids = static::factory()->post->create_many(20);
 
-        $query = new PostQuery(new WP_Query('post_type=post'));
+        $query = new PostQuery(new WP_Query([
+            'post_type' => 'post',
+            'post__in' => $post_ids,
+            'orderby' => 'post__in',
+        ]));
 
         $this->assertCount(10, $query);
         $this->assertSame(20, $query->found_posts);
@@ -114,10 +118,11 @@ class PostQueryTest extends TimberIntegrationTestCase
 
     public function testFoundPostsInQueryWithNoFoundRows()
     {
-        static::factory()->post->create_many(20);
+        $post_ids = static::factory()->post->create_many(20);
 
         $query = new PostQuery(new WP_Query([
             'post_type' => 'post',
+            'post__in' => $post_ids,
             'no_found_rows' => true,
         ]));
 
@@ -160,14 +165,20 @@ class PostQueryTest extends TimberIntegrationTestCase
 
     public function testTheLoop()
     {
+        $post_ids = [];
         foreach (\range(1, 3) as $i) {
-            static::factory()->post->create([
+            $post_ids[] = static::factory()->post->create([
                 'post_title' => 'TestPost' . $i,
                 'post_date' => ('2018-09-0' . $i . ' 01:56:01'),
             ]);
         }
 
-        $wp_query = new WP_Query('post_type=post');
+        $wp_query = new WP_Query([
+            'post_type' => 'post',
+            'post__in' => $post_ids,
+            'orderby' => 'date',
+            'order' => 'DESC',
+        ]);
 
         $results = Timber::compile_string(
             '{% for p in posts %}{{fn("get_the_title")}}{% endfor %}',
@@ -182,9 +193,13 @@ class PostQueryTest extends TimberIntegrationTestCase
 
     public function testTwigLoopVar()
     {
-        static::factory()->post->create_many(3);
+        $post_ids = static::factory()->post->create_many(3);
 
-        $wp_query = new WP_Query('post_type=post');
+        $wp_query = new WP_Query([
+            'post_type' => 'post',
+            'post__in' => $post_ids,
+            'orderby' => 'post__in',
+        ]);
 
         // Dump the loop object itself each iteration, so we can see its
         // internals over time.
@@ -219,19 +234,24 @@ class PostQueryTest extends TimberIntegrationTestCase
 
     public function testPostCount()
     {
-        $posts = static::factory()->post->create_many(8);
+        $post_ids = static::factory()->post->create_many(8);
 
         // We should be able to call count(...) directly on our collection, by virtue
         // of it implementing the Countable interface.
-        $this->assertCount(8, new PostQuery(new WP_Query('post_type=post')));
+        $this->assertCount(8, new PostQuery(new WP_Query([
+            'post_type' => 'post',
+            'post__in' => $post_ids,
+            'orderby' => 'post__in',
+        ])));
     }
 
     public function testFoundPostsWithPostsPerPage()
     {
-        static::factory()->post->create_many(10);
+        $post_ids = static::factory()->post->create_many(10);
 
         $query = Timber::get_posts([
             'post_type' => 'post',
+            'post__in' => $post_ids,
             'posts_per_page' => 3,
         ]);
 

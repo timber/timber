@@ -21,6 +21,7 @@ class PostFactory
 {
     public function from($params)
     {
+
         if (\is_int($params) || \is_string($params) && \is_numeric($params)) {
             return $this->from_id((int) $params);
         }
@@ -41,7 +42,7 @@ class PostFactory
             return $this->from_id($params['ID']);
         }
 
-        if (\is_array($params)) {
+        if (\is_array($params) && [] !== $params) {
             return $this->from_wp_query(new WP_Query($params));
         }
 
@@ -209,7 +210,7 @@ class PostFactory
 
     protected function is_numeric_array($arr)
     {
-        if (!\is_array($arr)) {
+        if (!\is_array($arr) || [] === $arr) {
             return false;
         }
         foreach (\array_keys($arr) as $k) {

@@ -772,6 +772,26 @@ class PostTest extends TimberIntegrationTestCase
         $this->assertInstanceOf(Post::class, $ancestors[0]);
     }
 
+    public function testPostAncestorsAreCached()
+    {
+        global $wpdb;
+
+        $parent_id = static::factory()->post->create();
+        $child_id = static::factory()->post->create([
+            'post_parent' => $parent_id,
+        ]);
+        $child = Timber::get_post($child_id);
+
+        $first_call = $child->ancestors();
+        $queries_after_first_call = $wpdb->num_queries;
+
+        $second_call = $child->ancestors();
+        $queries_after_second_call = $wpdb->num_queries;
+
+        $this->assertSame($first_call, $second_call);
+        $this->assertSame($queries_after_first_call, $queries_after_second_call, 'Second call to ancestors() should not trigger additional queries');
+    }
+
     public function testPostNoConstructorArgument()
     {
         $pid = static::factory()->post->create();
@@ -780,19 +800,18 @@ class PostTest extends TimberIntegrationTestCase
         $this->assertEquals($pid, $post->ID);
     }
 
+    #[PermalinkStructure('')]
     public function testPostPathUglyPermalinks()
     {
-        \update_option('permalink_structure', '');
         $pid = static::factory()->post->create();
         $post = Timber::get_post($pid);
         $this->assertEquals('http://example.org/?p=' . $pid, $post->link());
         $this->assertEquals('/?p=' . $pid, $post->path());
     }
 
+    #[PermalinkStructure('/blog/%year%/%monthnum%/%postname%/')]
     public function testPostPathPrettyPermalinks()
     {
-        $struc = '/blog/%year%/%monthnum%/%postname%/';
-        \update_option('permalink_structure', $struc);
         $pid = static::factory()->post->create([
             'post_date' => '2014-05-28 00:00:00',
             'post_name' => 'post-title',

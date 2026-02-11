@@ -2,6 +2,8 @@
 
 namespace Timber\Tests;
 
+use Mantle\Testing\Concerns\Refresh_Database;
+use Mantle\Testing\Concerns\Reset_Server;
 use Person;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\IgnoreDeprecations;
@@ -23,6 +25,9 @@ use WP_Query;
 #[Group('post-collections')]
 class TimberMainClassTest extends TimberIntegrationTestCase
 {
+    use Refresh_Database;
+    use Reset_Server;
+
     public function testGetPostNumeric()
     {
         $post_id = static::factory()->post->create();

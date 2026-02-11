@@ -3,6 +3,7 @@
 namespace Timber\Tests\Integration;
 
 use Mantle\Testing\Attributes\PermalinkStructure;
+use Mantle\Testing\Concerns\Refresh_Database;
 use PHPUnit\Framework\Attributes\Group;
 use Timber\ImageHelper;
 use Timber\Tests\Image\ImageTest;
@@ -16,6 +17,8 @@ use Timber\URLHelper;
 #[Group('wpml')]
 class WPMLTest extends TimberIntegrationTestCase
 {
+    use Refresh_Database;
+
     public function set_up()
     {
         if (!\defined('ICL_LANGUAGE_CODE')) {
@@ -91,7 +94,8 @@ class WPMLTest extends TimberIntegrationTestCase
     #[PermalinkStructure('/%postname%/')]
     public function testWPMLMenu()
     {
-        MenuTest::_createTestMenu();
+        $menu_arr = MenuTest::_createTestMenu();
+        $home_slug = $menu_arr['home_slug'];
         $menu = Timber::get_menu();
         $nav_menu = \wp_nav_menu([
             'echo' => false,
@@ -99,10 +103,10 @@ class WPMLTest extends TimberIntegrationTestCase
         $this->assertGreaterThanOrEqual(3, \count($menu->get_items()));
         $items = $menu->get_items();
         $item = $items[0];
-        $this->assertEquals('home', $item->slug());
+        $this->assertEquals($home_slug, $item->slug());
         $this->assertFalse($item->is_external());
-        $this->assertEquals('http://example.org/home/', $item->link());
-        $this->assertEquals('/home/', $item->path());
+        $this->assertEquals('http://example.org/' . $home_slug . '/', $item->link());
+        $this->assertEquals('/' . $home_slug . '/', $item->path());
     }
 
     public function testWPMLMenu2()
@@ -125,6 +129,7 @@ class WPMLTest extends TimberIntegrationTestCase
 
         $built_menu = MenuTest::buildMenu('Ziggy', $items);
         $built_menu_id = $built_menu['term_id'];
+        $built_menu_name = $built_menu['name'];
 
         MenuTest::buildMenu('Zappy', $items);
         $theme = new Theme();
@@ -145,6 +150,6 @@ class WPMLTest extends TimberIntegrationTestCase
             ]
         );
         $menu = Timber::get_menu('extra-menu');
-        $this->assertEquals('Ziggy', $menu->name);
+        $this->assertEquals($built_menu_name, $menu->name);
     }
 }

@@ -17,10 +17,10 @@ class LocationManager
         $locs = \array_merge_recursive($locs, self::get_locations_theme());
         $locs = \array_merge_recursive($locs, self::get_locations_caller($caller));
         $locs = \array_merge_recursive($locs, self::get_locations_open_basedir());
-        $locs = \array_map('array_unique', $locs);
+        $locs = \array_map(array_unique(...), $locs);
 
         //now make sure theres a trailing slash on everything
-        $locs = \array_map(fn ($loc) => \array_map('trailingslashit', $loc), $locs);
+        $locs = \array_map(fn ($loc) => \array_map(trailingslashit(...), $loc), $locs);
 
         /**
          * Filters the filesystem paths to search for Twig templates.
@@ -61,7 +61,7 @@ class LocationManager
         $theme_locs = [];
         $theme_dirs = LocationManager::get_locations_theme_dir();
         $roots = [\get_stylesheet_directory(), \get_template_directory()];
-        $roots = \array_map('realpath', $roots);
+        $roots = \array_map(realpath(...), $roots);
         $roots = \array_unique($roots);
         foreach ($roots as $root) {
             if (!\is_dir($root)) {

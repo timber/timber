@@ -122,7 +122,7 @@ class PagesMenu extends Menu
 
         if (!empty($menu_items)) {
             $menu_items = \array_map([$pages_menu, 'pre_setup_nav_menu_item'], $menu_items);
-            $menu_items = \array_map('wp_setup_nav_menu_item', $menu_items);
+            $menu_items = \array_map(wp_setup_nav_menu_item(...), $menu_items);
 
             /**
              * Can’t really apply the "wp_get_nav_menu_items" filter here, because we don’t have a

@@ -15,8 +15,7 @@ By
 [![](https://opencollective.com/timber/contributors.svg?width=900&button=false)](https://github.com/timber/timber/graphs/contributors)
 
 [![PHP unit tests](https://github.com/timber/timber/actions/workflows/php-unit-tests.yml/badge.svg?branch=2.x)](https://github.com//timber/timber/actions/workflows/php-unit-tests.yml?query=branch:2.x)
-[![Coverage Status](https://img.shields.io/coveralls/timber/timber.svg?style=flat-square)](https://coveralls.io/github/timber/timber)
-[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/timber/timber.svg?style=flat-square)](https://scrutinizer-ci.com/g/timber/timber/?branch=master)
+[![Codecov](https://img.shields.io/codecov/c/github/timber/timber?style=flat)](https://app.codecov.io/gh/timber/timber)
 [![Latest Stable Version](https://img.shields.io/packagist/v/timber/timber.svg?style=flat-square)](https://packagist.org/packages/timber/timber)
 [![!Financial Contributors](https://opencollective.com/timber/tiers/badge.svg)](https://opencollective.com/timber/)
 

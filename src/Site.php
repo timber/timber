@@ -187,6 +187,7 @@ class Site extends Core implements CoreInterface
      * {% if site.users_can_register %}
      *   {# Show a notification and link to the register form #}
      * {% endif %}
+     * ```
      * @link https://secure.php.net/manual/en/language.oop5.overloading.php#object.call
      * @link https://github.com/twigphp/Twig/issues/2
      * @api

@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use Timber\Cache\Cleaner;
 use Twig\CacheExtension;
 use Twig\Environment;
+use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
 use Twig\TwigFunction;
 
@@ -489,7 +490,7 @@ class Loader implements LoaderInterface
         $twig = new Environment($this->get_loader(), $environment_options);
 
         if (WP_DEBUG) {
-            $twig->addExtension(new \Twig\Extension\DebugExtension());
+            $twig->addExtension(new DebugExtension());
         } else {
             $twig->addFunction(new TwigFunction('dump', fn () => null));
         }

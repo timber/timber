@@ -2,10 +2,18 @@
 
 namespace Timber\Tests;
 
+use Mantle\Testing\Utils;
 use Timber\Archives;
 
 class ArchivesTest extends TimberIntegrationTestCase
 {
+    public function set_up()
+    {
+        parent::set_up();
+        // Clear all posts to ensure archive tests are isolated
+        Utils::delete_all_posts();
+    }
+
     public function testArchivesLimit()
     {
         $dates = ['2013-11-08', '2013-12-08', '2013-11-09', '2013-06-08', '2013-03-03'];
