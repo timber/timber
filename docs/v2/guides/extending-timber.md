@@ -487,7 +487,7 @@ You could do this in Twig and use `get_posts()` to convert your IDs to `Timber\P
 ```twig
 {% set sponsors = get_posts(post.meta('sponsors')) %}
 
-{% if sponsors %}
+{% if sponsors is not empty %}
     <h2>Many thanks to our generous sponsors</h2>
 
     <ul>

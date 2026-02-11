@@ -105,6 +105,10 @@ class MenuFactory
      */
     public function from_id(int $id, array $args = []): ?Menu
     {
+        if (0 === $id) {
+            return null;
+        }
+
         $term = \get_term_by('id', $id, 'nav_menu');
 
         if (!$term) {
@@ -210,7 +214,7 @@ class MenuFactory
 
         $location = Timber::get_menu_location($term);
 
-        $class = $classmap[$location] ?? null;
+        $class = $classmap[$location ?? ''] ?? null;
 
         // If class is a callable, call it to get the actual class name
         if (\is_callable($class)) {

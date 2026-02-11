@@ -43,6 +43,10 @@ class TextHelper
      */
     public static function trim_words($text, $num_words = 55, $more = null, $allowed_tags = 'p a span b i br blockquote')
     {
+        if (empty($text)) {
+            return '';
+        }
+
         if (null === $more) {
             $more = \__('&hellip;');
         }
@@ -62,7 +66,7 @@ class TextHelper
          *                             Default `p a span b i br blockquote`.
          */
         $allowed_tags_array = \explode(' ', (string) \apply_filters('timber/trim_words/allowed_tags', $allowed_tags));
-        $allowed_tags_array = \array_filter($allowed_tags_array, fn ($value) => $value !== '');
+        $allowed_tags_array = \array_filter($allowed_tags_array, fn($value) => $value !== '');
         $allowed_tag_string = '<' . \implode('><', $allowed_tags_array) . '>';
 
         $text = \strip_tags($text, $allowed_tag_string);

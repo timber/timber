@@ -141,7 +141,7 @@ class ImageHelper
             return false;
         }
         // Its a gif so test
-        if (!($fh = @\fopen($file, 'rb'))) {
+        if (!\file_exists($file) || !($fh = \fopen($file, 'rb'))) {
             return false;
         }
         $count = 0;
@@ -453,6 +453,7 @@ class ImageHelper
         }
         // Download file to temp location
         if (!\function_exists('download_url')) {
+            // @phpstan-ignore requireOnce.fileNotFound
             require_once ABSPATH . '/wp-admin/includes/file.php';
         }
         $tmp = \download_url($file);
@@ -460,9 +461,11 @@ class ImageHelper
 
         $file_array = [];
         $file_array['tmp_name'] = $tmp;
-        // If error storing temporarily, do not use
+        // If error storing temporarily, return empty string
         if (\is_wp_error($tmp)) {
-            $file_array['tmp_name'] = '';
+            \remove_filter('upload_dir', [self::class, 'set_sideload_image_upload_dir']);
+
+            return '';
         }
         // do the validation and storage stuff
         $locinfo = PathHelper::pathinfo($loc);

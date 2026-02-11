@@ -3,15 +3,39 @@ title: "Widgets"
 order: "160"
 ---
 
-Everyone loves widgets! Of course they do...
+In a world where the block editor is used more and more, widgets are getting less important. However, they are still a part of WordPress and you might need to use them. Timber can help you with that.
+
+First we will have to register the widget area in our theme. This is done in the **functions.php** file for example.
 
 ```php
-$data = [
-    'footer_widgets' => Timber::get_widgets('footer_widgets'),
-];
+function site_widgets_init() {
+    register_sidebar([
+        'name'          => 'Footer widgets',
+        'id'            => 'footer_widgets'
+        'description'   => 'Add widgets here to appear in your footer.',
+        'before_widget' => '<section id="%1$s" class="widget %2$s">',
+        'after_widget'  => '</section>',
+        'before_title'  => '<h3 class="widget__title">',
+        'after_title'   => '</h3>',
+    ]);
+}
+
+add_action('widgets_init', 'site_widgets_init');
 ```
 
-...where `footer_widgets` is the registered name of the widgets you want to get (in twentythirteen these are called `sidebar-1` and `sidebar-2`).
+Then you can add the widgets to the global context.
+
+```php
+function add_to_context($context) {
+    $context['footer_widgets'] = Timber::get_widgets('footer_widgets');
+
+    return $context;
+}
+
+add_filter('timber/context', 'add_to_context');
+```
+
+...where `footer_widgets` is the registered name of the widgets you want to get.
 
 Then use it in your template:
 

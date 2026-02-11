@@ -504,7 +504,7 @@ class Loader implements LoaderInterface
          */
         $enable_cache_extension = \apply_filters('timber/cache/enable_extension', true);
 
-        if ($enable_cache_extension && \class_exists('\Twig\CacheExtension\Extension')) {
+        if ($enable_cache_extension && \class_exists(CacheExtension\Extension::class)) {
             $twig->addExtension($this->_get_cache_extension());
         }
 

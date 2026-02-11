@@ -66,7 +66,7 @@ trait AccessesPostsLazily
      *   // No additional overhead here.
      * }
      * ```
-     * @return PostCollectionInterface The realized PostQuery.
+     * @return self The realized PostQuery.
      */
     public function realize(): self
     {

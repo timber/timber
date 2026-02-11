@@ -19,9 +19,11 @@ return ECSConfig::configure()
      * @see https://cs.symfony.com/doc/rules/index.html#import
      */
     ->withRules([
-        FullyQualifiedStrictTypesFixer::class,
         NoLeadingImportSlashFixer::class,
         SingleImportPerStatementFixer::class,
+    ])
+    ->withConfiguredRule(FullyQualifiedStrictTypesFixer::class, [
+        'import_symbols' => true,
     ])
     ->withConfiguredRule(GlobalNamespaceImportFixer::class, [
         'import_classes' => true,

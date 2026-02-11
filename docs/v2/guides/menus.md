@@ -166,14 +166,8 @@ add_filter('timber/context', 'add_to_context');
 function add_to_context($context)
 {
     // Set all nav menus in context.
-    foreach (array_keys(get_registered_nav_menus()) as $location) {
-        // Bail out if menu has no location.
-        if (!has_nav_menu($location)) {
-            continue;
-        }
-
+    foreach (array_keys(get_nav_menu_locations()) as $location) {
         $menu = Timber::get_menu($location);
-
         $context[$location] = $menu;
     }
 

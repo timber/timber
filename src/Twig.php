@@ -8,6 +8,7 @@ use DateTimeInterface;
 use Exception;
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
+use Twig\DeprecatedCallableInfo;
 use Twig\Environment;
 use Twig\Extension\CoreExtension;
 use Twig\Extension\EscaperExtension;
@@ -107,7 +108,13 @@ class Twig
                     return $post_factory->from($post_id);
                 },
                 'options' => [
-                    'deprecated' => true,
+                    'deprecation_info' => new DeprecatedCallableInfo(
+                        package: 'timber/timber',
+                        version: '2.0.0',
+                        altName: '{{ get_post() }} or {{ get_posts() }}',
+                        altPackage: null,
+                        altVersion: null
+                    ),
                 ],
             ],
             'TimberPost' => [
@@ -116,7 +123,13 @@ class Twig
                     return $post_factory->from($post_id);
                 },
                 'options' => [
-                    'deprecated' => true,
+                    'deprecation_info' => new DeprecatedCallableInfo(
+                        package: 'timber/timber',
+                        version: '2.0.0',
+                        altName: '{{ get_post() }} or {{ get_posts() }}',
+                        altPackage: null,
+                        altVersion: null
+                    ),
                 ],
             ],
             'Image' => [
@@ -125,7 +138,13 @@ class Twig
                     return $post_factory->from($post_id);
                 },
                 'options' => [
-                    'deprecated' => true,
+                    'deprecation_info' => new DeprecatedCallableInfo(
+                        package: 'timber/timber',
+                        version: '2.0.0',
+                        altName: '{{ get_image() }}',
+                        altPackage: null,
+                        altVersion: null
+                    ),
                 ],
             ],
             'TimberImage' => [
@@ -134,7 +153,13 @@ class Twig
                     return $post_factory->from($post_id);
                 },
                 'options' => [
-                    'deprecated' => true,
+                    'deprecation_info' => new DeprecatedCallableInfo(
+                        package: 'timber/timber',
+                        version: '2.0.0',
+                        altName: '{{ get_image() }}',
+                        altPackage: null,
+                        altVersion: null
+                    ),
                 ],
             ],
             'Term' => [
@@ -143,7 +168,13 @@ class Twig
                     return $termFactory->from($term_id);
                 },
                 'options' => [
-                    'deprecated' => true,
+                    'deprecation_info' => new DeprecatedCallableInfo(
+                        package: 'timber/timber',
+                        version: '2.0.0',
+                        altName: '{{ get_term() }}',
+                        altPackage: null,
+                        altVersion: null
+                    ),
                 ],
             ],
             'TimberTerm' => [
@@ -152,7 +183,13 @@ class Twig
                     return $termFactory->from($term_id);
                 },
                 'options' => [
-                    'deprecated' => true,
+                    'deprecation_info' => new DeprecatedCallableInfo(
+                        package: 'timber/timber',
+                        version: '2.0.0',
+                        altName: '{{ get_term() }} or {{ get_terms() }}',
+                        altPackage: null,
+                        altVersion: null
+                    ),
                 ],
             ],
             'User' => [
@@ -161,7 +198,13 @@ class Twig
                     return Timber::get_user($user_id);
                 },
                 'options' => [
-                    'deprecated' => true,
+                    'deprecation_info' => new DeprecatedCallableInfo(
+                        package: 'timber/timber',
+                        version: '2.0.0',
+                        altName: '{{ get_user() }} or {{ get_users() }}',
+                        altPackage: null,
+                        altVersion: null
+                    ),
                 ],
             ],
             'TimberUser' => [
@@ -170,7 +213,13 @@ class Twig
                     return Timber::get_user($user_id);
                 },
                 'options' => [
-                    'deprecated' => true,
+                    'deprecation_info' => new DeprecatedCallableInfo(
+                        package: 'timber/timber',
+                        version: '2.0.0',
+                        altName: '{{ get_user() }} or {{ get_users() }}',
+                        altPackage: null,
+                        altVersion: null
+                    ),
                 ],
             ],
             'shortcode' => [
@@ -306,7 +355,13 @@ class Twig
                     return $obj::class;
                 },
                 'options' => [
-                    'deprecated' => true,
+                    'deprecation_info' => new DeprecatedCallableInfo(
+                        package: 'timber/timber',
+                        version: '2.0.0',
+                        altName: "{{ function('get_class', my_object) }}",
+                        altPackage: null,
+                        altVersion: null
+                    ),
                 ],
             ],
             'print_r' => [
@@ -315,7 +370,13 @@ class Twig
                     return \print_r($arr, true);
                 },
                 'options' => [
-                    'deprecated' => true,
+                    'deprecation_info' => new DeprecatedCallableInfo(
+                        package: 'timber/timber',
+                        version: '2.0.0',
+                        altName: '{{ dump(my_object) }}',
+                        altPackage: null,
+                        altVersion: null
+                    ),
                 ],
             ],
 

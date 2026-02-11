@@ -100,29 +100,31 @@ Create a Twig file according to the location asked by the above file, in this ex
 
 {% block content %}
 
-    {% do action('woocommerce_before_single_product') %}
-
-    <article itemscope itemtype="https://schema.org/Product" class="single-product-details {{ post.class }}">
-
-        <div class="entry-images">
-            {% do action('woocommerce_before_single_product_summary') %}
-
-            <img src="{{ post.thumbnail.src('shop_single') }}" />
-        </div>
-
-        <div class="summary entry-summary">
-            {% do action('woocommerce_single_product_summary') %}
-        </div>
-
-        {% do action('woocommerce_after_single_product_summary') %}
-
-        <meta itemprop="url" content="{{ post.link }}" />
-
-    </article>
-
-    {% include ["partials/tease-product.twig"] with { products: related_products } %}
-
-    {% do action('woocommerce_after_single_product') %}
+    <div class="product">
+        {% do action('woocommerce_before_single_product') %}
+    
+        <article itemscope itemtype="https://schema.org/Product" class="single-product-details {{ post.class }}">
+    
+            <div class="entry-images">
+                {% do action('woocommerce_before_single_product_summary') %}
+    
+                <img src="{{ post.thumbnail.src('shop_single') }}" />
+            </div>
+    
+            <div class="summary entry-summary">
+                {% do action('woocommerce_single_product_summary') %}
+            </div>
+    
+            {% do action('woocommerce_after_single_product_summary') %}
+    
+            <meta itemprop="url" content="{{ post.link }}" />
+    
+        </article>
+    
+        {% include ["partials/tease-product.twig"] with { products: related_products } %}
+    
+        {% do action('woocommerce_after_single_product') %}
+    </div>
 
 {% endblock  %}
 ```
@@ -137,7 +139,7 @@ Finally, we’ll need to create a teaser file for products in loops. Considering
 ## Tease Product
 
 ```twig
-<article {{ fn('post_class', ['$classes', 'entry'] ) }}>
+<article {{ fn('post_class', ['entry'] ) }}>
 
     {{ fn('timber_set_product', post) }}
 

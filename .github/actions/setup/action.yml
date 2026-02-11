@@ -3,7 +3,7 @@ description: 'Setup PHP & installs composer dependencies'
 inputs:
   PHP_VERSION:
     description: PHP version
-    default: "8.1"
+    default: "8.2"
     required: false
     type: string
   PHP_TOOLS:
@@ -30,7 +30,9 @@ runs:
       with:
         php-version: ${{ inputs.PHP_VERSION }}
         tools: ${{ format('composer,{0}', inputs.PHP_TOOLS) }}
-
+    - name: Remove lock file
+      shell: bash
+      run: rm -f composer.lock
     - name: Install Composer dependencies
       if: ${{ inputs.INSTALL_DEPS == 'true' }}
       uses: ramsey/composer-install@v3

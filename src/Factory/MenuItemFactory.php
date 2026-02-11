@@ -66,7 +66,7 @@ class MenuItemFactory
          */
         $classmap = \apply_filters('timber/menuitem/classmap', []);
 
-        $class = $classmap[$menu->theme_location] ?? null;
+        $class = $classmap[$menu->theme_location ?? ''] ?? null;
 
         // If class is a callable, call it to get the actual class name
         if (\is_callable($class)) {

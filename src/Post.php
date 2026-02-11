@@ -92,6 +92,11 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
     protected $_prev = [];
 
     /**
+     * @var array Stores the results of the ancestors of the post as Timber\Posts
+     */
+    protected $_ancestors;
+
+    /**
      * @var string Stores the CSS classes for the post (ex: "post post-type-book post-123")
      */
     protected $_css_class;
@@ -174,7 +179,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      * (i.e. Timber\Post or a subclass).
      *
      * @internal
-     * @return Post
+     * @return static
      */
     public static function build(WP_Post $wp_post): static
     {
@@ -543,16 +548,18 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      * @example
      * ```twig
      * <section id="job-feed">
-     * {% for post in job %}
-     *     <div class="job">
-     *         <h2>{{ post.title }}</h2>
-     *         <p>{{ post.terms({
-     *             taxonomy: 'category',
-     *             orderby: 'name',
-     *             order: 'ASC'
-     *         })|join(', ') }}</p>
-     *     </div>
-     * {% endfor %}
+     * {% if jobs is not empty %}
+     *   {% for post in jobs %}
+     *       <div class="job">
+     *           <h2>{{ post.title }}</h2>
+     *           <p>{{ post.terms({
+     *               taxonomy: 'category',
+     *               orderby: 'name',
+     *               order: 'ASC'
+     *           })|join(', ') }}</p>
+     *       </div>
+     *   {% endfor %}
+     * {% endif %}
      * </section>
      * ```
      * ```html
@@ -855,6 +862,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      */
     public function get_method_values(): array
     {
+        $ret['ancestors'] = $this->ancestors();
         $ret['author'] = $this->author();
         $ret['categories'] = $this->categories();
         $ret['category'] = $this->category();
@@ -874,6 +882,34 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
         $ret['thumbnail'] = $this->thumbnail();
         $ret['title'] = $this->title();
         return $ret;
+    }
+
+    /**
+     * Returns an array of ancestors of the post as Timber\Posts
+     * (or other class as you define).
+     *
+     * @api
+     * @example
+     * ```twig
+     * {% if post.ancestors is not empty %}
+     *     Here are the ancestor pages:
+     *     {% for ancestor in post.ancestors %}
+     *         <a href="{{ ancestor.link }}">{{ ancestor.title }}</a>
+     *     {% endfor %}
+     * {% endif %}
+     * ```
+     * @return PostCollectionInterface
+     */
+    public function ancestors()
+    {
+        if (isset($this->_ancestors)) {
+            return $this->_ancestors;
+        }
+
+        $ancestors = \array_reverse(\get_post_ancestors($this->ID));
+        $this->_ancestors = $this->factory()->from($ancestors);
+
+        return $this->_ancestors;
     }
 
     /**
@@ -985,7 +1021,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      * @api
      * @example
      * ```twig
-     * {% if post.children %}
+     * {% if post.children is not empty %}
      *     Here are the child pages:
      *     {% for child in post.children %}
      *         <a href="{{ child.link }}">{{ child.title }}</a>
@@ -1476,7 +1512,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      * {# Uses time format set in Settings → General #}
      * Published at {{ post.time }}
      * OR
-     * Published at {{ post.time|time('G:i') }}
+     * Published at {{ post.time('G:i') }}
      * ```
      *
      * ```html
@@ -1522,9 +1558,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      * @example
      * ```twig
      * {# Uses time format set in Settings → General #}
-     * Published at {{ post.time }}
+     * Published at {{ post.modified_time }}
      * OR
-     * Published at {{ post.time|time('G:i') }}
+     * Published at {{ post.modified_time('G:i') }}
      * ```
      *
      * ```html
