@@ -404,7 +404,7 @@ Converts an image to modern WebP format.
 
 ## `date`
 
-Formats a date using WordPress date formats. For more details, see [Twig's date filter documentation](https://twig.symfony.com/doc/3.x/filters/date.html).
+Formats a date using WordPress date formats, while considering the timezone and date format settings you set in your WordPress settings. For more details, see [Twig's date filter documentation](https://twig.symfony.com/doc/3.x/filters/date.html).
 
 **Twig**
 
