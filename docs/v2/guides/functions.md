@@ -85,17 +85,17 @@ To pass arguments to a function, add them as additional arguments after the func
 
 ```twig
 {# single.twig #}
-<div class="admin-tools">
-    {{ function('edit_post_link', 'Edit', '<span class="edit-link">', '</span>') }}
+<div class="embed-link">
+    {{ function('get_post_embed_url', post.id) }}
 </div>
 ```
 
-**Important note about context:** While this works in a `single.twig` file that retains the context of the current post, it may not work the same way in The Loop (like in `archive.twig` or `index.twig`). Functions like `edit_post_link` try to guess the post ID from the current post context. In archive or index templates, you need to explicitly pass the post ID:
+**Important note about context:** While this works in a `single.twig` file that retains the context of the current post, it may not work the same way in The Loop (like in `archive.twig` or `index.twig`). Functions like `get_post_embed_url` try to guess the post ID from the current post context. In archive or index templates, you need to explicitly pass the post ID:
 
 ```twig
 {# index.twig #}
-<div class="admin-tools">
-    {{ function('edit_post_link', 'Edit', '<span class="edit-link">', '</span>', post.ID) }}
+<div class="embed-link">
+    {{ function('get_post_embed_url', post.ID) }}
 </div>
 ```
 

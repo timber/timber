@@ -21,8 +21,8 @@ By default, you’ll have to use `{{ fn('function_name') }}` to call a function 
 
 ```php
 add_filter('timber/twig/functions', function ($functions) {
-    $functions['edit_post_link'] = [
-        'callable' => 'edit_post_link',
+    $functions['wp_get_shortlink'] = [
+        'callable' => 'wp_get_shortlink',
     ];
 
     return $functions;
@@ -31,20 +31,18 @@ add_filter('timber/twig/functions', function ($functions) {
 
 The `$functions` variable is an array of functions that Timber already adds by default.
 
-In the example above, we add a `edit_post_link` function by defining an array with a `callable` key that contains the name of the PHP function we want to call. In this case: [`edit_post_link()`](https://developer.wordpress.org/reference/functions/edit_post_link/).
+In the example above, we add a `wp_get_shortlink` function by defining an array with a `callable` key that contains the name of the PHP function we want to call. In this case: [`wp_get_shortlink()`](https://developer.wordpress.org/reference/functions/wp_get_shortlink/).
 
 In Twig, we can then use it like this:
 
 **single.twig**
 
 ```twig
-{# Calls edit_post_link using default arguments #}
-<div class="admin-tools">{{ edit_post_link() }}</div>
+{# Get shortlink for the current post #}
+<a href="{{ wp_get_shortlink() }}">Short URL</a>
 
-{# Calls edit_post_link with all defaults, except for second argument #}
-<div class="admin-tools">
-    {{ edit_post_link(null, '<span class="edit-my-post-type-link">') }}
-</div>
+{# Get shortlink for a specific post #}
+<a href="{{ wp_get_shortlink(post.id) }}">Short URL</a>
 ```
 
 ### Functions that Timber provides

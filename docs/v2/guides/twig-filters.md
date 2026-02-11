@@ -5,7 +5,7 @@ order: "220"
 
 ## General Filters
 
-Timber provides numerous filters to format and manipulate data in templates. Below is a comprehensive list of available filters, categorized by their functionality. Click on any filter name to jump to its detailed documentation and examples.
+Twig offers a variety of [filters](https://twig.symfony.com/doc/filters/index.html) to transform text and other information into the desired output. In addition, Timber has added some extra filters to make it easier to work with WordPress data in Twig templates. Below is a comprehensive list of available filters, categorized by their functionality. Click on any filter name to jump to its detailed documentation and examples.
 
 ### Image Filters
 
@@ -58,8 +58,6 @@ These filters help protect against security vulnerabilities:
 - [`esc_js`](#esc_js) - Escape JavaScript strings
 - [`wp_kses`](#wp_kses) - Strip unwanted HTML tags with allowed list
 - [`wp_kses_post`](#wp_kses_post) - Strip unwanted HTML tags (allows post content tags)
-
-Twig offers a variety of [filters](https://twig.symfony.com/doc/filters/index.html) to transform text and other information into the desired output. In addition, Timber has added some valuable custom filters for your WordPress theme:
 
 ## Available Twig Filters
 
