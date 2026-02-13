@@ -170,76 +170,111 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
     public $slug;
 
     /**
+     * The post's slug.
+     *
      * @var string
      */
     public $post_name;
 
     /**
+     * The post's GMT publication time.
+     *
      * @var string
      */
     public $post_date_gmt;
 
     /**
+     * Whether comments are allowed.
+     *
      * @var string
      */
     public $comment_status;
 
     /**
+     * Whether pings are allowed.
+     *
      * @var string
      */
     public $ping_status;
 
     /**
+     * The post's password in plain text.
+     *
      * @var string
      */
     public $post_password;
 
     /**
+     * URLs queued to be pinged.
+     *
      * @var string
      */
     public $to_ping;
 
     /**
+     * URLs that have been pinged.
+     *
      * @var string
      */
     public $pinged;
 
     /**
+     * The post's local modified time.
+     *
      * @var string
      */
     public $post_modified;
 
     /**
+     * The post's GMT modified time.
+     *
      * @var string
      */
     public $post_modified_gmt;
 
     /**
+     * A utility DB field for post content.
+     *
      * @var string
      */
     public $post_content_filtered;
 
     /**
+     * The unique identifier for a post, not necessarily a URL, used as the feed GUID.
+     *
      * @var string
      */
     public $guid;
 
     /**
+     * A field used for ordering posts.
+     *
      * @var int
      */
     public $menu_order;
 
     /**
+     * An attachment's mime type.
+     *
+     * @since 3.5.0
      * @var string
      */
     public $post_mime_type;
 
     /**
-     * @var int
+     * Cached comment count.
+     *
+     * A numeric string, for compatibility reasons.
+     *
+     * @var string
      */
     public $comment_count;
 
     /**
+     * Stores the post object's sanitization level.
+     *
+     * Does not correspond to a DB field.
+     *
      * @var string
      */
     public $filter;

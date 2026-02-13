@@ -73,6 +73,8 @@ class User extends CoreEntity implements Stringable
     public $id;
 
     /**
+     * The user's ID.
+     *
      * @var int
      */
     public $ID;
@@ -122,21 +124,31 @@ class User extends CoreEntity implements Stringable
     public $display_name;
 
     /**
-     * @var array
+     * Capabilities that the individual user has been granted outside of those inherited from their role.
+     *
+     * @var bool[] Array of key/value pairs where keys represent a capability name
+     *             and boolean values represent whether the user has that capability.
      */
     public $caps;
 
     /**
+     * User metadata option name.
+     *
      * @var string
      */
     public $cap_key;
 
     /**
-     * @var array
+     * All capabilities the user has, including individual and role based.
+     *
+     * @var bool[] Array of key/value pairs where keys represent a capability name
+     *             and boolean values represent whether the user has that capability.
      */
     public $allcaps;
 
     /**
+     * The filter context applied to user data fields.
+     *
      * @var string
      */
     public $filter;
