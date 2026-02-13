@@ -141,7 +141,7 @@ class User extends CoreEntity implements Stringable
     /**
      * All capabilities the user has, including individual and role based.
      *
-     * @var bool[] Array of key/value pairs where keys represent a capability name
+     * @var array<string, bool> Array of key/value pairs where keys represent a capability name
      *             and boolean values represent whether the user has that capability.
      */
     public $allcaps;
