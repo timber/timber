@@ -93,6 +93,11 @@ class Comment extends CoreEntity implements Stringable
     /**
      * @var int
      */
+    public $comment_post_ID;
+
+    /**
+     * @var int
+     */
     public $comment_parent;
 
     /**
@@ -112,6 +117,36 @@ class Comment extends CoreEntity implements Stringable
      * @var string
      */
     public $comment_author;
+
+    /**
+     * @var string
+     */
+    public $comment_author_url;
+
+    /**
+     * @var string
+     */
+    public $comment_author_IP;
+
+    /**
+     * @var string
+     */
+    public $comment_date_gmt;
+
+    /**
+     * @var int
+     */
+    public $comment_karma;
+
+    /**
+     * @var string
+     */
+    public $comment_agent;
+
+    /**
+     * @var string
+     */
+    public $comment_type;
 
     public $_depth = 0;
 

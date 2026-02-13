@@ -148,6 +148,66 @@ class Site extends Core implements CoreInterface
     public $atom;
 
     /**
+     * @var int
+     */
+    public $blog_id;
+
+    /**
+     * @var string
+     */
+    public $domain;
+
+    /**
+     * @var string
+     */
+    public $path;
+
+    /**
+     * @var int
+     */
+    public $site_id;
+
+    /**
+     * @var string
+     */
+    public $registered;
+
+    /**
+     * @var string
+     */
+    public $last_updated;
+
+    /**
+     * @var int
+     */
+    public $public;
+
+    /**
+     * @var int
+     */
+    public $archived;
+
+    /**
+     * @var int
+     */
+    public $mature;
+
+    /**
+     * @var int
+     */
+    public $spam;
+
+    /**
+     * @var int
+     */
+    public $deleted;
+
+    /**
+     * @var int
+     */
+    public $lang_id;
+
+    /**
      * Constructs a Timber\Site object
      * @api
      * @example

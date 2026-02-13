@@ -72,6 +72,46 @@ class Term extends CoreEntity implements Stringable
     public $taxonomy;
 
     /**
+     * @var int
+     */
+    public $term_id;
+
+    /**
+     * @var string
+     */
+    public $slug;
+
+    /**
+     * @var int
+     */
+    public $term_group;
+
+    /**
+     * @var int
+     */
+    public $term_taxonomy_id;
+
+    /**
+     * @var string
+     */
+    public $description;
+
+    /**
+     * @var int
+     */
+    public $parent;
+
+    /**
+     * @var int
+     */
+    public $count;
+
+    /**
+     * @var string
+     */
+    public $filter;
+
+    /**
      * @internal
      */
     protected function __construct()

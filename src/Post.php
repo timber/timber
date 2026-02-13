@@ -170,6 +170,81 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
     public $slug;
 
     /**
+     * @var string
+     */
+    public $post_name;
+
+    /**
+     * @var string
+     */
+    public $post_date_gmt;
+
+    /**
+     * @var string
+     */
+    public $comment_status;
+
+    /**
+     * @var string
+     */
+    public $ping_status;
+
+    /**
+     * @var string
+     */
+    public $post_password;
+
+    /**
+     * @var string
+     */
+    public $to_ping;
+
+    /**
+     * @var string
+     */
+    public $pinged;
+
+    /**
+     * @var string
+     */
+    public $post_modified;
+
+    /**
+     * @var string
+     */
+    public $post_modified_gmt;
+
+    /**
+     * @var string
+     */
+    public $post_content_filtered;
+
+    /**
+     * @var string
+     */
+    public $guid;
+
+    /**
+     * @var int
+     */
+    public $menu_order;
+
+    /**
+     * @var string
+     */
+    public $post_mime_type;
+
+    /**
+     * @var int
+     */
+    public $comment_count;
+
+    /**
+     * @var string
+     */
+    public $filter;
+
+    /**
      * @var string Stores the PostType object for the post.
      */
     protected $__type;
