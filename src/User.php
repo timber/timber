@@ -73,6 +73,16 @@ class User extends CoreEntity implements Stringable
     public $id;
 
     /**
+     * @var int
+     */
+    public $ID;
+
+    /**
+     * @var string
+     */
+    public $user_login;
+
+    /**
      * @api
      * @var string
      */
@@ -85,6 +95,51 @@ class User extends CoreEntity implements Stringable
      * @var string
      */
     public $user_email;
+
+    /**
+     * @var string
+     */
+    public $user_url;
+
+    /**
+     * @var string
+     */
+    public $user_registered;
+
+    /**
+     * @var string
+     */
+    public $user_activation_key;
+
+    /**
+     * @var int
+     */
+    public $user_status;
+
+    /**
+     * @var string
+     */
+    public $display_name;
+
+    /**
+     * @var array
+     */
+    public $caps;
+
+    /**
+     * @var string
+     */
+    public $cap_key;
+
+    /**
+     * @var array
+     */
+    public $allcaps;
+
+    /**
+     * @var string
+     */
+    public $filter;
 
     /**
      * The roles the user is part of.

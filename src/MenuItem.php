@@ -94,6 +94,116 @@ class MenuItem extends CoreEntity implements Stringable
      */
     public $object;
 
+    /**
+     * @var int
+     */
+    public $post_author;
+
+    /**
+     * @var string
+     */
+    public $post_date;
+
+    /**
+     * @var string
+     */
+    public $post_date_gmt;
+
+    /**
+     * @var string
+     */
+    public $post_content;
+
+    /**
+     * @var string
+     */
+    public $post_title;
+
+    /**
+     * @var string
+     */
+    public $post_excerpt;
+
+    /**
+     * @var string
+     */
+    public $post_status;
+
+    /**
+     * @var string
+     */
+    public $comment_status;
+
+    /**
+     * @var string
+     */
+    public $ping_status;
+
+    /**
+     * @var string
+     */
+    public $post_password;
+
+    /**
+     * @var string
+     */
+    public $to_ping;
+
+    /**
+     * @var string
+     */
+    public $pinged;
+
+    /**
+     * @var string
+     */
+    public $post_modified;
+
+    /**
+     * @var string
+     */
+    public $post_modified_gmt;
+
+    /**
+     * @var string
+     */
+    public $post_content_filtered;
+
+    /**
+     * @var int
+     */
+    public $post_parent;
+
+    /**
+     * @var string
+     */
+    public $guid;
+
+    /**
+     * @var int
+     */
+    public $menu_order;
+
+    /**
+     * @var string
+     */
+    public $post_type;
+
+    /**
+     * @var string
+     */
+    public $post_mime_type;
+
+    /**
+     * @var int
+     */
+    public $comment_count;
+
+    /**
+     * @var string
+     */
+    public $filter;
+
     protected $_name;
 
     protected $_menu_item_url;
