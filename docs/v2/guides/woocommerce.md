@@ -121,7 +121,7 @@ Create a Twig file according to the location asked by the above file, in this ex
     
         </article>
     
-        {% for product in related_products %}
+        {% for post in related_products %}
             {% include ["partials/tease-product.twig"] %}
         {% endfor %}
     
