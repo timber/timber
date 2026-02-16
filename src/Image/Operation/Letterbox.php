@@ -71,6 +71,7 @@ class Letterbox extends ImageOperation
 
         $bg = \imagecreatetruecolor($w, $h);
         if (!$this->color) {
+            \imagealphablending($bg, false);
             \imagesavealpha($bg, true);
             $bgColor = \imagecolorallocatealpha($bg, 0, 0, 0, 127);
         } else {
