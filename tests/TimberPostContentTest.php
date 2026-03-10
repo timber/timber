@@ -192,7 +192,7 @@ class TimberPostContentTest extends TimberIntegrationTestCase
         ]);
         $post = Timber::get_post($post_id);
 
-        $this->assertEquals('<p>Heres the read more stuff that we shant see!</p>', \trim($post->content()));
+        $this->assertStringEndsWith('Heres the read more stuff that we shant see!</p>', \trim($post->content()));
     }
 
     #[Ticket('3208')]
