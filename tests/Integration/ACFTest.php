@@ -6,6 +6,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\Attributes\Ticket;
 use Timber\Image;
+use Timber\Integration\AcfIntegration;
 use Timber\Post;
 use Timber\PostArrayObject;
 use Timber\Term;
@@ -380,7 +381,7 @@ class ACFTest extends TimberIntegrationTestCase
 
     public function testACFTransformUserMultiple()
     {
-        $this->add_filter_temporarily('timber/user/class', fn ($class, WP_User $user) => User::class, 100, 2);
+        $this->add_filter_temporarily('timber/user/class', fn($class, WP_User $user) => User::class, 100, 2);
 
         $field_name = 'my_user_multiple_meta';
         $this->register_field($field_name, 'user', [
@@ -486,7 +487,6 @@ class ACFTest extends TimberIntegrationTestCase
         ]);
 
         \add_term_meta($tid, 'bar', 'qux');
-        ;
         $wp_native_value = \get_term_meta($tid, 'foo', true);
         $acf_native_value = \get_field('foo', 'category_' . $tid);
 
@@ -505,6 +505,27 @@ class ACFTest extends TimberIntegrationTestCase
         $this->assertEmpty($wp_native_value);
         $this->assertNull($acf_native_value);
         $this->assertNotTrue($term->meta('foo'));
+    }
+
+    #[Ticket('#3204')]
+    public function testACFGetOptionsGalleryField()
+    {
+        $field_name = 'options_gallery_field';
+        $this->register_options_field($field_name, 'gallery');
+
+        $post_id = static::factory()->post->create();
+        $image_1_id = $this->createAttachmentWithImage($post_id);
+        $image_2_id = $this->createAttachmentWithImage($post_id);
+
+        // Store value and key reference directly in wp_options (ACF options storage).
+        \update_field($field_name, [$image_1_id, $image_2_id], 'options');
+
+        $gallery = AcfIntegration::get_option($field_name);
+
+        $this->assertInstanceOf(PostArrayObject::class, $gallery);
+        $this->assertInstanceOf(Image::class, $gallery[0]);
+        $this->assertEquals($image_1_id, $gallery[0]->ID);
+        $this->assertEquals($image_2_id, $gallery[1]->ID);
     }
 
     private function register_field($field_name, $field_type, $field_args = [])
@@ -535,5 +556,34 @@ class ACFTest extends TimberIntegrationTestCase
                 ],
             ],
         ]);
+    }
+
+    /**
+     * Registers an ACF field for use with options and returns the generated field key.
+     * Unlike register_field(), this returns the field key so callers can manually store
+     * the ACF key reference in wp_options (required for get_field to recognize the field type).
+     */
+    private function register_options_field(string $field_name, string $field_type, array $field_args = []): string
+    {
+        $group_key = \sprintf('group_%s', \uniqid());
+        $field_key = \sprintf('field_%s', \uniqid());
+
+        $field = \array_merge([
+            'key' => $field_key,
+            'label' => 'Field',
+            'name' => $field_name,
+            'type' => $field_type,
+        ], $field_args);
+
+        \acf_add_local_field_group([
+            'key' => $group_key,
+            'title' => 'Group',
+            'fields' => [
+                $field,
+            ],
+            'location' => [],
+        ]);
+
+        return $field_key;
     }
 }
