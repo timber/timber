@@ -528,6 +528,52 @@ class ACFTest extends TimberIntegrationTestCase
         $this->assertEquals($image_2_id, $gallery[1]->ID);
     }
 
+    #[Ticket('#3204')]
+    public function testACFGetOptionsMultipleFields()
+    {
+        // Register multiple option fields of different types
+        $post_object_field = 'options_post_object_field';
+        $textarea_field = 'options_textarea_field';
+        $user_field = 'options_user_field';
+
+        $this->register_options_field($post_object_field, 'post_object');
+        $this->register_options_field($textarea_field, 'textarea');
+        $this->register_options_field($user_field, 'user');
+
+        // Create test data
+        $post_id = static::factory()->post->create([
+            'post_title' => 'Related Post',
+        ]);
+        $user_id = static::factory()->user->create([
+            'user_login' => 'testuser',
+        ]);
+        $textarea_value = 'This is a test textarea content.';
+
+        // Store values in wp_options (ACF options storage)
+        \update_field($post_object_field, $post_id, 'options');
+        \update_field($textarea_field, $textarea_value, 'options');
+        \update_field($user_field, $user_id, 'options');
+
+        // Get all options with transformations
+        $options = AcfIntegration::get_options();
+
+        // Assert post object field is transformed to Post instance
+        $this->assertArrayHasKey($post_object_field, $options);
+        $this->assertInstanceOf(Post::class, $options[$post_object_field]);
+        $this->assertEquals($post_id, $options[$post_object_field]->ID);
+        $this->assertEquals('Related Post', $options[$post_object_field]->title());
+
+        // Assert textarea field is retrieved as string
+        $this->assertArrayHasKey($textarea_field, $options);
+        $this->assertEquals($textarea_value, $options[$textarea_field]);
+
+        // Assert user field is transformed to User instance
+        $this->assertArrayHasKey($user_field, $options);
+        $this->assertInstanceOf(User::class, $options[$user_field]);
+        $this->assertEquals($user_id, $options[$user_field]->ID);
+        $this->assertEquals('testuser', $options[$user_field]->user_login);
+    }
+
     private function register_field($field_name, $field_type, $field_args = [])
     {
         $group_key = \sprintf('group_%s', \uniqid());
