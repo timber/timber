@@ -243,7 +243,8 @@ class AcfIntegration implements IntegrationInterface
      * ```php
      * $gallery = Timber\Integration\AcfIntegration::get_option('my_gallery_field');
      * ```
-     *
+     * @api
+     * @since 2.4.0
      * @param string $field_name The name of the option field to retrieve.
      * @return mixed The transformed field value.
      */
@@ -263,7 +264,8 @@ class AcfIntegration implements IntegrationInterface
      * ```php
      * $options = Timber\Integration\AcfIntegration::get_options();
      * ```
-     *
+     * @api
+     * @since 2.4.0
      * @return array An associative array of all transformed option fields.
      */
     public static function get_options(): array
