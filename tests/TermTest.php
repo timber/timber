@@ -623,6 +623,89 @@ class TermTest extends TimberIntegrationTestCase
 
         $this->assertInstanceOf('\WP_Term', $term->wp_object());
     }
+
+    public function testGetTermsGroupedByTaxonomy()
+    {
+        // Create terms in different taxonomies.
+        $cat1 = static::factory()->term->create([
+            'name' => 'News',
+            'taxonomy' => 'category',
+        ]);
+        $cat2 = static::factory()->term->create([
+            'name' => 'Reviews',
+            'taxonomy' => 'category',
+        ]);
+        $tag1 = static::factory()->term->create([
+            'name' => 'Featured',
+            'taxonomy' => 'post_tag',
+        ]);
+        $tag2 = static::factory()->term->create([
+            'name' => 'Popular',
+            'taxonomy' => 'post_tag',
+        ]);
+
+        // Create posts and assign terms.
+        $post1 = static::factory()->post->create();
+        $post2 = static::factory()->post->create();
+
+        \wp_set_object_terms($post1, [$cat1, $cat2], 'category');
+        \wp_set_object_terms($post1, [$tag1], 'post_tag');
+        \wp_set_object_terms($post2, [$cat1], 'category');
+        \wp_set_object_terms($post2, [$tag2], 'post_tag');
+
+        // Get terms grouped by taxonomy using merge: false.
+        $terms_by_tax = Timber::get_terms([
+            'taxonomy' => ['category', 'post_tag'],
+            'object_ids' => [$post1, $post2],
+        ], [
+            'merge' => false,
+        ]);
+
+        $this->assertIsArray($terms_by_tax);
+        $this->assertArrayHasKey('category', $terms_by_tax);
+        $this->assertArrayHasKey('post_tag', $terms_by_tax);
+        $this->assertCount(2, $terms_by_tax['category']); // News, Reviews
+        $this->assertCount(2, $terms_by_tax['post_tag']); // Featured, Popular
+
+        // Verify term names.
+        $cat_names = \array_map(fn ($term) => $term->name, $terms_by_tax['category']);
+        $tag_names = \array_map(fn ($term) => $term->name, $terms_by_tax['post_tag']);
+
+        $this->assertContains('News', $cat_names);
+        $this->assertContains('Reviews', $cat_names);
+        $this->assertContains('Featured', $tag_names);
+        $this->assertContains('Popular', $tag_names);
+    }
+
+    public function testGetTermsMergedByDefault()
+    {
+        // Create terms in different taxonomies.
+        $cat1 = static::factory()->term->create([
+            'name' => 'News',
+            'taxonomy' => 'category',
+        ]);
+        $tag1 = static::factory()->term->create([
+            'name' => 'Featured',
+            'taxonomy' => 'post_tag',
+        ]);
+
+        $post = static::factory()->post->create();
+        \wp_set_object_terms($post, $cat1, 'category');
+        \wp_set_object_terms($post, $tag1, 'post_tag');
+
+        // Get terms merged (default behavior).
+        $terms = Timber::get_terms([
+            'taxonomy' => ['category', 'post_tag'],
+            'object_ids' => [$post],
+        ]);
+
+        // Should be a flat array of terms, not grouped by taxonomy.
+        $this->assertCount(2, $terms);
+        $this->assertIsArray($terms);
+        // The array should not have taxonomy keys.
+        $this->assertArrayNotHasKey('category', $terms);
+        $this->assertArrayNotHasKey('post_tag', $terms);
+    }
 }
 
 class Arts extends Term

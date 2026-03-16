@@ -88,9 +88,7 @@ class Timber
      *
      * @codeCoverageIgnore
      */
-    protected function __construct()
-    {
-    }
+    protected function __construct() {}
 
     protected function init_constants()
     {
@@ -157,7 +155,7 @@ class Timber
         $integrations = \apply_filters('timber/integrations', $integrations);
 
         // Integration classes must implement the IntegrationInterface.
-        $integrations = \array_filter($integrations, static fn ($integration) => $integration instanceof IntegrationInterface);
+        $integrations = \array_filter($integrations, static fn($integration) => $integration instanceof IntegrationInterface);
 
         foreach ($integrations as $integration) {
             if (!$integration->should_init()) {
@@ -726,9 +724,16 @@ class Timber
      *                              and accept any valid parameters to that constructor.
      *                              Default `null`, which will get terms from all queryable
      *                              taxonomies.
-     * @param array        $options Optional. None are currently supported. Default empty array.
+     * @param array        $options {
+     *     Optional. An array of options for the function.
      *
-     * @return iterable
+     *     @type bool $merge Whether the resulting array should be one big one (`true`) or whether
+     *                       it should be an array of sub-arrays for each taxonomy (`false`).
+     *                       Default `true`.
+     * }
+     *
+     * @return iterable|array An iterable of Term objects, or an array of iterables grouped by
+     *                        taxonomy name when `merge` is `false`.
      */
     public static function get_terms($args = null, array $options = []): iterable
     {
@@ -739,7 +744,7 @@ class Timber
 
         $factory = new TermFactory();
 
-        return $factory->from($args);
+        return $factory->from_with_options($args, $options);
     }
 
     /**
@@ -1091,7 +1096,7 @@ class Timber
     {
         return \array_filter(
             \get_nav_menu_locations(),
-            fn ($location) => \is_string($location) || \is_int($location)
+            fn($location) => \is_string($location) || \is_int($location)
         );
     }
 

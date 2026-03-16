@@ -48,6 +48,48 @@ class TermFactory
         return null;
     }
 
+    /**
+     * Get terms with options.
+     *
+     * @internal
+     * @param mixed $params Query parameters (same as from() method).
+     * @param array $options {
+     *     Optional. An array of options for the function.
+     *
+     *     @type bool $merge Whether the resulting array should be one big one (`true`) or whether
+     *                       it should be an array of sub-arrays for each taxonomy (`false`).
+     *                       Default `true`.
+     * }
+     * @return iterable|array An iterable of Term objects, or an array of iterables grouped by
+     *                        taxonomy name when `merge` is `false`.
+     */
+    public function from_with_options($params, array $options = [])
+    {
+        $options = \wp_parse_args($options, [
+            'merge' => true,
+        ]);
+
+        // If merge is true or params is not an array query, use regular from() method
+        if ($options['merge'] || !\is_array($params) || !isset($params['taxonomy'])) {
+            return $this->from($params);
+        }
+
+        // Get taxonomies from params
+        $taxonomies = $params['taxonomy'];
+
+        // If it's a single taxonomy, no need to partition
+        if (!\is_array($taxonomies)) {
+            return $this->from($params);
+        }
+
+        // Partition the query by taxonomy and execute each
+        $queries = $this->partition_tax_queries($params, $taxonomies);
+        $termGroups = \array_map([$this, 'from'], $queries);
+
+        // Zip them up with the right keys
+        return \array_combine($taxonomies, $termGroups);
+    }
+
     protected function from_id(int $id): ?Term
     {
         $wp_term = \get_term($id);
@@ -193,7 +235,7 @@ class TermFactory
             'tag' => 'post_tag',
         ];
 
-        return \array_map(fn ($taxonomy) => $corrections[$taxonomy] ?? $taxonomy, $taxonomies);
+        return \array_map(fn($taxonomy) => $corrections[$taxonomy] ?? $taxonomy, $taxonomies);
     }
 
     protected function filter_query_params(array $params)
@@ -236,5 +278,21 @@ class TermFactory
             }
         }
         return true;
+    }
+
+    /**
+     * Given a base query and a list of taxonomies, return a list of queries
+     * each of which queries for one of the taxonomies.
+     *
+     * @internal
+     * @param array $query      Base query arguments.
+     * @param array $taxonomies List of taxonomy slugs.
+     * @return array Array of query arguments, one per taxonomy.
+     */
+    protected function partition_tax_queries(array $query, array $taxonomies): array
+    {
+        return \array_map(fn(string $tax): array => \array_merge($query, [
+            'taxonomy' => [$tax],
+        ]), $taxonomies);
     }
 }
