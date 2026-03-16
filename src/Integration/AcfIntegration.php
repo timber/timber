@@ -334,25 +334,18 @@ class AcfIntegration implements IntegrationInterface
             'user' => [self::class, 'transform_user'],
         ];
 
-        // Remove ACF's format_value filters for known field types (only if the field class exists).
+        // Remove ACF's format_value filters and add Timber's transform filters.
         foreach ($field_types as $type => $field_type) {
             \remove_filter("acf/format_value/type={$type}", [$field_type, 'format_value']);
-        }
-
-        // Always add Timber's transform filters, even for field types without a registered ACF
-        // field class (e.g. gallery in ACF Free where it is a PRO-only field type).
-        foreach ($timber_transforms as $type => $callback_fn) {
-            \add_filter("acf/format_value/type={$type}", $callback_fn, 10, 3);
+            \add_filter("acf/format_value/type={$type}", $timber_transforms[$type], 10, 3);
         }
 
         $result = $callback();
 
         // Remove Timber's transform filters and restore ACF's format_value filters.
-        foreach ($timber_transforms as $type => $callback_fn) {
-            \remove_filter("acf/format_value/type={$type}", $callback_fn);
-        }
         foreach ($field_types as $type => $field_type) {
             \add_filter("acf/format_value/type={$type}", [$field_type, 'format_value'], 10, 3);
+            \remove_filter("acf/format_value/type={$type}", $timber_transforms[$type]);
         }
 
         return $result;
