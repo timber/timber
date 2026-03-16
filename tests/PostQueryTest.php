@@ -336,7 +336,7 @@ class PostQueryTest extends TimberIntegrationTestCase
             $postTypeCounts[$post->post_type]++;
             return Post::class;
         };
-        $this->add_filter_temporarily('timber/post/classmap', fn () => [
+        $this->add_filter_temporarily('timber/post/classmap', fn() => [
             'post' => $callback,
             'page' => $callback,
         ]);
@@ -388,7 +388,7 @@ class PostQueryTest extends TimberIntegrationTestCase
             $postTypeCounts[$post->post_type]++;
             return Post::class;
         };
-        $this->add_filter_temporarily('timber/post/classmap', fn () => [
+        $this->add_filter_temporarily('timber/post/classmap', fn() => [
             'post' => $callback,
             'page' => $callback,
         ]);
@@ -441,7 +441,7 @@ class PostQueryTest extends TimberIntegrationTestCase
             'post_type' => 'post',
         ]);
 
-        $this->add_filter_temporarily('timber/post/classmap', fn () => [
+        $this->add_filter_temporarily('timber/post/classmap', fn() => [
             'post' => CollectionTestPost::class,
             'page' => CollectionTestPage::class,
             'custom' => CollectionTestCustom::class,
@@ -468,7 +468,7 @@ class PostQueryTest extends TimberIntegrationTestCase
             ],
         ]);
 
-        $this->add_filter_temporarily('timber/post/classmap', fn () => [
+        $this->add_filter_temporarily('timber/post/classmap', fn() => [
             'funke' => SerializablePost::class,
         ]);
 
@@ -481,5 +481,254 @@ class PostQueryTest extends TimberIntegrationTestCase
                 'how_many_of_us' => 'DOZENS',
             ],
         ], \json_decode(\json_encode($query), true));
+    }
+
+    public function testPostQueryTermsBasic()
+    {
+        $cat1 = static::factory()->term->create([
+            'name' => 'News',
+            'taxonomy' => 'category',
+        ]);
+        $cat2 = static::factory()->term->create([
+            'name' => 'Reviews',
+            'taxonomy' => 'category',
+        ]);
+        $tag1 = static::factory()->term->create([
+            'name' => 'Featured',
+            'taxonomy' => 'post_tag',
+        ]);
+
+        $post1 = static::factory()->post->create();
+        $post2 = static::factory()->post->create();
+        $post3 = static::factory()->post->create();
+
+        \wp_set_object_terms($post1, [$cat1, $tag1], 'category');
+        \wp_set_object_terms($post1, [$tag1], 'post_tag');
+        \wp_set_object_terms($post2, [$cat2], 'category');
+        \wp_set_object_terms($post3, [$cat1], 'category');
+
+        $query = new PostQuery(new WP_Query([
+            'post_type' => 'post',
+            'post__in' => [$post1, $post2, $post3],
+        ]));
+
+        // Get all terms (merged).
+        $all_terms = $query->terms();
+        $this->assertCount(3, $all_terms); // 2 categories + 1 tag
+
+        // Verify we got the right terms.
+        $term_names = \array_map(fn($term) => $term->name, \iterator_to_array($all_terms));
+        $this->assertContains('News', $term_names);
+        $this->assertContains('Reviews', $term_names);
+        $this->assertContains('Featured', $term_names);
+    }
+
+    public function testPostQueryTermsSpecificTaxonomy()
+    {
+        $cat1 = static::factory()->term->create([
+            'name' => 'Category A',
+            'taxonomy' => 'category',
+        ]);
+        $tag1 = static::factory()->term->create([
+            'name' => 'Tag A',
+            'taxonomy' => 'post_tag',
+        ]);
+
+        $post1 = static::factory()->post->create();
+        \wp_set_object_terms($post1, [$cat1], 'category');
+        \wp_set_object_terms($post1, [$tag1], 'post_tag');
+
+        $query = new PostQuery(new WP_Query([
+            'post_type' => 'post',
+            'post__in' => [$post1],
+        ]));
+
+        // Get only categories.
+        $categories = $query->terms('category');
+        $this->assertCount(1, $categories);
+        $cat_array = \iterator_to_array($categories);
+        $this->assertEquals('Category A', $cat_array[0]->name);
+
+        // Get only tags.
+        $tags = $query->terms('post_tag');
+        $this->assertCount(1, $tags);
+        $tag_array = \iterator_to_array($tags);
+        $this->assertEquals('Tag A', $tag_array[0]->name);
+    }
+
+    public function testPostQueryTermsMultipleTaxonomies()
+    {
+        \register_taxonomy('project_type', 'post');
+
+        $cat1 = static::factory()->term->create([
+            'name' => 'Cat 1',
+            'taxonomy' => 'category',
+        ]);
+        $tag1 = static::factory()->term->create([
+            'name' => 'Tag 1',
+            'taxonomy' => 'post_tag',
+        ]);
+        $type1 = \wp_insert_term('Type 1', 'project_type');
+
+        $post1 = static::factory()->post->create();
+        \wp_set_object_terms($post1, [$cat1], 'category');
+        \wp_set_object_terms($post1, [$tag1], 'post_tag');
+        \wp_set_object_terms($post1, [$type1['term_id']], 'project_type');
+
+        $query = new PostQuery(new WP_Query([
+            'post_type' => 'post',
+            'post__in' => [$post1],
+        ]));
+
+        // Get terms from multiple taxonomies (merged).
+        $terms = $query->terms(['category', 'post_tag']);
+        $this->assertCount(2, $terms);
+    }
+
+    public function testPostQueryTermsGroupedByTaxonomy()
+    {
+        $cat1 = static::factory()->term->create([
+            'name' => 'News',
+            'taxonomy' => 'category',
+        ]);
+        $cat2 = static::factory()->term->create([
+            'name' => 'Reviews',
+            'taxonomy' => 'category',
+        ]);
+        $tag1 = static::factory()->term->create([
+            'name' => 'Featured',
+            'taxonomy' => 'post_tag',
+        ]);
+        $tag2 = static::factory()->term->create([
+            'name' => 'Popular',
+            'taxonomy' => 'post_tag',
+        ]);
+
+        $post1 = static::factory()->post->create();
+        $post2 = static::factory()->post->create();
+
+        \wp_set_object_terms($post1, [$cat1, $cat2], 'category');
+        \wp_set_object_terms($post1, [$tag1], 'post_tag');
+        \wp_set_object_terms($post2, [$cat1], 'category');
+        \wp_set_object_terms($post2, [$tag2], 'post_tag');
+
+        $query = new PostQuery(new WP_Query([
+            'post_type' => 'post',
+            'post__in' => [$post1, $post2],
+        ]));
+
+        // Get terms grouped by taxonomy.
+        $terms_by_tax = $query->terms(['category', 'post_tag'], ['merge' => false]);
+
+        $this->assertIsArray($terms_by_tax);
+        $this->assertArrayHasKey('category', $terms_by_tax);
+        $this->assertArrayHasKey('post_tag', $terms_by_tax);
+        $this->assertCount(2, $terms_by_tax['category']); // News, Reviews
+        $this->assertCount(2, $terms_by_tax['post_tag']); // Featured, Popular
+    }
+
+    public function testPostQueryTermsWithEmptyQuery()
+    {
+        $query = new PostQuery(new WP_Query([
+            'post_type' => 'post',
+            'post__in' => [999999], // Non-existent post
+        ]));
+
+        $terms = $query->terms();
+        $this->assertEmpty($terms);
+
+        // Test with merge = false.
+        $terms_grouped = $query->terms('all', ['merge' => false]);
+        $this->assertIsArray($terms_grouped);
+        $this->assertEmpty($terms_grouped);
+    }
+
+    public function testPostQueryTermsWithCustomTaxonomy()
+    {
+        \register_taxonomy('team', 'post');
+
+        $team1 = \wp_insert_term('Patriots', 'team');
+        $team2 = \wp_insert_term('Bills', 'team');
+
+        $post1 = static::factory()->post->create();
+        $post2 = static::factory()->post->create();
+
+        \wp_set_object_terms($post1, [$team1['term_id']], 'team');
+        \wp_set_object_terms($post2, [$team2['term_id']], 'team');
+
+        $query = new PostQuery(new WP_Query([
+            'post_type' => 'post',
+            'post__in' => [$post1, $post2],
+        ]));
+
+        $teams = $query->terms('team');
+        $this->assertCount(2, $teams);
+
+        $team_names = \array_map(fn($term) => $term->name, \iterator_to_array($teams));
+        $this->assertContains('Patriots', $team_names);
+        $this->assertContains('Bills', $team_names);
+    }
+
+    public function testPostQueryTermsUniqueness()
+    {
+        $cat1 = static::factory()->term->create([
+            'name' => 'Shared Category',
+            'taxonomy' => 'category',
+        ]);
+
+        // Create multiple posts with the same category.
+        $post1 = static::factory()->post->create();
+        $post2 = static::factory()->post->create();
+        $post3 = static::factory()->post->create();
+
+        \wp_set_object_terms($post1, [$cat1], 'category');
+        \wp_set_object_terms($post2, [$cat1], 'category');
+        \wp_set_object_terms($post3, [$cat1], 'category');
+
+        $query = new PostQuery(new WP_Query([
+            'post_type' => 'post',
+            'post__in' => [$post1, $post2, $post3],
+        ]));
+
+        $terms = $query->terms('category');
+        // Should only return 1 term even though 3 posts share it.
+        $this->assertCount(1, $terms);
+
+        $term_array = \iterator_to_array($terms);
+        $this->assertEquals('Shared Category', $term_array[0]->name);
+    }
+
+    public function testPostQueryTermsWithQueryArgs()
+    {
+        $cat1 = static::factory()->term->create([
+            'name' => 'Zebra',
+            'taxonomy' => 'category',
+        ]);
+        $cat2 = static::factory()->term->create([
+            'name' => 'Apple',
+            'taxonomy' => 'category',
+        ]);
+        $cat3 = static::factory()->term->create([
+            'name' => 'Banana',
+            'taxonomy' => 'category',
+        ]);
+
+        $post1 = static::factory()->post->create();
+        \wp_set_object_terms($post1, [$cat1, $cat2, $cat3], 'category');
+
+        $query = new PostQuery(new WP_Query([
+            'post_type' => 'post',
+            'post__in' => [$post1],
+        ]));
+
+        // Test ordering.
+        $terms = $query->terms([
+            'taxonomy' => 'category',
+            'orderby' => 'name',
+            'order' => 'ASC',
+        ]);
+
+        $term_names = \array_map(fn($term) => $term->name, \iterator_to_array($terms));
+        $this->assertEquals(['Apple', 'Banana', 'Zebra'], $term_names);
     }
 }
