@@ -381,7 +381,7 @@ class ACFTest extends TimberIntegrationTestCase
 
     public function testACFTransformUserMultiple()
     {
-        $this->add_filter_temporarily('timber/user/class', fn($class, WP_User $user) => User::class, 100, 2);
+        $this->add_filter_temporarily('timber/user/class', fn ($class, WP_User $user) => User::class, 100, 2);
 
         $field_name = 'my_user_multiple_meta';
         $this->register_field($field_name, 'user', [

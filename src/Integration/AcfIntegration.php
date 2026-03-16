@@ -250,7 +250,7 @@ class AcfIntegration implements IntegrationInterface
      */
     public static function get_option(string $field_name): mixed
     {
-        return self::with_timber_transforms(static fn() => \get_field($field_name, 'options', true));
+        return self::with_timber_transforms(static fn () => \get_field($field_name, 'options', true));
     }
 
     /**
@@ -270,7 +270,7 @@ class AcfIntegration implements IntegrationInterface
      */
     public static function get_options(): array
     {
-        return self::with_timber_transforms(static fn() => \get_fields('options') ?: []);
+        return self::with_timber_transforms(static fn () => \get_fields('options') ?: []);
     }
 
     /**
@@ -293,7 +293,7 @@ class AcfIntegration implements IntegrationInterface
             return \get_field($field_name, $id, $args['format_value']);
         }
 
-        return self::with_timber_transforms(static fn() => \get_field($field_name, $id, true));
+        return self::with_timber_transforms(static fn () => \get_field($field_name, $id, true));
     }
 
     /**
@@ -320,7 +320,7 @@ class AcfIntegration implements IntegrationInterface
             'relationship' => \acf_get_field_type('relationship'),
             'taxonomy' => \acf_get_field_type('taxonomy'),
             'user' => \acf_get_field_type('user'),
-        ], static fn($field_type): bool => $field_type instanceof acf_field);
+        ], static fn ($field_type): bool => $field_type instanceof acf_field);
 
         $timber_transforms = [
             'file' => [self::class, 'transform_file'],
