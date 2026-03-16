@@ -2952,16 +2952,16 @@
         },
         {
             "name": "league/commonmark",
-            "version": "2.8.0",
+            "version": "2.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/commonmark.git",
-                "reference": "4efa10c1e56488e658d10adf7b7b7dcd19940bfb"
+                "reference": "84b1ca48347efdbe775426f108622a42735a6579"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/4efa10c1e56488e658d10adf7b7b7dcd19940bfb",
-                "reference": "4efa10c1e56488e658d10adf7b7b7dcd19940bfb",
+                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/84b1ca48347efdbe775426f108622a42735a6579",
+                "reference": "84b1ca48347efdbe775426f108622a42735a6579",
                 "shasum": ""
             },
             "require": {
@@ -2986,9 +2986,9 @@
                 "phpstan/phpstan": "^1.8.2",
                 "phpunit/phpunit": "^9.5.21 || ^10.5.9 || ^11.0.0",
                 "scrutinizer/ocular": "^1.8.1",
-                "symfony/finder": "^5.3 | ^6.0 | ^7.0",
-                "symfony/process": "^5.4 | ^6.0 | ^7.0",
-                "symfony/yaml": "^2.3 | ^3.0 | ^4.0 | ^5.0 | ^6.0 | ^7.0",
+                "symfony/finder": "^5.3 | ^6.0 | ^7.0 || ^8.0",
+                "symfony/process": "^5.4 | ^6.0 | ^7.0 || ^8.0",
+                "symfony/yaml": "^2.3 | ^3.0 | ^4.0 | ^5.0 | ^6.0 | ^7.0 || ^8.0",
                 "unleashedtech/php-coding-standard": "^3.1.1",
                 "vimeo/psalm": "^4.24.0 || ^5.0.0 || ^6.0.0"
             },
@@ -3055,7 +3055,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-11-26T21:48:24+00:00"
+            "time": "2026-03-05T21:37:03+00:00"
         },
         {
             "name": "league/config",
@@ -3566,7 +3566,7 @@
         },
         {
             "name": "mantle-framework/cache",
-            "version": "v1.16.0",
+            "version": "v1.19.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mantle-framework/cache.git",
@@ -3610,13 +3610,13 @@
             ],
             "description": "The Mantle Framework Cache Package",
             "support": {
-                "source": "https://github.com/mantle-framework/cache/tree/v1.16.0"
+                "source": "https://github.com/mantle-framework/cache/tree/v1.19.2"
             },
             "time": "2025-11-12T17:20:10+00:00"
         },
         {
             "name": "mantle-framework/config",
-            "version": "v1.16.0",
+            "version": "v1.19.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mantle-framework/config.git",
@@ -3659,13 +3659,13 @@
             ],
             "description": "The Mantle Framework Config Package",
             "support": {
-                "source": "https://github.com/mantle-framework/config/tree/v1.16.0"
+                "source": "https://github.com/mantle-framework/config/tree/v1.19.2"
             },
             "time": "2025-11-12T17:20:10+00:00"
         },
         {
             "name": "mantle-framework/container",
-            "version": "v1.16.0",
+            "version": "v1.19.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mantle-framework/container.git",
@@ -3706,22 +3706,22 @@
             ],
             "description": "The Mantle Framework Container Package",
             "support": {
-                "source": "https://github.com/mantle-framework/container/tree/v1.16.0"
+                "source": "https://github.com/mantle-framework/container/tree/v1.19.2"
             },
             "time": "2025-11-12T17:20:11+00:00"
         },
         {
             "name": "mantle-framework/contracts",
-            "version": "v1.16.0",
+            "version": "v1.19.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mantle-framework/contracts.git",
-                "reference": "008283403d4e112026c18d20201cb23eae1eb7b0"
+                "reference": "50fd2b8cffe7292b35b4c662ad33f727edfea583"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mantle-framework/contracts/zipball/008283403d4e112026c18d20201cb23eae1eb7b0",
-                "reference": "008283403d4e112026c18d20201cb23eae1eb7b0",
+                "url": "https://api.github.com/repos/mantle-framework/contracts/zipball/50fd2b8cffe7292b35b4c662ad33f727edfea583",
+                "reference": "50fd2b8cffe7292b35b4c662ad33f727edfea583",
                 "shasum": ""
             },
             "require": {
@@ -3752,22 +3752,22 @@
             ],
             "description": "The Mantle Framework Contracts Package",
             "support": {
-                "source": "https://github.com/mantle-framework/contracts/tree/v1.16.0"
+                "source": "https://github.com/mantle-framework/contracts/tree/v1.19.2"
             },
-            "time": "2025-11-12T17:20:11+00:00"
+            "time": "2026-01-19T18:29:23+00:00"
         },
         {
             "name": "mantle-framework/database",
-            "version": "v1.16.0",
+            "version": "v1.19.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mantle-framework/database.git",
-                "reference": "04093b9495a8d5832eb631eed2ba4ef4866b5e4d"
+                "reference": "3c4055e73da54a4709db418dce0092c85578b508"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mantle-framework/database/zipball/04093b9495a8d5832eb631eed2ba4ef4866b5e4d",
-                "reference": "04093b9495a8d5832eb631eed2ba4ef4866b5e4d",
+                "url": "https://api.github.com/repos/mantle-framework/database/zipball/3c4055e73da54a4709db418dce0092c85578b508",
+                "reference": "3c4055e73da54a4709db418dce0092c85578b508",
                 "shasum": ""
             },
             "require": {
@@ -3799,13 +3799,13 @@
             ],
             "description": "The Mantle Framework Database Package",
             "support": {
-                "source": "https://github.com/mantle-framework/database/tree/v1.16.0"
+                "source": "https://github.com/mantle-framework/database/tree/v1.19.2"
             },
-            "time": "2025-12-23T18:18:36+00:00"
+            "time": "2025-12-29T13:57:14+00:00"
         },
         {
             "name": "mantle-framework/events",
-            "version": "v1.16.0",
+            "version": "v1.19.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mantle-framework/events.git",
@@ -3846,13 +3846,13 @@
             ],
             "description": "The Mantle Framework Events Package",
             "support": {
-                "source": "https://github.com/mantle-framework/events/tree/v1.16.0"
+                "source": "https://github.com/mantle-framework/events/tree/v1.19.2"
             },
             "time": "2025-12-12T18:23:11+00:00"
         },
         {
             "name": "mantle-framework/faker",
-            "version": "v1.15.0",
+            "version": "v1.19.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mantle-framework/faker.git",
@@ -3889,13 +3889,13 @@
             ],
             "description": "The Mantle Framework Faker Package",
             "support": {
-                "source": "https://github.com/mantle-framework/faker/tree/v1.15.0"
+                "source": "https://github.com/mantle-framework/faker/tree/v1.19.2"
             },
             "time": "2025-11-12T17:20:10+00:00"
         },
         {
             "name": "mantle-framework/filesystem",
-            "version": "v1.16.0",
+            "version": "v1.19.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mantle-framework/filesystem.git",
@@ -3937,13 +3937,13 @@
             ],
             "description": "The Mantle Framework Filesystem Package",
             "support": {
-                "source": "https://github.com/mantle-framework/filesystem/tree/v1.16.0"
+                "source": "https://github.com/mantle-framework/filesystem/tree/v1.19.2"
             },
             "time": "2025-11-12T17:20:10+00:00"
         },
         {
             "name": "mantle-framework/framework-views",
-            "version": "v1.16.0",
+            "version": "v1.19.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mantle-framework/framework-views.git",
@@ -3984,22 +3984,22 @@
             ],
             "description": "The Mantle Framework package for framework views.",
             "support": {
-                "source": "https://github.com/mantle-framework/framework-views/tree/v1.16.0"
+                "source": "https://github.com/mantle-framework/framework-views/tree/v1.19.2"
             },
             "time": "2025-11-12T17:20:13+00:00"
         },
         {
             "name": "mantle-framework/http",
-            "version": "v1.16.0",
+            "version": "v1.19.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mantle-framework/http.git",
-                "reference": "8f37b5e175a96ab8f66d2b5122469d820a9106fa"
+                "reference": "683d6c8e66837d24a39c8e4b9aa12efd6051c2c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mantle-framework/http/zipball/8f37b5e175a96ab8f66d2b5122469d820a9106fa",
-                "reference": "8f37b5e175a96ab8f66d2b5122469d820a9106fa",
+                "url": "https://api.github.com/repos/mantle-framework/http/zipball/683d6c8e66837d24a39c8e4b9aa12efd6051c2c6",
+                "reference": "683d6c8e66837d24a39c8e4b9aa12efd6051c2c6",
                 "shasum": ""
             },
             "require": {
@@ -4042,22 +4042,22 @@
             ],
             "description": "The Mantle Framework Http Package",
             "support": {
-                "source": "https://github.com/mantle-framework/http/tree/v1.16.0"
+                "source": "https://github.com/mantle-framework/http/tree/v1.19.2"
             },
-            "time": "2025-12-12T18:23:11+00:00"
+            "time": "2026-01-16T18:08:06+00:00"
         },
         {
             "name": "mantle-framework/http-client",
-            "version": "v1.16.0",
+            "version": "v1.19.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mantle-framework/http-client.git",
-                "reference": "f3750474e1cbc1a095833884235be4bc3f9a1a9f"
+                "reference": "561ce34932f09d46e7f4303efe3158e33de7fdfd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mantle-framework/http-client/zipball/f3750474e1cbc1a095833884235be4bc3f9a1a9f",
-                "reference": "f3750474e1cbc1a095833884235be4bc3f9a1a9f",
+                "url": "https://api.github.com/repos/mantle-framework/http-client/zipball/561ce34932f09d46e7f4303efe3158e33de7fdfd",
+                "reference": "561ce34932f09d46e7f4303efe3158e33de7fdfd",
                 "shasum": ""
             },
             "require": {
@@ -4091,22 +4091,22 @@
             ],
             "description": "The Mantle Framework Http Client Package",
             "support": {
-                "source": "https://github.com/mantle-framework/http-client/tree/v1.16.0"
+                "source": "https://github.com/mantle-framework/http-client/tree/v1.19.2"
             },
-            "time": "2025-12-18T14:59:58+00:00"
+            "time": "2026-01-27T20:14:41+00:00"
         },
         {
             "name": "mantle-framework/support",
-            "version": "v1.16.0",
+            "version": "v1.19.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mantle-framework/support.git",
-                "reference": "fd5e2f0623b3ee91aaafd87903ec6aa946796597"
+                "reference": "7359ae1494530f314ff0fbb43a7e17da4f8845c9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mantle-framework/support/zipball/fd5e2f0623b3ee91aaafd87903ec6aa946796597",
-                "reference": "fd5e2f0623b3ee91aaafd87903ec6aa946796597",
+                "url": "https://api.github.com/repos/mantle-framework/support/zipball/7359ae1494530f314ff0fbb43a7e17da4f8845c9",
+                "reference": "7359ae1494530f314ff0fbb43a7e17da4f8845c9",
                 "shasum": ""
             },
             "require": {
@@ -4161,37 +4161,34 @@
             ],
             "description": "The Mantle Framework Support Package",
             "support": {
-                "source": "https://github.com/mantle-framework/support/tree/v1.16.0"
+                "source": "https://github.com/mantle-framework/support/tree/v1.19.2"
             },
-            "time": "2025-12-23T18:27:57+00:00"
+            "time": "2026-01-20T18:24:46+00:00"
         },
         {
             "name": "mantle-framework/testing",
-            "version": "v1.16.0",
+            "version": "v1.19.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mantle-framework/testing.git",
-                "reference": "dde132a3865ecb1a906a1b786f09f74cbb20cb5d"
+                "reference": "87cd05fd6bc2985a3cf748b4838990297c2f30e0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mantle-framework/testing/zipball/dde132a3865ecb1a906a1b786f09f74cbb20cb5d",
-                "reference": "dde132a3865ecb1a906a1b786f09f74cbb20cb5d",
+                "url": "https://api.github.com/repos/mantle-framework/testing/zipball/87cd05fd6bc2985a3cf748b4838990297c2f30e0",
+                "reference": "87cd05fd6bc2985a3cf748b4838990297c2f30e0",
                 "shasum": ""
             },
             "require": {
                 "alleyinteractive/composer-wordpress-autoloader": "^1.0",
-                "filp/whoops": "^2.18.1",
                 "mantle-framework/contracts": "^1.0",
                 "mantle-framework/database": "^1.0",
                 "mantle-framework/faker": "^1.0",
                 "mantle-framework/http": "^1.0",
                 "mantle-framework/http-client": "^1.0",
                 "mantle-framework/support": "^1.0",
-                "nunomaduro/termwind": "^1.15.1 || ^2.0",
-                "php": "^8.2",
-                "spatie/phpunit-snapshot-assertions": "^4.2 || ^5.1",
-                "symfony/css-selector": "^7.2.0"
+                "mantle-framework/testing-dependencies": "^1.0",
+                "php": "^8.2"
             },
             "suggest": {
                 "brianium/paratest": "For running tests in parallel.",
@@ -4232,22 +4229,81 @@
                 "testing"
             ],
             "support": {
-                "source": "https://github.com/mantle-framework/testing/tree/v1.16.0"
+                "source": "https://github.com/mantle-framework/testing/tree/v1.19.2"
             },
-            "time": "2025-12-23T18:27:15+00:00"
+            "time": "2026-02-10T15:28:36+00:00"
         },
         {
-            "name": "mantle-framework/testkit",
-            "version": "v1.16.0",
+            "name": "mantle-framework/testing-dependencies",
+            "version": "v1.19.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/mantle-framework/testkit.git",
-                "reference": "ed44a9299d26d3e2ec53673712cfa32b75d9d994"
+                "url": "https://github.com/mantle-framework/testing-dependencies.git",
+                "reference": "7ddb616dfcf2de58f967939cba335b7ec33f0d83"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mantle-framework/testkit/zipball/ed44a9299d26d3e2ec53673712cfa32b75d9d994",
-                "reference": "ed44a9299d26d3e2ec53673712cfa32b75d9d994",
+                "url": "https://api.github.com/repos/mantle-framework/testing-dependencies/zipball/7ddb616dfcf2de58f967939cba335b7ec33f0d83",
+                "reference": "7ddb616dfcf2de58f967939cba335b7ec33f0d83",
+                "shasum": ""
+            },
+            "require": {
+                "alleyinteractive/composer-wordpress-autoloader": "^1.0",
+                "fakerphp/faker": "^1.24",
+                "filp/whoops": "^2.18.1",
+                "myclabs/deep-copy": "^1.13",
+                "nunomaduro/termwind": "^1.15.1 || ^2.0",
+                "php": "^8.2",
+                "phpunit/phpunit": "^10.5.62 || ^11.5.50 || ^12.5.8",
+                "spatie/phpunit-snapshot-assertions": "^4.2 || ^5.1",
+                "symfony/css-selector": "^7.2.0",
+                "symfony/http-foundation": "^7.3.7"
+            },
+            "suggest": {
+                "brianium/paratest": "For running tests in parallel.",
+                "mantle-framework/testkit": "For running tests against a WordPress install without Mantle",
+                "nunomaduro/collision": "For better PHPUnit printing."
+            },
+            "type": "library",
+            "extra": {
+                "wordpress-autoloader": {
+                    "autoload": {
+                        "Mantle\\Testing": "./"
+                    }
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Alley",
+                    "email": "mantle@alley.com"
+                }
+            ],
+            "description": "The Mantle Framework Testing Dependencies Package",
+            "keywords": [
+                "mantle",
+                "testing"
+            ],
+            "support": {
+                "source": "https://github.com/mantle-framework/testing-dependencies/tree/v1.19.2"
+            },
+            "time": "2026-01-30T16:16:34+00:00"
+        },
+        {
+            "name": "mantle-framework/testkit",
+            "version": "v1.19.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mantle-framework/testkit.git",
+                "reference": "6c2960e8688818e2d84844d6512e4be4476ff668"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mantle-framework/testkit/zipball/6c2960e8688818e2d84844d6512e4be4476ff668",
+                "reference": "6c2960e8688818e2d84844d6512e4be4476ff668",
                 "shasum": ""
             },
             "require": {
@@ -4259,9 +4315,10 @@
                 "mantle-framework/faker": "^1.0",
                 "mantle-framework/support": "^1.0",
                 "mantle-framework/testing": "^1.0",
+                "mantle-framework/testing-dependencies": "^1.0",
                 "nunomaduro/collision": "^6.0 || ^7.0 || ^8.0",
                 "php": "^8.2",
-                "phpunit/phpunit": "^10.0.7 || ^11.0 || ^12.0",
+                "phpunit/phpunit": "^10.5.62 || ^11.5.50 || ^12.5.8",
                 "symfony/http-foundation": "^7.3.7"
             },
             "conflict": {
@@ -4302,13 +4359,13 @@
                 "testing"
             ],
             "support": {
-                "source": "https://github.com/mantle-framework/testkit/tree/v1.16.0"
+                "source": "https://github.com/mantle-framework/testkit/tree/v1.19.2"
             },
-            "time": "2025-11-14T16:05:08+00:00"
+            "time": "2026-01-30T16:16:26+00:00"
         },
         {
             "name": "mantle-framework/view",
-            "version": "v1.16.0",
+            "version": "v1.19.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mantle-framework/view.git",
@@ -4348,7 +4405,7 @@
             ],
             "description": "The Mantle Framework View Package",
             "support": {
-                "source": "https://github.com/mantle-framework/view/tree/v1.16.0"
+                "source": "https://github.com/mantle-framework/view/tree/v1.19.2"
             },
             "time": "2025-11-12T17:20:19+00:00"
         },
@@ -4761,16 +4818,16 @@
         },
         {
             "name": "nette/schema",
-            "version": "v1.3.3",
+            "version": "v1.3.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/schema.git",
-                "reference": "2befc2f42d7c715fd9d95efc31b1081e5d765004"
+                "reference": "f0ab1a3cda782dbc5da270d28545236aa80c4002"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/schema/zipball/2befc2f42d7c715fd9d95efc31b1081e5d765004",
-                "reference": "2befc2f42d7c715fd9d95efc31b1081e5d765004",
+                "url": "https://api.github.com/repos/nette/schema/zipball/f0ab1a3cda782dbc5da270d28545236aa80c4002",
+                "reference": "f0ab1a3cda782dbc5da270d28545236aa80c4002",
                 "shasum": ""
             },
             "require": {
@@ -4778,8 +4835,10 @@
                 "php": "8.1 - 8.5"
             },
             "require-dev": {
-                "nette/tester": "^2.5.2",
-                "phpstan/phpstan-nette": "^2.0@stable",
+                "nette/phpstan-rules": "^1.0",
+                "nette/tester": "^2.6",
+                "phpstan/extension-installer": "^1.4@stable",
+                "phpstan/phpstan": "^2.1.39@stable",
                 "tracy/tracy": "^2.8"
             },
             "type": "library",
@@ -4820,22 +4879,22 @@
             ],
             "support": {
                 "issues": "https://github.com/nette/schema/issues",
-                "source": "https://github.com/nette/schema/tree/v1.3.3"
+                "source": "https://github.com/nette/schema/tree/v1.3.5"
             },
-            "time": "2025-10-30T22:57:59+00:00"
+            "time": "2026-02-23T03:47:12+00:00"
         },
         {
             "name": "nette/utils",
-            "version": "v4.1.1",
+            "version": "v4.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/utils.git",
-                "reference": "c99059c0315591f1a0db7ad6002000288ab8dc72"
+                "reference": "bb3ea637e3d131d72acc033cfc2746ee893349fe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/utils/zipball/c99059c0315591f1a0db7ad6002000288ab8dc72",
-                "reference": "c99059c0315591f1a0db7ad6002000288ab8dc72",
+                "url": "https://api.github.com/repos/nette/utils/zipball/bb3ea637e3d131d72acc033cfc2746ee893349fe",
+                "reference": "bb3ea637e3d131d72acc033cfc2746ee893349fe",
                 "shasum": ""
             },
             "require": {
@@ -4847,8 +4906,10 @@
             },
             "require-dev": {
                 "jetbrains/phpstorm-attributes": "^1.2",
+                "nette/phpstan-rules": "^1.0",
                 "nette/tester": "^2.5",
-                "phpstan/phpstan-nette": "^2.0@stable",
+                "phpstan/extension-installer": "^1.4@stable",
+                "phpstan/phpstan": "^2.1@stable",
                 "tracy/tracy": "^2.9"
             },
             "suggest": {
@@ -4909,9 +4970,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nette/utils/issues",
-                "source": "https://github.com/nette/utils/tree/v4.1.1"
+                "source": "https://github.com/nette/utils/tree/v4.1.3"
             },
-            "time": "2025-12-22T12:14:32+00:00"
+            "time": "2026-02-13T03:05:33+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -11907,5 +11968,5 @@
         "php": "^8.2"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
