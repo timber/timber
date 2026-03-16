@@ -1429,7 +1429,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
         $content = $this->content_handle_no_teaser_block($content);
         $content = \apply_filters('the_content', ($content));
 
-        if ($len == -1 && $page == 0) {
+        if ($len == -1 && $page == 0 && !$remove_blocks) {
             $this->___content = $content;
         }
 
