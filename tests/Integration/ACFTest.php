@@ -508,24 +508,21 @@ class ACFTest extends TimberIntegrationTestCase
     }
 
     #[Ticket('#3204')]
-    public function testACFGetOptionsGalleryField()
+    public function testACFGetOptionsRelationshipField()
     {
-        $field_name = 'options_gallery_field';
-        $this->register_options_field($field_name, 'gallery');
+        $field_name = 'options_post_relationship_field';
+        $this->register_options_field($field_name, 'relationship');
 
-        $post_id = static::factory()->post->create();
-        $image_1_id = $this->createAttachmentWithImage($post_id);
-        $image_2_id = $this->createAttachmentWithImage($post_id);
+        $related_post_id = static::factory()->post->create();
 
         // Store value and key reference directly in wp_options (ACF options storage).
-        \update_field($field_name, [$image_1_id, $image_2_id], 'options');
+        \update_field($field_name, [$related_post_id], 'options');
 
-        $gallery = AcfIntegration::get_option($field_name);
+        $post_object = AcfIntegration::get_option($field_name);
 
-        $this->assertInstanceOf(PostArrayObject::class, $gallery);
-        $this->assertInstanceOf(Image::class, $gallery[0]);
-        $this->assertEquals($image_1_id, $gallery[0]->ID);
-        $this->assertEquals($image_2_id, $gallery[1]->ID);
+        $this->assertInstanceOf(PostArrayObject::class, $post_object);
+        $this->assertInstanceOf(Post::class, $post_object[0]);
+        $this->assertEquals($related_post_id, $post_object[0]->ID);
     }
 
     // #[Ticket('#3204')]
