@@ -88,7 +88,9 @@ class Timber
      *
      * @codeCoverageIgnore
      */
-    protected function __construct() {}
+    protected function __construct()
+    {
+    }
 
     protected function init_constants()
     {
@@ -155,7 +157,7 @@ class Timber
         $integrations = \apply_filters('timber/integrations', $integrations);
 
         // Integration classes must implement the IntegrationInterface.
-        $integrations = \array_filter($integrations, static fn($integration) => $integration instanceof IntegrationInterface);
+        $integrations = \array_filter($integrations, static fn ($integration) => $integration instanceof IntegrationInterface);
 
         foreach ($integrations as $integration) {
             if (!$integration->should_init()) {
@@ -1096,7 +1098,7 @@ class Timber
     {
         return \array_filter(
             \get_nav_menu_locations(),
-            fn($location) => \is_string($location) || \is_int($location)
+            fn ($location) => \is_string($location) || \is_int($location)
         );
     }
 

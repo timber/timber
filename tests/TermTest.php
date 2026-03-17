@@ -6,11 +6,15 @@ use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\Attributes\Ticket;
+use Timber\Factory\TermFactory;
 use Timber\Post;
 use Timber\Term;
 use Timber\Timber;
+use WP_Term_Query;
 
-class TermTestPage extends Post {}
+class TermTestPage extends Post
+{
+}
 
 #[Group('terms-api')]
 class TermTest extends TimberIntegrationTestCase
@@ -666,8 +670,8 @@ class TermTest extends TimberIntegrationTestCase
         $this->assertCount(2, $terms_by_tax['post_tag']); // Featured, Popular
 
         // Verify term names.
-        $cat_names = \array_map(fn($term) => $term->name, $terms_by_tax['category']);
-        $tag_names = \array_map(fn($term) => $term->name, $terms_by_tax['post_tag']);
+        $cat_names = \array_map(fn ($term) => $term->name, $terms_by_tax['category']);
+        $tag_names = \array_map(fn ($term) => $term->name, $terms_by_tax['post_tag']);
 
         $this->assertContains('News', $cat_names);
         $this->assertContains('Reviews', $cat_names);
@@ -723,7 +727,9 @@ class TermTest extends TimberIntegrationTestCase
         $terms = Timber::get_terms([
             'taxonomy' => ['category'],
             'object_ids' => [$post],
-        ], ['merge' => false]);
+        ], [
+            'merge' => false,
+        ]);
 
         // Only one taxonomy – should return a flat array, not grouped.
         $this->assertIsArray($terms);
@@ -739,9 +745,18 @@ class TermTest extends TimberIntegrationTestCase
         // Result keys should follow the order defined in params['taxonomy'].
         \register_taxonomy('brands', ['post']);
 
-        $cat = static::factory()->term->create(['name' => 'Tech', 'taxonomy' => 'category']);
-        $tag = static::factory()->term->create(['name' => 'Hot', 'taxonomy' => 'post_tag']);
-        $brand = static::factory()->term->create(['name' => 'Acme', 'taxonomy' => 'brands']);
+        $cat = static::factory()->term->create([
+            'name' => 'Tech',
+            'taxonomy' => 'category',
+        ]);
+        $tag = static::factory()->term->create([
+            'name' => 'Hot',
+            'taxonomy' => 'post_tag',
+        ]);
+        $brand = static::factory()->term->create([
+            'name' => 'Acme',
+            'taxonomy' => 'brands',
+        ]);
 
         $post = static::factory()->post->create();
         \wp_set_object_terms($post, $cat, 'category');
@@ -751,28 +766,38 @@ class TermTest extends TimberIntegrationTestCase
         $grouped = Timber::get_terms([
             'taxonomy' => ['brands', 'post_tag', 'category'],
             'object_ids' => [$post],
-        ], ['merge' => false]);
+        ], [
+            'merge' => false,
+        ]);
 
-        $this->assertSame(['brands', 'post_tag', 'category'], array_keys($grouped));
+        $this->assertSame(['brands', 'post_tag', 'category'], \array_keys($grouped));
     }
 
     public function testGetTermsMergeFalseWithWPTermQuery()
     {
         // merge: false should work when a WP_Term_Query object is passed directly.
-        $cat = static::factory()->term->create(['name' => 'Alpha', 'taxonomy' => 'category']);
-        $tag = static::factory()->term->create(['name' => 'Beta', 'taxonomy' => 'post_tag']);
+        $cat = static::factory()->term->create([
+            'name' => 'Alpha',
+            'taxonomy' => 'category',
+        ]);
+        $tag = static::factory()->term->create([
+            'name' => 'Beta',
+            'taxonomy' => 'post_tag',
+        ]);
 
         $post = static::factory()->post->create();
         \wp_set_object_terms($post, $cat, 'category');
         \wp_set_object_terms($post, $tag, 'post_tag');
 
-        $query = new \WP_Term_Query([
+        $query = new WP_Term_Query([
             'taxonomy' => ['category', 'post_tag'],
             'object_ids' => [$post],
         ]);
 
-        $factory = new \Timber\Factory\TermFactory();
-        $grouped = $factory->from($query, ['merge' => false]);
+        $factory = new TermFactory();
+        $grouped = $factory->from($query, [
+            'merge' => false,
+        ]);
 
         $this->assertIsArray($grouped);
         $this->assertArrayHasKey('category', $grouped);
@@ -782,8 +807,14 @@ class TermTest extends TimberIntegrationTestCase
     public function testGetTermsMergeTrueExplicit()
     {
         // Passing merge: true explicitly should behave identically to the default.
-        $cat = static::factory()->term->create(['name' => 'Sport', 'taxonomy' => 'category']);
-        $tag = static::factory()->term->create(['name' => 'Trending', 'taxonomy' => 'post_tag']);
+        $cat = static::factory()->term->create([
+            'name' => 'Sport',
+            'taxonomy' => 'category',
+        ]);
+        $tag = static::factory()->term->create([
+            'name' => 'Trending',
+            'taxonomy' => 'post_tag',
+        ]);
 
         $post = static::factory()->post->create();
         \wp_set_object_terms($post, $cat, 'category');
@@ -792,7 +823,9 @@ class TermTest extends TimberIntegrationTestCase
         $terms = Timber::get_terms([
             'taxonomy' => ['category', 'post_tag'],
             'object_ids' => [$post],
-        ], ['merge' => true]);
+        ], [
+            'merge' => true,
+        ]);
 
         $this->assertCount(2, $terms);
         $this->assertArrayNotHasKey('category', $terms);
@@ -803,11 +836,19 @@ class TermTest extends TimberIntegrationTestCase
     {
         // Test that passing an array of term IDs with merge: false returns a flat array.
         $term_ids = [
-            static::factory()->term->create(['name' => 'Term 1', 'taxonomy' => 'category']),
-            static::factory()->term->create(['name' => 'Term 2', 'taxonomy' => 'post_tag']),
+            static::factory()->term->create([
+                'name' => 'Term 1',
+                'taxonomy' => 'category',
+            ]),
+            static::factory()->term->create([
+                'name' => 'Term 2',
+                'taxonomy' => 'post_tag',
+            ]),
         ];
 
-        $terms = Timber::get_terms($term_ids, ['merge' => false]);
+        $terms = Timber::get_terms($term_ids, [
+            'merge' => false,
+        ]);
 
         // Should return a flat array of terms, not grouped by taxonomy.
         $this->assertCount(2, $terms);

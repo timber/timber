@@ -51,7 +51,10 @@ class TermFactory
     {
         // Single taxonomy name string.
         if (\is_string($params)) {
-            return [$this->from_taxonomy_names([$params]), ['taxonomy' => [$params]]];
+            return [
+                $this->from_taxonomy_names([$params]), [
+                    'taxonomy' => [$params],
+                ]];
         }
 
         // WP_Term_Query object passed directly.
@@ -61,15 +64,16 @@ class TermFactory
 
         // Numeric array of taxonomy name strings, e.g. ['category', 'post_tag'].
         if ($this->is_array_of_strings($params)) {
-            return [$this->from_taxonomy_names($params), ['taxonomy' => $params]];
+            return [
+                $this->from_taxonomy_names($params), [
+                    'taxonomy' => $params,
+                ]];
         }
 
         // Associative array of WP_Term_Query args.
         $query = new WP_Term_Query($this->filter_query_params($params));
         return [$this->from_wp_term_query($query), $params];
     }
-
-
 
     protected function from_id(int $id): ?Term
     {
@@ -216,7 +220,7 @@ class TermFactory
             'tag' => 'post_tag',
         ];
 
-        return \array_map(fn($taxonomy) => $corrections[$taxonomy] ?? $taxonomy, $taxonomies);
+        return \array_map(fn ($taxonomy) => $corrections[$taxonomy] ?? $taxonomy, $taxonomies);
     }
 
     protected function filter_query_params(array $params)
@@ -290,7 +294,7 @@ class TermFactory
         }
 
         // Only partition if we have multiple taxonomies
-        if (count($grouped) <= 1) {
+        if (\count($grouped) <= 1) {
             return $results;
         }
 
@@ -304,7 +308,6 @@ class TermFactory
             }
             return $ordered;
         }
-
 
         // For simple arrays (term IDs, WP_Term objects, etc.), return flat
         return $results;
