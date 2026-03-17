@@ -744,7 +744,7 @@ class Timber
 
         $factory = new TermFactory();
 
-        return $factory->from_with_options($args, $options);
+        return $factory->from($args, $options);
     }
 
     /**
