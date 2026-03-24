@@ -19,17 +19,17 @@ class TermFactory
             'merge' => true,
         ]);
 
-        // Single term by ID — no partitioning applies.
+        // Single term by ID.
         if (\is_int($params) || (\is_string($params) && \is_numeric($params))) {
             return $this->from_id((int) $params);
         }
 
-        // Non-query object (WP_Term, CoreInterface) — no partitioning applies.
+        // Non-query object (WP_Term, CoreInterface).
         if (\is_object($params) && !($params instanceof WP_Term_Query)) {
             return $this->from_term_object($params);
         }
 
-        // Flat list of individual term IDs or objects — recurse into each, no partitioning.
+        // Flat list of individual term IDs or objects.
         if ($this->is_numeric_array($params) && !$this->is_array_of_strings($params)) {
             return \array_map([$this, 'from'], $params);
         }
@@ -44,8 +44,8 @@ class TermFactory
     /**
      * Resolves any list-producing input into a [terms, queryParams] pair.
      *
-     * The returned $queryParams is forwarded to maybe_partition() so it can
-     * determine taxonomy ordering when merge is false.
+     * @param mixed $params The input to resolve.
+     * @return array The [terms, queryParams] pair.
      */
     private function resolve_to_term_list($params): array
     {
@@ -57,7 +57,6 @@ class TermFactory
                 ]];
         }
 
-        // WP_Term_Query object passed directly.
         if ($params instanceof WP_Term_Query) {
             return [$this->from_wp_term_query($params), $params];
         }
@@ -266,10 +265,10 @@ class TermFactory
     }
 
     /**
-     * Partition results by taxonomy if merge is false and multiple taxonomies are present.
+     * Partitions results by taxonomy if merge is false and multiple taxonomies are present.
      *
      * @internal
-     * @param array $results The query results (Term objects).
+     * @param array $results The query results (term objects).
      * @param mixed $params The original query parameters.
      * @param array $options The options array containing the merge setting.
      * @return array The results, either as-is or partitioned by taxonomy.
