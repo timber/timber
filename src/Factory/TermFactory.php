@@ -35,10 +35,10 @@ class TermFactory
         }
 
         // All remaining cases (taxonomy name/s, WP_Term_Query, query args array) resolve
-        // to a list of terms that may be partitioned by taxonomy.
+        // to a list of terms that may be grouped by taxonomy.
         [$result, $queryParams] = $this->resolve_to_term_list($params);
 
-        return $this->maybe_partition($result, $queryParams, $options);
+        return $this->maybe_group_by_taxonomy($result, $queryParams, $options);
     }
 
     /**
@@ -52,9 +52,11 @@ class TermFactory
         // Single taxonomy name string.
         if (\is_string($params)) {
             return [
-                $this->from_taxonomy_names([$params]), [
+                $this->from_taxonomy_names([$params]),
+                [
                     'taxonomy' => [$params],
-                ]];
+                ],
+            ];
         }
 
         if ($params instanceof WP_Term_Query) {
@@ -64,9 +66,11 @@ class TermFactory
         // Numeric array of taxonomy name strings, e.g. ['category', 'post_tag'].
         if ($this->is_array_of_strings($params)) {
             return [
-                $this->from_taxonomy_names($params), [
+                $this->from_taxonomy_names($params),
+                [
                     'taxonomy' => $params,
-                ]];
+                ],
+            ];
         }
 
         // Associative array of WP_Term_Query args.
@@ -265,15 +269,15 @@ class TermFactory
     }
 
     /**
-     * Partitions results by taxonomy if merge is false and multiple taxonomies are present.
+     * Groups results by taxonomy if merge is false and multiple taxonomies are present.
      *
      * @internal
      * @param array $results The query results (term objects).
      * @param mixed $params The original query parameters.
      * @param array $options The options array containing the merge setting.
-     * @return array The results, either as-is or partitioned by taxonomy.
+     * @return array The results, either as-is or grouped by taxonomy.
      */
-    protected function maybe_partition($results, $params, array $options): mixed
+    protected function maybe_group_by_taxonomy($results, $params, array $options): mixed
     {
         if ($options['merge'] || !\is_array($results)) {
             return $results;
@@ -292,7 +296,7 @@ class TermFactory
             return $grouped;
         }
 
-        // Only partition if we have multiple taxonomies
+        // Only group if we have multiple taxonomies
         if (\count($grouped) <= 1) {
             return $results;
         }

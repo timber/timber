@@ -718,6 +718,21 @@ class Timber
      * ] );
      * ```
      *
+     * This example shows how to get terms grouped by taxonomy. Note that you need to set the `merge` option to `false` for this.
+     * ```php
+     * // Get terms grouped by taxonomy. The result is an associative array where
+     * // each key is a taxonomy name and the value is an array of Term objects.
+     * $terms_by_taxonomy = Timber::get_terms( [
+     *   'taxonomy' => [ 'category', 'post_tag' ],
+     * ], [ 'merge' => false ] );
+     *
+     * foreach ( $terms_by_taxonomy as $taxonomy => $terms ) {
+     *   foreach ( $terms as $term ) {
+     *     // ...
+     *   }
+     * }
+     * ```
+     *
      * @param string|array $args    A string or array identifying the taxonomy or
      *                              `WP_Term_Query` args. Numeric strings are treated as term IDs;
      *                              non-numeric strings are treated as taxonomy names. Numeric
@@ -729,9 +744,7 @@ class Timber
      * @param array        $options {
      *     Optional. An array of options for the function.
      *
-     *     @type bool $merge Whether the resulting array should be one big one (`true`) or whether
-     *                       it should be an array of sub-arrays for each taxonomy (`false`).
-     *                       Default `true`.
+     *     @type bool $merge Whether the resulting array is spit per taxonomy `false` or merged into a single flat array `true`. Default `true`.
      * }
      *
      * @return iterable|array An iterable of Term objects, or an array of iterables grouped by
