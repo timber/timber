@@ -76,6 +76,57 @@ class Menu extends CoreEntity implements Stringable
     public $title;
 
     /**
+     * The term's term_group.
+     *
+     * @var int
+     */
+    public $term_group;
+
+    /**
+     * Term Taxonomy ID.
+     *
+     * @var int
+     */
+    public $term_taxonomy_id;
+
+    /**
+     * The term's taxonomy name.
+     *
+     * @var string
+     */
+    public $taxonomy;
+
+    /**
+     * The term's description.
+     *
+     * @var string
+     */
+    public $description;
+
+    /**
+     * ID of a term's parent term.
+     *
+     * @var int
+     */
+    public $parent;
+
+    /**
+     * Cached object count for this term.
+     *
+     * @var int
+     */
+    public $count;
+
+    /**
+     * Stores the term object's sanitization level.
+     *
+     * Does not correspond to a database field.
+     *
+     * @var string
+     */
+    public $filter;
+
+    /**
      * Menu args.
      *
      * @api
@@ -564,13 +615,13 @@ class Menu extends CoreEntity implements Stringable
 
         if ($args->container) {
             /**
-            * Filters the list of HTML tags that are valid for use as menu containers.
-            *
-            * @since 3.0.0
-            *
-            * @param string[] $tags The acceptable HTML tags for use as menu containers.
-            *                       Default is array containing 'div' and 'nav'.
-            */
+             * Filters the list of HTML tags that are valid for use as menu containers.
+             *
+             * @since 3.0.0
+             *
+             * @param string[] $tags The acceptable HTML tags for use as menu containers.
+             *                       Default is array containing 'div' and 'nav'.
+             */
             $allowed_tags = \apply_filters('wp_nav_menu_container_allowedtags', ['div', 'nav']);
 
             if (\is_string($args->container) && \in_array($args->container, $allowed_tags, true)) {

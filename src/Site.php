@@ -148,6 +148,114 @@ class Site extends Core implements CoreInterface
     public $atom;
 
     /**
+     * Site ID.
+     *
+     * Named "blog" vs. "site" for legacy reasons.
+     *
+     * A numeric string, for compatibility reasons.
+     *
+     * @var string
+     */
+    public $blog_id;
+
+    /**
+     * Domain of the site.
+     *
+     * @var string
+     */
+    public $domain;
+
+    /**
+     * Path of the site.
+     *
+     * @var string
+     */
+    public $path;
+
+    /**
+     * The ID of the site's parent network.
+     *
+     * Named "site" vs. "network" for legacy reasons. An individual site's "site" is
+     * its network.
+     *
+     * A numeric string, for compatibility reasons.
+     *
+     * @var string
+     */
+    public $site_id;
+
+    /**
+     * The date and time on which the site was created or registered.
+     *
+     * @var string Date in MySQL's datetime format.
+     */
+    public $registered;
+
+    /**
+     * The date and time on which site settings were last updated.
+     *
+     * @var string Date in MySQL's datetime format.
+     */
+    public $last_updated;
+
+    /**
+     * Whether the site should be treated as public.
+     *
+     * A numeric string, for compatibility reasons.
+     *
+     * @var string
+     */
+    public $public;
+
+    /**
+     * Whether the site should be treated as archived.
+     *
+     * A numeric string, for compatibility reasons.
+     *
+     * @var string
+     */
+    public $archived;
+
+    /**
+     * Whether the site should be treated as mature.
+     *
+     * Handling for this does not exist throughout WordPress core, but custom
+     * implementations exist that require the property to be present.
+     *
+     * A numeric string, for compatibility reasons.
+     *
+     * @var string
+     */
+    public $mature;
+
+    /**
+     * Whether the site should be treated as spam.
+     *
+     * A numeric string, for compatibility reasons.
+     *
+     * @var string
+     */
+    public $spam;
+
+    /**
+     * Whether the site should be treated as flagged for deletion.
+     *
+     * A numeric string, for compatibility reasons.
+     *
+     * @var string
+     */
+    public $deleted;
+
+    /**
+     * The language pack associated with this site.
+     *
+     * A numeric string, for compatibility reasons.
+     *
+     * @var string
+     */
+    public $lang_id;
+
+    /**
      * Constructs a Timber\Site object
      * @api
      * @example

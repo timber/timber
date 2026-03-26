@@ -121,7 +121,9 @@ Create a Twig file according to the location asked by the above file, in this ex
     
         </article>
     
-        {% include ["partials/tease-product.twig"] with { products: related_products } %}
+        {% for post in related_products %}
+            {% include ["partials/tease-product.twig"] %}
+        {% endfor %}
     
         {% do action('woocommerce_after_single_product') %}
     </div>
