@@ -125,7 +125,7 @@
     "cs:fix": "ecs check --fix",
     "grump": "grumphp run",
     "grump:install": "grumphp git:init",
-    "lint": "parallel-lint --exclude .git --exclude vendor .",
+    "lint": "parallel-lint --exclude .git --exclude vendor --exclude tmp .",
     "lint-composer": "@composer normalize --dry-run",
     "lint-composer:fix": "@composer normalize",
     "qa": [
