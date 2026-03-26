@@ -73,7 +73,7 @@ class CacheTest extends TimberIntegrationTestCase
     {
         $transient = $this->_generate_transient_name();
 
-        $is_locked = Helper::transient($transient, fn() => Helper::_is_transient_locked($transient), 30);
+        $is_locked = Helper::transient($transient, fn () => Helper::_is_transient_locked($transient), 30);
 
         $this->assertTrue($is_locked);
     }
@@ -92,7 +92,7 @@ class CacheTest extends TimberIntegrationTestCase
     {
         $transient = $this->_generate_transient_name();
 
-        $result = Helper::transient($transient, fn() => 'pooptime', 200);
+        $result = Helper::transient($transient, fn () => 'pooptime', 200);
         $this->assertEquals($result, 'pooptime');
     }
 
@@ -100,9 +100,9 @@ class CacheTest extends TimberIntegrationTestCase
     {
         $transient = $this->_generate_transient_name();
 
-        $first_value = Helper::transient($transient, fn() => 'first_value', 30);
+        $first_value = Helper::transient($transient, fn () => 'first_value', 30);
 
-        $second_value = Helper::transient($transient, fn() => 'second_value', 30);
+        $second_value = Helper::transient($transient, fn () => 'second_value', 30);
 
         $this->assertEquals('first_value', $second_value);
     }
@@ -111,9 +111,9 @@ class CacheTest extends TimberIntegrationTestCase
     {
         $transient = $this->_generate_transient_name();
 
-        $first_value = Helper::transient($transient, fn() => 'first_value', 30);
+        $first_value = Helper::transient($transient, fn () => 'first_value', 30);
 
-        $second_value = Helper::transient($transient, fn() => 'second_value', false);
+        $second_value = Helper::transient($transient, fn () => 'second_value', false);
 
         $this->assertEquals('second_value', $second_value);
     }
@@ -207,11 +207,11 @@ class CacheTest extends TimberIntegrationTestCase
     {
         $transient = $this->_generate_transient_name();
 
-        $first_value = Helper::transient($transient, fn() => 'first_value', 1);
+        $first_value = Helper::transient($transient, fn () => 'first_value', 1);
 
         \sleep(2);
 
-        $second_value = Helper::transient($transient, fn() => 'second_value', 1);
+        $second_value = Helper::transient($transient, fn () => 'second_value', 1);
 
         $this->assertEquals('second_value', $second_value);
     }
@@ -544,7 +544,7 @@ class CacheTest extends TimberIntegrationTestCase
 
     public function testCacheTransientKeyFilter()
     {
-        $this->add_filter_temporarily('timber/cache/transient_key', fn($key) => 'my_custom_key');
+        $this->add_filter_temporarily('timber/cache/transient_key', fn ($key) => 'my_custom_key');
 
         $loader = new Loader();
         $loader->set_cache('test', 'foobar', Loader::CACHE_TRANSIENT);
@@ -559,7 +559,9 @@ class CacheTest extends TimberIntegrationTestCase
     {
         $pid = static::factory()->post->create();
         $post = Timber::get_post($pid);
-        $data = ['post' => $post];
+        $data = [
+            'post' => $post,
+        ];
 
         // First render: cache miss — stores transient with 600 s expiry.
         Timber::compile('assets/single-post.twig', $data, 600);
