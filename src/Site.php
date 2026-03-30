@@ -338,7 +338,7 @@ class Site extends Core implements CoreInterface
         }
 
         // Always call switch_to_blog to add the blog switch to the stack. WordPress doesn't perform complex logic if the blog ID stays the same.
-        \switch_to_blog((int)$blog_identifier);
+        \switch_to_blog((int) $blog_identifier);
 
         return (int) $blog_identifier;
     }
