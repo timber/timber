@@ -145,7 +145,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         if: matrix.coverage
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           files: build/logs/clover.xml
           token: ${{ secrets.CODECOV_TOKEN }}
