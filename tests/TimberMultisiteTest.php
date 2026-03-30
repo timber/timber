@@ -232,6 +232,27 @@ class TimberMultisiteTest extends TimberIntegrationTestCase
         $this->assertStringStartsWith($site_2_upload_dir['baseurl'], $img_resized_src);
     }
 
+    /**
+     * Tests whether the blog ID is still the same after creating an instance of the Site object.
+     */
+    #[Ticket('https://github.com/timber/timber/issues/3222')]
+    public function test_switch_to_blog_in_site_object()
+    {
+        if (!\is_multisite()) {
+            $this->markTestSkipped("You can't get sites except on Multisite");
+            return;
+        }
+
+        $sites = Timber::get_sites();
+        foreach ($sites as $site) {
+            \switch_to_blog($site->blog_id);
+            $ts = new Site();
+            $this->assertSame($site->blog_id, $ts->ID);
+            $this->assertSame($site->blog_id, \get_current_blog_id());
+            \restore_current_blog();
+        }
+    }
+
     public function testTimberSiteWPObject()
     {
         $this->skipWithoutMultisite();
