@@ -39,7 +39,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - id: versions
-        uses: WyriHaximus/github-action-composer-php-versions-in-range@v1
+        uses: WyriHaximus/github-action-composer-php-versions-in-range@v2
         with:
           upcomingReleases: true
 
