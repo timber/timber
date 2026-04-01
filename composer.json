@@ -120,8 +120,6 @@
   "scripts": {
     "analyze": "phpstan analyse --memory-limit=1G",
     "cs": "ecs check",
-    "cs:docs": "ecs check-markdown docs/v2/**/*.md --fix",
-    "cs:docs:fix": "ecs check-markdown docs/v2/**/*.md",
     "cs:fix": "ecs check --fix",
     "grump": "grumphp run",
     "grump:install": "grumphp git:init",
@@ -169,8 +167,6 @@
   "scripts-descriptions": {
     "analyze": "Run PHPStan code analysis",
     "cs": "Check code style with EasyCodingStandard",
-    "cs:docs": "Check markdown files in the docs directory with EasyCodingStandard",
-    "cs:docs:fix": "Fix markdown files in the docs directory with EasyCodingStandard",
     "cs:fix": "Fix code style with EasyCodingStandard",
     "grump": "Run GrumPHP checks",
     "grump:install": "Install GrumPHP configuration",
