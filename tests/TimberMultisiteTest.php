@@ -243,13 +243,26 @@ class TimberMultisiteTest extends TimberIntegrationTestCase
             return;
         }
 
+        $ids = [];
+        $mapped_ids = [];
+
+        $ids[] = (int) \get_current_blog_id();
+        $ids[] = self::createSubDomainSite('foo-3222.example.org', 'Site 3222 Foo');
+        \restore_current_blog();
+        $ids[] = self::createSubDomainSite('bar-3222.example.org', 'Site 3222 Bar');
+        \restore_current_blog();
+
         $sites = Timber::get_sites();
+
         foreach ($sites as $site) {
             \switch_to_blog((int) $site->blog_id);
+            $mapped_ids[] = (int) $site->blog_id;
             $ts = new Site();
             $this->assertSame((int) $site->blog_id, \get_current_blog_id());
             \restore_current_blog();
         }
+
+        $this->assertSame($ids, $mapped_ids);
     }
 
     public function testTimberSiteWPObject()
