@@ -744,7 +744,7 @@ class Timber
      * @param array        $options {
      *     Optional. An array of options for the function.
      *
-     *     @type bool $merge Whether the resulting array is spit per taxonomy `false` or merged into a single flat array `true`. Default `true`.
+     *     @type bool $merge Whether the resulting array is grouped by taxonomy (`false`) or merged into a single flat array (`true`). Default `true`.
      * }
      *
      * @return iterable|array An iterable of Term objects, or an array of iterables grouped by
