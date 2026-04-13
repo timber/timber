@@ -3,7 +3,7 @@
 namespace Timber;
 
 /**
- * Class FileSize
+ * Class ImageDimensions
  *
  * Helper class to deal with Image Dimensions
  *
@@ -26,13 +26,22 @@ class ImageDimensions
      */
     public function __construct(
         /**
-         * File location.
+         * File path.
          *
          * @api
          * @var string The absolute path to the image in the filesystem
          *             (Example: `/var/www/htdocs/wp-content/uploads/2015/08/my-pic.jpg`)
          */
-        public $file_loc = ''
+        public string $file_loc = '',
+        /**
+         * Attachment ID.
+         *
+         * Used to retrieve image dimensions from the attachment metadata.
+         *
+         * @api
+         * @var int|null If passed, image dimensions will be retrieved from the attachment metadata.
+         */
+        public ?int $attachment_id = null
     ) {
     }
 
@@ -118,7 +127,22 @@ class ImageDimensions
             return $this->get_dimension_loaded($dimension);
         }
 
-        // Load dimensions.
+        // Load dimensions from attachment metadata. This should be significantly faster than
+        // reading from the file directly.
+        if ($this->attachment_id) {
+            $meta = \wp_get_attachment_metadata($this->attachment_id);
+
+            if ($meta && isset($meta['width']) && isset($meta['height'])) {
+                $this->dimensions = [
+                    (int) $meta['width'],
+                    (int) $meta['height'],
+                ];
+
+                return $this->get_dimension_loaded($dimension);
+            }
+        }
+
+        // Load dimensions by reading file data.
         if (\file_exists($this->file_loc) && \filesize($this->file_loc)) {
             if (ImageHelper::is_svg($this->file_loc)) {
                 $svg_size = $this->get_dimensions_svg($this->file_loc);
@@ -126,9 +150,7 @@ class ImageDimensions
             } else {
                 [$width, $height] = \getimagesize($this->file_loc);
 
-                $this->dimensions = [];
-                $this->dimensions[0] = (int) $width;
-                $this->dimensions[1] = (int) $height;
+                $this->dimensions = [(int) $width, (int) $height];
             }
 
             return $this->get_dimension_loaded($dimension);

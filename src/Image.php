@@ -87,7 +87,7 @@ class Image extends Attachment implements ImageInterface
         $data = parent::get_info($data);
 
         if ($this->file_loc()) {
-            $data['image_dimensions'] = new ImageDimensions($this->file_loc());
+            $data['image_dimensions'] = new ImageDimensions($this->file_loc(), $data['ID']);
         }
 
         return $data;
