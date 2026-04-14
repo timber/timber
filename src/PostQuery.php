@@ -200,7 +200,6 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
         ]);
 
         $taxonomies = $query_args['taxonomy'];
-        $merge = $options['merge'];
 
         // Get all post IDs from this collection.
         $post_ids = [];
@@ -210,7 +209,7 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
 
         // If no posts, return empty result.
         if (empty($post_ids)) {
-            return $merge ? [] : [];
+            return [];
         }
 
         // Determine which taxonomies to query.
@@ -240,15 +239,6 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
             'object_ids' => $post_ids,
             'taxonomy' => $taxonomies,
         ]);
-
-        if (!$merge) {
-            // Get results segmented out per taxonomy.
-            $queries = $this->partition_tax_queries($query, $taxonomies);
-            $termGroups = Timber::get_terms($queries);
-
-            // Zip 'em up with the right keys.
-            return \array_combine($taxonomies, $termGroups);
-        }
 
         return Timber::get_terms($query, $options);
     }
@@ -320,21 +310,5 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
     public function jsonSerialize()
     {
         return $this->getArrayCopy();
-    }
-
-    /**
-     * Given a base query and a list of taxonomies, return a list of queries
-     * each of which queries for one of the taxonomies.
-     *
-     * @internal
-     * @param array $query      Base query arguments.
-     * @param array $taxonomies List of taxonomy slugs.
-     * @return array Array of query arguments, one per taxonomy.
-     */
-    private function partition_tax_queries(array $query, array $taxonomies): array
-    {
-        return \array_map(fn(string $tax): array => \array_merge($query, [
-            'taxonomy' => [$tax],
-        ]), $taxonomies);
     }
 }
