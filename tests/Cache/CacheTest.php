@@ -334,8 +334,10 @@ class CacheTest extends TimberIntegrationTestCase
         $this->assertTrue($clear);
         $works = true;
 
-        if (isset($wp_object_cache->cache[Loader::CACHEGROUP])
-            && !empty($wp_object_cache->cache[Loader::CACHEGROUP])) {
+        if (
+            isset($wp_object_cache->cache[Loader::CACHEGROUP])
+            && !empty($wp_object_cache->cache[Loader::CACHEGROUP])
+        ) {
             $works = false;
         }
         $this->assertTrue($works);
@@ -548,5 +550,37 @@ class CacheTest extends TimberIntegrationTestCase
         $loader->set_cache('test', 'foobar', Loader::CACHE_TRANSIENT);
 
         $this->assertEquals('foobar', \get_transient('my_custom_key'));
+    }
+
+    /**
+     * @see https://github.com/timber/timber/issues/3219
+     */
+    public function testTransientExpirationNotResetOnCacheHit()
+    {
+        $pid = static::factory()->post->create();
+        $post = Timber::get_post($pid);
+        $data = [
+            'post' => $post,
+        ];
+
+        // First render: cache miss — stores transient with 600 s expiry.
+        Timber::compile('assets/single-post.twig', $data, 600);
+
+        global $wpdb;
+        $timeout_query = "SELECT option_value FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_timberloader_%' LIMIT 1";
+        $initial_timeout = (int) $wpdb->get_var($timeout_query);
+
+        \sleep(2);
+
+        // Second render: cache hit — must NOT reset the transient expiration.
+        Timber::compile('assets/single-post.twig', $data, 600);
+
+        $after_timeout = (int) $wpdb->get_var($timeout_query);
+
+        $this->assertSame(
+            $initial_timeout,
+            $after_timeout,
+            'Transient expiration must not be reset when the cache is already populated (issue #3219).'
+        );
     }
 }

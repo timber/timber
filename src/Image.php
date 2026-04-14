@@ -225,7 +225,7 @@ class Image extends Attachment implements ImageInterface
      * <img src="https://example.org/wp-content/uploads/2015/08/pic.jpg" width="1600" />
      * ```
      *
-     * @return int The width of the image in pixels.
+     * @return int|null The width of the image in pixels.
      */
     public function width()
     {
@@ -244,7 +244,7 @@ class Image extends Attachment implements ImageInterface
      * <img src="https://example.org/wp-content/uploads/2015/08/pic.jpg" height="900" />
      * ```
      *
-     * @return int The height of the image in pixels.
+     * @return int|null The height of the image in pixels.
      */
     public function height()
     {

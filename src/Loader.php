@@ -103,6 +103,7 @@ class Loader
 
         $key = null;
         $output = false;
+        $cache_hit = false;
         if (false !== $expires) {
             \ksort($data);
             $encoded = \json_encode($data);
@@ -114,6 +115,9 @@ class Loader
             if (false !== $encoded) {
                 $key = \md5($file . $encoded);
                 $output = $this->get_cache($key, self::CACHEGROUP, $cache_mode);
+                if (false !== $output && null !== $output) {
+                    $cache_hit = true;
+                }
             }
         }
 
@@ -190,7 +194,7 @@ class Loader
             $output = \apply_filters('timber/output/pre-cache', $output, $data, $file);
         }
 
-        if (false !== $output && false !== $expires && null !== $key) {
+        if (!$cache_hit && false !== $output && false !== $expires && null !== $key) {
             $this->delete_cache();
             $this->set_cache($key, $output, self::CACHEGROUP, $expires, $cache_mode);
         }

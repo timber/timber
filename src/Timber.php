@@ -718,6 +718,21 @@ class Timber
      * ] );
      * ```
      *
+     * This example shows how to get terms grouped by taxonomy. Note that you need to set the `merge` option to `false` for this.
+     * ```php
+     * // Get terms grouped by taxonomy. The result is an associative array where
+     * // each key is a taxonomy name and the value is an array of Term objects.
+     * $terms_by_taxonomy = Timber::get_terms( [
+     *   'taxonomy' => [ 'category', 'post_tag' ],
+     * ], [ 'merge' => false ] );
+     *
+     * foreach ( $terms_by_taxonomy as $taxonomy => $terms ) {
+     *   foreach ( $terms as $term ) {
+     *     // ...
+     *   }
+     * }
+     * ```
+     *
      * @param string|array $args    A string or array identifying the taxonomy or
      *                              `WP_Term_Query` args. Numeric strings are treated as term IDs;
      *                              non-numeric strings are treated as taxonomy names. Numeric
@@ -726,9 +741,14 @@ class Timber
      *                              and accept any valid parameters to that constructor.
      *                              Default `null`, which will get terms from all queryable
      *                              taxonomies.
-     * @param array        $options Optional. None are currently supported. Default empty array.
+     * @param array        $options {
+     *     Optional. An array of options for the function.
      *
-     * @return iterable
+     *     @type bool $merge Whether the resulting array is grouped by taxonomy (`false`) or merged into a single flat array (`true`). Default `true`.
+     * }
+     *
+     * @return iterable|array An iterable of Term objects, or an array of iterables grouped by
+     *                        taxonomy name when `merge` is `false`.
      */
     public static function get_terms($args = null, array $options = []): iterable
     {
@@ -739,7 +759,7 @@ class Timber
 
         $factory = new TermFactory();
 
-        return $factory->from($args);
+        return $factory->from($args, $options);
     }
 
     /**
