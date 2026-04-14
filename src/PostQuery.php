@@ -135,7 +135,7 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
      * This is useful for creating taxonomy filters or displaying all terms used across a set of posts.
      *
      * @api
-     * @since 2.1.0
+     * @since 2.4.0
      * @example
      * ```php
      * $posts = Timber::get_posts([
