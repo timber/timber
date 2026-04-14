@@ -39,7 +39,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - id: versions
-        uses: WyriHaximus/github-action-composer-php-versions-in-range@v1
+        uses: WyriHaximus/github-action-composer-php-versions-in-range@v2
         with:
           upcomingReleases: true
 
@@ -145,7 +145,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         if: matrix.coverage
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           files: build/logs/clover.xml
           token: ${{ secrets.CODECOV_TOKEN }}

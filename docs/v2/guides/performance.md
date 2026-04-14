@@ -27,40 +27,43 @@ $context['posts'] = Timber::get_posts();
 Timber::render('index.twig', $context, 600);
 ```
 
-In this example, Timber will cache the template for 10 minutes (600 / 60 = 10) with the default cache mode which is "transient". 
+In this example, Timber will cache the template for 10 minutes (600 / 60 = 10) with the default cache mode which is "transient".
 You can change the cache mode for Timber globally or on a per method basis. See [Timber cache modes](#timber-cache-modes) for more information.
 
 This caching method is very effective, but crude - the whole template is cached. So if you have any context dependent sub-views (eg. current user), this mode won’t do.
 
 ### Timber cache modes
+
 Timber has 5 cache modes that it can use for the Timber `Timber::render()` and `Timber::compile()` methods. The following cache modes are available:
 
-| Mode | Description |
-| --- | --- |
-| `Timber\Loader::CACHE_NONE` | Disable caching |
-| `Timber\Loader::CACHE_OBJECT` | WP Object Cache |
-| `Timber\Loader::CACHE_TRANSIENT` | Transients |
-| `Timber\Loader::CACHE_SITE_TRANSIENT` | Network wide transients |
-| `Timber\Loader::CACHE_USE_DEFAULT` | Use whatever caching mechanism is set as the default for `Timber\Loader`, the default is `CACHE_TRANSIENT`. |
+| Mode                                  | Description                                                                                                 |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `Timber\Loader::CACHE_NONE`           | Disable caching                                                                                             |
+| `Timber\Loader::CACHE_OBJECT`         | WP Object Cache                                                                                             |
+| `Timber\Loader::CACHE_TRANSIENT`      | Transients                                                                                                  |
+| `Timber\Loader::CACHE_SITE_TRANSIENT` | Network wide transients                                                                                     |
+| `Timber\Loader::CACHE_USE_DEFAULT`    | Use whatever caching mechanism is set as the default for `Timber\Loader`, the default is `CACHE_TRANSIENT`. |
 
 By default the cache mode is set to transients. You can change the default cache mode globally by using a filter or on a per method basis. We will go over them both.
 
 #### Set Timber cache mode globally
+
 The default cache mode can be changed by using the `timber/cache/mode` filter. For example:
 
 ```php
-apply_filters('timber/cache/mode', function () {
+add_filter('timber/cache/mode', function () {
     return Timber\Loader::CACHE_OBJECT;
 });
 ```
 
 Sets the global/default cache mode to `CACHE_OBJECT`.
 
-
 #### Set Timber cache mode per compile or render method
+
 As a fourth parameter for [Timber::render()](https://timber.github.io/docs/v2/reference/timber-timber/#render) and [Timber::compile()](https://timber.github.io/docs/v2/reference/timber-timber/#compile), you can set the `$cache_mode`.
 
 For example:
+
 ```php
 Timber::render($filenames, $data, 600, Timber\Loader::CACHE_OBJECT);
 ```
@@ -114,7 +117,6 @@ To flush the Twig cache you can do this:
 $loader = new Timber\Loader();
 $loader->clear_cache_twig();
 ```
-
 
 ## Cache _Parts_ of the Twig File and Data
 
@@ -177,7 +179,6 @@ If arrays contain the key `_cache_key`, that one is used as cache key.
 
 This may save yet another few processor cycles.
 
-
 ## Cache the PHP data
 
 Sometimes the most expensive parts of the operations are generating the data needed to populate the twig template. You can of course use WordPress’s default [Transient API](https://codex.wordpress.org/Transients_API) to store this data.
@@ -233,6 +234,7 @@ Timber::render('single.twig', $context, 600);
 // This reports the time diff by passing the $start time
 echo Timber\Helper::stop_timer($start);
 ```
+
 ## Important notes
 
 - Never use `{% apply spaceless %}` tags to minify your HTML output. These tags are only meant to control whitespace between HTML tags.
