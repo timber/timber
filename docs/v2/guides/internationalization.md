@@ -25,7 +25,7 @@ The functions `_e()` and `_ex()` are also supported, but you probably won’t ne
 **WordPress:**
 
 ```html
-<p class="entry-meta"><?php _e( 'Posted on', 'my-text-domain' ) ?> [...]</p>
+<p class="entry-meta"><?php _e('Posted on', 'my-text-domain') ?> [...]</p>
 ```
 
 **Timber:**
@@ -44,7 +44,7 @@ You can use sprintf-type placeholders, using the `format` filter:
 
 ```html
 <p class="entry-meta">
-  <?php printf( __('Posted on %s', 'my-text-domain'), $posted_on_date ) ?>
+  <?php printf(__('Posted on %s', 'my-text-domain'), $posted_on_date) ?>
 </p>
 ```
 

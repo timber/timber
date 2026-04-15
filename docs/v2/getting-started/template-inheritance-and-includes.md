@@ -236,15 +236,15 @@ If you wanted to introduce Timber, you could start replacing different parts of 
 <main id="site-content" role="main">
 
     <?php
-        $template = sprintf('content-%s.twig', get_post_type());
-        $post = Timber::get_post();
+    $template = sprintf('content-%s.twig', get_post_type());
+    $post = Timber::get_post();
 
-        $post->setup();
+    $post->setup();
 
-        Timber::render($template, [
-            'post' => $post,
-        ]);
-    ?>
+    Timber::render($template, [
+        'post' => $post,
+    ]);
+?>
 
 </main>
 
