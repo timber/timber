@@ -44,7 +44,7 @@ class PostArrayObject extends ArrayObject implements PostCollectionInterface, Js
      * @internal
      * @return array Array of post type slugs.
      */
-    protected function getPostTypesForTermQuery()
+    protected function get_post_types_for_term_query()
     {
         // Get all post types from the actual posts in this collection.
         $post_types = [];

@@ -97,7 +97,7 @@ trait CollectsTerms
 
       // Determine which taxonomies to query.
       if (\in_array($taxonomies, ['all', 'any', ''])) {
-         $post_types = $this->getPostTypesForTermQuery();
+         $post_types = $this->get_post_types_for_term_query();
 
          $taxonomies = [];
          foreach ($post_types as $post_type) {
@@ -130,5 +130,5 @@ trait CollectsTerms
     * @internal
     * @return array Array of post type slugs.
     */
-   abstract protected function getPostTypesForTermQuery();
+   abstract protected function get_post_types_for_term_query();
 }

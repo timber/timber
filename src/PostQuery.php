@@ -135,7 +135,7 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
      * @internal
      * @return array Array of post type slugs.
      */
-    protected function getPostTypesForTermQuery()
+    protected function get_post_types_for_term_query()
     {
         $post_types = $this->wp_query->query_vars['post_type'] ?? 'post';
         if (\is_string($post_types)) {
