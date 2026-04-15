@@ -8,6 +8,7 @@ use Twig\CacheExtension;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
+use Twig\TemplateWrapper;
 use Twig\TwigFunction;
 
 class Loader implements LoaderInterface
@@ -263,7 +264,7 @@ class Loader implements LoaderInterface
      *
      * This method can be overridden in subclasses to customize rendering behavior.
      *
-     * @param \Twig\TemplateWrapper $template The Twig template.
+     * @param TemplateWrapper $template The Twig template.
      * @param array                  $data     The data to pass to the template.
      * @return string The rendered output.
      */

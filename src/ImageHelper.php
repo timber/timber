@@ -2,6 +2,7 @@
 
 namespace Timber;
 
+use Throwable;
 use Timber\Image\Operation;
 
 /**
@@ -897,7 +898,7 @@ class ImageHelper
                 }
                 return $new_url;
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             if (\defined('WP_DEBUG') && WP_DEBUG) {
                 throw $e;
             }
