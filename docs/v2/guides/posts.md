@@ -202,7 +202,7 @@ Sometimes you may not have direct access to a `WP_Query` instance; you may only 
 $wp_posts = fancy_plugin_get_custom_posts(); // -> an array of WP_Posts
 ```
 
-In this scenario, you can still easily map each of these posts to instances of `Timber\Post` or the appropriate subclass, according to the [Class Map](./class-maps/#the-post-class-map) you've defined:
+In this scenario, you can still easily map each of these posts to instances of `Timber\Post` or the appropriate subclass, according to the [Class Map](./class-maps/#the-post-class-map) you’ve defined:
 
 ```php
 $timber_posts = Timber::get_posts($wp_posts); // -> Timber\PostArrayObject
