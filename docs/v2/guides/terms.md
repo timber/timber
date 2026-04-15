@@ -162,6 +162,115 @@ Or you can use a for loop:
 {%- endfor %}
 ```
 
-We make use of the `loop` variable in Twig to either display an *and* or a comma.
+We make use of the `loop` variable in Twig to either display an _and_ or a comma.
 
-See how we end the opening tag of the for-loop with `-%}` and start the closing tag with `{%-`? These are [Whitespace Controls](https://twig.symfony.com/doc/2.x/templates.html#whitespace-control) and can come in quite handy. Here, we use them to remove all the superfluous markup whitespace we don’t need.
+See how we end the opening tag of the for-loop with `-%}` and start the closing tag with `{%-`? These are [Whitespace Controls](https://twig.symfony.com/doc/2.x/templates.html#whitespace-control) and can come in quite handy. Here, we use them to remove all the superfluous markup whitespace we don’t need.## Get terms from a post collection
+
+## Get terms from a post collection
+
+When working with a collection of posts (via `Timber::get_posts()`), you can get all the terms that are associated with those posts using the `terms()` method. This is useful for creating taxonomy filters, tag clouds, or displaying all terms used across a set of posts.
+
+```php
+$posts = Timber::get_posts([
+    'post_type' => 'article',
+    'posts_per_page' => 20,
+]);
+
+// Get all terms from all taxonomies used by these posts
+$all_terms = $posts->terms();
+
+// Get only categories
+$categories = $posts->terms('category');
+
+// Get multiple taxonomies, grouped by taxonomy name
+$terms_by_taxonomy = $posts->terms(['category', 'post_tag'], ['merge' => false]);
+```
+
+In Twig, you can use the same approach:
+
+```twig
+{# Get posts #}
+{% set posts = get_posts({
+    post_type: 'project',
+    posts_per_page: 10
+}) %}
+
+{# Display all categories used in these posts as filter links #}
+<div class="filters">
+    {% for category in posts.terms('category') %}
+        <a href="{{ category.link }}" class="filter-link">
+            {{ category.name }}
+        </a>
+    {% endfor %}
+</div>
+
+{# Or group terms by taxonomy #}
+{% set terms_by_tax = posts.terms('all', {merge: false}) %}
+{% for taxonomy, terms in terms_by_tax %}
+    <h3>{{ taxonomy|title }}</h3>
+    <ul>
+        {% for term in terms %}
+            <li><a href="{{ term.link }}">{{ term.name }}</a></li>
+        {% endfor %}
+    </ul>
+{% endfor %}
+```
+
+### Parameters
+
+The `terms()` method accepts two parameters:
+
+**`$query_args`** (string|array) – Optional. Default: `[]`
+
+- A taxonomy slug as a string: `'category'`
+- An array of taxonomy slugs: `['category', 'post_tag']`
+- A full `WP_Term_Query` arguments array with additional parameters
+
+**`$options`** (array) – Optional. Default: `[]`
+
+- **`merge`** (bool) – Whether to merge terms from all taxonomies into a single array (`true`, default) or return them grouped by taxonomy name (`false`)
+
+### Examples
+
+**Get terms from a specific query**
+
+```php
+$featured_posts = Timber::get_posts([
+    'post_type' => 'post',
+    'meta_key' => 'featured',
+    'meta_value' => '1',
+]);
+
+// Get all tags used in featured posts
+$featured_tags = $featured_posts->terms('post_tag');
+```
+
+**Create a dynamic filter navigation**
+
+```twig
+{% set posts = get_posts({category_name: 'news'}) %}
+
+<nav class="tag-filters">
+    <h4>Filter by tag:</h4>
+    {% for tag in posts.terms('post_tag') %}
+        <a href="{{ tag.link }}">{{ tag.name }}</a>
+    {% endfor %}
+</nav>
+```
+
+**Get terms grouped by taxonomy**
+
+```php
+$posts = Timber::get_posts(['post_type' => 'article']);
+
+// Get terms organized by taxonomy
+$grouped_terms = $posts->terms('all', ['merge' => false]);
+
+// $grouped_terms will be an array like:
+// [
+//     'category' => [Term, Term, ...],
+//     'post_tag' => [Term, Term, ...],
+// ]
+```
+
+This feature works on both `PostQuery` objects (when querying with `WP_Query` arguments) and `PostArrayObject` (when passing an array of post IDs or existing posts to `Timber::get_posts()`).
