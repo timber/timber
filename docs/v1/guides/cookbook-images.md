@@ -26,7 +26,7 @@ Note: If the WordPress size (e.g `medium`) has not been generated, it will retur
 
 ## Arbitrary resizing of images
 
-Want to resize an image? Here we're going to use [Twig Filters](https://twig.symfony.com/doc/2.x/filters/index.html).
+Want to resize an image? Here we’re going to use [Twig Filters](https://twig.symfony.com/doc/2.x/filters/index.html).
 
 ```twig
 <img src="{{ post.thumbnail.src|resize(300, 200) }}" />
