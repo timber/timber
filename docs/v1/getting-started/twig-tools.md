@@ -10,7 +10,6 @@ The purpose of this page is to identify helpful tools for working with Twig.
 - Emacs – [Web Mode](https://web-mode.org/)
 - Geany – Add [Twig/Symfony2 detection and highlighting](https://wiki.geany.org/howtos/geany_and_django#twigsymfony2_support)
 - PhpStorm – Built in coloring and code hinting. The Twig extension is recognized and has been for some time. [Twig Details for PhpStorm](https://blog.jetbrains.com/phpstorm/2013/06/twig-support-in-phpstorm/).
-- Atom – Syntax highlighting with the [Atom Component](https://github.blog/news-insights/product-news/sunsetting-atom/).
 
 ## WordPress tools
 
