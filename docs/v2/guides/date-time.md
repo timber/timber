@@ -16,7 +16,7 @@ In WordPress 5.3, there were [improvements for the Date/Time component](https://
 
 ### WordPress and timezones
 
-One of the most important things to understand with dates in WordPress is that WordPress always works with `UTC` as a default timezone. You shouldn't try to change the default timezone with `date_default_timezone_set()`.
+One of the most important things to understand with dates in WordPress is that WordPress always works with `UTC` as a default timezone. You shouldn’t try to change the default timezone with `date_default_timezone_set()`.
 
 Timezones in WordPress are handled by the `timezone_string` setting in the database. WordPress calculates timezone offsets from that timezone setting.
 

@@ -3,7 +3,7 @@ title: "Menus"
 order: "150"
 ---
 
-In Timber, we handle menus a little differently than in WordPress. We'd say it's a little smoother and more versatile than using WordPress's `wp_nav_menu()` function. And you never again need to rely on a crazy [Walker Function](https://developer.wordpress.org/reference/classes/walker/).
+In Timber, we handle menus a little differently than in WordPress. We’d say it’s a little smoother and more versatile than using WordPress’s `wp_nav_menu()` function. And you never again need to rely on a crazy [Walker Function](https://developer.wordpress.org/reference/classes/walker/).
 
 ## Getting menus
 
