@@ -11,7 +11,7 @@ use Timber\Timber;
 class MyMenu extends Menu
 {
 }
-class MySeconaryMenu extends Menu
+class MySecondaryMenu extends Menu
 {
 }
 
@@ -210,7 +210,7 @@ class MenuFactoryTest extends TimberIntegrationTestCase
             'custom' => MyMenu::class,
             'custom_secondary' => function ($menu, $args) use ($id_secondary) {
                 if ($menu->term_id === $id_secondary) {
-                    return MySeconaryMenu::class;
+                    return MySecondaryMenu::class;
                 }
 
                 return null;
@@ -218,7 +218,7 @@ class MenuFactoryTest extends TimberIntegrationTestCase
         ]);
 
         $this->assertTrue(MyMenu::class === $factory->from($id)::class);
-        $this->assertTrue(MySeconaryMenu::class === $factory->from($id_secondary)::class);
+        $this->assertTrue(MySecondaryMenu::class === $factory->from($id_secondary)::class);
     }
 
     /**
