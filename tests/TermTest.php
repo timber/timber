@@ -141,7 +141,7 @@ class TermTest extends TimberIntegrationTestCase
             'name' => 'New England Patriots',
             'description' => $desc,
         ]);
-        $term = Timber::get_term($term_id, 'post_tag');
+        $term = Timber::get_term($term_id);
         $this->assertEquals($desc, $term->description());
     }
 
