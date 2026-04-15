@@ -903,7 +903,7 @@ class ImageHelper
                 throw $e;
             }
             Helper::error_log(\sprintf(
-                'Timber image operation %s failed for %s: %s',
+                'Image operation %s failed for %s: %s',
                 $op::class,
                 $source_path,
                 $e->getMessage()
