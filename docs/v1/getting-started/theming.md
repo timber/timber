@@ -153,7 +153,7 @@ This is where we are going to handle the logic that powers our index file. Let�
 $context = Timber::context();
 ```
 
-This is going to return an object with a lot of the common things we need across the site. Things like the site name, the description or the navigation menu you'll want to start with each time (even if you over-write them later). You can do a `print_r( $context );` to see what's inside or open-up [**Timber.php**](https://github.com/timber/timber/blob/1.x/lib/Timber.php) to inspect for yourself.
+This is going to return an object with a lot of the common things we need across the site. Things like the site name, the description or the navigation menu you’ll want to start with each time (even if you over-write them later). You can do a `print_r( $context );` to see what’s inside or open-up [**Timber.php**](https://github.com/timber/timber/blob/1.x/lib/Timber.php) to inspect for yourself.
 
 ### Grab your posts
 
