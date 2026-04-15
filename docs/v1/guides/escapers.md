@@ -4,7 +4,7 @@ title: "Escapers"
 
 ## Universal Escaping
 
-By default, Timber does *not* escape the output of standard tags (i.e. `{{ post.field }}`). If you want to enable `autoescape` behavior simply add these lines to `functions.php`:
+By default, Timber does _not_ escape the output of standard tags (i.e. `{{ post.field }}`). If you want to enable `autoescape` behavior simply add these lines to `functions.php`:
 
 ```php
 if ( class_exists('Timber') ) {
@@ -14,7 +14,7 @@ if ( class_exists('Timber') ) {
 
 ## General Escapers
 
-Twig offers a variety of [escapers](https://twig.symfony.com/doc/filters/escape.html) out of the box. These are intended to escape a string for safe insertion into the final output and there are multiple functions to conform to the strategy dependant on the context. In addition, Timber has added some valuable custom escapers for your WP theme. To use the escaper (see documentation link above) you use pipe your content through a function `e` if you want to use a custom escaper you would supply an argument to the function, e.g. `e('wp_kses_post')`
+Twig offers a variety of [escapers](https://twig.symfony.com/doc/3.x/filters/escape.html) out of the box. These are intended to escape a string for safe insertion into the final output and there are multiple functions to conform to the strategy dependant on the context. In addition, Timber has added some valuable custom escapers for your WP theme. To use the escaper (see documentation link above) you use pipe your content through a function `e` if you want to use a custom escaper you would supply an argument to the function, e.g. `e('wp_kses_post')`
 
 This all follows the WordPress (and greater development philosophy) to:
 
@@ -26,13 +26,13 @@ This all follows the WordPress (and greater development philosophy) to:
 6. Sanitation is okay, but validation/rejection is better.
 7. Never trust user input.
 
-[Relevant Documentation](https://vip.wordpress.com/documentation/vip/best-practices/security/validating-sanitizing-escaping/)
+[Relevant Documentation](https://wpvip.com/security/)
 
 ## wp_kses_post
 
-Background on KSES. KSES is a recursive acronym for `KSES Kills Evil Scripts`. It's goal is to ensure only  "allowed" HTML element names, attribute names and attribute values plus only sane HTML entities in the string. Allowed is based on a configuration.
+Background on KSES. KSES is a recursive acronym for `KSES Kills Evil Scripts`. It's goal is to ensure only "allowed" HTML element names, attribute names and attribute values plus only sane HTML entities in the string. Allowed is based on a configuration.
 
-This uses the internal WordPress method that sanitize content for allowed HTML tags for post content. The configuration used can be found by running ` wp_kses_allowed_html( 'post' );` [WordPress Documentation](https://codex.wordpress.org/Function_Reference/wp_kses_post)
+This uses the internal WordPress method that sanitize content for allowed HTML tags for post content. The configuration used can be found by running ` wp_kses_allowed_html( 'post' );` [WordPress Documentation](https://developer.wordpress.org/reference/functions/wp_kses_post/)
 
 **Twig**
 
@@ -46,10 +46,11 @@ In this example, `post.post_content` is:
 
 `<div>Foo</div>DoEvilThing();`
 
-* * *
+---
 
 ## esc_url
-Uses WordPress' internal `esc_url` function on text. This should be used to sanitize URLs. [WordPress Documentation](https://codex.wordpress.org/Function_Reference/esc_url)
+
+Uses WordPress' internal `esc_url` function on text. This should be used to sanitize URLs. [WordPress Documentation](https://developer.wordpress.org/reference/functions/esc_url/)
 
 **Twig**
 
@@ -59,7 +60,7 @@ Uses WordPress' internal `esc_url` function on text. This should be used to sani
 
 `<a href="https://google.com"></a>`
 
-* * *
+---
 
 ## esc_html
 
@@ -75,7 +76,7 @@ This is for plain old text. If your content has HTML markup you should not use `
 
 `<div class="equation">is x &lt; y?</div>`
 
-* * *
+---
 
 ## esc_js
 

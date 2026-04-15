@@ -3,7 +3,7 @@ title: "Menus"
 order: "150"
 ---
 
-In Timber, we handle menus a little differently than in WordPress. We’d say it’s a little smoother and more versatile than using WordPress’s `wp_nav_menu()` function. And you never again need to rely on a crazy [Walker Function](https://codex.wordpress.org/Class_Reference/Walker).
+In Timber, we handle menus a little differently than in WordPress. We'd say it's a little smoother and more versatile than using WordPress's `wp_nav_menu()` function. And you never again need to rely on a crazy [Walker Function](https://developer.wordpress.org/reference/classes/walker/).
 
 ## Getting menus
 
@@ -49,7 +49,7 @@ $menu = Timber::get_menu('primary', [
 
 Currently, only `depth` is supported (see [`wp_nav_menu()`](https://developer.wordpress.org/reference/functions/wp_nav_menu/) for reference).
 
-- **depth** – *(int)* How many levels of the hierarchy are to be included. 0 means all levels will be included. Default 0.
+- **depth** – _(int)_ How many levels of the hierarchy are to be included. 0 means all levels will be included. Default 0.
 
 ### Menus need to be registered
 
@@ -103,7 +103,6 @@ $menu = Timber::get_pages_menu();
 This function will return an instance of `Timber\PagesMenu`, which is not quite the same as `Timber\Menu`, but it contains the same `Timber\MenuItem` objects as you know them.
 
 If you want to extend a pages menu, you would do it like this:
-
 
 ```php
 class ExtendedPagesMenu extends \Timber\PagesMenu
@@ -328,4 +327,4 @@ You could also use it in combination with `item.is_target_blank`:
 
 ## Tips
 
-- [Add items dynamically](https://github.com/jarednova/timber/issues/200)
+- [Add items dynamically](https://github.com/timber/timber/issues/200)

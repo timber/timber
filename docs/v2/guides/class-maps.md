@@ -5,7 +5,7 @@ order: "1660"
 
 The Class Map is the central hub for Timber to select the right PHP class for post or term objects. Whenever you want to extend existing Timber classes with your custom classes, you’ll have to register them through a Class Map so that Timber will know when to use it.
 
- There are several different Class Maps in Timber:
+There are several different Class Maps in Timber:
 
 - `timber/post/classmap` for posts
 - `timber/term/classmap` for terms
@@ -212,7 +212,7 @@ add_filter('timber/menu/classmap', function ($classmap) {
 
 Menu locations that you don’t list in the class map will use `Timber\Menu` as a default class. If selecting a menu class based on the location isn’t enough for you, you can further customize the class selection using the `timber/menu/class` filter.
 
-The following example demonstrates how you can use custom classes (`SingleLevelMenu` or `MultiLevelMenu`)  based on the depth of the menu.
+The following example demonstrates how you can use custom classes (`SingleLevelMenu` or `MultiLevelMenu`) based on the depth of the menu.
 
 ```php
 add_filter('timber/menu/class', function ($class, $term, $args) {
@@ -323,7 +323,7 @@ add_filter('timber/user/class', function ($class, \WP_User $user) {
 
 In the above example, the User class filter receives the default User class and a `WP_User` object as arguments. You should be able to decide which class to use based on that user object.
 
-In case you need a different User class based on the current template you’re displaying, you can use [Conditional Tags](https://developer.wordpress.org/themes/references/list-of-conditional-tags/).
+In case you need a different User class based on the current template you're displaying, you can use [Conditional Tags](https://developer.wordpress.org/themes/classic-themes/references/list-of-conditional-tags/).
 
 ```php
 add_filter('timber/user/class', function ($class, \WP_User $user) {

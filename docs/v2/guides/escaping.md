@@ -32,10 +32,9 @@ In terms of security, developing a Timber theme is no different than developing 
 
 You can read more about the basics of [theme security](https://developer.wordpress.org/themes/advanced-topics/security/) and [how to escape your output in WordPress](https://developer.wordpress.org/apis/security/escaping/) in the WordPress Developer Resources.
 
-
 ## Escapers
 
-Twig offers a variety of [escaping functions](https://twig.symfony.com/doc/filters/escape.html) out of the box. They are intended to escape a string for safe insertion into the final output.
+Twig offers a variety of [escaping functions](https://twig.symfony.com/doc/3.x/filters/escape.html) out of the box. They are intended to escape a string for safe insertion into the final output.
 
 In addition to these standard escaping functions, Timber comes with some valuable custom escapers for your WordPress theme. To use the escaper (see documentation link above), you pipe your content through a function `e` and if you want to use a custom escaper, you would supply an argument to the function, e.g. `e('wp_kses_post')`.
 
@@ -60,7 +59,8 @@ In this example, `post.post_content` contains the following string:
 **Output**
 
 ```html
-<div>Foo</div>DoEvilThing();
+<div>Foo</div>
+DoEvilThing();
 ```
 
 ## esc_url
@@ -111,7 +111,7 @@ Always use when escaping HTML attributes (especially form values) such as alt, v
 **Output**
 
 ```html
-<input type="text" name="name" value="Han Solo">
+<input type="text" name="name" value="Han Solo" />
 ```
 
 ## esc_js
@@ -127,5 +127,7 @@ Escapes text strings for echoing in JavaScript. It is intended to be used for in
 **Output**
 
 ```html
-<script>var bar = 'Gabrielle';</script>
+<script>
+  var bar = "Gabrielle";
+</script>
 ```

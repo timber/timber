@@ -93,7 +93,7 @@ When you want to list all the categories that the blog post is assigned to, then
 </ul>
 ```
 
-We just used a [for-loop](https://twig.symfony.com/doc/tags/for.html) here. This works a little different than `foreach` in PHP.
+We just used a [for-loop](https://twig.symfony.com/doc/3.x/tags/for.html) here. This works a little different than `foreach` in PHP.
 
 And here, we have yet another Timber object. Each `term` is a [`Timber\Term`](https://timber.github.io/docs/v2/reference/timber-term/) object. For terms, you also have methods like `title` or `link`. To learn more about how terms are handled in Timber, refer to the [Terms Guide](https://timber.github.io/docs/v2/guides/terms/).
 

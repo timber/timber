@@ -4,7 +4,7 @@ title: "Custom Integrations"
 
 The new Integrations API (available from Timber 2.0) provides a generalized way to integrate with third-party plugins.
 
-It’s how, for example, the built-in [Advanced Custom Fields](/docs/v2/integrations/advanced-custom-fields/) integration is implemented: There is nothing in the Timber core (i.e. `Timber\Timber`) that "knows" about ACF. All the convenient `meta` mapping and stuff gets hooked in by a [single class](https://github.com/timber/timber/blob/2.x/src/Integration/AcfIntegration.php) (`Timber\Integration\AcfIntegration`).
+It's how, for example, the built-in [Advanced Custom Fields](/docs/v2/integrations/advanced-custom-fields/) integration is implemented: There is nothing in the Timber core (i.e. `Timber\Timber`) that "knows" about ACF. All the convenient `meta` mapping and stuff gets hooked in by a [single class](https://github.com/timber/timber/blob/2.x/src/Integration/AcfIntegration.php) (`Timber\Integration\AcfIntegration`).
 
 To achieve this, that class implements an interface: `Timber\Integrations\IntegrationInterface`:
 

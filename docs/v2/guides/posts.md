@@ -86,7 +86,7 @@ Or in Twig:
 
 ## Extending `Timber\Post`
 
-If you need additional functionality that the `Timber\Post` class doesn’t provide or if you want to have cleaner Twig templates, you can [extend the `Timber\Post` class](/docs/v2/guides/extending-timber/) with your own classes:
+If you need additional functionality that the `Timber\Post` class doesn't provide or if you want to have cleaner Twig templates, you can [extend the `Timber\Post` class](/docs/v2/guides/extending-timber/) with your own classes:
 
 ```php
 class Book extends Timber\Post
@@ -102,7 +102,7 @@ $book = Timber::get_post($post_id);
 
 You **can’t** instantiate a `Timber\Post` object or an object that extends this class with a constructor – you can’t use `$post = new Book( $post_id )`. In Timber, we’ve chosen to go a different way to prevent a lot of problems that would come with direct instantiation.
 
-So, how does Timber know about your `Book` class? Timber will use the [Post Class Map](https://timber.github.io/docs/v2/guides/class-maps/#the-post-class-map) to sort out which class it should use.
+So, how does Timber know about your `Book` class? Timber will use the [Post Class Map](./class-maps/#the-post-class-map) to sort out which class it should use.
 
 ## Querying Posts
 
@@ -133,11 +133,11 @@ $posts = Timber::get_posts($query, $options);
 
 ### The default query
 
-In archive templates like **archive.php** or **category.php**, Timber will already fetch the default query when you call `Timber::context()` and make it available under the `posts` entry. Read more about this in the [Context Guide](https://timber.github.io/docs/v2/guides/context).
+In archive templates like **archive.php** or **category.php**, Timber will already fetch the default query when you call `Timber::context()` and make it available under the `posts` entry. Read more about this in the [Context Guide](https://timber.github.io/docs/v2/guides/context/).
 
 ### Class Map
 
-When you query for certain post types, Timber will use the [Post Class Map](https://timber.github.io/docs/v2/guides/class-maps/#the-post-class-map) to check which class it should use to instantiate your posts.
+When you query for certain post types, Timber will use the [Post Class Map](./class-maps/#the-post-class-map) to check which class it should use to instantiate your posts.
 
 ## Post Collections
 
@@ -177,7 +177,7 @@ $filtered = wp_list_filter($posts->to_array(), [
 
 ### Types of Post Collections
 
-Like every other [PHP interface](https://www.php.net/manual/en/language.oop5.interfaces.php), `PostCollectionInterface` cannot be instantiated directly, i.e. `new PostCollectionInterface()` will not work. You can only create instances of concrete *classes* that *implement* the interface.
+Like every other [PHP interface](https://www.php.net/manual/en/language.oop5.interfaces.php), `PostCollectionInterface` cannot be instantiated directly, i.e. `new PostCollectionInterface()` will not work. You can only create instances of concrete _classes_ that _implement_ the interface.
 
 Timber offers two implementations of `PostCollectionInterface`: the `Timber\PostQuery` and `Timber\PostArrayObject` classes. Both extend PHP’s `ArrayObject` class, which means you can loop over and index them directly (see examples above).
 
@@ -185,14 +185,14 @@ Timber offers two implementations of `PostCollectionInterface`: the `Timber\Post
 
 `Timber\PostQuery` is what you will likely deal with most of the time. It is what is returned when:
 
-* calling `Timber::get_posts()` with no arguments
-* passing an associative array, e.g. `Timber::get_posts( [ 'post_type' => 'post' ] )`
-* passing a `WP_Query` object, e.g. `Timber::get_posts( new WP_Query( [ 'post_type=post' ] ) )`
-* calling `$term->posts()` on a  `Timber\Term` object
-* calling `$user->posts()` on a `Timber\User` object
-* calling `$post->children()` on a `Timber\Post` object
+- calling `Timber::get_posts()` with no arguments
+- passing an associative array, e.g. `Timber::get_posts( [ 'post_type' => 'post' ] )`
+- passing a `WP_Query` object, e.g. `Timber::get_posts( new WP_Query( [ 'post_type=post' ] ) )`
+- calling `$term->posts()` on a `Timber\Term` object
+- calling `$user->posts()` on a `Timber\User` object
+- calling `$post->children()` on a `Timber\Post` object
 
-The `Timber\PostQuery` class contains some optimization for tight integration with The Loop, including support for advanced [pagination](/docs/v2/guides/pagination). To get a `Pagination` object you can use for rendering a pagination navigation component, call `$post_query->pagination()`.
+The `Timber\PostQuery` class contains some optimization for tight integration with The Loop, including support for advanced [pagination](../pagination). To get a `Pagination` object you can use for rendering a pagination navigation component, call `$post_query->pagination()`.
 
 ### The fallback case: PostArrayObject
 
@@ -202,7 +202,7 @@ Sometimes you may not have direct access to a `WP_Query` instance; you may only 
 $wp_posts = fancy_plugin_get_custom_posts(); // -> an array of WP_Posts
 ```
 
-In this scenario, you can still easily map each of these posts to instances of `Timber\Post` or the appropriate subclass, according to the [Class Map](/docs/v2/guides/class-maps/#the-post-class-map) you’ve defined:
+In this scenario, you can still easily map each of these posts to instances of `Timber\Post` or the appropriate subclass, according to the [Class Map](./class-maps/#the-post-class-map) you've defined:
 
 ```php
 $timber_posts = Timber::get_posts($wp_posts); // -> Timber\PostArrayObject
@@ -230,11 +230,11 @@ array_map('get_class', $timber_posts);
 // -> ["\Timber\Post", "\MyProject\MyPage", "\MyProject\MyCustom"]
 ```
 
-In short, `Timber\Post` instances are always created *polymorphically*, whether they are inside some kind of Post Collection or not.
+In short, `Timber\Post` instances are always created _polymorphically_, whether they are inside some kind of Post Collection or not.
 
 ### Debugging Post Collections
 
-At query time and directly afterward, Post Collections do not necessarily contain instances of `Timber\Post`. Instead, `Post` objects are created *lazily*, meaning only when explicitly requested, such as by iterating over a Post Collection or accessing an index:
+At query time and directly afterward, Post Collections do not necessarily contain instances of `Timber\Post`. Instead, `Post` objects are created _lazily_, meaning only when explicitly requested, such as by iterating over a Post Collection or accessing an index:
 
 ```php
 $posts = Timber::get_posts(); // -> PostQuery containing only raw WP_Post instances
@@ -253,20 +253,7 @@ $posts = Timber::get_posts()->realize();
 // -> PostQuery containing realized (eagerly instantiated) Timber\Post instances
 ```
 
-This is mostly an implementation detail for performance reasons, with an important caveat: Due to a [bug in PHP <= 7.3](https://bugs.php.net/bug.php?id=69264), dumping the contents of a Post Collection does *not* realize the posts within it:
-
-```php
-$posts = Timber::get_posts();
-
-/**
- * Before PHP 7.4, will dump a bunch of PostQuery internals,
- * but no Timber\Post instances!
- */
-var_dump($posts);
-
-// Do this instead:
-var_dump($posts->realize());
-```
+This is mostly an implementation detail for performance reasons.
 
 See [Laziness and Caching](#laziness-and-caching) for details about how this interacts with caching.
 
@@ -402,7 +389,7 @@ Here is a timeline of what normally happens when you call `Timber::get_posts()`:
 1. Timber decides what kind of Post Collection it will return (or returns `null` on error).
 2. It populates the new Post Collection, either with `WP_Post` objects it queries from WordPress core or with ones it was already passed, and returns the Collection object.
 3. The Collection (say, `$coll`) now contains zero or more raw `WP_Post` instances passed in/returned from the query.
-4. Calling `$coll[ $numeric_index ]` *realizes* a `Timber\Post` object from the `WP_Post` at `$numeric_index`, running it through any Post Class Map you've defined, and *replaces* the object at that index internally, so it doesn't have to repeat that work in the future.
+4. Calling `$coll[ $numeric_index ]` _realizes_ a `Timber\Post` object from the `WP_Post` at `$numeric_index`, running it through any Post Class Map you've defined, and _replaces_ the object at that index internally, so it doesn't have to repeat that work in the future.
 5. Looping over `$coll` repeats the above step for each index that has not been realized. For indexes that have been realized, it simply returns the realized `Timber\Post` object that already lives at that index.
 
 This is usually what you want. But sometimes, you may want to force Timber to realize a collection up front, such as if you are caching an expensive post query:
@@ -433,7 +420,7 @@ foreach (get_transient('my_posts') as $post) {
 
 ## Using posts or post collections in the context
 
-Timber will automatically set the `post` or `posts` variable for you in the context depending on the template file you’re using. Read more about this in the [Context Guide](https://timber.github.io/docs/v2/guides/context/#template-contexts).
+Timber will automatically set the `post` or `posts` variable for you in the context depending on the template file you're using. Read more about this in the [Context Guide](https://timber.github.io/docs/v2/guides/context/#template-contexts).
 
 ## Password protected posts
 

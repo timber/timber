@@ -2,7 +2,7 @@
 title: "Internationalization"
 ---
 
-Internationalization of a Timber theme works pretty much the same way as it does for default WordPress themes. Follow the guide in the [WordPress Theme Handbook](https://developer.wordpress.org/themes/functionality/internationalization/) to setup i18n for your theme.
+Internationalization of a Timber theme works pretty much the same way as it does for default WordPress themes. Follow the guide in the [WordPress Theme Handbook](https://developer.wordpress.org/themes/classic-themes/functionality/internationalization/) to setup i18n for your theme.
 
 Twig has its own i18n extension that gives you `{% trans %}` tags to define translatable blocks, but there’s no need to use it, because with Timber, you have all you need.
 
@@ -10,23 +10,21 @@ Twig has its own i18n extension that gives you `{% trans %}` tags to define tran
 
 Timber supports all the translation functions used in WordPress:
 
-* __()
-* _x()
-* _n()
-* _nx()
-* _n_noop()
-* _nx_noop()
-* translate()
-* translate_nooped_plural()
+- \_\_()
+- \_x()
+- \_n()
+- \_nx()
+- \_n_noop()
+- \_nx_noop()
+- translate()
+- translate_nooped_plural()
 
 The functions `_e()` and `_ex()` are also supported, but you probably won’t need them in Twig, because `{{ }}` already echoes the output.
 
 **WordPress:**
 
 ```html
-<p class="entry-meta">
-    <?php _e( 'Posted on', 'my-text-domain' ) ?> [...]
-</p>
+<p class="entry-meta"><?php _e( 'Posted on', 'my-text-domain' ) ?> [...]</p>
 ```
 
 **Timber:**
@@ -45,7 +43,7 @@ You can use sprintf-type placeholders, using the `format` filter:
 
 ```html
 <p class="entry-meta">
-    <?php printf( __('Posted on %s', 'my-text-domain'), $posted_on_date ) ?>
+  <?php printf( __('Posted on %s', 'my-text-domain'), $posted_on_date ) ?>
 </p>
 ```
 
@@ -76,4 +74,4 @@ Note that the package isn't Timber specific, it will work with any Twig implemen
 
 You can also generate `.pot`, `.po` and `.mo` files, with [Poedit](https://poedit.net/).
 
-[Poedit 2](https://poedit.net/) fully supports Twig file parsing (Pro version only) with the following functions: __(), _x(), _n(), _nx().
+[Poedit 2](https://poedit.net/) fully supports Twig file parsing (Pro version only) with the following functions: \_\_(), \_x(), \_n(), \_nx().

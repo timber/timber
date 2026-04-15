@@ -11,8 +11,8 @@ There are a few ways to manage custom pages in WordPress and Timber, in order fr
 
 If you're using the [Timber Starter Theme](https://github.com/timber/starter-theme) you can
 
-* Create a file called **page-about-us.twig** inside your `views` and go crazy.
-* Copy and paste the contents of [**page.twig**](https://github.com/timber/starter-theme/blob/master/templates/page.twig) so you have something to work from.
+- Create a file called **page-about-us.twig** inside your `views` and go crazy.
+- Copy and paste the contents of [**page.twig**](https://github.com/timber/starter-theme/blob/master/templates/page.twig) so you have something to work from.
 
 **How does this work?**
 
@@ -29,7 +29,7 @@ This is telling PHP to first look for a Twig file named **page-{{ slug }}.twig**
 
 ## Custom PHP File
 
-If you need to do something special for a page in PHP, you can use the standard WordPress [template hierarchy](https://codex.wordpress.org/Template_Hierarchy) to gather and manipulate data for this page. In the example above, you would create a file
+If you need to do something special for a page in PHP, you can use the standard WordPress [template hierarchy](https://developer.wordpress.org/themes/classic-themes/basics/template-hierarchy/) to gather and manipulate data for this page. In the example above, you would create a file
 
 **/wp-content/themes/my-theme/page-about-us.php**
 
@@ -52,5 +52,5 @@ In the WordPress admin, a new entry will be added in your page’s list of avail
 
 ![](https://codex.wordpress.org/images/thumb/a/a3/page-templates-pulldown-screenshot.png/180px-page-templates-pulldown-screenshot.png)
 
-* Name it something like **/wp-content/themes/my-theme/template-my-custom-page.php**.
-* Do **NOT** prefix the filename with `page-` or WordPress will get very confused due to [WordPress template hierarchy](https://developer.wordpress.org/themes/basics/template-hierarchy/#single-page).
+- Name it something like **/wp-content/themes/my-theme/template-my-custom-page.php**.
+- Do **NOT** prefix the filename with `page-` or WordPress will get very confused due to [WordPress template hierarchy](https://developer.wordpress.org/themes/basics/template-hierarchy/#single-page).

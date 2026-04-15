@@ -14,8 +14,8 @@ While data saved by ACF is available via `{{ post.my_acf_field }}` you will ofte
      {{ post.meta('my_wysiwyg_field') }}
 </div>
 ```
-This will apply your expected paragraph breaks and other pre-processing to the text. In the past we used `{{ post.get_field('my_wysiwyg_field') }}`, but this is now deprecated. Use `{{ post.meta('my_wysiwyg_field') }}`.
 
+This will apply your expected paragraph breaks and other pre-processing to the text. In the past we used `{{ post.get_field('my_wysiwyg_field') }}`, but this is now deprecated. Use `{{ post.meta('my_wysiwyg_field') }}`.
 
 ## Image field
 
@@ -51,7 +51,7 @@ You can now use all the above functions to transform your custom images in the s
 <img src="{{ post.hero_image.src | resize(500, 300) }}" />
 ```
 
-* * *
+---
 
 ## Gallery field
 
@@ -61,20 +61,24 @@ You can now use all the above functions to transform your custom images in the s
 {% endfor %}
 ```
 
-* * *
+---
 
 ## Group field
+
 ```twig
 {{ post.meta('group').first_field }}
 {{ post.meta('group').second_field }}
 ```
+
 or
+
 ```twig
 {% set group = post.meta('group') %}
 {{ group.first_field }}
 {{ group.second_field }}
 ```
-* * *
+
+---
 
 ## Relationship field
 
@@ -87,7 +91,7 @@ The post data returned from a relationship field will not contain the Timber met
 {% endfor %}
 ```
 
-* * *
+---
 
 ## Repeater field
 
@@ -148,7 +152,7 @@ A common problem in working with repeaters is that you should only call the `met
 {% endfor %}
 ```
 
-* * *
+---
 
 ## Flexible Content field
 
@@ -167,7 +171,7 @@ Similar to repeaters, get the field by the name of the flexible content field:
 {% endfor %}
 ```
 
-* * *
+---
 
 ## Options Page
 
@@ -217,7 +221,7 @@ Now, you can use any of the option fields across the site instead of per templat
 <footer>{{ options.copyright_info }}</footer>
 ```
 
-* * *
+---
 
 ## Getting ACF info
 
@@ -233,11 +237,11 @@ $context["acf"] = get_field_objects($data["post"]->ID);
 {{ acf.your_field_name_here.label }}
 ```
 
-* * *
+---
 
 ## Query by custom field value
 
-This example that uses a [WP_Query](https://codex.wordpress.org/Class_Reference/WP_Query) array shows the arguments to find all posts where a custom field called `color` has a value of `red`.
+This example that uses a [WP_Query](https://developer.wordpress.org/reference/classes/wp_query/) array shows the arguments to find all posts where a custom field called `color` has a value of `red`.
 
 ```php
 <?php
@@ -249,4 +253,5 @@ $args = array(
 );
 $context['posts'] = Timber::get_posts($args);
 ```
-* * *
+
+---

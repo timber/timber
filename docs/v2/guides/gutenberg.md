@@ -27,7 +27,7 @@ First, we will create a `blocks` directory in our theme folder. This directory w
 2. Add a directory with the block name of your choice. Example: **my-block**.
 3. Within your custom block directory, create a block.json file.
 4. Also within your custom block directory, add a CSS file to reference in the settings.
-    * Note: this is optional. You can reference CSS from any directory or rely on sitewide styling to get applied to your block on production.
+   - Note: this is optional. You can reference CSS from any directory or rely on sitewide styling to get applied to your block on production.
 
 Your theme structure should look like this:
 
@@ -47,23 +47,23 @@ Your theme structure should look like this:
 
 The block.json file is a configuration file that contains the settings for your block. It is used to define the block’s name, title, description, category among many other settings.
 
-[WordPress has a full example](https://developer.wordpress.org/block-editor/reference-guides/block-api/block-metadata/) of the values you can add to your block.json. For our example, we’ll follow [ACF's example](https://www.advancedcustomfields.com/resources/acf-blocks-key-concepts/#acf-blocks-and-blockjson) with the minimal settings plus the specific ACF property. We will use `renderCallback` instead of `renderTemplate` so we can set a function callback to render all our blocks instead of creating a function for each individual block.
+[WordPress has a full example](https://developer.wordpress.org/block-editor/reference-guides/block-api/block-metadata/) of the values you can add to your block.json. For our example, we'll follow [ACF's example](https://www.advancedcustomfields.com/resources/acf-blocks-key-concepts/#acf-blocks-and-blockjson) with the minimal settings plus the specific ACF property. We will use `renderCallback` instead of `renderTemplate` so we can set a function callback to render all our blocks instead of creating a function for each individual block.
 
 Example contents of the block.json
 
 ```json
 {
-    "name": "acf/my-block",
-    "title": "My Block",
-    "description": "Description for my block",
-    "style": [ "file:./my-block.css" ],
-    "category": "formatting",
-    "icon": "format-aside",
-    "keywords": ["my", "block"],
-    "acf": {
-        "mode": "preview",
-        "renderCallback": "my_acf_block_render_callback"
-    }
+  "name": "acf/my-block",
+  "title": "My Block",
+  "description": "Description for my block",
+  "style": ["file:./my-block.css"],
+  "category": "formatting",
+  "icon": "format-aside",
+  "keywords": ["my", "block"],
+  "acf": {
+    "mode": "preview",
+    "renderCallback": "my_acf_block_render_callback"
+  }
 }
 ```
 
@@ -148,6 +148,7 @@ function my_acf_block_render_callback($attributes, $content = '', $is_preview = 
     );
 }
 ```
+
 We call this function in the `renderCallback` object in the block.json file of our block. This function will work for all blocks as long as we follow the naming convention of `acf/your-block-name` for the name property in the block.json and name the template `your-block-name.twig` in the `blocks/your-block-name` folder inside the root of your theme.
 
 #### Create fields in ACF

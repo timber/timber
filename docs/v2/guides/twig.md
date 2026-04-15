@@ -190,7 +190,7 @@ You can call actions in your Twig templates like this:
 {% do action('my_action_with_args', 'foo', 'bar') %}
 ```
 
-If you ask yourself why there’s no underline between `do` and `action`: The expression [`do`](https://twig.symfony.com/doc/tags/do.html) is a feature of Twig which *calls a function without printing its return value*, like `{{ }}` does. Timber only registers an `action` function, which then calls the `do_action()` function.
+If you ask yourself why there's no underline between `do` and `action`: The expression [`do`](https://twig.symfony.com/doc/3.x/tags/do.html) is a feature of Twig which _calls a function without printing its return value_, like `{{ }}` does. Timber only registers an `action` function, which then calls the `do_action()` function.
 
 If you want anything from the template’s context, you'll need to pass that manually:
 
@@ -326,21 +326,21 @@ And then, we pass it to Twig, where we use Twig’s own [`template_to_string()`]
 
 ### Text editor add-ons
 
-* Text Mate & Sublime text bundle – [Anomareh's PHP-Twig](https://github.com/Anomareh/PHP-Twig.tmbundle)
-* Emacs – [Web Mode](https://web-mode.org/)
-* Geany – Add [Twig/Symfony2 detection and highlighting](https://wiki.geany.org/howtos/geany_and_django#twigsymfony2_support)
-* PhpStorm – Built in coloring and code hinting. The Twig extension is recognized and has been for some time. [Twig Details for PhpStorm](https://blog.jetbrains.com/phpstorm/2013/06/twig-support-in-phpstorm/).
-* Atom – Syntax highlighting with the [Atom Component](https://atom.io/packages/php-twig).
+- Text Mate & Sublime text bundle – [Anomareh's PHP-Twig](https://github.com/uhnomoli/PHP-Twig.tmbundle)
+- Emacs – [Web Mode](https://web-mode.org/)
+- Geany – Add [Twig/Symfony2 detection and highlighting](https://wiki.geany.org/howtos/geany_and_django#twigsymfony2_support)
+- PhpStorm – Built in coloring and code hinting. The Twig extension is recognized and has been for some time. [Twig Details for PhpStorm](https://blog.jetbrains.com/phpstorm/2013/06/twig-support-in-phpstorm/).
+- Atom – Syntax highlighting with the [Atom Component](https://github.blog/news-insights/product-news/sunsetting-atom/).
 
 ### WordPress tools
 
-* [Lisa Templates](https://github.com/pierreminik/lisa-templates/) – allows you to write Twig-templates in the WordPress Admin that renders through a shortcode, widget or on the_content hook.
+- [Lisa Templates](https://github.com/pierreminik/lisa-templates/) – allows you to write Twig-templates in the WordPress Admin that renders through a shortcode, widget or on the_content hook.
 
 ### Other
 
-* [Watson-Ruby](https://nhmood.github.io/watson-ruby/) – An inline issue manager. Put tags like `[todo]` in a Twig comment and find it easily later. Watson supports Twig as of version 1.6.3.
+- [Watson-Ruby](https://nhmood.github.io/watson-ruby/) – An inline issue manager. Put tags like `[todo]` in a Twig comment and find it easily later. Watson supports Twig as of version 1.6.3.
 
 ### JavaScript
 
-* [Twig.js](https://github.com/justjohn/twig.js) – Use those `.twig` files in the Javascript and AJAX components of your site.
-* [Nunjucks](https://mozilla.github.io/nunjucks/) – Another JS template language that is also based on [Jinja2](https://jinja.pocoo.org/docs/)
+- [Twig.js](https://github.com/twigjs/twig.js) – Use those `.twig` files in the Javascript and AJAX components of your site.
+- [Nunjucks](https://mozilla.github.io/nunjucks/) – Another JS template language that is also based on [Jinja2](https://jinja.palletsprojects.com/)

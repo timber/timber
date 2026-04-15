@@ -37,7 +37,7 @@ The part that you should take note of here is this one:
 {% extends 'base.twig' %}
 ```
 
-You use the [extend](https://twig.symfony.com/doc/tags/extends.html) tag to tell the template engine that this template *extends* another template. This means that **single.twig** is using **base.twig** as its parent template. Here’s what your **base.twig** could look like:
+You use the [extend](https://twig.symfony.com/doc/3.x/tags/extends.html) tag to tell the template engine that this template _extends_ another template. This means that **single.twig** is using **base.twig** as its parent template. Here's what your **base.twig** could look like:
 
 ```twig
 <!DOCTYPE html>
@@ -115,7 +115,7 @@ For this introduction, let’s assume that the name of the page is "All about Ja
 
 Compared to the earlier example, we now have the `{% block headline %}` bit surrounding the `<header>` tag of the post.
 
-To inject a custom bit of markup, we’re going to create a file called **single-all-about-jared.twig** in the **views** directory. The logic for which template should be selected is controlled in **single.php**, but generally follows WordPress conventions on [Template Hierarchy](https://wphierarchy.com/).
+To inject a custom bit of markup, we're going to create a file called **single-all-about-jared.twig** in the **views** directory. The logic for which template should be selected is controlled in **single.php**, but generally follows WordPress conventions on [Template Hierarchy](https://wpshout.com/wordpress-template-hierarchy/).
 
 Now, to replace the `headline` block **single.twig**, we define it in our new file.
 
@@ -141,7 +141,7 @@ So there are two big concepts going on here:
 1. **Multiple Inheritance:** We’re extending **single.twig**, which itself extends **base.twig**. Thus we stay true to the [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself) principle and don’t have very similar code between our two templates hanging around.
 2. **Nested Blocks:** `{% block headline %}` is located inside `{% block content %}`. So while we’re replacing the headline, we get to keep all the other markup and variables found in the parent template.
 
-What if you wanted to **add** something to the block as opposed to replace? In this case you can use [`{{ parent() }}`](https://twig.symfony.com/doc/functions/parent.html) where the parent block’s content should go.
+What if you wanted to **add** something to the block as opposed to replace? In this case you can use [`{{ parent() }}`](https://twig.symfony.com/doc/3.x/functions/parent.html) where the parent block's content should go.
 
 ```twig
 {% extends "single.twig" %}
@@ -155,7 +155,7 @@ What if you wanted to **add** something to the block as opposed to replace? In t
 
 ## Includes
 
-Another very useful functionality is Twig’s [include](https://twig.symfony.com/doc/functions/include.html) function. You can use it to extract reusable parts of your theme and build your own component library.
+Another very useful functionality is Twig's [include](https://twig.symfony.com/doc/3.x/functions/include.html) function. You can use it to extract reusable parts of your theme and build your own component library.
 
 Let’s the example of the headline again.
 
@@ -194,7 +194,7 @@ The following are all fine.
 {{ include('components/post/header.twig') }}
 ```
 
-There’s a couple of neat functionalities when using `include()`, so it’s definitely worth reading through its [documentation](https://twig.symfony.com/doc/functions/include.html).
+There's a couple of neat functionalities when using `include()`, so it's definitely worth reading through its [documentation](https://twig.symfony.com/doc/3.x/functions/include.html).
 
 ## Use it a little, use it a lot
 

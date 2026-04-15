@@ -14,7 +14,7 @@ function theme_add_woocommerce_support() {
 add_action( 'after_setup_theme', 'theme_add_woocommerce_support' );
 ```
 
-For more information about how you can enable or disable features and change settings through theme support, refer to the [WooCommerce Theme Developer Handbook](https://docs.woocommerce.com/document/woocommerce-theme-developer-handbook).
+For more information about how you can enable or disable features and change settings through theme support, refer to the [WooCommerce Theme Developer Handbook](https://developer.woocommerce.com/docs/theming/theme-development/classic-theme-developer-handbook).
 
 Once that’s done you can start integrating WooCommerce into your theme by creating a file named **woocommerce.php** in the root of your theme. That will establish the context and data to be passed to your Twig files:
 
@@ -197,7 +197,7 @@ function timber_set_product( $post ) {
 
 Without this, some elements of the listed products would show the same information as the first product in the loop. If you see an error like `Warning: call_user_func_array() expects parameter 1 to be a valid callback, no array or string given`, this is your problem.
 
-*Note:* Some users reported issues with the loop context even when using the `timber_set_product()` helper function. Turns out the default WooCommerce hooks interfere with the output of the aforementioned function.
+_Note:_ Some users reported issues with the loop context even when using the `timber_set_product()` helper function. Turns out the default WooCommerce hooks interfere with the output of the aforementioned function.
 
 One way to get around this is by building your own image calls, that means removing WooCommerce’s default hooks and declare your own template for the HTML to show the image:
 

@@ -91,7 +91,7 @@ add_filter('timber/locations', function ($paths) {
 
 ## Register your own namespaces
 
-You can use [namespaces](https://symfony.com/doc/current/templating/namespaced_paths.html) in your locations, too. Namespaces allow you to create a shortcut to a particular location. Just define it as the value next to a path, for example:
+You can use [namespaces](https://symfony.com/doc/current/templates.html#template-namespaces) in your locations, too. Namespaces allow you to create a shortcut to a particular location. Just define it as the value next to a path, for example:
 
 **functions.php**
 

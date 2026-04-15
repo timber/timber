@@ -99,7 +99,7 @@ Timber is for both WordPress pros and rookies:
 - **Developers** who are new to WordPress and don’t want to dive deep into the the WordPress way of writing themes.
 - **WordPress professionals** who want to take advantage of object-oriented patterns that adhere to [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself) and [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) principles.
 - **Agencies and studios** that want to make it easier for teams to develop WordPress themes collaboratively. With Timber, your best WordPress engineer can focus on building the `.php` files with requests from WordPress and pass the data into `.twig` files. Once there, your frontend developer can mark-up data and build out a site’s look-and-feel.
-- **Agencies and studios** that want to build their own framework for building WordPress websites. [Lumberjack](https://lumberjack.rareloop.com/) and [Conifer](https://coniferplug.in/) are just two examples.
+- **Agencies and studios** that want to build their own framework for building WordPress websites. [Lumberjack](https://lumberjack.rareloop.com/) is a great example of this.
 
 ### When is Timber not the right tool for the job?
 

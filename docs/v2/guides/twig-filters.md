@@ -5,7 +5,7 @@ order: "220"
 
 ## General Filters
 
-Twig offers a variety of [filters](https://twig.symfony.com/doc/filters/index.html) to transform text and other information into the desired output. In addition, Timber has added some extra filters to filter data the WordPress way. Below is a comprehensive list of available filters, categorized by their functionality. Click on any filter name to jump to its detailed documentation and examples.
+Twig offers a variety of [filters](https://twig.symfony.com/doc/3.x/filters/index.html) to transform text and other information into the desired output. In addition, Timber has added some extra filters to filter data the WordPress way. Below is a comprehensive list of available filters, categorized by their functionality. Click on any filter name to jump to its detailed documentation and examples.
 
 ### Image Filters
 

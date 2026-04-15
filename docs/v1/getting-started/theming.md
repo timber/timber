@@ -48,7 +48,9 @@ We can do it like this in Twig:
 WordPress wants you to interact with its API in a certain way, which sucks. Because soon you get things like:
 
 ```html
-<h1 class="article-h1"><a href="<?php get_permalink(); ?>"><?php the_title(); ?></a></h1>
+<h1 class="article-h1">
+  <a href="<?php get_permalink(); ?>"><?php the_title(); ?></a>
+</h1>
 ```
 
 Okay, not _too_ terrible, but doesn’t this (Timber) way look so much nicer?
@@ -151,7 +153,7 @@ This is where we are going to handle the logic that powers our index file. Let�
 $context = Timber::context();
 ```
 
-This is going to return an object with a lot of the common things we need across the site. Things like the site name, the description or the navigation menu you’ll want to start with each time (even if you over-write them later). You can do a `print_r( $context );` to see what’s inside or open-up [**Timber.php**](https://github.com/timber/timber/blob/master/lib/Timber.php) to inspect for yourself.
+This is going to return an object with a lot of the common things we need across the site. Things like the site name, the description or the navigation menu you'll want to start with each time (even if you over-write them later). You can do a `print_r( $context );` to see what's inside or open-up [**Timber.php**](https://github.com/timber/timber/blob/1.x/lib/Timber.php) to inspect for yourself.
 
 ### Grab your posts
 
@@ -189,7 +191,7 @@ $args = array(
 $context['posts'] = Timber::get_posts( $args );
 ```
 
-You can find all available options in the documentation for [WP_Query](https://codex.wordpress.org/Class_Reference/WP_Query).
+You can find all available options in the documentation for [WP_Query](https://developer.wordpress.org/reference/classes/wp_query/).
 
 ### Use a WP_Query string
 

@@ -48,7 +48,7 @@ By extending `Timber\Post`, we have all the methods from that class available to
 
 ### Use Class Maps
 
-To register your own classes with Timber, you use Class Maps. Refer to the [Class Maps Guide](/docs/v2/guides/class-maps/) for a detailed explanation for how they work. For the `BlogPost` class, it would work like this:
+To register your own classes with Timber, you use Class Maps. Refer to the [Class Maps Guide](](/docs/v2/guides/class-maps/) for a detailed explanation for how they work. For the `BlogPost` class, it would work like this:
 
 **functions.php**
 
@@ -109,7 +109,6 @@ Or, because you already use Composer to handle dependencies, you can register yo
 ```
 
 Then, you would use that namespace for your `BlogPost` class.
-
 
 **src/BlogPost.php**
 

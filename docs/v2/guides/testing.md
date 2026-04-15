@@ -21,6 +21,7 @@ $ git clone git@github.com:timber/timber.git
 ```
 
 ### 3. Install WordPress's Development Version
+
 VVV no longer installs the development version of WordPress by default so we have to re-provision with it enabled. Edit `vvv-custom.yml` and find this line:
 
 ```
@@ -29,6 +30,7 @@ VVV no longer installs the development version of WordPress by default so we hav
 ```
 
 Set `skip_provisioning` to `false`
+
 ```
   wordpress-trunk:
     skip_provisioning: false # provisioning this one takes longer, so it's disabled by default
@@ -43,6 +45,7 @@ $ vagrant halt && vagrant up --provision
 Warning: this one will take a while.
 
 ### 4. Configure WordPress tests
+
 Copy `/wordpress-trunk/public_html/wp-tests-config-sample.php` to `/wordpress-trunk/public_html/wp-tests-config.php`. Assuming you're using VVV's defaults, we just need to specify how to access the database:
 
 ```php
@@ -52,6 +55,7 @@ define('DB_PASSWORD', 'root');
 ```
 
 ### 5. Install WordPress tests
+
 SSH into Vagrant to install Timber's tests and run them
 
 ```
@@ -88,7 +92,7 @@ $ composer install
 $ phpunit
 ```
 
-You should see a bunch of gobbledygook across your screen (the whole process will take about 4 mins.), but we should see that WordPress is testing successfully. Hurrah! For more info, check out the [Handbook on Automated Testing](https://make.wordpress.org/core/handbook/automated-testing/).
+You should see a bunch of gobbledygook across your screen (the whole process will take about 4 mins.), but we should see that WordPress is testing successfully. Hurrah! For more info, check out the [Handbook on Automated Testing](https://make.wordpress.org/core/handbook/testing/automated-testing/).
 
 ### Writing tests
 
@@ -116,6 +120,3 @@ vendor/bin/phpstan analyze -l 1
 ```
 
 Where the last argument is the level of [strictness](https://medium.com/@ondrejmirtes/phpstan-0-12-released-f1a88036535d) (0-7) to apply. We're currently starting at level 1 and working our way up over time.
-
-
-

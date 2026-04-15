@@ -6,8 +6,7 @@ Timber, especially in conjunction with WordPress and Twig, offers a variety of c
 
 ## tl;dr
 
-In my tests with Debug Bar, Timber has no measurable performance hit. Everything compiles to PHP. @fabpot has an [overview of the performance costs on his blog](https://fabien.potencier.org/article/34/templating-engines-in-php) (scroll down to the table).
-
+In my tests with Debug Bar, Timber has no measurable performance hit. Everything compiles to PHP. @fabpot has an [overview of the performance costs on his blog](https://fabien.potencier.org/article/34/templating-engines-in-php/) (scroll down to the table).
 
 ## Cache Everything
 
@@ -38,13 +37,13 @@ Timber::render( $filenames, $data, $expires, $cache_mode );
 
 The following cache modes are available:
 
-| Mode | Description |
-| --- | --- |
-| `Timber\Loader::CACHE_NONE` | Disable caching |
-| `Timber\Loader::CACHE_OBJECT` | WP Object Cache |
-| `Timber\Loader::CACHE_TRANSIENT` | Transients |
-| `Timber\Loader::CACHE_SITE_TRANSIENT` | Network wide transients |
-| `Timber\Loader::CACHE_USE_DEFAULT` | Use whatever caching mechanism is set as the default for `Timber\Loader`, the default is `CACHE_TRANSIENT`. |
+| Mode                                  | Description                                                                                                 |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `Timber\Loader::CACHE_NONE`           | Disable caching                                                                                             |
+| `Timber\Loader::CACHE_OBJECT`         | WP Object Cache                                                                                             |
+| `Timber\Loader::CACHE_TRANSIENT`      | Transients                                                                                                  |
+| `Timber\Loader::CACHE_SITE_TRANSIENT` | Network wide transients                                                                                     |
+| `Timber\Loader::CACHE_USE_DEFAULT`    | Use whatever caching mechanism is set as the default for `Timber\Loader`, the default is `CACHE_TRANSIENT`. |
 
 ## Cache _Parts_ of the Twig File and Data
 
@@ -106,7 +105,7 @@ This does not cache the _contents_ of the variables. This is recommended as a la
 
 ## Cache the PHP data
 
-Sometimes the most expensive parts of the operations are generating the data needed to populate the twig template. You can of course use WordPress’s default [Transient API](https://codex.wordpress.org/Transients_API) to store this data.
+Sometimes the most expensive parts of the operations are generating the data needed to populate the twig template. You can of course use WordPress's default [Transient API](https://developer.wordpress.org/apis/transients/) to store this data.
 
 You can also use some [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar) to make the checking/saving/retrieving of transient data a bit easier:
 

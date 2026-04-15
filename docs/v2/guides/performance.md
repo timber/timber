@@ -7,7 +7,7 @@ Timber, especially in conjunction with WordPress and Twig, offers a variety of c
 
 ## tl;dr
 
-In my tests with Debug Bar, Timber has no measurable performance hit. Everything compiles to PHP. @fabpot has an [overview of the performance costs on his blog](https://fabien.potencier.org/article/34/templating-engines-in-php) (scroll down to the table).
+In my tests with Debug Bar, Timber has no measurable performance hit. Everything compiles to PHP. @fabpot has an [overview of the performance costs on his blog](https://fabien.potencier.org/article/34/templating-engines-in-php/) (scroll down to the table).
 
 ## Cache Everything
 

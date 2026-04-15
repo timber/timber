@@ -4,7 +4,7 @@ title: "Menus"
 
 In Timber, you can use `Timber\Menu` to make a standard WordPress menu available to the Twig template as an object you can loop through.
 
-Once the menu becomes available to the context, you can get items from it in a way that is a little smoother and more versatile than WordPress’s `wp_nav_menu()` function. (And you never again need to rely on a crazy [Walker Function](https://codex.wordpress.org/Class_Reference/Walker)).
+Once the menu becomes available to the context, you can get items from it in a way that is a little smoother and more versatile than WordPress's `wp_nav_menu()` function. (And you never again need to rely on a crazy [Walker Function](https://developer.wordpress.org/reference/classes/walker/)).
 
 ## Initializing a menu
 
@@ -165,4 +165,4 @@ Other properties that are available are `current_item_parent` for direct parents
 
 ## Tips
 
-- [Add items dynamically](https://github.com/jarednova/timber/issues/200)
+- [Add items dynamically](https://github.com/timber/timber/issues/200)

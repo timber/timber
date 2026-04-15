@@ -4,7 +4,7 @@ title: "Filters"
 
 ## General Filters
 
-Twig offers a variety of [filters](https://twig.symfony.com/doc/filters/index.html) to transform text and other information into the desired output. In addition, Timber has added some valuable custom filters for your WP theme:
+Twig offers a variety of [filters](https://twig.symfony.com/doc/3.x/filters/index.html) to transform text and other information into the desired output. In addition, Timber has added some valuable custom filters for your WP theme:
 
 ## excerpt
 
@@ -19,10 +19,14 @@ When you need to trim text to a desired length (in words)
 **Output**
 
 ```html
-<p class="intro">Steve-O was born in London, England. His mother, Donna Gay (née Wauthier), was Canadian, and his father, Richard Glover, was American. His paternal grandfather was English and his maternal step-grandfather ...</p>
+<p class="intro">
+  Steve-O was born in London, England. His mother, Donna Gay (née Wauthier), was
+  Canadian, and his father, Richard Glover, was American. His paternal
+  grandfather was English and his maternal step-grandfather ...
+</p>
 ```
 
-* * *
+---
 
 ## function
 
@@ -41,6 +45,7 @@ Runs a function where you need. Really valuable for integrating plugins or exist
 ```
 
 ## <del>function (deprecated)<del>
+
 Runs a function where you need. Really valuable for integrating plugins or existing themes
 
 **Twig**
@@ -55,9 +60,10 @@ Runs a function where you need. Really valuable for integrating plugins or exist
 <div class="entry-meta">Posted on September 6, 2013</div>
 ```
 
-* * *
+---
 
 ## relative
+
 Converts an absolute URL into a relative one, for example:
 
 ```twig
@@ -68,12 +74,13 @@ My custom link is <a href="{{ 'https://example.org/2015/08/my-blog-post' | relat
 My custom link is <a href="/2015/08/my-blog-post">here!</a>
 ```
 
-* * *
+---
 
 ## pretags
+
 Converts tags like `<span>` into `&lt;span&gt;`, but only inside of `<pre>` tags. Great for code samples when you need to preserve other formatting in the non-code sample content.
 
-* * *
+---
 
 ## sanitize
 
@@ -91,7 +98,7 @@ Converts Titles like this into `titles-like-this`
 my-awesome-post
 ```
 
-* * *
+---
 
 ## shortcodes
 
@@ -109,11 +116,12 @@ Runs text through WordPress's shortcodes filter. In this example imagine that yo
 
 ```html
 <section class="gallery">
-Here is my gallery <div class="gallery" id="gallery-123"><img src="...." />...</div>
+  Here is my gallery
+  <div class="gallery" id="gallery-123"><img src="...." />...</div>
 </section>
 ```
 
-* * *
+---
 
 ## time_ago
 
@@ -131,7 +139,7 @@ Displays a date in timeago format:
 <p class="entry-meta">Posted: <time>3 days ago</time></p>
 ```
 
-* * *
+---
 
 ## truncate
 
@@ -147,7 +155,7 @@ Displays a date in timeago format:
 <p class="entry-meta">Bruce Wayne's parents were shot outside the opera ...</p>
 ```
 
-* * *
+---
 
 ## wpautop
 
@@ -165,14 +173,19 @@ Adds paragraph breaks to new lines
 
 ```html
 <div class="body">
-	<p>Sinatra said, "What do you do?"</p>
-	<p>"I'm a plumber," Ellison said.</p>
-	<p>"No, no, he's not," another young man quickly yelled from across the table. "He wrote The Oscar."</p>
-	<p>"Oh, yeah," Sinatra said, "well I've seen it, and it's a piece of crap."</p>
+  <p>Sinatra said, "What do you do?"</p>
+  <p>"I'm a plumber," Ellison said.</p>
+  <p>
+    "No, no, he's not," another young man quickly yelled from across the table.
+    "He wrote The Oscar."
+  </p>
+  <p>
+    "Oh, yeah," Sinatra said, "well I've seen it, and it's a piece of crap."
+  </p>
 </div>
 ```
 
-* * *
+---
 
 ## list
 

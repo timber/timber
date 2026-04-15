@@ -92,7 +92,7 @@ add_filter('timber/context', function ($context) {
 });
 ```
 
-For menus to work, you will first need to [register them](https://codex.wordpress.org/Navigation_Menus).
+For menus to work, you will first need to [register them](https://developer.wordpress.org/reference/functions/register_nav_menus/).
 
 ### Context cache
 
@@ -118,7 +118,7 @@ Timber will not cache template contexts.
 
 ## Template contexts
 
-When WordPress decides [which PHP template file](https://wphierarchy.com/) it will display, it has already run database queries to fetch posts for archive templates or to set up the `$post` global for singular templates.
+When WordPress decides [which PHP template file](https://wpshout.com/wordpress-template-hierarchy/) it will display, it has already run database queries to fetch posts for archive templates or to set up the `$post` global for singular templates.
 
 When you call `Timber::context()`, Timber will automatically populate your context with different variables like `post`, `posts`, `term`, `terms` or `author`, depending on which type of template file you’re in.
 
@@ -182,13 +182,13 @@ $context = Timber::context([
 
 The `posts` variable will be available in archive templates (when [ `is_archive()`](https://developer.wordpress.org/reference/functions/is_archive/) returns `true`). In addition to that, it will also contain `post` or `term` variables for different archive types. Here’s a small overview.
 
-| Archive | Condition | Context variables |
-|---|---|---|
-| Home | `is_home()` | `post`<br>`posts` |
-| Taxonomy Archive | `is_category()`<br>`is_tag()`<br>`is_tax()` | `term`<br>`posts` |
-| Author Archive | `is_author()` | `author`<br>`posts` |
-| Search Archive | `is_search()` | `posts`<br>`search_query` |
-| All other archives | `is_archive()` | `posts` |
+| Archive            | Condition                                   | Context variables         |
+| ------------------ | ------------------------------------------- | ------------------------- |
+| Home               | `is_home()`                                 | `post`<br>`posts`         |
+| Taxonomy Archive   | `is_category()`<br>`is_tag()`<br>`is_tax()` | `term`<br>`posts`         |
+| Author Archive     | `is_author()`                               | `author`<br>`posts`       |
+| Search Archive     | `is_search()`                               | `posts`<br>`search_query` |
+| All other archives | `is_archive()`                              | `posts`                   |
 
 The `posts` variable will contain an object that implements `Timber\PostCollectionInterace` with the posts that WordPress already fetched for your archive page.
 
@@ -220,7 +220,7 @@ $context = Timber::context([
 
 #### Change arguments for default query
 
-Sometimes you don’t want to use the default query, but build on the default query and only change a little thing. You can change arguments for the default query that WordPress will use to fetch posts by using the `merge_default` argument. For example, if you’d want to change the default query to *only show posts written by a specific group of authors*, you could pass in an `author__in` argument:
+Sometimes you don’t want to use the default query, but build on the default query and only change a little thing. You can change arguments for the default query that WordPress will use to fetch posts by using the `merge_default` argument. For example, if you’d want to change the default query to _only show posts written by a specific group of authors_, you could pass in an `author__in` argument:
 
 **archive.php**
 
@@ -239,8 +239,8 @@ $context = Timber::context([
 Timber::render('archive.twig', $context);
 ```
 
-Timber will accept the parameters that can be found in WordPress’s [WP_Query class](https://codex.wordpress.org/Class_Reference/WP_Query).
+Timber will accept the parameters that can be found in WordPress's [WP_Query class](https://developer.wordpress.org/reference/classes/wp_query/).
 
 #### Use a custom post class
 
-By default, `Timber::get_posts()` will contain `Timber\Post` objects. If you want to control what class will be used for the posts, you can use the [Post Class Map](https://timber.github.io/docs/v2/guides/posts#the-post-class-map).
+By default, `Timber::get_posts()` will contain `Timber\Post` objects. If you want to control what class will be used for the posts, you can use the [Post Class Map](https://timber.github.io/docs/v2/guides/posts/#the-post-class-map).

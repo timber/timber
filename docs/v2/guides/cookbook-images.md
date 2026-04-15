@@ -27,7 +27,7 @@ Note: If the WordPress size (e.g `medium`) has not been generated, it will retur
 
 ## Arbitrary resizing of images
 
-Want to resize an image? Here we’re going to use [Twig Filters](https://twig.symfony.com/doc/filters/index.html).
+Want to resize an image? Here we're going to use [Twig Filters](https://twig.symfony.com/doc/3.x/filters/index.html).
 
 ```twig
 <img src="{{ post.thumbnail.src|resize(300, 200) }}" />
@@ -91,6 +91,7 @@ You can use Timber to generate @2x image sizes for retina devices. For example, 
     {{ post.thumbnail.src|retina(3) }} 3x,
     {{ post.thumbnail.src|retina(4) }} 4x">
 ```
+
 Unfortunately, it’s not possible to use the `|retina()` filter in combination with `|resize()`, because it would create an upscaled image. We are working on making this work eventually.
 
 ## Using images in custom fields

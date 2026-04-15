@@ -9,14 +9,14 @@ Before we tell you how to work with dates and times in Timber, we need to look a
 
 When you work with dates and times in a WordPress context, it’s best if you stick to the date and time functionality that WordPress provides for you. Timber tries to use the default functionality as much as it can. To prepare your environment, make sure to check the following WordPress settings:
 
-- Set the correct timezone in *Settings* &rarr; *General*.
-- Set the desired date and time formats in *Settings* &rarr; *General*. You can change the format whenever you display a date later.
+- Set the correct timezone in _Settings_ &rarr; _General_.
+- Set the desired date and time formats in _Settings_ &rarr; _General_. You can change the format whenever you display a date later.
 
 In WordPress 5.3, there were [improvements for the Date/Time component](https://make.wordpress.org/core/2019/09/23/date-time-improvements-wp-5-3/). Read that post as an introduction to what you should and shouldn’t do when working with dates and times in WordPress.
 
 ### WordPress and timezones
 
-One of the most important things to understand with dates in WordPress is that WordPress always works with `UTC` as a default timezone. You shouldn’t try to change the default timezone with [`date_default_timezone_set()`](https://core.trac.wordpress.org/ticket/48623#comment:31).
+One of the most important things to understand with dates in WordPress is that WordPress always works with `UTC` as a default timezone. You shouldn't try to change the default timezone with `date_default_timezone_set()`.
 
 Timezones in WordPress are handled by the `timezone_string` setting in the database. WordPress calculates timezone offsets from that timezone setting.
 
@@ -70,7 +70,7 @@ $timestamp = $datetime->getTimestamp();
 
 When the date string already includes the timezone, like when you use the `DATE_ATOM` format, then you don’t need to pass a timezone. When it doesn’t, you may have to pass it, depending on how you manage/use your dates.
 
-If you stored your dates *with* a certain timezone applied, then you will have to create them with a timezone. You can do this by passing `wp_timezone()` as the third parameter.
+If you stored your dates _with_ a certain timezone applied, then you will have to create them with a timezone. You can do this by passing `wp_timezone()` as the third parameter.
 
 ```php
 $datetime = DateTimeImmutable::createFromFormat(
@@ -156,7 +156,7 @@ $datetime = new DateTimeImmutable('2008-08-07 18:11:31');
 
 When you’ve worked with dates and times in PHP before, you’re probably used to the `date()` function, or `DateTime::format()`. In WordPress, we usually don’t use these function to change the date format. Instead, we used the [`date_i18n()`](https://developer.wordpress.org/reference/functions/date_i18n/) function to get a **date in a translated format, using the correct timezone**. As of WordPress 5.3, there’s the [`wp_date()`](https://developer.wordpress.org/reference/functions/wp_date/) function, which you should use whenever you can. It’s a replacement for `date_i18n()`.
 
-By default, Timber uses the date format set in *Settings* &rarr; *General*. That settings is saved in the `date_format` option.
+By default, Timber uses the date format set in _Settings_ &rarr; _General_. That settings is saved in the `date_format` option.
 
 ```php
 // With a timestamp.
@@ -199,9 +199,9 @@ If you want to change the display format, use an argument for the function. Chec
 
 ## Twig filters and functions
 
-Twig includes a [`date`](https://twig.symfony.com/doc/3.x/filters/date.html) filter as well as a [`date()`](https://twig.symfony.com/doc/2.x/functions/date.html) function. Timber supports this functionality out of the box and sets the correct timezones in the background. You don’t have to set timezones in the *Twig Environment* yourself.
+Twig includes a [`date`](https://twig.symfony.com/doc/3.x/filters/date.html) filter as well as a [`date()`](https://twig.symfony.com/doc/2.x/functions/date.html) function. Timber supports this functionality out of the box and sets the correct timezones in the background. You don’t have to set timezones in the _Twig Environment_ yourself.
 
-**Remember**, you should set the correct timezone in *Settings* &rarr; *General* in the WordPress admin to make this work correctly.
+**Remember**, you should set the correct timezone in _Settings_ &rarr; _General_ in the WordPress admin to make this work correctly.
 
 ```twig
 {{ my_date|date('j. F Y') }}
@@ -287,7 +287,7 @@ $before_today = $post->date('Ymd') < wp_date('Ymd');
 $before_today = $post->date('U') < current_datetime()->getTimestamp();
 ```
 
-In Twig, there’s the [`date()`](https://twig.symfony.com/doc/functions/date.html) function which you can use to compare dates.
+In Twig, there's the [`date()`](https://twig.symfony.com/doc/3.x/functions/date.html) function which you can use to compare dates.
 
 ```twig
 {% if date(post.meta('show_until')) >= date('now') %}
