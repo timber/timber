@@ -43,10 +43,6 @@ class ToWebp extends ImageOperation
      */
     public function run($load_filename, $save_filename)
     {
-        if (!\is_file($load_filename)) {
-            return false;
-        }
-
         // Attempt to check if SVG.
         if (ImageHelper::is_svg($load_filename)) {
             return false;

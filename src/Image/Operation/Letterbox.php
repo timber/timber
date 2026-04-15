@@ -28,8 +28,7 @@ class Letterbox extends ImageOperation
         private $w,
         private $h,
         private $color
-    ) {
-    }
+    ) {}
 
     /**
      * @param   string    $src_filename     the basename of the file (ex: my-awesome-pic)
@@ -71,7 +70,6 @@ class Letterbox extends ImageOperation
 
         $bg = \imagecreatetruecolor($w, $h);
         if (!$this->color) {
-            \imagealphablending($bg, false);
             \imagesavealpha($bg, true);
             $bgColor = \imagecolorallocatealpha($bg, 0, 0, 0, 127);
         } else {
@@ -130,7 +128,7 @@ class Letterbox extends ImageOperation
             }
             return $save_func($bg, $save_filename, $quality);
         }
-        Helper::error_log($image);
+        Helper::error_log('Error creating letterbox image: ' . $load_filename);
         return false;
     }
 }

@@ -301,7 +301,8 @@ class ImageHelper
     public static function _delete_generated_if_image($post_id)
     {
         if (\wp_attachment_is_image($post_id)) {
-            $attachment = Timber::get_attachment($post_id);
+            $attachment = Timber::get_post($post_id);
+            /** @var Attachment $attachment */
             if ($file_loc = $attachment->file_loc()) {
                 ImageHelper::delete_generated_files($file_loc);
             }
@@ -745,8 +746,55 @@ class ImageHelper
         return $url;
     }
 
+    /** Validates that a file exists and is a valid image file.
+     *
+     * @param string $load_filename The file path to validate.
+     * @param string $operation_class The class name of the operation (for error messages).
+     * @return bool True if valid, false otherwise.
+     */
+    protected static function validate_image_file($load_filename, $operation_class = '')
+    {
+        // Validate that the file exists
+        if (!\file_exists($load_filename)) {
+            $operation_name = self::get_operation_name($operation_class);
+            Helper::error_log('Cannot ' . $operation_name . ': source file does not exist: ' . $load_filename);
+            return false;
+        }
+
+        // Validate that this is likely an image file by checking extension
+        $allowed_extensions = ['jpg', 'jpeg', 'jpe', 'png', 'gif', 'webp', 'bmp', 'tiff', 'svg'];
+        $path_info = \pathinfo($load_filename);
+        $extension = isset($path_info['extension']) ? \strtolower($path_info['extension']) : '';
+
+        if (!\in_array($extension, $allowed_extensions)) {
+            $operation_name = self::get_operation_name($operation_class);
+            Helper::error_log('Cannot ' . $operation_name . ': file does not appear to be a valid image (extension: .' . $extension . '): ' . $load_filename);
+            return false;
+        }
+
+        return true;
+    }
+
     /**
-     * Runs realpath to resolve symbolic links (../, etc). But only if it’s a path and not a URL.
+     * Gets a human-readable operation name from the operation class name.
+     *
+     * @param string $operation_class The full class name of the operation.
+     * @return string A human-readable operation name.
+     */
+    protected static function get_operation_name($operation_class)
+    {
+        $operation_map = [
+            \Timber\Image\Operation\Resize::class => 'resize',
+            \Timber\Image\Operation\Retina::class => 'create retina image',
+            \Timber\Image\Operation\Letterbox::class => 'letterbox',
+            \Timber\Image\Operation\ToJpg::class => 'convert to JPG',
+            \Timber\Image\Operation\ToWebp::class => 'convert to WEBP',
+        ];
+
+        return $operation_map[$operation_class] ?? 'process image';
+    }
+
+    /** Runs realpath to resolve symbolic links (../, etc). But only if it’s a path and not a URL.
      *
      * @param  string $path
      * @return string The resolved path.
@@ -873,7 +921,10 @@ class ImageHelper
          * @param string $destination_path Full path to the destination of a resized image.
          */
         $destination_path = \apply_filters('timber/image/new_path', $destination_path);
-
+        // Validate source file before attempting operation
+        if (!self::validate_image_file($source_path, $op::class)) {
+            return $src;
+        }
         // if already exists...
         if (\file_exists($source_path) && \file_exists($destination_path)) {
             if ($force || \filemtime($source_path) > \filemtime($destination_path)) {
