@@ -194,7 +194,7 @@ The following are all fine.
 {{ include('components/post/header.twig') }}
 ```
 
-There's a couple of neat functionalities when using `include()`, so it's definitely worth reading through its [documentation](https://twig.symfony.com/doc/3.x/functions/include.html).
+There’s a couple of neat functionalities when using `include()`, so it’s definitely worth reading through its [documentation](https://twig.symfony.com/doc/3.x/functions/include.html).
 
 ## Use it a little, use it a lot
 
