@@ -420,7 +420,7 @@ foreach (get_transient('my_posts') as $post) {
 
 ## Using posts or post collections in the context
 
-Timber will automatically set the `post` or `posts` variable for you in the context depending on the template file you're using. Read more about this in the [Context Guide](https://timber.github.io/docs/v2/guides/context/#template-contexts).
+Timber will automatically set the `post` or `posts` variable for you in the context depending on the template file you’re using. Read more about this in the [Context Guide](https://timber.github.io/docs/v2/guides/context/#template-contexts).
 
 ## Password protected posts
 
