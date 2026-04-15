@@ -687,17 +687,20 @@ class Loader implements LoaderInterface
 
     /**
      * @return CacheExtension\Extension
+     * @phpstan-return object
      */
     private function _get_cache_extension()
     {
         $key_generator = new Cache\KeyGenerator();
         $cache_provider = new Cache\WPObjectCacheAdapter($this);
         $cache_lifetime = \apply_filters('timber/cache/extension/lifetime', 0);
+        // @phpstan-ignore class.notFound
         $cache_strategy = new CacheExtension\CacheStrategy\GenerationalCacheStrategy(
             $cache_provider,
             $key_generator,
             $cache_lifetime
         );
+        // @phpstan-ignore class.notFound
         $cache_extension = new CacheExtension\Extension($cache_strategy);
 
         return $cache_extension;

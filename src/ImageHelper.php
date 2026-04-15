@@ -453,7 +453,6 @@ class ImageHelper
         }
         // Download file to temp location
         if (!\function_exists('download_url')) {
-            // @phpstan-ignore requireOnce.fileNotFound
             require_once ABSPATH . '/wp-admin/includes/file.php';
         }
         $tmp = \download_url($file);

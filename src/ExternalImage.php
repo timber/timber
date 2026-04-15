@@ -9,7 +9,7 @@ namespace Timber;
  * Instead, it’s an image that can be either a path (relative/absolute) on the same server, or a URL (either from the
  * same or from a different website). When you use a URL of an image on a different website, Timber will load it into
  * your WordPress installation once and then load it from there.
- *
+ * @phpstan-consistent-constructor
  * @api
  * @example
  * ```php

@@ -11,6 +11,7 @@ use WP_Post;
 /**
  * Class MenuItem
  *
+ * @phpstan-consistent-constructor
  * @api
  */
 class MenuItem extends CoreEntity implements Stringable

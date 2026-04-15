@@ -5,6 +5,9 @@ namespace Timber\Integration\CoAuthorsPlus;
 use stdClass;
 use Timber\User;
 
+/**
+ * @phpstan-consistent-constructor
+ */
 class CoAuthorsPlusUser extends User
 {
     /**
@@ -13,6 +16,21 @@ class CoAuthorsPlusUser extends User
      * @var string
      */
     protected $thumbnail;
+
+    /**
+     * @var string
+     */
+    public $first_name;
+
+    /**
+     * @var string
+     */
+    public $last_name;
+
+    /**
+     * @var string
+     */
+    public $description;
 
     public static function from_guest_author(stdClass $coauthor)
     {
