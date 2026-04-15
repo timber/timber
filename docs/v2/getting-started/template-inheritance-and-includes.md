@@ -141,7 +141,7 @@ So there are two big concepts going on here:
 1. **Multiple Inheritance:** We’re extending **single.twig**, which itself extends **base.twig**. Thus we stay true to the [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself) principle and don’t have very similar code between our two templates hanging around.
 2. **Nested Blocks:** `{% block headline %}` is located inside `{% block content %}`. So while we’re replacing the headline, we get to keep all the other markup and variables found in the parent template.
 
-What if you wanted to **add** something to the block as opposed to replace? In this case you can use [`{{ parent() }}`](https://twig.symfony.com/doc/3.x/functions/parent.html) where the parent block's content should go.
+What if you wanted to **add** something to the block as opposed to replace? In this case you can use [`{{ parent() }}`](https://twig.symfony.com/doc/3.x/functions/parent.html) where the parent block’s content should go.
 
 ```twig
 {% extends "single.twig" %}
