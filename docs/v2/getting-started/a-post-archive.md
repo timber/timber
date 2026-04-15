@@ -13,7 +13,7 @@ $context = Timber::context();
 Timber::render('index.twig', $context);
 ```
 
-For basic archives, that's all you need. Behind the scenes, Timber already prepared a `posts` variable for you that holds all the posts that you would normally find in [The Loop](https://developer.wordpress.org/themes/classic-themes/basics/the-loop/).
+For basic archives, that’s all you need. Behind the scenes, Timber already prepared a `posts` variable for you that holds all the posts that you would normally find in [The Loop](https://developer.wordpress.org/themes/classic-themes/basics/the-loop/).
 
 You can then loop over your posts with a [for-loop in Twig](https://twig.symfony.com/doc/3.x/tags/for.html). Here's what your archive page could look like.
 
