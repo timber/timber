@@ -876,7 +876,7 @@ class ImageHelper
         $destination_path = \apply_filters('timber/image/new_path', $destination_path);
 
         if (!\file_exists($source_path)) {
-            Helper::error_log('Timber image operation: source file does not exist: ' . $source_path);
+            Helper::error_log('Image operation: source file does not exist: ' . $source_path);
             return $src;
         }
 
