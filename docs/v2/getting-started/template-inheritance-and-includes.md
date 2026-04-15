@@ -115,7 +115,7 @@ For this introduction, let’s assume that the name of the page is "All about Ja
 
 Compared to the earlier example, we now have the `{% block headline %}` bit surrounding the `<header>` tag of the post.
 
-To inject a custom bit of markup, we're going to create a file called **single-all-about-jared.twig** in the **views** directory. The logic for which template should be selected is controlled in **single.php**, but generally follows WordPress conventions on [Template Hierarchy](https://wpshout.com/wordpress-template-hierarchy/).
+To inject a custom bit of markup, we’re going to create a file called **single-all-about-jared.twig** in the **views** directory. The logic for which template should be selected is controlled in **single.php**, but generally follows WordPress conventions on [Template Hierarchy](https://wpshout.com/wordpress-template-hierarchy/).
 
 Now, to replace the `headline` block **single.twig**, we define it in our new file.
 
