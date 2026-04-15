@@ -95,6 +95,13 @@ class Twig
             'get_comments' => [
                 'callable' => [Timber::class, 'get_comments'],
             ],
+            'render_twig_block' => [
+                'callable' => function ($block_name, $filenames, $data = [], $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT) {
+                    // When called from Twig, use the default locations collection
+                    $caller = LocationManager::get_locations();
+                    Timber::render_twig_block($block_name, $filenames, $data, $caller, $expires, $cache_mode);
+                },
+            ],
             'Post' => [
                 'callable' => function ($post_id) use ($post_factory) {
                     Helper::deprecated('{{ Post() }}', '{{ get_post() }} or {{ get_posts() }}', '2.0.0');

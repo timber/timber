@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Test Page with Twig Function</title>
+</head>
+<body>
+    {{ render_twig_block(toast_type, 'assets/toasts.twig', {message: toast_message}) }}
+    <main>
+        <h1>Main Content</h1>
+        <p>This is the main content of the page.</p>
+    </main>
+</body>
+</html>

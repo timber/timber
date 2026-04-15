@@ -76,8 +76,8 @@
     "symplify/easy-coding-standard": "^13",
     "szepeviktor/phpstan-wordpress": "^2",
     "twig/cache-extra": "^3.17",
-    "wpackagist-plugin/advanced-custom-fields": "^6.5",
-    "wpackagist-plugin/co-authors-plus": "^3.6"
+    "wp-plugin/advanced-custom-fields": "^6.5",
+    "wp-plugin/co-authors-plus": "^3.6"
   },
   "suggest": {
     "php-coveralls/php-coveralls": "^2.0 for code coverage",
@@ -85,12 +85,9 @@
   },
   "repositories": [
     {
+      "name": "wp-packages",
       "type": "composer",
-      "url": "https://wpackagist.org",
-      "only": [
-        "wpackagist-plugin/*",
-        "wpackagist-theme/*"
-      ]
+      "url": "https://repo.wp-packages.org"
     }
   ],
   "autoload": {
@@ -120,8 +117,6 @@
   "scripts": {
     "analyze": "phpstan analyse --memory-limit=1G",
     "cs": "ecs check",
-    "cs:docs": "ecs check-markdown docs/v2/**/*.md --fix",
-    "cs:docs:fix": "ecs check-markdown docs/v2/**/*.md",
     "cs:fix": "ecs check --fix",
     "grump": "grumphp run",
     "grump:install": "grumphp git:init",
@@ -169,8 +164,6 @@
   "scripts-descriptions": {
     "analyze": "Run PHPStan code analysis",
     "cs": "Check code style with EasyCodingStandard",
-    "cs:docs": "Check markdown files in the docs directory with EasyCodingStandard",
-    "cs:docs:fix": "Fix markdown files in the docs directory with EasyCodingStandard",
     "cs:fix": "Fix code style with EasyCodingStandard",
     "grump": "Run GrumPHP checks",
     "grump:install": "Install GrumPHP configuration",

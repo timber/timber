@@ -10,6 +10,7 @@ use WP_Term;
 /**
  * Class Menu
  *
+ * @phpstan-consistent-constructor
  * @api
  */
 class Menu extends CoreEntity implements Stringable

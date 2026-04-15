@@ -877,7 +877,7 @@ class PostTest extends TimberIntegrationTestCase
 
         // test expected tags
         $timber_tags = $post->terms('post_tag');
-        $dummy_timber_tag = Timber::get_term($dummy_tag['term_id'], 'post_tag');
+        $dummy_timber_tag = Timber::get_term($dummy_tag['term_id']);
         $this->assertEquals('whatever', $timber_tags[0]->slug);
         $this->assertEquals($dummy_timber_tag, $timber_tags[0]);
 
@@ -935,7 +935,7 @@ class PostTest extends TimberIntegrationTestCase
                 'taxonomy' => 'post_tag',
             ],
         ]);
-        $dummy_timber_tag = Timber::get_term($dummy_tag['term_id'], 'post_tag');
+        $dummy_timber_tag = Timber::get_term($dummy_tag['term_id']);
         $this->assertEquals('whatever', $timber_tags[0]->slug);
         $this->assertEquals($dummy_timber_tag, $timber_tags[0]);
 

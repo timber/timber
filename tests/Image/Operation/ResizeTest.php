@@ -182,4 +182,105 @@ class ResizeTest extends TimberIntegrationTestCase
 
         $this->assertEquals($expected, $sideloaded);
     }
+
+    /**
+     * Test that resize fails gracefully when given a non-image file.
+     *
+     * @see https://github.com/timber/timber/issues/3231
+     */
+    public function testResizeFailsGracefullyWithNonImageFile()
+    {
+        // Create an HTML file in uploads directory (simulating a page URL)
+        $upload_dir = \wp_get_upload_dir();
+
+        // Ensure upload directory exists
+        if (!\is_dir($upload_dir['path'])) {
+            \wp_mkdir_p($upload_dir['path']);
+        }
+
+        $html_file = $upload_dir['path'] . '/page.html';
+        \file_put_contents($html_file, '<html><body>This is a webpage, not an image</body></html>');
+
+        // Attempt to resize the HTML file
+        $result = ImageHelper::resize($html_file, 300, 200);
+
+        // Should return the original source (failed gracefully)
+        $this->assertEquals($html_file, $result);
+
+        // Clean up
+        @\unlink($html_file);
+    }
+
+    /**
+     * Test that resize fails gracefully when given a text file.
+     *
+     * @see https://github.com/timber/timber/issues/3231
+     */
+    public function testResizeFailsGracefullyWithTextFile()
+    {
+        // Create a text file in uploads directory
+        $upload_dir = \wp_get_upload_dir();
+
+        // Ensure upload directory exists
+        if (!\is_dir($upload_dir['path'])) {
+            \wp_mkdir_p($upload_dir['path']);
+        }
+
+        $text_file = $upload_dir['path'] . '/document.txt';
+        \file_put_contents($text_file, 'This is a text file, not an image');
+
+        // Attempt to resize the text file
+        $result = ImageHelper::resize($text_file, 300, 200);
+
+        // Should return the original source (failed gracefully)
+        $this->assertEquals($text_file, $result);
+
+        // Clean up
+        @\unlink($text_file);
+    }
+
+    /**
+     * Test that resize fails gracefully when given a non-existent file.
+     *
+     * @see https://github.com/timber/timber/issues/3231
+     */
+    public function testResizeFailsGracefullyWithMissingFile()
+    {
+        $upload_dir = \wp_get_upload_dir();
+        $missing_file = $upload_dir['path'] . '/non-existent-image.jpg';
+
+        // Attempt to resize a file that doesn't exist
+        $result = ImageHelper::resize($missing_file, 300, 200);
+
+        // Should return the original source (failed gracefully)
+        $this->assertEquals($missing_file, $result);
+    }
+
+    /**
+     * Test that resize fails gracefully with a PDF file.
+     *
+     * @see https://github.com/timber/timber/issues/3231
+     */
+    public function testResizeFailsGracefullyWithPdfFile()
+    {
+        // Create a fake PDF file in uploads directory
+        $upload_dir = \wp_get_upload_dir();
+
+        // Ensure upload directory exists
+        if (!\is_dir($upload_dir['path'])) {
+            \wp_mkdir_p($upload_dir['path']);
+        }
+
+        $pdf_file = $upload_dir['path'] . '/document.pdf';
+        \file_put_contents($pdf_file, '%PDF-1.4 fake pdf content');
+
+        // Attempt to resize the PDF file
+        $result = ImageHelper::resize($pdf_file, 300, 200);
+
+        // Should return the original source (failed gracefully)
+        $this->assertEquals($pdf_file, $result);
+
+        // Clean up
+        @\unlink($pdf_file);
+    }
 }

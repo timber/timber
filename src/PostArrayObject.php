@@ -16,6 +16,7 @@ use WP_Post;
 class PostArrayObject extends ArrayObject implements PostCollectionInterface, JsonSerializable
 {
     use AccessesPostsLazily;
+    use CollectsTerms;
 
     /**
      * Takes an arbitrary array of WP_Posts to wrap and (lazily) translate to
@@ -35,6 +36,22 @@ class PostArrayObject extends ArrayObject implements PostCollectionInterface, Js
     public function pagination(array $options = [])
     {
         return null;
+    }
+
+    /**
+     * Get the post types to use when determining which taxonomies to query.
+     *
+     * @internal
+     * @return array Array of post type slugs.
+     */
+    protected function get_post_types_for_term_query()
+    {
+        // Get all post types from the actual posts in this collection.
+        $post_types = [];
+        foreach ($this as $post) {
+            $post_types[] = $post->post_type;
+        }
+        return \array_unique($post_types);
     }
 
     /**

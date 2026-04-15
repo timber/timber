@@ -22,6 +22,7 @@ use WP_Query;
 class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSerializable
 {
     use AccessesPostsLazily;
+    use CollectsTerms;
 
     /**
      * Found posts.
@@ -126,6 +127,21 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
         }
 
         return $this->pagination;
+    }
+
+    /**
+     * Get the post types to use when determining which taxonomies to query.
+     *
+     * @internal
+     * @return array Array of post type slugs.
+     */
+    protected function get_post_types_for_term_query()
+    {
+        $post_types = $this->wp_query->query_vars['post_type'] ?? 'post';
+        if (\is_string($post_types)) {
+            $post_types = [$post_types];
+        }
+        return $post_types;
     }
 
     /**

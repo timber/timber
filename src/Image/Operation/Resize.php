@@ -228,9 +228,9 @@ class Resize extends ImageOperation
             Helper::error_log('Error loading ' . $image->error_data['error_loading_image']);
         } else {
             if (!\extension_loaded('gd')) {
-                Helper::error_log('Can not resize image, please install php-gd');
+                Helper::error_log('Cannot resize image, please install php-gd');
             } else {
-                Helper::error_log($image);
+                Helper::error_log('Error resizing image: ' . $load_filename);
             }
             // @codeCoverageIgnoreEnd
         }

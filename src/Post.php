@@ -17,6 +17,7 @@ use WP_Post;
  * example of what it’s like to work with this object in your code.
  *
  * @api
+ * @phpstan-consistent-constructor
  * @example
  *
  * **single.php**
@@ -763,15 +764,6 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
             'object_ids' => [$this->ID],
             'taxonomy' => $taxonomies,
         ]);
-
-        if (!$merge) {
-            // get results segmented out per taxonomy
-            $queries = $this->partition_tax_queries($query, $taxonomies);
-            $termGroups = Timber::get_terms($queries);
-
-            // zip 'em up with the right keys
-            return \array_combine($taxonomies, $termGroups);
-        }
 
         return Timber::get_terms($query, $options);
     }
@@ -2106,28 +2098,6 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
     protected function get_entity_name()
     {
         return 'post';
-    }
-
-    /**
-     * Given a base query and a list of taxonomies, return a list of queries
-     * each of which queries for one of the taxonomies.
-     * @example
-     * ```
-     * $this->partition_tax_queries(["object_ids" => [123]], ["a", "b"]);
-     *
-     * // result:
-     * // [
-     * //   ["object_ids" => [123], "taxonomy" => ["a"]],
-     * //   ["object_ids" => [123], "taxonomy" => ["b"]],
-     * // ]
-     * ```
-     * @internal
-     */
-    private function partition_tax_queries(array $query, array $taxonomies): array
-    {
-        return \array_map(fn (string $tax): array => \array_merge($query, [
-            'taxonomy' => [$tax],
-        ]), $taxonomies);
     }
 
     /**

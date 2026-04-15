@@ -1,0 +1,26 @@
+{# toasts.twig - Template with multiple blocks for testing #}
+
+{% block error %}
+<div class="top-0 left-0 w-full p-4 font-bold bg-red-500 text-red-50" role="alert">{{ message }}</div>
+{% endblock %}
+
+{% block warning %}
+<div class="top-0 left-0 w-full p-4 bg-yellow-500 text-yellow-50" role="alert">{{ message }}</div>
+{% endblock %}
+
+{% block success %}
+<div class="top-0 left-0 w-full p-4 bg-green-500 text-green-50" role="alert">{{ message }}</div>
+{% endblock %}
+
+{% block info %}
+<div class="top-0 left-0 w-full p-4 bg-blue-500 text-blue-50" role="alert">{{ message }}</div>
+{% endblock %}
+
+{% block nested %}
+    {% block nested_inner %}
+        <p>This is a nested block: {{ content }}</p>
+    {% endblock %}
+{% endblock %}
+
+{# Default content outside blocks for testing fallback behavior #}
+<div class="default-content">This is the default template content</div>

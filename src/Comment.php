@@ -12,6 +12,7 @@ use WP_Comment;
  * in the context of the comments on a post. However you can also fetch a comment directly using its
  * comment ID.
  *
+ * @phpstan-consistent-constructor
  * @api
  * @example
  * ```php

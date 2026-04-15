@@ -72,11 +72,18 @@ class LetterboxTest extends TimberAttachmentTestCase
         $new_file = ImageHelper::letterbox($upload_dir['url'] . '/' . $base_file, 500, 500);
         $location_of_image = ImageHelper::get_server_location($new_file);
         $this->addFile($location_of_image);
-        $this->assertTrue(ImageTest::checkSize($location_of_image, 500, 500));
-        // whats the bg/color of the image?
-        $is_trans = ImageTest::checkPixel($location_of_image, 250, 250, false);
         $this->assertFileExists($location_of_image);
-        $this->assertTrue($is_trans);
+        $this->assertTrue(ImageTest::checkSize($location_of_image, 500, 500));
+
+        // Padding pixel must be transparent, not black (regression for imagealphablending fix).
+        $this->assertTrue(ImageTest::checkPixel($location_of_image, 250, 1, false));
+
+        // Transparent pixel from within the source image area must also be transparent.
+        $this->assertTrue(ImageTest::checkPixel($location_of_image, 250, 250, false));
+
+        // Opaque source pixel (183,5) maps to output (366, 127) after 2x scale + y-offset 117.
+        // Verifies that disabling alpha blending does not break copying of opaque content.
+        $this->assertTrue(ImageTest::checkPixel($location_of_image, 366, 127, '#0076FB'));
     }
 
     public function testLetterboxGif()
