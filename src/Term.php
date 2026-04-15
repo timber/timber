@@ -12,6 +12,7 @@ use WP_Term;
  * Terms: WordPress has got 'em, you want 'em. Categories. Tags. Custom Taxonomies. You don't care,
  * you're a fiend. Well let's get this under control:
  *
+ * @phpstan-consistent-constructor
  * @api
  * @example
  * ```php

@@ -336,7 +336,7 @@ class PostQueryTest extends TimberIntegrationTestCase
             $postTypeCounts[$post->post_type]++;
             return Post::class;
         };
-        $this->add_filter_temporarily('timber/post/classmap', fn() => [
+        $this->add_filter_temporarily('timber/post/classmap', fn () => [
             'post' => $callback,
             'page' => $callback,
         ]);
@@ -388,7 +388,7 @@ class PostQueryTest extends TimberIntegrationTestCase
             $postTypeCounts[$post->post_type]++;
             return Post::class;
         };
-        $this->add_filter_temporarily('timber/post/classmap', fn() => [
+        $this->add_filter_temporarily('timber/post/classmap', fn () => [
             'post' => $callback,
             'page' => $callback,
         ]);
@@ -441,7 +441,7 @@ class PostQueryTest extends TimberIntegrationTestCase
             'post_type' => 'post',
         ]);
 
-        $this->add_filter_temporarily('timber/post/classmap', fn() => [
+        $this->add_filter_temporarily('timber/post/classmap', fn () => [
             'post' => CollectionTestPost::class,
             'page' => CollectionTestPage::class,
             'custom' => CollectionTestCustom::class,
@@ -468,7 +468,7 @@ class PostQueryTest extends TimberIntegrationTestCase
             ],
         ]);
 
-        $this->add_filter_temporarily('timber/post/classmap', fn() => [
+        $this->add_filter_temporarily('timber/post/classmap', fn () => [
             'funke' => SerializablePost::class,
         ]);
 
@@ -517,7 +517,7 @@ class PostQueryTest extends TimberIntegrationTestCase
         $this->assertCount(3, $all_terms); // 2 categories + 1 tag
 
         // Verify we got the right terms.
-        $term_names = \array_map(fn($term) => $term->name, \iterator_to_array($all_terms));
+        $term_names = \array_map(fn ($term) => $term->name, \iterator_to_array($all_terms));
         $this->assertContains('News', $term_names);
         $this->assertContains('Reviews', $term_names);
         $this->assertContains('Featured', $term_names);
@@ -618,7 +618,9 @@ class PostQueryTest extends TimberIntegrationTestCase
         ]));
 
         // Get terms grouped by taxonomy.
-        $terms_by_tax = $query->terms(['category', 'post_tag'], ['merge' => false]);
+        $terms_by_tax = $query->terms(['category', 'post_tag'], [
+            'merge' => false,
+        ]);
 
         $this->assertIsArray($terms_by_tax);
         $this->assertArrayHasKey('category', $terms_by_tax);
@@ -638,7 +640,9 @@ class PostQueryTest extends TimberIntegrationTestCase
         $this->assertEmpty($terms);
 
         // Test with merge = false.
-        $terms_grouped = $query->terms('all', ['merge' => false]);
+        $terms_grouped = $query->terms('all', [
+            'merge' => false,
+        ]);
         $this->assertIsArray($terms_grouped);
         $this->assertEmpty($terms_grouped);
     }
@@ -664,7 +668,7 @@ class PostQueryTest extends TimberIntegrationTestCase
         $teams = $query->terms('team');
         $this->assertCount(2, $teams);
 
-        $team_names = \array_map(fn($term) => $term->name, \iterator_to_array($teams));
+        $team_names = \array_map(fn ($term) => $term->name, \iterator_to_array($teams));
         $this->assertContains('Patriots', $team_names);
         $this->assertContains('Bills', $team_names);
     }
@@ -728,7 +732,7 @@ class PostQueryTest extends TimberIntegrationTestCase
             'order' => 'ASC',
         ]);
 
-        $term_names = \array_map(fn($term) => $term->name, \iterator_to_array($terms));
+        $term_names = \array_map(fn ($term) => $term->name, \iterator_to_array($terms));
         $this->assertEquals(['Apple', 'Banana', 'Zebra'], $term_names);
     }
 }

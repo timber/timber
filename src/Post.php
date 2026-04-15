@@ -17,6 +17,7 @@ use WP_Post;
  * example of what it’s like to work with this object in your code.
  *
  * @api
+ * @phpstan-consistent-constructor
  * @example
  *
  * **single.php**

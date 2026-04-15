@@ -56,7 +56,7 @@ class CacheTest extends TimberIntegrationTestCase
     {
         $transient = $this->_generate_transient_name();
         Helper::_lock_transient($transient, 5);
-        Helper::_unlock_transient($transient, 5);
+        Helper::_unlock_transient($transient);
         $this->assertFalse(Helper::_is_transient_locked($transient));
     }
 

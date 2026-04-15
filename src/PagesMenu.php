@@ -12,6 +12,7 @@ use WP_Post;
  *
  * @see get_pages()
  *
+ * @phpstan-consistent-constructor
  * @api
  * @since 2.0.0
  */
@@ -205,10 +206,14 @@ class PagesMenu extends Menu
      */
     protected function pre_setup_nav_menu_item($post)
     {
+        // @phpstan-ignore property.notFound
         $post->object_id = $post->ID;
+        // @phpstan-ignore property.notFound
         $post->menu_item_parent = $post->post_parent;
+        // @phpstan-ignore property.notFound
         $post->object = $post->post_type;
         $post->post_type = 'nav_menu_item';
+        // @phpstan-ignore property.notFound
         $post->type = 'post_type';
 
         return $post;

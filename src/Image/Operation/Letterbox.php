@@ -28,7 +28,8 @@ class Letterbox extends ImageOperation
         private $w,
         private $h,
         private $color
-    ) {}
+    ) {
+    }
 
     /**
      * @param   string    $src_filename     the basename of the file (ex: my-awesome-pic)

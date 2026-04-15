@@ -15,6 +15,7 @@ use WP_User;
  * you to check if a user is logged by checking for `user` instead of calling `is_user_logged_in()`
  * in your Twig templates.
  *
+ * @phpstan-consistent-constructor
  * @api
  * @example
  * ```twig

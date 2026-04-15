@@ -3,6 +3,7 @@
 namespace Timber\Tests;
 
 use PHPUnit\Framework\Attributes\Group;
+use stdClass;
 use Timber\Loader;
 use Timber\Timber;
 
@@ -379,7 +380,7 @@ class TimberRenderBlockTest extends TimberIntegrationTestCase
     public function testCompileTwigBlockWithRecursiveData()
     {
         // Create a stdClass object with a recursive reference to trigger json_encode failure
-        $obj = new \stdClass();
+        $obj = new stdClass();
         $obj->self = $obj; // Create circular reference
 
         $data = [

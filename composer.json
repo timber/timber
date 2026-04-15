@@ -76,8 +76,8 @@
     "symplify/easy-coding-standard": "^13",
     "szepeviktor/phpstan-wordpress": "^2",
     "twig/cache-extra": "^3.17",
-    "wpackagist-plugin/advanced-custom-fields": "^6.5",
-    "wpackagist-plugin/co-authors-plus": "^3.6"
+    "wp-plugin/advanced-custom-fields": "^6.5",
+    "wp-plugin/co-authors-plus": "^3.6"
   },
   "suggest": {
     "php-coveralls/php-coveralls": "^2.0 for code coverage",
@@ -85,12 +85,9 @@
   },
   "repositories": [
     {
+      "name": "wp-packages",
       "type": "composer",
-      "url": "https://wpackagist.org",
-      "only": [
-        "wpackagist-plugin/*",
-        "wpackagist-theme/*"
-      ]
+      "url": "https://repo.wp-packages.org"
     }
   ],
   "autoload": {
