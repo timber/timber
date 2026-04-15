@@ -190,7 +190,7 @@ You can call actions in your Twig templates like this:
 {% do action('my_action_with_args', 'foo', 'bar') %}
 ```
 
-If you ask yourself why there's no underline between `do` and `action`: The expression [`do`](https://twig.symfony.com/doc/3.x/tags/do.html) is a feature of Twig which _calls a function without printing its return value_, like `{{ }}` does. Timber only registers an `action` function, which then calls the `do_action()` function.
+If you ask yourself why there’s no underline between `do` and `action`: The expression [`do`](https://twig.symfony.com/doc/3.x/tags/do.html) is a feature of Twig which _calls a function without printing its return value_, like `{{ }}` does. Timber only registers an `action` function, which then calls the `do_action()` function.
 
 If you want anything from the template’s context, you'll need to pass that manually:
 
