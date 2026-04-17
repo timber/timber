@@ -1,5 +1,98 @@
 # Changelog
 
+## [2.4.0](https://github.com/timber/timber/compare/v2.3.3...v2.4.0) (2026-04-17)
+
+
+### Features
+
+* Add ancestors method to Timber\Post ([#3158](https://github.com/timber/timber/issues/3158)) ([a4e02a9](https://github.com/timber/timber/commit/a4e02a9f77abdfe54f7bde2e02010db8e2778174))
+* Add merge/group option for `Timber::get_terms()` ([#3213](https://github.com/timber/timber/issues/3213)) ([d493b19](https://github.com/timber/timber/commit/d493b1999915ea5fad9c204377c7ccee65f71743))
+* Add missing class properties to core entities ([#3198](https://github.com/timber/timber/issues/3198)) ([389f0ed](https://github.com/timber/timber/commit/389f0ed6a8b50c61c060734ea627ce853a28f8d7))
+* Add PostQuery::terms() to get terms scoped to the current query ([#3234](https://github.com/timber/timber/issues/3234)) ([f25f6ab](https://github.com/timber/timber/commit/f25f6ab1f3b64f4c310076c17b6857708e511e18))
+* Add support for Twig Blocks ([#3236](https://github.com/timber/timber/issues/3236)) ([c41dffa](https://github.com/timber/timber/commit/c41dffa64a788c8ef309b83870970d537d5f1f6e))
+
+
+### Bug Fixes
+
+* "Fix content cache poisoning when excerpt() is called first ([#3208](https://github.com/timber/timber/issues/3208)) ([93e65ab](https://github.com/timber/timber/commit/93e65abf22ef12bc05ebd596becbd49c77eb4c04))
+* **docs:** Fix classname for `Timber\Helper` in performance docs ([#3156](https://github.com/timber/timber/issues/3156)) ([1798ba9](https://github.com/timber/timber/commit/1798ba98c5b92e841bcce41e43e3e1c9ce061f48))
+* Fix bug in image letterboxing when transparent background was converted to black ([#3233](https://github.com/timber/timber/issues/3233)) ([a9d62e8](https://github.com/timber/timber/commit/a9d62e8f9ef8ed2ae50d7bbf667b0266bba5be58))
+* Fix bug when image resize with invalid input causes a fatal error ([#3235](https://github.com/timber/timber/issues/3235)) ([b66b208](https://github.com/timber/timber/commit/b66b208a924a39dba908dc5f7f5570f22db5b84e))
+* Fix bug with transient cache expiration ([#3220](https://github.com/timber/timber/issues/3220)) ([091e60e](https://github.com/timber/timber/commit/091e60e935e90ba71fc9a1615a2aa7a5788b449f))
+* Fix context stacking issue with `Timber\Site::switch_to_blog()` in multisite environment ([#3223](https://github.com/timber/timber/issues/3223)) ([1ff183b](https://github.com/timber/timber/commit/1ff183b91c666d0c5addac6f2b4e61063cb7badd))
+* fix empty $params returning timber object ([#3179](https://github.com/timber/timber/issues/3179)) ([e732609](https://github.com/timber/timber/commit/e73260942bcb1e02428304795f6522304b29edf5))
+* Fix timezone bug when transforming ACF date fields ([#3163](https://github.com/timber/timber/issues/3163)) ([513fc62](https://github.com/timber/timber/commit/513fc62fb70e7c57d388a954057ca4dffe34c7f5))
+* Improve performance for reading attachment image dimensions ([#3232](https://github.com/timber/timber/issues/3232)) ([6b76d75](https://github.com/timber/timber/commit/6b76d75b8c5690ed24e2ed7f7f8a862e930f108b))
+* Letterbox with transparent bg ([#3201](https://github.com/timber/timber/issues/3201)) ([22b2d51](https://github.com/timber/timber/commit/22b2d51dce313a2c736f6e5664e8ab592e50dce9))
+* PHP 8.5 `null` index deprecations ([86a6b44](https://github.com/timber/timber/commit/86a6b4403ebd540749cdac170f28bd82b2724c23))
+* Prevent PostsIterator from resetting the post global in the admin ([#3117](https://github.com/timber/timber/issues/3117)) ([9f14d48](https://github.com/timber/timber/commit/9f14d48382c4335267d3b04abba175bb3f7827a2))
+* Refactor ACF transform hooks ([279e932](https://github.com/timber/timber/commit/279e9320ea7f852aa7cfc7290915dfd606c1e49b))
+* update lint script to exclude 'tmp' directory ([a28a34d](https://github.com/timber/timber/commit/a28a34d5a665400ff4b8e8342feda7466450a249))
+* Update static analysis workflow to correctly handle changed files ([533181b](https://github.com/timber/timber/commit/533181b8d1d0beb7b420c8f7dd26046847310d0f))
+
+
+### Tests
+
+* Add callable test for `timber/menu/classmap` ([f724acf](https://github.com/timber/timber/commit/f724acf6bbdbd9223b90c989ab104a6f1f87f74e))
+* Enhance test suite idempotency ([b9d8260](https://github.com/timber/timber/commit/b9d8260fb5544cb02094f160dc56cfbc05bece4d))
+* Fix ancestors post tests ([c49cd8f](https://github.com/timber/timber/commit/c49cd8fc2f66baf34958a305b5bffcc128b6e8dd))
+* Fix issue with image test that sets a constant ([#3181](https://github.com/timber/timber/issues/3181)) ([6ae6e2a](https://github.com/timber/timber/commit/6ae6e2af88ef08ef68aabf82b7e1058d3a6ed038))
+* Fix PHP 8.5 deprecation notice ([8d2788e](https://github.com/timber/timber/commit/8d2788e392d9c08c7e32018d3c3e78d879887a4d))
+* Fix test pollution and WP 7.0 compatibility in test suite ([7ff0b73](https://github.com/timber/timber/commit/7ff0b73e51736988331f00cf5ea192ffb21ff726))
+* Fix TimberWidgetsTest with sidebar registration and widget setup methods ([#3239](https://github.com/timber/timber/issues/3239)) ([3084850](https://github.com/timber/timber/commit/3084850b74aee0db6563cd5cce165e158c251351))
+* Modernize test suite with PHPUnit 11.5+/12 and Mantle Testkit ([c854758](https://github.com/timber/timber/commit/c854758e72b9b5a3bb8b453c2f3301eb1008c14c))
+* Refactor menu tests to use static factory methods for term and post creation ([1e4e027](https://github.com/timber/timber/commit/1e4e0277bbc7e9e8bd44f6fe4f3fa621943448a0))
+* Update ACF field keys to ensure uniqueness ([a38fa40](https://github.com/timber/timber/commit/a38fa408069a5435ae34ea92161f05d5fd9edec8))
+* Update ACF field names for consistency and clarity ([80b7986](https://github.com/timber/timber/commit/80b7986eab5e467ada518c7d6e15ed6beebde156))
+* Update tests for improved idempotency and accuracy in post queries ([bd3eb80](https://github.com/timber/timber/commit/bd3eb8007e72abc55b4af1681d32888446ce65a9))
+* Update tests to prevent auto-marking of current menu items ([fd7920f](https://github.com/timber/timber/commit/fd7920f7bd229a998726721470cbe337f046f54c))
+* Update WPMLTest to use dynamic menu values ([251c505](https://github.com/timber/timber/commit/251c5059e61d7978048e41c829ee578c07f42df0))
+
+
+### Documentation
+
+* Expand documentation for available Twig functions and filters ([#3194](https://github.com/timber/timber/issues/3194)) ([75145db](https://github.com/timber/timber/commit/75145db88dbb37d62142a1187434e924cad7fb0e))
+* fix docblock example of Site::__call() ([#3185](https://github.com/timber/timber/issues/3185)) ([9003468](https://github.com/timber/timber/commit/9003468dc19ba332e6ea483aedd1960b303a7f4b))
+* Fix wrong use of apply_filters() instead of add_filter() in Performance Guide ([#3229](https://github.com/timber/timber/issues/3229)) ([a29dfc0](https://github.com/timber/timber/commit/a29dfc0034d84098c08d647f23ec81663fc09300))
+* Update links in documentation and fix spelling mistakes ([#3238](https://github.com/timber/timber/issues/3238)) ([5af4b84](https://github.com/timber/timber/commit/5af4b84004b3967cdb76a8dee87a9e5d338403f1))
+* WooCommerce guide - tease-product.twig fix ([#3199](https://github.com/timber/timber/issues/3199)) ([9a7d411](https://github.com/timber/timber/commit/9a7d41124ca1f7491b2f0cc2529b757eb5885470))
+
+
+### Continuous Integration
+
+* Bump Conductor PHP version ([21f7794](https://github.com/timber/timber/commit/21f7794f38b26cb7834e2a4617585be1becf8ddb))
+* Update default PHP version to 8.2 in setup action ([e052190](https://github.com/timber/timber/commit/e0521907c025b56de881b3dafc7833f246644261))
+* Update PHP/WP test versions ([98b010f](https://github.com/timber/timber/commit/98b010fb7485e8412d7cbbb5d885dc2d21200d8c))
+* Upgrade Composer install action to version 4 ([#3215](https://github.com/timber/timber/issues/3215)) ([967541e](https://github.com/timber/timber/commit/967541e931ec7372827a4376bfeb2a08e7716681))
+
+
+### Styles
+
+* Fix coding style and rector issues ([#3164](https://github.com/timber/timber/issues/3164)) ([6ae23b1](https://github.com/timber/timber/commit/6ae23b1a24c1ec79a6db0e9ed6ae9776e5a2dad3))
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump league/commonmark from 2.8.0 to 2.8.1 ([#3207](https://github.com/timber/timber/issues/3207)) ([93f8ece](https://github.com/timber/timber/commit/93f8ece1b02282898eeec4989fc2c40a28638252))
+* **deps-dev:** bump symfony/process from 7.4.3 to 7.4.5 ([#3187](https://github.com/timber/timber/issues/3187)) ([c81733b](https://github.com/timber/timber/commit/c81733b23a4d84d900c4b97264270d19203576b8))
+* **deps:** bump actions/checkout from 4 to 6 ([f1efafd](https://github.com/timber/timber/commit/f1efafd67ad4bc7715c2708bbe9ddb0a81d631cb))
+* **deps:** bump actions/checkout from 5 to 6 ([#3160](https://github.com/timber/timber/issues/3160)) ([4d6b9a6](https://github.com/timber/timber/commit/4d6b9a6986366dc7fb6e41ec301bc5c6ff255536))
+* **deps:** bump codecov/codecov-action from 5 to 6 ([#3224](https://github.com/timber/timber/issues/3224)) ([abb44ac](https://github.com/timber/timber/commit/abb44ac53f962c8a797238dc64b16f170809a6c4))
+* **deps:** bump lycheeverse/lychee-action from 2.6.1 to 2.7.0 ([#3157](https://github.com/timber/timber/issues/3157)) ([4f7bde4](https://github.com/timber/timber/commit/4f7bde4b9580652274d259b5c514e0cad5394ea9))
+* **deps:** bump lycheeverse/lychee-action from 2.7.0 to 2.8.0 ([#3205](https://github.com/timber/timber/issues/3205)) ([b64b67a](https://github.com/timber/timber/commit/b64b67a503574a47a03361a54f09b83501ef3d77))
+* **deps:** bump peter-evans/create-issue-from-file from 5 to 6 ([#3154](https://github.com/timber/timber/issues/3154)) ([1bfd169](https://github.com/timber/timber/commit/1bfd169533393cbc169bbfd72a814089cbd911ac))
+* **deps:** bump ramsey/composer-install from 3 to 4 ([#3214](https://github.com/timber/timber/issues/3214)) ([944c871](https://github.com/timber/timber/commit/944c871a1e0c2ecc544a981edb47e10733ff1d2b))
+* **deps:** bump WyriHaximus/github-action-composer-php-versions-in-range ([#3225](https://github.com/timber/timber/issues/3225)) ([d31a521](https://github.com/timber/timber/commit/d31a521b866c3e869c2f558c6a1819d2e093ac62))
+* **deps:** Update Composer dependencies ([#3165](https://github.com/timber/timber/issues/3165)) ([31c78f9](https://github.com/timber/timber/commit/31c78f9ee73952d9b7eebd749633f2fc71e15cb6))
+* **deps:** update content-hash and bump easy-coding-standard to version 13.0.4 ([c451ded](https://github.com/timber/timber/commit/c451dedf1efc63c9c12c1504e8a37c8806d805f1))
+* **deps:** update mantle-framework dependencies to version 1.16 ([e752c14](https://github.com/timber/timber/commit/e752c146474bf2945d938d5ef07c8fd9a5dedf0b))
+* Final code quality improvements before release ([#3237](https://github.com/timber/timber/issues/3237)) ([966873e](https://github.com/timber/timber/commit/966873e1f353d47189ab7b9c3797a11b7c1843ab))
+* final dependency update and rector fix ([a76daed](https://github.com/timber/timber/commit/a76daed63ae4ddef2fe73dea413c1390109fb693))
+* remove deprecated escaper functions and streamline escaper setup ([#3193](https://github.com/timber/timber/issues/3193)) ([072b4fa](https://github.com/timber/timber/commit/072b4fa0b88cc69423df49004b6048e3d2d71794))
+* Update changelog sections in release configuration ([223d674](https://github.com/timber/timber/commit/223d67420a2d0a399173fac57fe395e986ffaeca))
+* Update CODEOWNERS ([#3166](https://github.com/timber/timber/issues/3166)) ([aa38e98](https://github.com/timber/timber/commit/aa38e984b5b21974ac8790d698c10cfe2914b60c))
+* update README badges for Codecov and remove Coveralls and Scrutinizer links ([d89bff9](https://github.com/timber/timber/commit/d89bff9560a257c35a24eac0f4870da6a8d26f31))
+
 ## [2.3.3](https://github.com/timber/timber/compare/v2.3.2...v2.3.3) (2025-09-17)
 
 
