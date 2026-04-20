@@ -66,7 +66,7 @@ Follow the [Installation Guide](https://timber.github.io/docs/v2/installation/in
 
 ### What Now?
 
-Setup the [Timber Starter Theme](https://timber.github.io/docs/v2/installation/installation/#use-the-starter-theme). Once you have that installed in your WordPress setup, continue reading the [Getting Started guide to Themeing](https://timber.github.io/docs/v2/getting-started/introduction/).
+Setup the [Timber Starter Theme](https://timber.github.io/docs/v2/installation/installation/#use-the-starter-theme). Once you have that installed in your WordPress setup, continue reading the [Getting Started guide to Theming](https://timber.github.io/docs/v2/getting-started/introduction/).
 
 ## Timber’s mission
 
