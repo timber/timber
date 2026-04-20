@@ -20,7 +20,7 @@ class ImageTest extends TimberAttachmentTestCase
 {
     public function tear_down()
     {
-        $img_dir = \get_stylesheet_directory_uri() . '/images';
+        $img_dir = \get_stylesheet_directory() . '/images';
         if (\file_exists($img_dir)) {
             \exec(\sprintf("rm -rf %s", \escapeshellarg($img_dir)));
         }
@@ -552,7 +552,8 @@ class ImageTest extends TimberAttachmentTestCase
             return $alpha === 127;
         }
         if (isset($upper_colors) && $upper_colors) {
-            if (self::checkChannel('red', $test_colors, $colors_of_file, $upper_colors) &&
+            if (
+                self::checkChannel('red', $test_colors, $colors_of_file, $upper_colors) &&
                 self::checkChannel('green', $test_colors, $colors_of_file, $upper_colors) &&
                 self::checkChannel('blue', $test_colors, $colors_of_file, $upper_colors)
             ) {
@@ -560,9 +561,11 @@ class ImageTest extends TimberAttachmentTestCase
             }
             return false;
         }
-        if ($test_colors['red'] === $colors_of_file['red'] &&
-             $test_colors['blue'] === $colors_of_file['blue'] &&
-             $test_colors['green'] === $colors_of_file['green']) {
+        if (
+            $test_colors['red'] === $colors_of_file['red'] &&
+            $test_colors['blue'] === $colors_of_file['blue'] &&
+            $test_colors['green'] === $colors_of_file['green']
+        ) {
             return true;
         }
         return false;
@@ -1050,7 +1053,12 @@ class ImageTest extends TimberAttachmentTestCase
         $result = Timber::compile_string($str, [
             'post' => $post,
         ]);
-        $this->assertEquals('http://example.org/wp-content/uploads/' . \date('Y/m') . '/arch.jpeg', $result);
+        // Verify the filter was applied (jpg -> jpeg) and the base filename is present
+        // Don't check for exact filename as WordPress may add numeric suffixes (-2, -8, etc.)
+        // to avoid filename conflicts if the file already exists
+        $this->assertStringStartsWith('http://example.org/wp-content/uploads/' . \date('Y/m') . '/arch', $result);
+        $this->assertStringEndsWith('.jpeg', $result);
+        $this->assertStringNotContainsString('.jpg', $result);
     }
 
     public function testTimberImageForExtraSlashes()
