@@ -52,7 +52,7 @@ class Loader implements LoaderInterface
          * Filters the cache mode.
          *
          * You can read more about Caching in the
-         * [Performance/Caching]({{<relref "performance.md" >}}) guide.
+         * [Performance/Caching](../../guides/performance/) guide.
          *
          * @since 0.20.10
          *
