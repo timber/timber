@@ -58,14 +58,15 @@ class PostExcerptTest extends TimberIntegrationTestCase
 
     public function testExcerptTextFilter()
     {
-        $this->add_filter_temporarily('timber/post/excerpt/content', fn ($text) => $text . ' [filtered]');
+        $this->add_filter_temporarily('timber/post/excerpt/content', fn ($text) => $text . '[filtered]');
 
-        $post_id = static::factory()->post->create([
-            'post_excerpt' => 'Let this be the excerpt!',
+        $pid = static::factory()->post->create([
+            'post_excerpt' => '',
+            'post_content' => 'Let this be the excerpt!',
         ]);
 
-        $post = Timber::get_post($post_id);
-        $excerpt = $post->excerpt([
+        $post = Timber::get_post($pid);
+        $excerpt = new PostExcerpt($post, [
             'read_more' => false,
         ]);
 
