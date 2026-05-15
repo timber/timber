@@ -495,7 +495,16 @@ class PostExcerpt implements Stringable
 
         // Build an excerpt text from the post’s content.
         if (empty($text)) {
-            $text = $this->post->content(0, -1, true);
+            /**
+             * Filters the excerpt text before final assembly.
+             *
+             * @since 2.0.1
+             * @param string      $text Current excerpt text.
+             * @param Post        $post Post instance.
+             * @param PostExcerpt $excerpt Current PostExcerpt instance.
+             */
+            $text = \apply_filters('timber/post/excerpt/content', (string) $this->post->content(0, -1, true), $this->post, $this);
+
             $text = TextHelper::remove_tags($text, $this->destroy_tags);
             $text_before_trim = \trim($text);
             $text_before_char_trim = '';
