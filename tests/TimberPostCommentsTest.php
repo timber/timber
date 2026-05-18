@@ -4,6 +4,7 @@ namespace Timber\Tests;
 
 use CustomComment;
 use PHPUnit\Framework\Attributes\Group;
+use PostCommentCount;
 use Timber\Tests\Support\Attributes\WithOption;
 use Timber\Timber;
 
@@ -38,6 +39,33 @@ class TimberPostCommentsTest extends TimberIntegrationTestCase
         $post = Timber::get_post($post_id);
         $this->assertSame(2, \count($post->comments(2)));
         $this->assertSame(5, \count($post->comments()));
+    }
+
+    // Tests where the comment_count() method takes precedence over the comment_count property in
+    // Twig.
+    public function testCommentCountInTwig()
+    {
+        $post_id = static::factory()->post->create([
+            'post_title' => 'Gobbles',
+        ]);
+        static::factory()->comment->create_many(5, [
+            'comment_post_ID' => $post_id,
+        ]);
+
+        $this->add_filter_temporarily('timber/post/classmap', static fn ($classmap) => \array_merge($classmap, [
+            'post' => PostCommentCount::class,
+        ]));
+
+        $post = Timber::get_post($post_id);
+
+        // Set the comment count into something different on the Timber\Post object only.
+        $post->set_comment_count(24);
+
+        $str = Timber::compile_string('{{ post.comment_count }} comments', [
+            'post' => $post,
+        ]);
+
+        $this->assertEquals('5 comments', $str);
     }
 
     public function testCommentCountZero()

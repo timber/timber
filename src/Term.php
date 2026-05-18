@@ -103,9 +103,11 @@ class Term extends CoreEntity implements Stringable
     /**
      * The term's description.
      *
+     * Protected visibility to make Twig use the description() method first.
+     *
      * @var string
      */
-    public $description;
+    protected $description;
 
     /**
      * ID of a term's parent term.
@@ -321,7 +323,9 @@ class Term extends CoreEntity implements Stringable
     }
 
     /**
-     * Return the description of the term
+     * Returns the description of the term.
+     *
+     * Strips any surrounding `<p></p>` tags from the description.
      *
      * @api
      * @return string

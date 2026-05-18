@@ -141,6 +141,11 @@ abstract class Core
                 }
                 if (!empty($key) && $force) {
                     $this->$key = $value;
+                } elseif (\method_exists($this, $key) && \property_exists($this, $key)) {
+                    // While we don’t import properties where a method exists by default, this makes
+                    // sure that properties are imported where they are defined. This reduces
+                    // unexpected side effects.
+                    $this->$key = $value;
                 } elseif (!empty($key) && !\method_exists($this, $key)) {
                     if ($only_declared_properties) {
                         if (\property_exists($this, $key)) {
