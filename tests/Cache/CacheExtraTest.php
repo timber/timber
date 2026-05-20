@@ -13,7 +13,7 @@ use Twig\RuntimeLoader\RuntimeLoaderInterface;
 
 class RunTimeLoader implements RuntimeLoaderInterface
 {
-    public function load($class)
+    public function load($class): ?object
     {
         if (CacheRuntime::class === $class) {
             return new CacheRuntime(new TagAwareAdapter(new FilesystemAdapter()));
