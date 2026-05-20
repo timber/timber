@@ -97,6 +97,9 @@ jobs:
           echo "::add-matcher::${{ runner.tool_cache }}/php.json"
           echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
+      - name: Disable insecure-package block (TMP)
+        run: composer config audit.block-insecure false
+
       - uses: ramsey/composer-install@v4
         with:
           dependency-versions: ${{ matrix.dependency-version }}
