@@ -28,18 +28,25 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions: {}
+
 jobs:
   # =============================================================================
   # Detect PHP versions from composer.json
   # =============================================================================
   php-versions:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
     outputs:
       versions: ${{ steps.versions.outputs.version }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
       - id: versions
-        uses: WyriHaximus/github-action-composer-php-versions-in-range@v2
+        uses: WyriHaximus/github-action-composer-php-versions-in-range@c066c91df855ca2563dc4ec46ac6674e0752ae65 # v2.0.0
         with:
           upcomingReleases: true
 
@@ -49,6 +56,9 @@ jobs:
   php-unit-tests:
     needs: php-versions
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
     continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
@@ -81,10 +91,12 @@ jobs:
     name: PHP ${{ matrix.php }} | WP ${{ matrix.wp }} | ${{ matrix.dependency-version }}${{ matrix.coverage && ' | coverage' || '' }}
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@8358ee0e2e8afe63c2fb8253d1d52085811ab1e5 # 2.37.1
         with:
           php-version: ${{ matrix.php }}
           coverage: ${{ matrix.coverage && 'pcov' || 'none' }}
@@ -100,7 +112,7 @@ jobs:
       - name: Disable insecure-package block (TMP)
         run: composer config audit.block-insecure false
 
-      - uses: ramsey/composer-install@v4
+      - uses: ramsey/composer-install@5c2bcf28d7b060ef3c601d7b476d5430a7b46c27 # v4
         with:
           dependency-versions: ${{ matrix.dependency-version }}
 
@@ -148,14 +160,14 @@ jobs:
 
       - name: Upload coverage to Codecov
         if: matrix.coverage
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6.0.1
         with:
           files: build/logs/clover.xml
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Upload coverage to Coveralls
         if: matrix.coverage
-        uses: coverallsapp/github-action@v2
+        uses: coverallsapp/github-action@5cbfd81b66ca5d10c19b062c04de0199c215fb6e # v2.3.7
         with:
           file: build/logs/clover.xml
           github-token: ${{ secrets.GITHUB_TOKEN }}

@@ -24,12 +24,19 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions: {}
+
 jobs:
   php-static-analysis:
     name: PHP static analysis
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: Install dependencies
         uses: ./.github/actions/setup
@@ -38,12 +45,15 @@ jobs:
 
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@v47
+        uses: tj-actions/changed-files@24d32ffd492484c1d75e0c0b894501ddb9d30d62 # v47.0.0
         with:
           files: |
             src/**/*.php
             phpstan/**/*.php
+          safe_output: true
 
       - name: Run static analysis
         if: steps.changed-files.outputs.all_changed_files != ''
-        run: ./vendor/bin/phpstan analyse --memory-limit=-1 --error-format=checkstyle ${{ steps.changed-files.outputs.all_changed_files }} | cs2pr
+        env:
+          CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+        run: ./vendor/bin/phpstan analyse --memory-limit=-1 --error-format=checkstyle $CHANGED_FILES | cs2pr

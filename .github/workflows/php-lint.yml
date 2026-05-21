@@ -24,12 +24,19 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions: {}
+
 jobs:
   php-lint:
     name: PHP lint
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: Install dependencies
         uses: ./.github/actions/setup
@@ -39,10 +46,13 @@ jobs:
 
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@v47
+        uses: tj-actions/changed-files@24d32ffd492484c1d75e0c0b894501ddb9d30d62 # v47.0.0
         with:
-           files: '**.php'
+          files: '**.php'
+          safe_output: true
 
       - name: Run PHP lint
         if: steps.changed-files.outputs.all_changed_files != ''
-        run: parallel-lint --exclude .git --exclude vendor --checkstyle ${{ join(steps.changed-files.outputs.all_changed_files, ' ') }} | cs2pr
+        env:
+          CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+        run: parallel-lint --exclude .git --exclude vendor --checkstyle $CHANGED_FILES | cs2pr
