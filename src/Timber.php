@@ -42,7 +42,13 @@ use WP_User;
  */
 class Timber
 {
-    public static $version = '2.4.1'; // x-release-please-version
+    public const VERSION = '2.4.1'; // x-release-please-version
+
+    /**
+     * @deprecated 2.4.2 Use {@see Timber::VERSION} instead.
+     * @var string
+     */
+    public static $version = self::VERSION;
 
     public static $locations;
 
