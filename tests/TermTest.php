@@ -145,6 +145,28 @@ class TermTest extends TimberIntegrationTestCase
         $this->assertEquals($desc, $term->description());
     }
 
+    /**
+     * Tests whether the description() method takes precedence over the description property in
+     * Twig.
+     *
+     * @return void
+     */
+    public function testTermDescriptionInTwig()
+    {
+        $desc = '<p>An honest football team</p>';
+
+        $term_id = static::factory()->term->create([
+            'name' => 'New England Patriots',
+            'description' => $desc,
+        ]);
+
+        $result = Timber::compile_string('{{ term.description }}', [
+            'term' => Timber::get_term($term_id),
+        ]);
+
+        $this->assertSame(\wp_strip_all_tags($desc), $result);
+    }
+
     public function testTermInitObject()
     {
         $term_id = static::factory()->term->create();

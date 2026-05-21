@@ -265,11 +265,12 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
     /**
      * Cached comment count.
      *
-     * A numeric string, for compatibility reasons.
+     * A numeric string, for compatibility reasons. Protected visibility to make
+     * Twig use the comment_count() method first.
      *
      * @var string
      */
-    public $comment_count;
+    protected $comment_count;
 
     /**
      * Stores the post object's sanitization level.

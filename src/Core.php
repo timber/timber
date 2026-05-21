@@ -3,6 +3,7 @@
 namespace Timber;
 
 use AllowDynamicProperties;
+use Error;
 
 /**
  * Class Core
@@ -141,6 +142,16 @@ abstract class Core
                 }
                 if (!empty($key) && $force) {
                     $this->$key = $value;
+                } elseif (\method_exists($this, $key) && \property_exists($this, $key)) {
+                    // While we don’t import properties where a method exists by default, this makes
+                    // sure that properties are imported when they are defined. This reduces
+                    // unexpected side effects. The try-catch is here to not trigger a fatal error
+                    // when we try to set a private property.
+                    try {
+                    $this->$key = $value;
+                    } catch (Error $e) {
+                        \trigger_error($e->getMessage(), \E_USER_WARNING);
+                    }
                 } elseif (!empty($key) && !\method_exists($this, $key)) {
                     if ($only_declared_properties) {
                         if (\property_exists($this, $key)) {

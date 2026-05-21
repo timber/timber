@@ -1,5 +1,33 @@
 # Changelog
 
+## [2.4.1](https://github.com/timber/timber/compare/v2.4.0...v2.4.1) (2026-05-20)
+
+
+### Bug Fixes
+
+* **deps:** bump twig/twig to ^3.26 to address security advisories ([a66aa85](https://github.com/timber/timber/commit/a66aa855ff6d1c718e0fc04b6ac5edcbba4b3faa))
+* **deps:** update twig/cache-extra to ^3.21 for compatibility ([6f554f9](https://github.com/timber/timber/commit/6f554f91c6cb84d106cd15ba8f4cb77df7968910))
+* Fix regression bug when Timber would access empty properties in Twig ([#3249](https://github.com/timber/timber/issues/3249)) ([22eecab](https://github.com/timber/timber/commit/22eecab1bf58fe64c3fa7ecf019fd14a16223977))
+* **tests:** update image test to prevent race conditions ([#3243](https://github.com/timber/timber/issues/3243)) ([5fce361](https://github.com/timber/timber/commit/5fce3616b5a443419f6963d1a84e05cb77da35a3))
+
+
+### Documentation
+
+* Fix spelling error in README ([#3241](https://github.com/timber/timber/issues/3241)) ([b25f32c](https://github.com/timber/timber/commit/b25f32cbeacd0f2dfeb4185787493bf82dba74c1))
+* Fix two relative links in DocBlocks ([#3242](https://github.com/timber/timber/issues/3242)) ([0b0c0a4](https://github.com/timber/timber/commit/0b0c0a420339a8ab9867b33141f241273f8e2ede))
+
+
+### Continuous Integration
+
+* Temporarily disable insecure-package block for Composer installation ([93a20a1](https://github.com/timber/timber/commit/93a20a1e8bf8ffccf8f42d8f6c8df14d8bbc3a05))
+
+
+### Miscellaneous Chores
+
+* clean up .gitignore by removing unnecessary entries and reordering sections ([1c1adeb](https://github.com/timber/timber/commit/1c1adeb707bd637c63f07d58c5eab1ced3fb29d5))
+* **deps:** bump googleapis/release-please-action from 4 to 5 ([#3244](https://github.com/timber/timber/issues/3244)) ([43c4e49](https://github.com/timber/timber/commit/43c4e4964b11d2ce6020b14bc77759dfda71de79))
+* Remove Conductor workflow ([e2a2cf4](https://github.com/timber/timber/commit/e2a2cf485f838a3d7fdb71850a45d7c3fffac7a6))
+
 ## [2.4.0](https://github.com/timber/timber/compare/v2.3.3...v2.4.0) (2026-04-17)
 
 

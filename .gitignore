@@ -1,18 +1,14 @@
-!/src/Cache
-.tmp
-*~
+# Composer
+/vendor
+/composer.lock
 
-# OS
-.DS_Store
+# Node
+/node_modules
 
 # IDE and local environment
 .idea
 .vscode
 *.swp
-
-# Packages
-node_modules
-vendor
 
 # Application
 build
@@ -20,8 +16,7 @@ build
 twig-cache/*
 
 # Tests
-.phpunit.result.cache
-timber-starter-theme
 /wp-content
 /tmp
 /.phpunit.cache
+/.phpunit.result.cache

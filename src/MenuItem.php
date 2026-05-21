@@ -290,12 +290,6 @@ class MenuItem extends CoreEntity implements Stringable
          */
         protected $menu = null
     ) {
-        /**
-         * @property string $title The nav menu item title.
-         */
-        // @phpstan-ignore property.notFound
-        $this->title = $this->wp_object->title;
-
         $this->import($this->wp_object);
         $this->import_classes($this->wp_object);
         $this->id = $this->wp_object->ID;

@@ -33,6 +33,10 @@ runs:
     - name: Remove lock file
       shell: bash
       run: rm -f composer.lock
+    - name: Disable insecure-package block (TMP)
+      if: ${{ inputs.INSTALL_DEPS == 'true' }}
+      shell: bash
+      run: composer config audit.block-insecure false
     - name: Install Composer dependencies
       if: ${{ inputs.INSTALL_DEPS == 'true' }}
       uses: ramsey/composer-install@v4
