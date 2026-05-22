@@ -71,7 +71,7 @@ jobs:
         include:
           # Oldest supported WP with lowest deps
           - php: '8.2'
-            wp: '6.4'
+            wp: '6.8'
             dependency-version: 'lowest'
             experimental: false
             coverage: false
