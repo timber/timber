@@ -763,7 +763,9 @@ class TimberMainClassTest extends TimberIntegrationTestCase
 
     public function testGetPostsInLoop()
     {
-        $posts = static::factory()->post->create_many(55);
+        // The main loop iterates posts_per_page (10 by default); only that many
+        // are needed to exercise the loop / get_post() path on every iteration.
+        $posts = static::factory()->post->create_many(5);
         $this->get('/');
 
         if (\have_posts()) {
