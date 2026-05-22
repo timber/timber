@@ -35,6 +35,36 @@ class CacheTest extends TimberIntegrationTestCase
         return 'timber_test_transient_' . $i;
     }
 
+    /**
+     * Force a transient to be considered expired by backdating its timeout option.
+     *
+     * Avoids real `sleep()` waits in tests that exercise TTL behavior.
+     */
+    private function expireTransient(string $transient): void
+    {
+        \update_option('_transient_timeout_' . $transient, \time() - 1);
+    }
+
+    /**
+     * Models a real `sleep($within_seconds)` without waiting: backdates the
+     * timeout of every Timber loader transient that is due to expire within
+     * the given window. Long-lived transients (set with larger TTL) remain
+     * untouched, matching what a real sleep of that duration would have done.
+     */
+    private function expireShortTimberLoaderTransients(int $within_seconds = 5): void
+    {
+        global $wpdb;
+        $threshold = \time() + $within_seconds;
+        $rows = $wpdb->get_results(
+            "SELECT option_name, option_value FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_timberloader_%'"
+        );
+        foreach ($rows as $row) {
+            if ((int) $row->option_value <= $threshold) {
+                \update_option($row->option_name, \time() - 1);
+            }
+        }
+    }
+
     public function tear_down()
     {
         global $_wp_using_ext_object_cache;
@@ -65,7 +95,7 @@ class CacheTest extends TimberIntegrationTestCase
         $transient = $this->_generate_transient_name();
 
         Helper::_lock_transient($transient, 1);
-        \sleep(2);
+        $this->expireTransient($transient . '_lock');
         $this->assertFalse(Helper::_is_transient_locked($transient));
     }
 
@@ -209,7 +239,7 @@ class CacheTest extends TimberIntegrationTestCase
 
         $first_value = Helper::transient($transient, fn () => 'first_value', 1);
 
-        \sleep(2);
+        $this->expireTransient($transient);
 
         $second_value = Helper::transient($transient, fn () => 'second_value', 1);
 
@@ -352,7 +382,7 @@ class CacheTest extends TimberIntegrationTestCase
             'post' => $post,
             'rand' => \random_int(0, 99999),
         ], $time);
-        \sleep(2);
+        $this->expireShortTimberLoaderTransients();
         $str_new = Timber::compile('assets/single-post.twig', [
             'post' => $post,
             'rand' => \random_int(0, 99999),
@@ -529,7 +559,7 @@ class CacheTest extends TimberIntegrationTestCase
             'post' => $post,
             'rand' => \random_int(0, 99999),
         ], $time);
-        \sleep(2);
+        $this->expireShortTimberLoaderTransients();
         $str_new = Timber::compile('assets/single-post.twig', [
             'post' => $post,
             'rand' => \random_int(0, 99999),
@@ -567,18 +597,23 @@ class CacheTest extends TimberIntegrationTestCase
         Timber::compile('assets/single-post.twig', $data, 600);
 
         global $wpdb;
-        $timeout_query = "SELECT option_value FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_timberloader_%' LIMIT 1";
-        $initial_timeout = (int) $wpdb->get_var($timeout_query);
+        $name_query = "SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_timberloader_%' LIMIT 1";
+        $timeout_option = $wpdb->get_var($name_query);
 
-        \sleep(2);
+        // Manually rewrite the timeout to a known FUTURE value distinct from the
+        // default `time() + 600`. The cache must remain considered valid (so the
+        // next call is a cache HIT), while a buggy reset to `time() + 600` would
+        // produce a different value and fail the assertion. Avoids real sleep().
+        $expected_timeout = \time() + 60;
+        \update_option($timeout_option, $expected_timeout);
 
         // Second render: cache hit — must NOT reset the transient expiration.
         Timber::compile('assets/single-post.twig', $data, 600);
 
-        $after_timeout = (int) $wpdb->get_var($timeout_query);
+        $after_timeout = (int) \get_option($timeout_option);
 
         $this->assertSame(
-            $initial_timeout,
+            $expected_timeout,
             $after_timeout,
             'Transient expiration must not be reset when the cache is already populated (issue #3219).'
         );
