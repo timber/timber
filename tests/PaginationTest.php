@@ -602,12 +602,14 @@ class PaginationTest extends TimberIntegrationTestCase
     #[Ticket('#2302')]
     public function testPaginationEndLimits()
     {
-        $pids = static::factory()->post->create_many(150);
+        // Total pages (30) is what drives the start/mid/end_size math here, not the
+        // per-page value itself. Keep 30 pages but with pp=2 to cut fixture cost.
+        $pids = static::factory()->post->create_many(60);
         // Test defaults (mid = 2, end = 1, start = end)
         $posts = Timber::get_posts([
             'post_type' => 'post',
             'paged' => 13,
-            'posts_per_page' => 5,
+            'posts_per_page' => 2,
         ]);
         $pagination = $posts->pagination([
             'show_all' => false,
@@ -617,7 +619,7 @@ class PaginationTest extends TimberIntegrationTestCase
         $posts = Timber::get_posts([
             'post_type' => 'post',
             'paged' => 13,
-            'posts_per_page' => 5,
+            'posts_per_page' => 2,
         ]);
         $pagination = $posts->pagination([
             'show_all' => false,
@@ -628,7 +630,7 @@ class PaginationTest extends TimberIntegrationTestCase
         $posts = Timber::get_posts([
             'post_type' => 'post',
             'paged' => 13,
-            'posts_per_page' => 5,
+            'posts_per_page' => 2,
         ]);
         $pagination = $posts->pagination([
             'show_all' => false,
@@ -639,7 +641,7 @@ class PaginationTest extends TimberIntegrationTestCase
         $posts = Timber::get_posts([
             'post_type' => 'post',
             'paged' => 13,
-            'posts_per_page' => 5,
+            'posts_per_page' => 2,
         ]);
         $pagination = $posts->pagination([
             'show_all' => false,
@@ -650,7 +652,7 @@ class PaginationTest extends TimberIntegrationTestCase
         $posts = Timber::get_posts([
             'post_type' => 'post',
             'paged' => 13,
-            'posts_per_page' => 5,
+            'posts_per_page' => 2,
         ]);
         $pagination = $posts->pagination([
             'show_all' => false,
@@ -661,7 +663,7 @@ class PaginationTest extends TimberIntegrationTestCase
         $posts = Timber::get_posts([
             'post_type' => 'post',
             'paged' => 13,
-            'posts_per_page' => 5,
+            'posts_per_page' => 2,
         ]);
         $pagination = $posts->pagination([
             'show_all' => false,
@@ -672,7 +674,7 @@ class PaginationTest extends TimberIntegrationTestCase
         $posts = Timber::get_posts([
             'post_type' => 'post',
             'paged' => 13,
-            'posts_per_page' => 5,
+            'posts_per_page' => 2,
         ]);
         $pagination = $posts->pagination([
             'show_all' => false,
@@ -683,7 +685,7 @@ class PaginationTest extends TimberIntegrationTestCase
         $posts = Timber::get_posts([
             'post_type' => 'post',
             'paged' => 13,
-            'posts_per_page' => 5,
+            'posts_per_page' => 2,
         ]);
         $pagination = $posts->pagination([
             'show_all' => false,
@@ -695,7 +697,7 @@ class PaginationTest extends TimberIntegrationTestCase
         $posts = Timber::get_posts([
             'post_type' => 'post',
             'paged' => 13,
-            'posts_per_page' => 5,
+            'posts_per_page' => 2,
         ]);
         $pagination = $posts->pagination([
             'show_all' => false,
