@@ -45,6 +45,11 @@ class Timber
     public const VERSION = '2.4.1'; // x-release-please-version
 
     /**
+     * Minimum WordPress version Timber is tested against.
+     */
+    public const MINIMUM_WP_VERSION = '6.4.0';
+
+    /**
      * @deprecated 2.4.2 Use {@see Timber::VERSION} instead.
      * @var string
      */
@@ -1298,7 +1303,7 @@ class Timber
              * first time. That’s why you should add this filter before you call
              * `Timber::context()`.
              *
-             * @see \Timber\Timber::context()
+             * @see Timber::context()
              * @since 0.21.7
              * @example
              * ```php
@@ -1651,7 +1656,7 @@ class Timber
         /**
          * Filters the compiled result before it is returned.
          *
-         * @see \Timber\Timber::fetch()
+         * @see Timber::fetch()
          * @since 0.16.7
          * @deprecated 2.0.0 use timber/compile/result
          *
