@@ -261,7 +261,6 @@ class CacheTest extends TimberIntegrationTestCase
         Timber::compile('assets/single-post.twig', [
             'post' => $post,
         ]);
-        \sleep(1);
         $this->assertFileExists($cache_dir);
         $loader = new Loader();
         $loader->clear_cache_twig();
@@ -312,7 +311,6 @@ class CacheTest extends TimberIntegrationTestCase
         Timber::compile('assets/single-post.twig', [
             'post' => $post,
         ]);
-        \sleep(1);
 
         $this->assertFileExists($cache_dir);
 
