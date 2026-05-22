@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\Attributes\Ticket;
 use Timber\PostQuery;
+use Timber\Tests\Support\Attributes\WithOption;
 use Timber\Timber;
 use WP_Query;
 
@@ -15,6 +16,7 @@ use WP_Query;
 #[Group('posts-api')]
 #[Group('post-collections')]
 #[Group('pagination')]
+#[WithOption('posts_per_page', 2)]
 class PaginationTest extends TimberIntegrationTestCase
 {
     use Refresh_Database;
@@ -38,7 +40,7 @@ class PaginationTest extends TimberIntegrationTestCase
     public function testPaginationSearch()
     {
         $this->setExpectedDeprecated('get_pagination');
-        $posts = static::factory()->post->create_many(55, [
+        $posts = static::factory()->post->create_many(10, [
             'post_title' => 'searchable post',
         ]);
         $this->get(\home_url('/?s=post'));
@@ -54,8 +56,8 @@ class PaginationTest extends TimberIntegrationTestCase
     public function testPaginationWithGetPosts()
     {
         $this->setExpectedDeprecated('get_pagination');
-        $pids = static::factory()->post->create_many(33);
-        $pids = static::factory()->post->create_many(55, [
+        $pids = static::factory()->post->create_many(7);
+        $pids = static::factory()->post->create_many(8, [
             'post_type' => 'portfolio',
         ]);
         $this->get(\home_url('/'));
@@ -69,8 +71,8 @@ class PaginationTest extends TimberIntegrationTestCase
 
     public function testPaginationWithPostQuery()
     {
-        $pids = static::factory()->post->create_many(33);
-        $pids = static::factory()->post->create_many(55, [
+        $pids = static::factory()->post->create_many(3);
+        $pids = static::factory()->post->create_many(11, [
             'post_type' => 'portfolio',
         ]);
         $this->get(\home_url('/'));
@@ -86,7 +88,7 @@ class PaginationTest extends TimberIntegrationTestCase
     public function testPaginationOnLaterPage()
     {
         $this->setExpectedDeprecated('get_pagination');
-        $pids = static::factory()->post->create_many(55, [
+        $pids = static::factory()->post->create_many(11, [
             'post_type' => 'portfolio',
         ]);
         $this->get(\home_url('?post_type=portfolio&paged=3'));
@@ -99,7 +101,7 @@ class PaginationTest extends TimberIntegrationTestCase
     public function testSanitizeNextPagination()
     {
         $this->setExpectedDeprecated('get_pagination');
-        $pids = static::factory()->post->create_many(55, [
+        $pids = static::factory()->post->create_many(8, [
             'post_type' => 'portfolio',
         ]);
         $this->get(\home_url('/portfolio/page/3?whscheck="><svg/onload=alert()>'));
@@ -112,7 +114,7 @@ class PaginationTest extends TimberIntegrationTestCase
     public function testMaliciousGetParameter()
     {
         $this->setExpectedDeprecated('get_pagination');
-        static::factory()->post->create_many(33, [
+        static::factory()->post->create_many(8, [
             'post_type' => 'portfolio',
         ]);
         $this->get(\home_url('/portfolio/page/3?wx9um%2522%253e%253cscript%253ealert%25281%2529%253c%252fscript%
@@ -126,7 +128,7 @@ class PaginationTest extends TimberIntegrationTestCase
     public function testMaliciousGetParameter2()
     {
         $this->setExpectedDeprecated('get_pagination');
-        static::factory()->post->create_many(33, [
+        static::factory()->post->create_many(8, [
             'post_type' => 'portfolio',
         ]);
 
@@ -143,7 +145,7 @@ class PaginationTest extends TimberIntegrationTestCase
     #[PermalinkStructure('/%postname%/')]
     public function testDoubleEncodedPaginationUrl()
     {
-        static::factory()->post->create_many(33, [
+        static::factory()->post->create_many(8, [
             'post_type' => 'portfolio',
         ]);
         $this->get(\home_url('/portfolio/page/3?wx9um%2522%253e%253cscript%253ealert%25281%2529%253c%252fscript%
@@ -158,7 +160,7 @@ class PaginationTest extends TimberIntegrationTestCase
     #[PermalinkStructure('/%postname%/')]
     public function testDoubleEncodedPaginationUrlWithEscHTML()
     {
-        static::factory()->post->create_many(33, [
+        static::factory()->post->create_many(8, [
             'post_type' => 'portfolio',
         ]);
         $this->get(\home_url('/portfolio/page/3?wx9um%2522%253e%253cscript%253ealert%25281%2529%253c%252fscript%
@@ -187,7 +189,7 @@ class PaginationTest extends TimberIntegrationTestCase
     public function testPaginationSearchPrettyWithPostname()
     {
         $this->setExpectedDeprecated('get_pagination');
-        static::factory()->post->create_many(55, [
+        static::factory()->post->create_many(10, [
             'post_title' => 'searchable post',
         ]);
         $archive = \home_url('?s=post');
@@ -202,7 +204,7 @@ class PaginationTest extends TimberIntegrationTestCase
     public function testPaginationSearchPrettyWithPostnameNext()
     {
         $this->setExpectedDeprecated('get_pagination');
-        static::factory()->post->create_many(55, [
+        static::factory()->post->create_many(4, [
             'post_title' => 'searchable post',
         ]);
         $archive = \home_url('?s=post');
@@ -217,7 +219,7 @@ class PaginationTest extends TimberIntegrationTestCase
     public function testPaginationSearchPrettyWithPostnamePrev()
     {
         $this->setExpectedDeprecated('get_pagination');
-        static::factory()->post->create_many(55, [
+        static::factory()->post->create_many(8, [
             'post_title' => 'searchable post',
         ]);
 
@@ -233,7 +235,7 @@ class PaginationTest extends TimberIntegrationTestCase
     public function testPaginationSearchPrettyx()
     {
         $this->setExpectedDeprecated('get_pagination');
-        static::factory()->post->create_many(55, [
+        static::factory()->post->create_many(10, [
             'post_title' => 'searchable post',
         ]);
 
@@ -249,7 +251,7 @@ class PaginationTest extends TimberIntegrationTestCase
     public function testPaginationHomePrettyTrailingSlash()
     {
         $this->setExpectedDeprecated('get_pagination');
-        static::factory()->post->create_many(55, [
+        static::factory()->post->create_many(6, [
             'post_title' => 'searchable post',
         ]);
 
@@ -265,7 +267,7 @@ class PaginationTest extends TimberIntegrationTestCase
     public function testPaginationHomePrettyNonTrailingSlash()
     {
         $this->setExpectedDeprecated('get_pagination');
-        static::factory()->post->create_many(55);
+        static::factory()->post->create_many(6);
         $this->get(\home_url('/'));
         $pagination = Timber::get_pagination();
 
@@ -275,13 +277,13 @@ class PaginationTest extends TimberIntegrationTestCase
 
     public function testPaginationInCategory()
     {
-        static::factory()->post->create_many(73);
+        static::factory()->post->create_many(3);
 
         $news_id = static::factory()->term->create([
             'name' => 'News',
             'taxonomy' => 'category',
         ]);
-        $posts = static::factory()->post->create_many(31);
+        $posts = static::factory()->post->create_many(7);
         foreach ($posts as $post) {
             \wp_set_object_terms($post, $news_id, 'category');
         }
@@ -299,7 +301,7 @@ class PaginationTest extends TimberIntegrationTestCase
     public function testPaginationNextUsesBaseAndFormatArgs()
     {
         $this->setExpectedDeprecated('get_pagination');
-        static::factory()->post->create_many(55);
+        static::factory()->post->create_many(4);
         $this->get(\home_url('/'));
         $pagination = Timber::get_pagination([
             'base' => '/apricot/%_%',
@@ -314,7 +316,7 @@ class PaginationTest extends TimberIntegrationTestCase
     public function testPaginationPrevUsesBaseAndFormatArgs()
     {
         $this->setExpectedDeprecated('get_pagination');
-        static::factory()->post->create_many(55);
+        static::factory()->post->create_many(6);
         $this->get(\home_url('/apricot/page=3'));
         \query_posts('paged=3');
         $GLOBALS['paged'] = 3;
@@ -331,7 +333,7 @@ class PaginationTest extends TimberIntegrationTestCase
     public function testPaginationWithMoreThan10Pages()
     {
         $this->setExpectedDeprecated('get_pagination');
-        static::factory()->post->create_many(150);
+        static::factory()->post->create_many(28);
         $this->get(\home_url('/page/13'));
         $pagination = Timber::get_pagination();
         $expected_next_link = \user_trailingslashit('http://example.org/page/14/');
@@ -343,7 +345,7 @@ class PaginationTest extends TimberIntegrationTestCase
 
     public function testPostsCollectionPagination()
     {
-        static::factory()->post->create_many(13);
+        static::factory()->post->create_many(3);
         $pagination = Timber::get_posts([
             'post_type' => 'post',
         ])->pagination();
@@ -354,7 +356,7 @@ class PaginationTest extends TimberIntegrationTestCase
     #[PermalinkStructure('')]
     public function testCollectionPaginationSearch()
     {
-        static::factory()->post->create_many(55, [
+        static::factory()->post->create_many(10, [
             'post_title' => 'searchable post',
         ]);
         $this->get(\home_url('?s=post'));
@@ -366,7 +368,7 @@ class PaginationTest extends TimberIntegrationTestCase
 
     public function testCollectionPaginationOnLaterPage()
     {
-        static::factory()->post->create_many(55, [
+        static::factory()->post->create_many(11, [
             'post_type' => 'portfolio',
         ]);
         $this->get(\home_url('/portfolio/page/3'));
@@ -391,7 +393,7 @@ class PaginationTest extends TimberIntegrationTestCase
     #[PermalinkStructure('/%postname%/')]
     public function testCollectionPaginationSearchPrettyWithPostname()
     {
-        static::factory()->post->create_many(55, [
+        static::factory()->post->create_many(10, [
             'post_title' => 'searchable post',
         ]);
         $archive = \home_url('?s=post');
@@ -405,7 +407,7 @@ class PaginationTest extends TimberIntegrationTestCase
     #[PermalinkStructure('/%postname%/')]
     public function testCollectionPaginationSearchPrettyWithPostnameNext()
     {
-        static::factory()->post->create_many(55, [
+        static::factory()->post->create_many(4, [
             'post_title' => 'searchable post',
         ]);
         $archive = \home_url('?s=post');
@@ -421,7 +423,7 @@ class PaginationTest extends TimberIntegrationTestCase
     {
         global $wp;
         $wp->add_query_var('myvar');
-        static::factory()->post->create_many(55);
+        static::factory()->post->create_many(4);
         $this->get(\home_url('?myvar=value'));
         $posts = new PostQuery($GLOBALS['wp_query']);
         $pagination = $posts->pagination();
@@ -432,7 +434,7 @@ class PaginationTest extends TimberIntegrationTestCase
     #[PermalinkStructure('/%postname%/')]
     public function testCollectionPaginationSearchPrettyWithPostnamePrev()
     {
-        static::factory()->post->create_many(55, [
+        static::factory()->post->create_many(8, [
             'post_title' => 'searchable thing',
         ]);
         $archive = \home_url('page/4/?s=thing');
@@ -446,7 +448,7 @@ class PaginationTest extends TimberIntegrationTestCase
     #[PermalinkStructure('/blog/%year%/%monthnum%/%postname%/')]
     public function testCollectionPaginationSearchPretty()
     {
-        static::factory()->post->create_many(55, [
+        static::factory()->post->create_many(10, [
             'post_title' => 'searchable elephant',
         ]);
         $archive = \home_url('?s=elephant');
@@ -460,7 +462,7 @@ class PaginationTest extends TimberIntegrationTestCase
     #[PermalinkStructure('/%postname%/')]
     public function testCollectionPaginationNextUsesBaseAndFormatArgs()
     {
-        $posts = static::factory()->post->create_many(55);
+        $posts = static::factory()->post->create_many(4);
         $this->get(\home_url('/'));
         $posts = Timber::get_posts();
         $pagination = $posts->pagination([
@@ -500,7 +502,7 @@ class PaginationTest extends TimberIntegrationTestCase
         // Reset REQUEST_URI - custom base/format pagination shouldn't inherit query params
         $this->get('/');
 
-        static::factory()->post->create_many(30);
+        static::factory()->post->create_many(6);
 
         // Query for the third page of posts. Exactly two pages should precede this page.
         $posts = Timber::get_posts([
@@ -517,7 +519,7 @@ class PaginationTest extends TimberIntegrationTestCase
     #[PermalinkStructure('/%postname%/')]
     public function testCollectionPaginationWithMoreThan10Pages()
     {
-        $posts = static::factory()->post->create_many(150);
+        $posts = static::factory()->post->create_many(28);
         $this->get(\home_url('/page/13'));
         $posts = new PostQuery($GLOBALS['wp_query']);
         $expected_next_link = \user_trailingslashit('http://example.org/page/14/');
@@ -530,13 +532,13 @@ class PaginationTest extends TimberIntegrationTestCase
     {
         \register_post_type('recipe');
 
-        $pids = static::factory()->post->create_many(43, [
+        $pids = static::factory()->post->create_many(9, [
             'post_type' => 'recipe',
         ]);
         $recipes = new PostQuery(new WP_Query('post_type=recipe'));
         $pagination = $recipes->pagination();
         $this->assertSame(5, \count($pagination->pages));
-        $pids = static::factory()->post->create_many(13);
+        $pids = static::factory()->post->create_many(3);
 
         $posts = new PostQuery(new WP_Query('post_type=post'));
         $pagination = $posts->pagination();
