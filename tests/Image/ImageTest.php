@@ -474,13 +474,16 @@ class ImageTest extends TimberAttachmentTestCase
 
     public function testResizeFileNamingWithLangHome()
     {
-        \add_filter('home_url', $this->addLangToHome(...), 1, 4);
+        // Array callable (not first-class callable syntax) so remove_filter()
+        // matches: each `$this->addLangToHome(...)` mints a distinct Closure,
+        // so the filter would otherwise leak into later random-order tests.
+        \add_filter('home_url', [$this, 'addLangToHome'], 1, 4);
         $file_loc = $this->copyImageToUploads('eastern.jpg');
         $upload_dir = \wp_upload_dir();
         $url_src = $upload_dir['url'] . '/eastern.jpg';
         $filename = ImageHelper::get_resize_file_url($url_src, 300, 500, 'default');
         $this->assertEquals($upload_dir['url'] . '/eastern-300x500-c-default.jpg', $filename);
-        \remove_filter('home_url', $this->addLangToHome(...), 1);
+        \remove_filter('home_url', [$this, 'addLangToHome'], 1);
     }
 
     public function testLetterboxFileNaming()
@@ -1063,14 +1066,17 @@ class ImageTest extends TimberAttachmentTestCase
 
     public function testTimberImageForExtraSlashes()
     {
-        \add_filter('upload_dir', $this->_filter_upload(...), 10, 1);
+        // Array callable (not first-class callable syntax) so remove_filter()
+        // matches: each `$this->_filter_upload(...)` mints a distinct Closure,
+        // so the filter would otherwise leak into later random-order tests.
+        \add_filter('upload_dir', [$this, '_filter_upload'], 10, 1);
 
         $post = $this->get_post_with_image();
         $image = $post->thumbnail();
 
         $resized_520_file = ImageHelper::resize($image->src, 520, 500);
 
-        \remove_filter('upload_dir', $this->_filter_upload(...));
+        \remove_filter('upload_dir', [$this, '_filter_upload']);
 
         $this->assertFalse(\strpos($resized_520_file, '//arch-520x500-c-default.jpg') > -1);
     }

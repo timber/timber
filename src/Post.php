@@ -828,7 +828,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
          *
          * This filter is used by the ACF Integration.
          *
-         * @see   \Timber\Post::field_object()
+         * @see   Post::field_object()
          * @since 1.6.0
          *
          * @param mixed        $value      The value.
@@ -860,7 +860,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      *
      * @api
      * @deprecated 2.0.0, use `{{ post.meta('field_name') }}` instead.
-     * @see \Timber\Post::meta()
+     * @see Post::meta()
      *
      * @param string $field_name The field name for which you want to get the value.
      * @return mixed The meta field value.
@@ -940,7 +940,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      *
      * @internal
      * @param string $class additional classes you want to add.
-     * @see \Timber\Post::$_css_class
+     * @see Post::$_css_class
      * @example
      * ```twig
      * <article class="{{ post.class }}">
@@ -1059,7 +1059,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
          * } );
          * ```
          *
-         * @see   \Timber\Post::authors()
+         * @see   Post::authors()
          * @since 1.1.4
          *
          * @param array        $authors An array of User objects. Default: User object for `post_author`.
@@ -1169,7 +1169,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
          * } );
          * ```
          *
-         * @see   \Timber\Post::children()
+         * @see   Post::children()
          * @since 2.1.0
          *
          * @param array        $arguments An array of arguments for the `get_children` function.

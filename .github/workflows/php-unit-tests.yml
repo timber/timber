@@ -46,7 +46,7 @@ jobs:
         with:
           persist-credentials: false
       - id: versions
-        uses: WyriHaximus/github-action-composer-php-versions-in-range@c066c91df855ca2563dc4ec46ac6674e0752ae65 # v2.0.0
+        uses: WyriHaximus/github-action-composer-php-versions-in-range@b1da538007a030a09a7d257bd3881829a3544882 # v2.1.0
         with:
           upcomingReleases: true
 

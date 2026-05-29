@@ -50,7 +50,7 @@ class Timber
     public const MINIMUM_WP_VERSION = '6.8.0';
 
     /**
-     * @deprecated 2.4.2 Use {@see Timber::VERSION} instead.
+     * @deprecated 2.5.0 Use {@see Timber::VERSION} instead.
      * @var string
      */
     public static $version = self::VERSION;

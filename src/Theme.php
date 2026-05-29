@@ -177,7 +177,7 @@ class Theme extends Core implements JsonSerializable
      * Gets a raw, unformatted theme header.
      *
      * @api
-     * @see \WP_Theme::get()
+     * @see WP_Theme::get()
      * @example
      * ```twig
      * {{ theme.get('Version') }}
@@ -197,7 +197,7 @@ class Theme extends Core implements JsonSerializable
      * Gets a theme header, formatted and translated for display.
      *
      * @api
-     * @see \WP_Theme::display()
+     * @see WP_Theme::display()
      * @example
      * ```twig
      * {{ theme.display('Description') }}

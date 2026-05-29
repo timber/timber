@@ -180,7 +180,7 @@ class Image extends Attachment implements ImageInterface
         /**
          * Filters the src URL for a `Timber\Image`.
          *
-         * @see \Timber\Image::src()
+         * @see Image::src()
          * @since 0.21.7
          *
          * @param string $src The image src.

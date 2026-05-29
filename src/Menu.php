@@ -234,7 +234,7 @@ class Menu extends CoreEntity implements Stringable
          * In earlier versions, Timber returned a pages menu if no menu was found. Now, it returns
          * null. If you still need the pages menu, you can use Timber\Timber::get_pages_menu().
          *
-         * @see \Timber\Timber::get_pages_menu()
+         * @see Timber::get_pages_menu()
          */
         if (!$menu) {
             return null;
@@ -453,7 +453,7 @@ class Menu extends CoreEntity implements Stringable
      *
      * @api
      * @deprecated 2.0.0, use `{{ menu.meta('field_name') }}` instead.
-     * @see \Timber\Menu::meta()
+     * @see Menu::meta()
      *
      * @param string $field_name The field name for which you want to get the value.
      * @return mixed The meta field value.

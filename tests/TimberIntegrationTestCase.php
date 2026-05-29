@@ -62,18 +62,35 @@ abstract class TimberIntegrationTestCase extends Integration_Test_Case
 
     public function setupCustomWPDirectoryStructure()
     {
-        \add_filter('content_url', $this->setContentUrl(...));
-        \add_filter('option_upload_path', $this->setUploadPath(...));
-        \add_filter('option_upload_url_path', $this->setUploadUrlPath(...));
-        \add_filter('option_siteurl', $this->setSiteUrl(...));
+        // Use array callables (not first-class callable syntax) so that the
+        // exact same hook identity is registered here and removed in
+        // tearDownCustomWPDirectoryStructure(). Each `$this->method(...)` call
+        // mints a distinct Closure with its own spl_object_hash, so
+        // remove_filter() would never match and the filters would leak into
+        // later tests run in random order.
+        \add_filter('content_url', [$this, 'setContentUrl']);
+        \add_filter('option_upload_path', [$this, 'setUploadPath']);
+        \add_filter('option_upload_url_path', [$this, 'setUploadUrlPath']);
+        \add_filter('option_siteurl', [$this, 'setSiteUrl']);
+
+        // wp_upload_dir() memoizes _wp_upload_dir() (which reads the upload_path /
+        // upload_url_path options filtered above) in a process-lived static cache.
+        // Force a refresh so the custom directory values take effect now, instead
+        // of returning a value cached by an earlier test.
+        \wp_upload_dir(null, false, true);
     }
 
     public function tearDownCustomWPDirectoryStructure()
     {
-        \remove_filter('content_url', $this->setContentUrl(...));
-        \remove_filter('option_upload_path', $this->setUploadPath(...));
-        \remove_filter('option_upload_url_path', $this->setUploadUrlPath(...));
-        \remove_filter('option_siteurl', $this->setSiteUrl(...));
+        \remove_filter('content_url', [$this, 'setContentUrl']);
+        \remove_filter('option_upload_path', [$this, 'setUploadPath']);
+        \remove_filter('option_upload_url_path', [$this, 'setUploadUrlPath']);
+        \remove_filter('option_siteurl', [$this, 'setSiteUrl']);
+
+        // Evict the custom-directory value baked into wp_upload_dir()'s static
+        // cache so it does not leak into later tests run in random order. With
+        // the filters now removed, this recomputes the default uploads location.
+        \wp_upload_dir(null, false, true);
     }
 
     public function setContentUrl($url)

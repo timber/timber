@@ -200,7 +200,7 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
              *
              * This filter is used by the ACF Integration.
              *
-             * @see   \Timber\Post::meta()
+             * @see   Post::meta()
              * @since 2.0.0
              *
              * @example

@@ -195,7 +195,7 @@ class URLHelper
          * This filter is used by the WPML integration.
 
          *
-         * @see \Timber\URLHelper::url_to_file_system()
+         * @see URLHelper::url_to_file_system()
          * @since 1.3.2
          *
          * @param string $path The current translated path
@@ -239,7 +239,7 @@ class URLHelper
          * You can use this filter to alter the returned URL.
          * This filter is used by the WPML integration.
          *
-         * @see \Timber\URLHelper::file_system_to_url()
+         * @see URLHelper::file_system_to_url()
          * @since 1.3.2
          *
          * @param string $url The current translated url

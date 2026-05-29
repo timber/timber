@@ -398,7 +398,7 @@ class Term extends CoreEntity implements Stringable
         /**
          * Filters the link to the term archive page.
          *
-         * @see   \Timber\Term::link()
+         * @see   Term::link()
          * @since 0.21.9
          *
          * @param string       $link The link.
@@ -426,7 +426,7 @@ class Term extends CoreEntity implements Stringable
      *
      * @api
      * @deprecated 2.0.0, use `{{ term.meta('field_name') }}` instead.
-     * @see \Timber\Term::meta()
+     * @see Term::meta()
      *
      * @param string $field_name The field name for which you want to get the value.
      * @return mixed The meta field value.
@@ -470,7 +470,7 @@ class Term extends CoreEntity implements Stringable
          * }, 10, 2 );
          * ```
          *
-         * @see   \Timber\Term::path()
+         * @see   Term::path()
          * @since 0.21.9
          *
          * @param string       $rel  The relative link.

@@ -148,7 +148,7 @@ abstract class Core
                     // unexpected side effects. The try-catch is here to not trigger a fatal error
                     // when we try to set a private property.
                     try {
-                    $this->$key = $value;
+                        $this->$key = $value;
                     } catch (Error $e) {
                         \trigger_error($e->getMessage(), \E_USER_WARNING);
                     }
