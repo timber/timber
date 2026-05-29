@@ -74,7 +74,10 @@ class ExternalImageTest extends TimberAttachmentTestCase
     public function delete_existing_sideloaded_image($file)
     {
         // @see \Timber\ImageHelper::sideload_image()
-        \add_filter('upload_dir', ImageHelper::set_sideload_image_upload_dir(...));
+        // Array callable (not first-class callable syntax): remove_filter() only
+        // matches the exact hook identity, and each `ClassName::method(...)` call
+        // creates a distinct Closure that would never match on removal.
+        \add_filter('upload_dir', [ImageHelper::class, 'set_sideload_image_upload_dir']);
 
         $file_loc = ImageHelper::get_sideloaded_file_loc($file);
 
@@ -82,7 +85,7 @@ class ExternalImageTest extends TimberAttachmentTestCase
             \unlink($file_loc);
         }
 
-        \remove_filter('upload_dir', ImageHelper::set_sideload_image_upload_dir(...));
+        \remove_filter('upload_dir', [ImageHelper::class, 'set_sideload_image_upload_dir']);
     }
 
     public function testExternalImageWithInvalidUrl()
