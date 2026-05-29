@@ -49,6 +49,22 @@ class AdminTest extends TimberIntegrationTestCase
     }
 
     /**
+     * WordPress reports a major release as `6.8`, not `6.8.0`. The two-segment string
+     * must be treated as meeting the minimum, otherwise the notice shows on the exact
+     * release Timber targets.
+     */
+    public function testNoNoticeWhenRunningMajorReleaseOfMinimum(): void
+    {
+        Admin::init('6.8');
+
+        \ob_start();
+        \do_action('admin_notices');
+        $output = \ob_get_clean();
+
+        $this->assertStringNotContainsString('timber/timber', $output);
+    }
+
+    /**
      * WordPress fires `admin_init` with no args, which reaches the callback as an
      * empty string rather than null. The version must still be resolved instead of
      * being compared as an empty string (which would make the notice show always).

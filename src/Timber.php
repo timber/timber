@@ -46,8 +46,12 @@ class Timber
 
     /**
      * Minimum WordPress version Timber is tested against.
+     *
+     * Use the same shape WordPress reports for its own version: a major release is
+     * `6.8` (not `6.8.0`). version_compare() treats a missing segment as lower than an
+     * explicit `.0`, so `6.8.0` would wrongly flag a site running the `6.8` release.
      */
-    public const MINIMUM_WP_VERSION = '6.8.0';
+    public const MINIMUM_WP_VERSION = '6.8';
 
     /**
      * @deprecated 2.5.0 Use {@see Timber::VERSION} instead.
