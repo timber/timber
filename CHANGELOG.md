@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.5.1](https://github.com/timber/timber/compare/v2.5.0...v2.5.1) (2026-05-29)
+
+
+### Bug Fixes
+
+* Fix bug with WP version notice in admin ([#3264](https://github.com/timber/timber/issues/3264)) ([5a26a21](https://github.com/timber/timber/commit/5a26a21ce0beaa2f2604aef2fd2db646a2c161cd))
+
+
+### Miscellaneous Chores
+
+* update .gitattributes to exclude phpstan.neon.dist and typos.toml from dist ([3a226cf](https://github.com/timber/timber/commit/3a226cffae5a0e3305202fc511a17d394cafe02e))
+
 ## [2.5.0](https://github.com/timber/timber/compare/v2.4.1...v2.5.0) (2026-05-29)
 
 

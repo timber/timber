@@ -42,7 +42,7 @@ use WP_User;
  */
 class Timber
 {
-    public const VERSION = '2.5.0'; // x-release-please-version
+    public const VERSION = '2.5.1'; // x-release-please-version
 
     /**
      * Minimum WordPress version Timber is tested against.
