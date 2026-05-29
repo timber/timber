@@ -1,5 +1,53 @@
 # Changelog
 
+## [2.5.0](https://github.com/timber/timber/compare/v2.4.1...v2.5.0) (2026-05-29)
+
+
+### Features
+
+* Add post excerpt content filter ([#3247](https://github.com/timber/timber/issues/3247)) ([a8aa17e](https://github.com/timber/timber/commit/a8aa17e7a363025eb59f58561282e8d1cf4568a1))
+
+
+### Bug Fixes
+
+* bump twig/twig to ^3.27 for sandbox security fixes ([112d369](https://github.com/timber/timber/commit/112d369e6877a3746271e9523d87fd01ef6ae466))
+* correct indentation in core.php ([b8e0e77](https://github.com/timber/timber/commit/b8e0e779bcc0bf697e7010c1570a7046fac936f8))
+* switch version property to constant and mark old property as deprecated ([971a38b](https://github.com/timber/timber/commit/971a38b46dfa3255be780052d8c76112eccbe3c1))
+
+
+### Code Refactoring
+
+* **admin:** extract MINIMUM_WP_VERSION constant and simplify notice ([79c4813](https://github.com/timber/timber/commit/79c481320eb478b492f8b2a45e0cd28149b7dc62))
+
+
+### Tests
+
+* **cache:** drop vestigial sleep(1) in twig cache tests ([bbe859a](https://github.com/timber/timber/commit/bbe859a10bdfa419375b4a7ee14a4a650d5cb421))
+* **cache:** replace sleep() with manual transient expiry ([03d6a6e](https://github.com/timber/timber/commit/03d6a6e172f1baac2704374de4df01c90a689d4c))
+* **helper:** use usleep(50ms) instead of sleep(1) in testTimers ([95949ff](https://github.com/timber/timber/commit/95949ff0c4e378339d3dda6fe52b12eb5d1f015b))
+* **main:** trim testGetPostsInLoop fixture to loop length ([bc023c1](https://github.com/timber/timber/commit/bc023c196522a6fc787455db1f689c27b1959228))
+* **pagination:** reduce fixture sizes via WithOption posts_per_page=2 ([1d49c5b](https://github.com/timber/timber/commit/1d49c5bf439cb293fa86109e8617f0b5bc8526cd))
+* **pagination:** reduce testPaginationEndLimits fixture cost ([34631bc](https://github.com/timber/timber/commit/34631bc3d0a5daba1c046751d92ca79e120562a4))
+* **post-query:** cut fixture sizes via method-level WithOption ([0894595](https://github.com/timber/timber/commit/0894595174ad37e611465d1f5f3e599d7c7f5a09))
+* stop custom-upload-dir tests leaking into random-order runs ([c62f138](https://github.com/timber/timber/commit/c62f138941ddb4ab244884349728eb95bf524cba))
+
+
+### Continuous Integration
+
+* harden GitHub Actions workflows ([43d0b89](https://github.com/timber/timber/commit/43d0b8918d6e89c45eca292348bfca8788908324))
+* update composer PHP versions action to v2.1.0 ([dadab84](https://github.com/timber/timber/commit/dadab8469dcf6de755b0c15330af126dcba49e62))
+
+
+### Miscellaneous Chores
+
+* bump minimum WordPress version to 6.4 ([1333635](https://github.com/timber/timber/commit/1333635dc4bf15b3dc9ec80984315c8e6502875d))
+* **deps:** bump shivammathur/setup-php ([#3257](https://github.com/timber/timber/issues/3257)) ([b5f545f](https://github.com/timber/timber/commit/b5f545f94d9b1c51a331841e68ead10c8e7e91b1))
+* **deps:** bump tj-actions/changed-files from 47.0.0 to 47.0.6 ([e8f79dd](https://github.com/timber/timber/commit/e8f79ddd146c001691fe64f59e3d2f0a0ac054a6))
+* remove phpcs.xml configuration file ([767d0b4](https://github.com/timber/timber/commit/767d0b4f91dc13451afcc10fcc06655201aa7825))
+* update deprecation notice version ([fe9e33e](https://github.com/timber/timber/commit/fe9e33e8c7e0706b873a653dbd011d9716ac9096))
+* update method references to use class name directly ([#3262](https://github.com/timber/timber/issues/3262)) ([b24cf4c](https://github.com/timber/timber/commit/b24cf4cbb0f43337e0fae6bbe62ae59db3e42ed9))
+* update minimum WordPress version to 6.8.0 in tests and Timber class ([7947b63](https://github.com/timber/timber/commit/7947b631ad8d1efe858e778d6fc1b348419f8b9b))
+
 ## [2.4.1](https://github.com/timber/timber/compare/v2.4.0...v2.4.1) (2026-05-20)
 
 
