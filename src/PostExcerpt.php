@@ -148,8 +148,8 @@ class PostExcerpt implements Stringable
      */
     public function __construct(
         /**
-     * Post.
-     */
+         * Post.
+         */
         protected $post,
         array $options = []
     ) {
@@ -498,7 +498,7 @@ class PostExcerpt implements Stringable
             /**
              * Filters the excerpt text before final assembly.
              *
-             * @since 2.4.1
+             * @since 2.5.0
              * @param string      $text Current excerpt text.
              * @param Post        $post Post instance.
              * @param PostExcerpt $excerpt Current PostExcerpt instance.
