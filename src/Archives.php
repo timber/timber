@@ -215,7 +215,7 @@ class Archives extends Core
      *
      * @api
      * @deprecated 2.0.0, use `{{ archives.items }}` instead.
-     * @see \Timber\Archives::items()
+     * @see Archives::items()
      * @return array|string
      */
     public function get_items($args = null)

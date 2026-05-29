@@ -33,7 +33,7 @@ use Stringable;
  *
  * @api
  * @since 1.0.4
- * @see \Timber\Post::excerpt()
+ * @see Post::excerpt()
  * @example
  * ```twig
  * {# Use default excerpt #}

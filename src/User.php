@@ -255,7 +255,7 @@ class User extends CoreEntity implements Stringable
      *
      * @api
      * @deprecated 2.0.0, use `{{ user.meta('field_name') }}` instead.
-     * @see \Timber\User::meta()
+     * @see User::meta()
      *
      * @param string $field_name The field name for which you want to get the value.
      * @return mixed The meta field value.

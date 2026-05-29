@@ -484,7 +484,7 @@ class ImageHelper
      *
      * @internal
      * @since 2.0.0
-     * @see   \Timber\ImageHelper::sideload_image()
+     * @see   ImageHelper::sideload_image()
      *
      * @param array $upload Array of information about the upload directory.
      *

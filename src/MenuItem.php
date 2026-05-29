@@ -286,7 +286,7 @@ class MenuItem extends CoreEntity implements Stringable
          * recursion (see #2071).
          *
          * @since 1.12.0
-         * @see \Timber\MenuItem::menu()
+         * @see MenuItem::menu()
          */
         protected $menu = null
     ) {
@@ -378,7 +378,7 @@ class MenuItem extends CoreEntity implements Stringable
      * ```twig
      * <a href="{{ item.link }}">{{ item }}</a>
      * ```
-     * @see \Timber\MenuItem::name()
+     * @see MenuItem::name()
      * @return string The label for the menu item.
      */
     public function __toString(): string
@@ -645,7 +645,7 @@ class MenuItem extends CoreEntity implements Stringable
      *
      * @api
      * @deprecated 2.0.0, use `{{ item.meta('field_name') }}` instead.
-     * @see \Timber\MenuItem::meta()
+     * @see MenuItem::meta()
      *
      * @param string $field_name The field name for which you want to get the value.
      * @return mixed The meta field value.
@@ -684,7 +684,7 @@ class MenuItem extends CoreEntity implements Stringable
      *
      * @api
      * @deprecated 2.0.0, use `{{ item.is_external }}`
-     * @see \Timber\MenuItem::is_external()
+     * @see MenuItem::is_external()
      *
      * @return bool Whether the link is external or not.
      */
