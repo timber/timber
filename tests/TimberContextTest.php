@@ -228,11 +228,6 @@ class TimberContextTest extends TimberIntegrationTestCase
 
         global $wp_query;
 
-        // Reset loop state to test that Timber::context() sets it up.
-        // WP 6.3 sets in_the_loop=true during request setup due to a workaround
-        // that was fixed in WP 6.4. See: https://core.trac.wordpress.org/ticket/58154
-        $wp_query->in_the_loop = false;
-
         $this->assertFalse($wp_query->in_the_loop);
 
         Timber::context();

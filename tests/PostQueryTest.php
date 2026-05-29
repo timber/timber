@@ -13,6 +13,7 @@ use SerializablePost;
 use Timber\Post;
 use Timber\PostArrayObject;
 use Timber\PostQuery;
+use Timber\Tests\Support\Attributes\WithOption;
 use Timber\Timber;
 use WP_Query;
 
@@ -55,10 +56,11 @@ class PostQueryTest extends TimberIntegrationTestCase
     }
 
     #[PermalinkStructure('/%postname%/')]
+    #[WithOption('posts_per_page', 2)]
     public function testPaginationOnLaterPage()
     {
         \register_post_type('portfolio');
-        $pids = static::factory()->post->create_many(55, [
+        $pids = static::factory()->post->create_many(11, [
             'post_type' => 'portfolio',
         ]);
 
@@ -69,9 +71,10 @@ class PostQueryTest extends TimberIntegrationTestCase
         $this->assertCount(6, $pagination->pages);
     }
 
+    #[WithOption('posts_per_page', 5)]
     public function testBasicCollectionWithPagination()
     {
-        $pids = static::factory()->post->create_many(130);
+        $pids = static::factory()->post->create_many(65);
         $page = static::factory()->post->create([
             'post_title' => 'Test',
             'post_type' => 'page',

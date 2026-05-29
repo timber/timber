@@ -7,33 +7,24 @@ namespace Timber;
  */
 class Admin
 {
-    public static function init()
+    public static function init(?string $wp_version = null): void
     {
-        global $wp_version;
+        // wp_get_wp_version() exists since WP 6.7; fall back to the global for older versions
+        // (which is exactly the range this notice targets).
+        $wp_version ??= \function_exists('wp_get_wp_version') ? \wp_get_wp_version() : (string) ($GLOBALS['wp_version'] ?? '');
 
-        $minimum_version = '6.0.0';
-
-        // Show notice if user is running something older than the required
-        // WordPress version.
-        if (\version_compare($minimum_version, $wp_version) === 1) {
-            $upgrade_url = \admin_url('update-core.php');
-
-            self::show_notice("<a href='https://github.com/timber/timber'>Timber 2.0</a> requires <strong>WordPress $minimum_version</strong> or greater, but you are running <strong>WordPress $wp_version</strong>. Please <a href='$upgrade_url'>update WordPress</a> in order to use Timber 2.0.");
+        // Bail if the running WordPress version meets Timber's tested minimum.
+        if (\version_compare(Timber::MINIMUM_WP_VERSION, $wp_version) !== 1) {
+            return;
         }
-    }
 
-    /**
-     * Display a message in the admin.
-     *
-     * @date    01/07/2020
-     *
-     * @param string  $text to display
-     * @param string  $class of the notice 'error' (red) or 'warning' (yellow)
-     */
-    protected static function show_notice($text, $class = 'error')
-    {
-        \add_action('admin_notices', function () use ($text, $class) {
-            echo '<div class="' . $class . '"><p>' . $text . '</p></div>';
+        \add_action('admin_notices', static function () use ($wp_version): void {
+            \printf(
+                '<div class="error"><p>Your installed version of <a href="https://github.com/timber/timber" target="_blank" rel="noopener noreferrer">Timber</a> is only tested against <strong>WordPress %1$s</strong> or greater, but you are running <strong>WordPress %2$s</strong>. Please <a href="%3$s">update WordPress</a> to make sure Timber runs fine.</p></div>',
+                Timber::MINIMUM_WP_VERSION,
+                $wp_version,
+                \admin_url('update-core.php'),
+            );
         }, 1);
     }
 }

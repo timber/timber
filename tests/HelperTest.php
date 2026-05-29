@@ -216,11 +216,11 @@ class HelperTest extends TimberIntegrationTestCase
     public function testTimers()
     {
         $start = Helper::start_timer();
-        \sleep(1);
+        \usleep(50_000); // 50 ms — just enough to verify the timer measures elapsed time.
         $end = Helper::stop_timer($start);
         $this->assertStringContainsString(' seconds.', $end);
-        $time = \str_replace(' seconds.', '', $end);
-        $this->assertGreaterThan(1, $time);
+        $time = (float) \str_replace(' seconds.', '', $end);
+        $this->assertGreaterThan(0.04, $time);
     }
 
     public function testArrayTruncate()

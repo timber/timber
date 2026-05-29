@@ -18,9 +18,7 @@ namespace Timber\Tests {
         #[IgnoreDeprecations]
         public function testFooterOnFooterFW()
         {
-            if ($this->isWordPressVersion('6.4', '>=')) {
-                $this->setExpectedDeprecated('the_block_template_skip_link');
-            }
+            $this->setExpectedDeprecated('the_block_template_skip_link');
 
             global $wp_scripts;
             $wp_scripts = null;
@@ -38,9 +36,7 @@ namespace Timber\Tests {
         #[IgnoreDeprecations]
         public function testFooterAlone()
         {
-            if ($this->isWordPressVersion('6.4', '>=')) {
-                $this->setExpectedDeprecated('the_block_template_skip_link');
-            }
+            $this->setExpectedDeprecated('the_block_template_skip_link');
             global $wp_scripts;
             $wp_scripts = null;
             \wp_enqueue_script('jquery', false, [], false, true);
@@ -62,9 +58,7 @@ namespace Timber\Tests {
         #[IgnoreDeprecations]
         public function testDoubleActionWPFooter()
         {
-            if ($this->isWordPressVersion('6.4', '>=')) {
-                $this->setExpectedDeprecated('the_block_template_skip_link');
-            }
+            $this->setExpectedDeprecated('the_block_template_skip_link');
             global $wp_scripts;
             $wp_scripts = null;
             $this->add_action_temporarily('wp_footer', 'echo_junk');
@@ -78,9 +72,7 @@ namespace Timber\Tests {
         #[IgnoreDeprecations]
         public function testInTwig()
         {
-            if ($this->isWordPressVersion('6.4', '>=')) {
-                $this->setExpectedDeprecated('the_block_template_skip_link');
-            }
+            $this->setExpectedDeprecated('the_block_template_skip_link');
             global $wp_scripts;
             $wp_scripts = null;
             \wp_enqueue_script('jquery', false, [], false, true);
@@ -92,9 +84,7 @@ namespace Timber\Tests {
         #[IgnoreDeprecations]
         public function testInTwigString()
         {
-            if ($this->isWordPressVersion('6.4', '>=')) {
-                $this->setExpectedDeprecated('the_block_template_skip_link');
-            }
+            $this->setExpectedDeprecated('the_block_template_skip_link');
             global $wp_scripts;
             $wp_scripts = null;
             \wp_enqueue_script('jquery', false, [], false, true);
@@ -106,9 +96,7 @@ namespace Timber\Tests {
         #[IgnoreDeprecations]
         public function testAgainstFooterFunctionOutput()
         {
-            if ($this->isWordPressVersion('6.4', '>=')) {
-                $this->setExpectedDeprecated('the_block_template_skip_link');
-            }
+            $this->setExpectedDeprecated('the_block_template_skip_link');
             global $wp_scripts;
             $wp_scripts = null;
             \wp_enqueue_script('colorpicker', false, [], false, true);
