@@ -9,9 +9,14 @@ class Admin
 {
     public static function init(?string $wp_version = null): void
     {
+        // Resolve the version ourselves when none was passed. WordPress fires `admin_init`
+        // with no args, which reaches this callback as an empty string (not null), so we
+        // can't rely on the parameter default alone.
         // wp_get_wp_version() exists since WP 6.7; fall back to the global for older versions
         // (which is exactly the range this notice targets).
-        $wp_version ??= \function_exists('wp_get_wp_version') ? \wp_get_wp_version() : (string) ($GLOBALS['wp_version'] ?? '');
+        if ($wp_version === null || $wp_version === '') {
+            $wp_version = \function_exists('wp_get_wp_version') ? \wp_get_wp_version() : (string) ($GLOBALS['wp_version'] ?? '');
+        }
 
         // Bail if the running WordPress version meets Timber's tested minimum.
         if (\version_compare(Timber::MINIMUM_WP_VERSION, $wp_version) !== 1) {

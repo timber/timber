@@ -47,4 +47,20 @@ class AdminTest extends TimberIntegrationTestCase
 
         $this->assertStringNotContainsString('timber/timber', $output);
     }
+
+    /**
+     * WordPress fires `admin_init` with no args, which reaches the callback as an
+     * empty string rather than null. The version must still be resolved instead of
+     * being compared as an empty string (which would make the notice show always).
+     */
+    public function testNoNoticeWhenVersionResolvedFromEmptyString(): void
+    {
+        Admin::init('');
+
+        \ob_start();
+        \do_action('admin_notices');
+        $output = \ob_get_clean();
+
+        $this->assertStringNotContainsString('timber/timber', $output);
+    }
 }
