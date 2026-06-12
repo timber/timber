@@ -147,8 +147,12 @@ class ImageTest extends TimberAttachmentTestCase
             'img' => $attach_id,
         ]);
         $resized_one = ImageHelper::get_server_location($str);
-        \sleep(1);
-        $filename = $this->copyImageToUploads('cardinals.jpg', 'arch.jpg');
+
+        // Replace the attachment's actual file (its uploaded name may have been
+        // uniquified) and backdate the resized file so the source counts as newer
+        // despite filemtime()'s one-second granularity.
+        \copy($this->getFixtureAsset('cardinals.jpg'), \get_attached_file($attach_id));
+        \touch($resized_one, \filemtime($resized_one) - 2);
 
         $str = Timber::compile_string($template, [
             'img' => $attach_id,

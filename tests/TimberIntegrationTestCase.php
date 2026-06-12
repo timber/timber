@@ -16,6 +16,14 @@ abstract class TimberIntegrationTestCase extends Integration_Test_Case
     private $temporary_hook_removals = [];
 
     /**
+     * Files copied into the uploads directory by copyImageToUploads(). These have no
+     * attachment, so Mantle never deletes them; without explicit cleanup they leak into
+     * later tests, where wp_upload_bits() then uniquifies colliding filenames (arch.jpg
+     * becomes arch-1.jpg) and breaks tests that assert on exact upload paths.
+     */
+    private array $copied_upload_files = [];
+
+    /**
      * Backup for Timber locations.
      */
     protected $backup_timber_locations;
@@ -50,6 +58,13 @@ abstract class TimberIntegrationTestCase extends Integration_Test_Case
     {
         // Restore original Timber locations
         Timber::$locations = $this->backup_timber_locations;
+
+        foreach ($this->copied_upload_files as $file) {
+            if (\file_exists($file)) {
+                \unlink($file);
+            }
+        }
+        $this->copied_upload_files = [];
 
         parent::tear_down();
     }
@@ -249,6 +264,8 @@ abstract class TimberIntegrationTestCase extends Integration_Test_Case
         }
 
         \copy($this->getFixtureAsset($file), $destination);
+
+        $this->copied_upload_files[] = $destination;
 
         return $destination;
     }
