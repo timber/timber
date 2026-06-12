@@ -204,10 +204,12 @@ class PostQueryTest extends TimberIntegrationTestCase
             'orderby' => 'post__in',
         ]);
 
-        // Dump the loop object itself each iteration, so we can see its
-        // internals over time.
+        // Dump the loop variables individually each iteration, so we can
+        // assert on them below. Twig 4's `loop` is a LoopContext object
+        // with private state, so `loop|json_encode` no longer works; we
+        // build the hash ourselves from its accessors.
         $compiled = Timber::compile_string(
-            "{% for p in posts %}\n{{loop|json_encode}}\n{% endfor %}\n",
+            "{% for p in posts %}\n{{ {index: loop.index, revindex0: loop.revindex0, length: loop.length, first: loop.first, last: loop.last}|json_encode }}\n{% endfor %}\n",
             [
                 'posts' => new PostQuery($wp_query),
             ]

@@ -2,6 +2,7 @@
 
 namespace Timber;
 
+use Throwable;
 use Timber\Factory\CommentFactory;
 use Timber\Factory\MenuFactory;
 use Timber\Factory\PagesMenuFactory;
@@ -1631,7 +1632,14 @@ class Timber
         $dummy_loader = new Loader();
         $twig = $dummy_loader->get_twig();
         $template = $twig->createTemplate($string);
-        return $template->render($data);
+        \ob_start();
+        try {
+            $template->display($data);
+        } catch (Throwable $e) {
+            \ob_end_clean();
+            throw $e;
+        }
+        return \ob_get_clean();
     }
 
     /**
