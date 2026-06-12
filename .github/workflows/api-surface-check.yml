@@ -1,0 +1,31 @@
+name: API Surface Check
+
+# Minimal pull_request workflow whose only job is to fire workflow_run for the
+# api-surface-comment workflow (which has pull-requests:write even on fork PRs
+# and runs the actual analysis from trusted action code).
+
+on:
+  pull_request:
+    branches:
+      - master
+      - 2.x
+    paths:
+      - 'src/**.php'
+    types:
+      - opened
+      - synchronize
+      - ready_for_review
+
+concurrency:
+  group: api-surface-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  signal:
+    name: Trigger check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - run: 'true'
