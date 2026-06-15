@@ -112,7 +112,7 @@ jobs:
       - name: Disable insecure-package block (TMP)
         run: composer config audit.block-insecure false
 
-      - uses: ramsey/composer-install@5c2bcf28d7b060ef3c601d7b476d5430a7b46c27 # v4
+      - uses: ramsey/composer-install@26d8a556604053a9612623447203a691f406fbe6 # v4
         with:
           dependency-versions: ${{ matrix.dependency-version }}
 
