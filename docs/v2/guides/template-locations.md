@@ -128,3 +128,67 @@ add_filter('timber/locations', function ($paths) {
 ```
 
 You only need to do this once in your project (in **functions.php** of your theme). When you call one of the render or compile functions from a PHP file (say **single.php**), Timber will look for Twig files in these locations before it checks the child or parent theme.
+
+
+## Converting an existing namespace, e.g. Drupal Single-Directory Component (SDC) format
+
+You may have an existing template set with a different system for referencing an include, e.g. templates designed for a Drupal system. In this scenario, it is possible to re-implement the filesystem loader interface to map Drupal-style namespaced template paths to Timber's expectations.
+
+For instance, if trying to implement a template set designed for a Drupal CMS using its [Single-Directory Component (SDC)](https://www.drupal.org/docs/develop/theming-drupal/using-single-directory-components/using-your-new-single-directory-component) system, the Twig [include tag](https://twig.symfony.com/doc/3.x/tags/include.html) will not be in the format of an exact filename, but will be in the format of:
+
+`{% include "my_namespace:my_component" with {...} %}`
+
+where `my_namespace:my_component` maps to a component (within the list of paths) and a file with extension, e.g.:
+
+`/somepath/my_namespace/my_component.twig`
+
+The following example shows how the LoaderInterface can be provided with a function which dynamically converts the incoming template name to an actual filesystem path. You could provide whatever mapping you wish in that function.
+
+```
+# Re-implement the filesystem loader interface as an overridden class; see: https://github.com/timber/timber/issues/3271
+add_filter ('timber/loader/loader', function (\Twig\Loader\LoaderInterface $loader): \Twig\Loader\LoaderInterface
+{
+	return new class ($loader) implements \Twig\Loader\LoaderInterface
+	{
+		public function __construct (private \Twig\Loader\LoaderInterface $inner) {
+			
+		}
+		
+		public function getSourceContext (string $name): \Twig\Source
+		{
+			return $this->inner->getSourceContext ($this->map ($name));
+		}
+		
+		public function getCacheKey (string $name): string
+		{
+			return $this->inner->getCacheKey ($this->map ($name));
+		}
+		
+		public function exists (string $name): bool
+		{
+			return $this->inner->exists ($this->map ($name));
+		}
+		
+		public function isFresh (string $name, int $time): bool
+		{
+			return $this->inner->isFresh ($this->map ($name), $time);
+		}
+		
+		# Mapping of the incoming template name to an actual filesystem path
+		private function map (string $name): string
+		{
+			if (str_starts_with ($name, '@') || !str_contains ($name, ':')) {
+				return $name;
+			}
+			
+			list ($ns, $component) = explode (':', $name, 2);
+			
+			if (!str_ends_with ($component, '.twig')) {
+				$component .= '.twig';
+			}
+			
+			return '@' . $ns . '/' . ltrim ($component, '/');
+		}
+	};
+});
+```
