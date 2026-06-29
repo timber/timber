@@ -4,15 +4,12 @@
 
 ## Timber 2.0
 
-By
-[Jared Novack](https://github.com/jarednova) ([@jarednova](https://twitter.com/jarednova)),
-[Lukas Gächter](https://github.com/gchtr) ([@lgaechter](https://twitter.com/lgaechter)),
-[Nicolas Lemoine](https://github.com/nlemoine) ([@nlemoine](https://n5s.dev/)),
-[Erik van der Bas](https://github.com/Levdbas) ([website](https://basedonline.nl/)),
-[Coby Tamayo](https://github.com/acobster) ([@cobytamayo](https://keybase.io/acobster)),
-[Upstatement](https://twitter.com/upstatement) and [hundreds of other GitHub contributors](https://github.com/timber/timber/graphs/contributors):
-
-[![](https://opencollective.com/timber/contributors.svg?width=900&button=false)](https://github.com/timber/timber/graphs/contributors)
+Originally created by
+[Jared Novack](https://github.com/jarednova), now maintained by
+[Lukas Gächter](https://github.com/gchtr),
+[Erik van der Bas](https://github.com/Levdbas) ([website](https://basedonline.nl/)) and
+[Nicolas Lemoine](https://github.com/nlemoine) ([website](https://n5s.dev/)), with the help of
+[Upstatement](https://upstatement.com/) and [hundreds of other GitHub contributors](https://github.com/timber/timber/graphs/contributors):
 
 [![PHP unit tests](https://github.com/timber/timber/actions/workflows/php-unit-tests.yml/badge.svg?branch=2.x)](https://github.com//timber/timber/actions/workflows/php-unit-tests.yml?query=branch:2.x)
 [![Codecov](https://img.shields.io/codecov/c/github/timber/timber?style=flat)](https://app.codecov.io/gh/timber/timber)
@@ -145,28 +142,6 @@ Since 2013 our goal at Timber is to create a library to that helps you create fu
 Through the collaborative efforts of both our dedicated team and countless contributors, we have invested numerous hours in maintaining and enhancing Timber. To keep doing that, we rely on the invaluable support of our sponsors.
 
 Are you a WordPress pro or part of an agency who relies on Timber? Keep the magic alive by [becoming a sponsor](https://opencollective.com/timber)! By becoming a sponsor, you contribute to the continuous maintenance and enhancement of Timber, ultimately benefiting developers worldwide.
-
-![](https://opencollective.com/timber/tiers/bronze-sponsor.svg?avatarHeight=36&limit=0&button=true)
-
-### Gold Sponsors
-
-![](https://opencollective.com/timber/tiers/gold-sponsor.svg?avatarHeight=36&button=false)
-
-<!-- Enable when available.
-### Silver Sponsors
-
-![](https://opencollective.com/timber/tiers/sponsors.svg?avatarHeight=36?avatarHeight=36&button=false)
--->
-
-<!-- Enable when available.
-### Basic Sponsors
-
-![](https://opencollective.com/timber/tiers/bronze-sponsor.svg?avatarHeight=36&button=false)
--->
-
-### Our backers
-
-![](https://opencollective.com/timber/tiers/backers.svg?avatarHeight=36&button=false)
 
 ## Documentation
 

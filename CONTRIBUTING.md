@@ -321,7 +321,7 @@ All PRs receive a review from at least one maintainer. We’ll do our best to do
 
 ### GitHub reviews & assignments
 
-You might see us assign multiple reviewers, in this case these are OR checks (i.e. either Jared or Nicolas) unless we explicitly say it’s an AND type thing (i.e. can both Lukas and Maciej check this out?).
+You might see us assign multiple reviewers, in this case these are OR checks unless we explicitly say it’s an AND type thing.
 
 We use the assignee to show who’s responsible at that moment. We’ll assign back to the submitter if we need additional info/code/response, or it might be assigned to a branch maintainer if it needs more thought/revision (perhaps it’s directly related to an issue that's actively being worked on).
 

@@ -14,22 +14,26 @@
         {
             "name": "Erik van der Bas",
             "email": "erik@basedonline.nl",
-            "homepage": "https://basedonline.nl"
+            "homepage": "https://basedonline.nl",
+            "role": "Maintainer"
         },
         {
             "name": "Lukas Gächter",
             "email": "lukas.gaechter@mind.ch",
-            "homepage": "https://www.mind.ch"
+            "homepage": "https://www.mind.ch",
+            "role": "Maintainer"
         },
         {
             "name": "Nicolas Lemoine",
             "email": "nico@n5s.dev",
-            "homepage": "https://n5s.dev"
+            "homepage": "https://n5s.dev",
+            "role": "Maintainer"
         },
         {
             "name": "Jared Novack",
             "email": "jared@upstatement.com",
-            "homepage": "https://upstatement.com"
+            "homepage": "https://upstatement.com",
+            "role": "Original creator"
         },
         {
             "name": "Timber Community",
