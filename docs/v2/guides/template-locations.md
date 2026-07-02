@@ -136,13 +136,13 @@ You may have an existing template set with a different system for referencing an
 
 For instance, if trying to implement a template set designed for a Drupal CMS using its [Single-Directory Component (SDC)](https://www.drupal.org/docs/develop/theming-drupal/using-single-directory-components/using-your-new-single-directory-component) system, the Twig [include tag](https://twig.symfony.com/doc/3.x/tags/include.html) will not be in the format of an exact filename, but will be in the format of:
 
-`{% include "my_namespace:my_component" with {...} %}`
+`{% include 'my_namespace:my_component' with { some: 'data' } %}`
 
 where `my_namespace:my_component` maps to a component (within the list of paths) and a file with extension, e.g.:
 
 `/somepath/my_namespace/my_component.twig`
 
-The following example shows how the LoaderInterface can be provided with a function which dynamically converts the incoming template name to an actual filesystem path. You could provide whatever mapping you wish in that function.
+The following example shows how you can wrap the LoaderInterface with a mapping function that converts the incoming template name (like `my_namespace:my_component`) to a template name Timber's loader can resolve (like `@my_namespace/my_component.twig`). You can provide whatever mapping you wish in that function.
 
 ```php
 // Wrap Timber’s Twig loader to map Drupal SDC template names; see https://github.com/timber/timber/issues/3271
@@ -173,7 +173,7 @@ add_filter('timber/loader/loader', function (\Twig\Loader\LoaderInterface $loade
 			return $this->inner->isFresh ($this->map ($name), $time);
 		}
 		
-		# Mapping of the incoming template name to an actual filesystem path
+		// Mapping of the incoming template name to a loader-resolvable template name
 		private function map (string $name): string
 		{
 			if (str_starts_with ($name, '@') || !str_contains ($name, ':')) {
