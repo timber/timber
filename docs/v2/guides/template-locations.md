@@ -144,10 +144,9 @@ where `my_namespace:my_component` maps to a component (within the list of paths)
 
 The following example shows how the LoaderInterface can be provided with a function which dynamically converts the incoming template name to an actual filesystem path. You could provide whatever mapping you wish in that function.
 
-```
-# Re-implement the filesystem loader interface as an overridden class; see: https://github.com/timber/timber/issues/3271
-add_filter ('timber/loader/loader', function (\Twig\Loader\LoaderInterface $loader): \Twig\Loader\LoaderInterface
-{
+```php
+// Wrap Timber’s Twig loader to map Drupal SDC template names; see https://github.com/timber/timber/issues/3271
+add_filter('timber/loader/loader', function (\Twig\Loader\LoaderInterface $loader): \Twig\Loader\LoaderInterface {
 	return new class ($loader) implements \Twig\Loader\LoaderInterface
 	{
 		public function __construct (private \Twig\Loader\LoaderInterface $inner) {
