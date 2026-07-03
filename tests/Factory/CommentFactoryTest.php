@@ -82,8 +82,7 @@ class CommentFactoryTest extends TimberIntegrationTestCase
             'comment_post_ID' => static::factory()->post->create([
                 'post_type' => 'page',
             ]),
-            'comment_content' =>
-"porge",
+            'comment_content' => "porge",
         ]);
 
         $commentFactory = new CommentFactory();
@@ -150,8 +149,7 @@ class CommentFactoryTest extends TimberIntegrationTestCase
             'comment_post_ID' => static::factory()->post->create([
                 'post_type' => 'page',
             ]),
-            'comment_content' =>
-"porge",
+            'comment_content' => "porge",
         ]);
         $page_comment_id = static::factory()->comment->create([
             'comment_post_ID' => static::factory()->post->create([

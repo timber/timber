@@ -745,8 +745,7 @@ class TimberMainClassTest extends TimberIntegrationTestCase
                 'post_date' => '2015-04-21 15:13:52',
             ]),
             static::factory()->post->create([
-                'post_date' =>
-                '2015-04-24 15:13:52',
+                'post_date' => '2015-04-24 15:13:52',
             ]),
         ];
         $sticky_id = $ids[1];

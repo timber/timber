@@ -487,7 +487,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
     protected function get_post_preview_id($query)
     {
         $can = [
-            \get_post_type_object($query->queried_object->post_type)->cap->edit_post,
+            \get_post_type_object($query->queried_object->post_type)
+                ->cap->edit_post,
         ];
 
         if ($query->queried_object->author_id !== \get_current_user_id()) {
@@ -1009,7 +1010,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
             return $this->_ancestors;
         }
 
-        $ancestors = $this->factory()->from(\array_reverse(\get_post_ancestors($this->ID)));
+        $ancestors = $this->factory()
+            ->from(\array_reverse(\get_post_ancestors($this->ID)));
 
         return $this->_ancestors = \is_iterable($ancestors) ? $ancestors : new PostArrayObject([]);
     }
@@ -1177,7 +1179,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
          */
         $args = \apply_filters('timber/post/children_args', $args, $this);
 
-        return $this->factory()->from(\get_children($args));
+        return $this->factory()
+            ->from(\get_children($args));
     }
 
     /**
@@ -1959,7 +1962,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
             return false;
         }
 
-        return $this->factory()->from($this->post_parent);
+        return $this->factory()
+            ->from($this->post_parent);
     }
 
     /**
@@ -2007,7 +2011,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
         $adjacent = \get_adjacent_post(($in_same_term), '', true, $within_taxonomy);
         $prev_in_taxonomy = false;
         if ($adjacent) {
-            $prev_in_taxonomy = $this->factory()->from($adjacent);
+            $prev_in_taxonomy = $this->factory()
+                ->from($adjacent);
         }
         $this->_prev[$in_same_term] = $prev_in_taxonomy;
         $post = $old_global;
@@ -2053,7 +2058,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
         $tid = $this->thumbnail_id();
 
         if ($tid) {
-            return $this->factory()->from($tid);
+            return $this->factory()
+                ->from($tid);
         }
 
         return null;

@@ -48,8 +48,10 @@ trait InteractsWithState
         $this->register_attribute(
             WithOption::class,
             fn (ReflectionAttribute $attribute) => $this->setOptionTemporarily(
-                $attribute->newInstance()->option,
-                $attribute->newInstance()->value
+                $attribute->newInstance()
+                    ->option,
+                $attribute->newInstance()
+                    ->value
             ),
         );
     }
@@ -63,7 +65,8 @@ trait InteractsWithState
         $this->register_attribute(
             WithLocale::class,
             fn (ReflectionAttribute $attribute) => $this->switchToLocaleTemporarily(
-                $attribute->newInstance()->locale
+                $attribute->newInstance()
+                    ->locale
             ),
         );
     }
@@ -77,7 +80,8 @@ trait InteractsWithState
         $this->register_attribute(
             WithTheme::class,
             fn (ReflectionAttribute $attribute) => $this->switchThemeTemporarily(
-                $attribute->newInstance()->theme
+                $attribute->newInstance()
+                    ->theme
             ),
         );
     }

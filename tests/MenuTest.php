@@ -992,11 +992,13 @@ class MenuTest extends TimberIntegrationTestCase
 
         $this->assertEquals(
             $parent->link(),
-            $menu->current_item(1)->link()
+            $menu->current_item(1)
+                ->link()
         );
         $this->assertEquals(
             $child->link(),
-            $menu->current_item()->link()
+            $menu->current_item()
+                ->link()
         );
     }
 

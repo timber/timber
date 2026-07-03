@@ -124,7 +124,8 @@ trait AccessesPostsLazily
     {
         $post = parent::offsetGet($offset);
         if ($post instanceof WP_Post) {
-            $post = $this->factory()->from($post);
+            $post = $this->factory()
+                ->from($post);
             $this->offsetSet($offset, $post);
         }
 
