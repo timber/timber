@@ -128,7 +128,8 @@ class Theme extends Core implements JsonSerializable
         $this->parent = $this;
         $this->parent_slug = $this->theme->get_stylesheet();
         if ($this->theme->parent()) {
-            $this->parent_slug = $this->theme->parent()->get_stylesheet();
+            $this->parent_slug = $this->theme->parent()
+                ->get_stylesheet();
             $this->parent = new Theme($this->parent_slug);
         }
     }
