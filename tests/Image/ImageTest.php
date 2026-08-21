@@ -2,6 +2,7 @@
 
 namespace Timber\Tests\Image;
 
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\Attributes\Group;
 use Timber\Attachment;
 use Timber\Image;
@@ -1093,6 +1094,7 @@ class ImageTest extends TimberAttachmentTestCase
         return $data;
     }
 
+    #[DoesNotPerformAssertions]
     public function testAnimagedGifResizeWithoutImagick(): never
     {
         // This test verifies behavior when Imagick is unavailable.

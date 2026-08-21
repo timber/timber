@@ -18,8 +18,7 @@ return RectorConfig::configure()
         php82: true,
     )
     ->withSets([
-        PHPUnitSetList::PHPUNIT_100,
-        PHPUnitSetList::PHPUNIT_110,
+        PHPUnitSetList::COMPOSER_BASED,
     ])
     ->withSkip([
         ArrayToFirstClassCallableRector::class,
