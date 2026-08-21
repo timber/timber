@@ -3,6 +3,7 @@
 namespace Timber\Tests;
 
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Ticket;
 use Sport;
@@ -390,6 +391,7 @@ class HelperTest extends TimberIntegrationTestCase
         $this->assertEquals('ESPN', $sport_post->channel());
     }
 
+    #[DoesNotPerformAssertions]
     public function testDoingItWrong()
     {
         $this->setExpectedIncorrectUsage('Accessing the thumbnail ID through {{ post._thumbnail_id }}');

@@ -2,6 +2,7 @@
 
 namespace Timber\Tests\Integration;
 
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\Attributes\Ticket;
@@ -401,6 +402,7 @@ class ACFTest extends TimberIntegrationTestCase
     }
 
     #[IgnoreDeprecations]
+    #[DoesNotPerformAssertions]
     public function testPostGetFieldDeprecated()
     {
         $this->setExpectedDeprecated("{{ post.get_field('field_name') }}");
@@ -411,6 +413,7 @@ class ACFTest extends TimberIntegrationTestCase
     }
 
     #[IgnoreDeprecations]
+    #[DoesNotPerformAssertions]
     public function testTermGetFieldDeprecated()
     {
         $this->setExpectedDeprecated("{{ term.get_field('field_name') }}");
@@ -421,6 +424,7 @@ class ACFTest extends TimberIntegrationTestCase
     }
 
     #[IgnoreDeprecations]
+    #[DoesNotPerformAssertions]
     public function testUserGetFieldDeprecated()
     {
         $this->setExpectedDeprecated("{{ user.get_field('field_name') }}");
@@ -431,6 +435,7 @@ class ACFTest extends TimberIntegrationTestCase
     }
 
     #[IgnoreDeprecations]
+    #[DoesNotPerformAssertions]
     public function testCommentGetFieldDeprecated()
     {
         $this->setExpectedDeprecated("{{ comment.get_field('field_name') }}");
