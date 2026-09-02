@@ -83,6 +83,12 @@ class Twig
             'get_terms' => [
                 'callable' => [Timber::class, 'get_terms'],
             ],
+            'get_taxonomy' => [
+                'callable' => [Timber::class, 'get_taxonomy'],
+            ],
+            'get_taxonomies' => [
+                'callable' => [Timber::class, 'get_taxonomies'],
+            ],
             'get_user' => [
                 'callable' => [Timber::class, 'get_user'],
             ],

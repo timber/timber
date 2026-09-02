@@ -6,6 +6,7 @@ use Timber\Factory\CommentFactory;
 use Timber\Factory\MenuFactory;
 use Timber\Factory\PagesMenuFactory;
 use Timber\Factory\PostFactory;
+use Timber\Factory\TaxonomyFactory;
 use Timber\Factory\TermFactory;
 use Timber\Factory\UserFactory;
 use Timber\Integration\IntegrationInterface;
@@ -13,6 +14,7 @@ use WP_Comment;
 use WP_Comment_Query;
 use WP_Post;
 use WP_Query;
+use WP_Taxonomy;
 use WP_Term;
 use WP_User;
 
@@ -859,6 +861,123 @@ class Timber
         }
 
         return static::get_term($wp_term);
+    }
+
+    /* Taxonomy Retrieval
+    ================================ */
+
+    /**
+     * Gets a taxonomy.
+     *
+     * In contrast to `Timber::get_term()`, this doesn’t return a single term, but the taxonomy
+     * itself, which gives you access to everything that was passed to `register_taxonomy()` – most
+     * notably the `labels`. The terms of the taxonomy are available through `terms`.
+     *
+     * @api
+     * @since 2.6.0
+     * @see https://developer.wordpress.org/reference/functions/get_taxonomy/
+     * @example
+     * ```php
+     * // Get a taxonomy by name.
+     * $taxonomy = Timber::get_taxonomy( 'genre' );
+     *
+     * // Use the taxonomy of the currently queried term archive.
+     * $taxonomy = Timber::get_taxonomy();
+     * ```
+     * ```twig
+     * <h1>{{ taxonomy.labels.all_items }}</h1>
+     *
+     * {% for term in taxonomy.terms %}
+     *     <a href="{{ term.link }}">{{ term.title }}</a>
+     * {% endfor %}
+     * ```
+     *
+     * @param string|WP_Taxonomy|null $taxonomy Optional. A taxonomy name or a `WP_Taxonomy` object.
+     *                                          Default `null`, which will use the taxonomy of the
+     *                                          currently queried term.
+     *
+     * @return Taxonomy|null A `Timber\Taxonomy` object or `null` if the taxonomy isn’t registered.
+     */
+    public static function get_taxonomy($taxonomy = null): ?Taxonomy
+    {
+        if (null === $taxonomy) {
+            global $wp_query;
+            $taxonomy = $wp_query->queried_object->taxonomy ?? null;
+        }
+
+        if (null === $taxonomy) {
+            return null;
+        }
+
+        $factory = new TaxonomyFactory();
+
+        return $factory->from($taxonomy);
+    }
+
+    /**
+     * Gets taxonomies.
+     *
+     * @api
+     * @since 2.6.0
+     * @see https://developer.wordpress.org/reference/functions/get_taxonomies/
+     * @example
+     * ```php
+     * // Get all public taxonomies.
+     * $taxonomies = Timber::get_taxonomies();
+     *
+     * // Get a list of taxonomies by name.
+     * $taxonomies = Timber::get_taxonomies( [ 'category', 'genre' ] );
+     *
+     * // Get all taxonomies registered for a post type.
+     * $taxonomies = Timber::get_taxonomies( [ 'post_type' => 'recipe' ] );
+     *
+     * // Use any argument that get_taxonomies() supports.
+     * $taxonomies = Timber::get_taxonomies( [
+     *     'hierarchical' => true,
+     *     'show_in_rest' => true,
+     *     '_builtin'     => false,
+     * ] );
+     *
+     * // The post_type argument can be combined with any of them.
+     * $taxonomies = Timber::get_taxonomies( [
+     *     'post_type'    => 'recipe',
+     *     'hierarchical' => true,
+     * ] );
+     * ```
+     * ```twig
+     * {% for taxonomy in taxonomies %}
+     *     <h2>{{ taxonomy.labels.all_items }}</h2>
+     *
+     *     {% for term in taxonomy.terms %}
+     *         <a href="{{ term.link }}">{{ term.title }}</a>
+     *     {% endfor %}
+     * {% endfor %}
+     * ```
+     *
+     * @param string|array|null $args Optional. A taxonomy name, an array of taxonomy names or an
+     *                                array of arguments for
+     *                                [`get_taxonomies()`](https://developer.wordpress.org/reference/functions/get_taxonomies/).
+     *                                In addition to the arguments supported by that function, a
+     *                                `post_type` argument can be used as an alias for
+     *                                `object_type`. Default `null`, which will get all public
+     *                                taxonomies.
+     *
+     * @return Taxonomy[] An array of `Timber\Taxonomy` objects, keyed by taxonomy name. Will be
+     *                    empty if no taxonomies were found.
+     */
+    public static function get_taxonomies($args = null): array
+    {
+        $args ??= [
+            'public' => true,
+        ];
+
+        $factory = new TaxonomyFactory();
+
+        if (\is_string($args)) {
+            $args = [$args];
+        }
+
+        return $factory->from($args);
     }
 
     /* User Retrieval
