@@ -23,13 +23,21 @@ class ToWebp extends ImageOperation
 
     /**
      * @param   string    $src_filename     the basename of the file (ex: my-awesome-pic)
-     * @param   string    $src_extension    ignored
-     * @return  string    the final filename to be used (ex: my-awesome-pic.webp)
+     * @param   string    $src_extension    the source file's extension (ex: jpg), used to keep
+     *                                      pseudo-duplicate source files (ex: pic.jpg and
+     *                                      pic.png) from colliding on the same output name
+     * @return  string    the final filename to be used (ex: my-awesome-pic-jpg.webp)
      */
     public function filename($src_filename, $src_extension = 'webp')
     {
-        $new_name = $src_filename . '.webp';
-        return $new_name;
+        // A source that's already webp keeps the bare name: ToWebp is then converting it to
+        // itself, and _operate()'s destination-already-exists check treats that as a no-op,
+        // which is the existing, desired behavior for already-webp sources.
+        if ($src_extension === 'webp') {
+            return $src_filename . '.webp';
+        }
+
+        return $src_filename . '-' . $src_extension . '.webp';
     }
 
     /**

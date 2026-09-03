@@ -30,7 +30,7 @@ class ToWebpTest extends TimberIntegrationTestCase
         $str = Timber::compile_string('{{file|towebp}}', [
             'file' => $filename,
         ]);
-        $renamed = \str_replace('.png', '.webp', $filename);
+        $renamed = \str_replace('.png', '-png.webp', $filename);
         $this->assertFileExists($renamed);
         $this->assertGreaterThan(1000, \filesize($renamed));
         $this->assertEquals('image/png', \mime_content_type($filename));
@@ -43,7 +43,7 @@ class ToWebpTest extends TimberIntegrationTestCase
         $str = Timber::compile_string('{{file|towebp}}', [
             'file' => $filename,
         ]);
-        $renamed = \str_replace('.gif', '.webp', $filename);
+        $renamed = \str_replace('.gif', '-gif.webp', $filename);
         $this->assertFileExists($renamed);
         $this->assertGreaterThan(1000, \filesize($renamed));
         $this->assertEquals('image/gif', \mime_content_type($filename));
@@ -57,7 +57,7 @@ class ToWebpTest extends TimberIntegrationTestCase
         $str = Timber::compile_string('{{file|towebp(100)}}', [
             'file' => $filename,
         ]);
-        $renamed = \str_replace('.jpg', '.webp', $filename);
+        $renamed = \str_replace('.jpg', '-jpg.webp', $filename);
         $this->assertGreaterThan(1000, \filesize($renamed));
         $this->assertEquals('image/jpeg', \mime_content_type($filename));
         $this->assertEquals('image/webp', \mime_content_type($renamed));
@@ -69,11 +69,38 @@ class ToWebpTest extends TimberIntegrationTestCase
         $str = Timber::compile_string('{{file|towebp}}', [
             'file' => $filename,
         ]);
-        $renamed = \str_replace('.jpeg', '.webp', $filename);
+        $renamed = \str_replace('.jpeg', '-jpeg.webp', $filename);
         $this->assertFileExists($renamed);
         $this->assertGreaterThan(1000, \filesize($renamed));
         $this->assertEquals('image/jpeg', \mime_content_type($filename));
         $this->assertEquals('image/webp', \mime_content_type($renamed));
+    }
+
+    public function testCollidingBasenamesProduceDistinctWebp()
+    {
+        // Two different source images that share a basename but differ only in extension
+        // used to collide on the exact same destination filename (both became
+        // "collision.webp"): whichever converted first "won", and the second image's
+        // towebp call silently served the first image's cached webp content instead of
+        // converting its own. See https://github.com/timber/timber/issues/2850.
+        $jpgFile = $this->copyImageToUploads('stl.jpg', 'collision.jpg');
+        $pngFile = $this->copyImageToUploads('flag.png', 'collision.png');
+
+        Timber::compile_string('{{file|towebp}}', [
+            'file' => $jpgFile,
+        ]);
+        Timber::compile_string('{{file|towebp}}', [
+            'file' => $pngFile,
+        ]);
+
+        $jpgRenamed = \str_replace('.jpg', '-jpg.webp', $jpgFile);
+        $pngRenamed = \str_replace('.png', '-png.webp', $pngFile);
+
+        $this->assertNotEquals($jpgRenamed, $pngRenamed);
+        $this->assertFileExists($jpgRenamed);
+        $this->assertFileExists($pngRenamed);
+        $this->assertEquals('image/webp', \mime_content_type($jpgRenamed));
+        $this->assertEquals('image/webp', \mime_content_type($pngRenamed));
     }
 
     public function testWEBPtoWEBP()
@@ -96,7 +123,7 @@ class ToWebpTest extends TimberIntegrationTestCase
         ]);
 
         $base_url = \str_replace(\basename($sideloaded), '', $sideloaded);
-        $expected = $base_url . \md5($url) . '.webp';
+        $expected = $base_url . \md5($url) . '-jpg.webp';
 
         $this->assertEquals($expected, $sideloaded);
     }
@@ -109,7 +136,7 @@ class ToWebpTest extends TimberIntegrationTestCase
         ]);
 
         $base_url = \str_replace(\basename($sideloaded), '', $sideloaded);
-        $expected = $base_url . \md5($url) . '.webp';
+        $expected = $base_url . \md5($url) . '-png.webp';
 
         $this->assertEquals($expected, $sideloaded);
     }
