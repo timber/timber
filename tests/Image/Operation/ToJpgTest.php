@@ -35,7 +35,7 @@ class ToJpgTest extends TimberIntegrationTestCase
         $str = Timber::compile_string('{{file|tojpg}}', [
             'file' => $filename,
         ]);
-        $renamed = \str_replace('.png', '.jpg', $filename);
+        $renamed = \str_replace('.png', '-png.jpg', $filename);
         $this->assertFileExists($renamed);
         $this->assertGreaterThan(1000, \filesize($renamed));
         $this->assertEquals('image/png', \mime_content_type($filename));
@@ -50,13 +50,45 @@ class ToJpgTest extends TimberIntegrationTestCase
         $str = Timber::compile_string('{{file|tojpg}}', [
             'file' => $filename,
         ]);
-        $renamed = \str_replace('.gif', '.jpg', $filename);
+        $renamed = \str_replace('.gif', '-gif.jpg', $filename);
         $this->assertFileExists($renamed);
         $this->assertGreaterThan(1000, \filesize($renamed));
         $this->assertEquals('image/gif', \mime_content_type($filename));
         $this->assertEquals('image/jpeg', \mime_content_type($renamed));
         \unlink($filename);
         \unlink($renamed);
+    }
+
+    public function testCollidingBasenamesProduceDistinctJpg()
+    {
+        // Two different source images that share a basename but differ only in extension
+        // used to collide on the exact same destination filename (both became
+        // "collision.jpg"): whichever converted first "won", and the second image's
+        // tojpg call silently served the first image's cached jpg content instead of
+        // converting its own. Same bug class as https://github.com/timber/timber/issues/2850,
+        // in the sibling ToJpg operation.
+        $pngFile = $this->copyImageToUploads('flag.png', 'collision.png');
+        $gifFile = $this->copyImageToUploads('boyer.gif', 'collision.gif');
+
+        Timber::compile_string('{{file|tojpg}}', [
+            'file' => $pngFile,
+        ]);
+        Timber::compile_string('{{file|tojpg}}', [
+            'file' => $gifFile,
+        ]);
+
+        $pngRenamed = \str_replace('.png', '-png.jpg', $pngFile);
+        $gifRenamed = \str_replace('.gif', '-gif.jpg', $gifFile);
+
+        $this->assertNotEquals($pngRenamed, $gifRenamed);
+        $this->assertFileExists($pngRenamed);
+        $this->assertFileExists($gifRenamed);
+        $this->assertEquals('image/jpeg', \mime_content_type($pngRenamed));
+        $this->assertEquals('image/jpeg', \mime_content_type($gifRenamed));
+        \unlink($pngFile);
+        \unlink($gifFile);
+        \unlink($pngRenamed);
+        \unlink($gifRenamed);
     }
 
     public function testJPGtoJPG()
@@ -78,7 +110,7 @@ class ToJpgTest extends TimberIntegrationTestCase
         $str = Timber::compile_string('{{file|tojpg}}', [
             'file' => $filename,
         ]);
-        $renamed = \str_replace('.jpeg', '.jpg', $filename);
+        $renamed = \str_replace('.jpeg', '-jpeg.jpg', $filename);
         $this->assertFileExists($renamed);
         $this->assertGreaterThan(1000, \filesize($renamed));
         $this->assertEquals('image/jpeg', \mime_content_type($filename));
@@ -95,7 +127,7 @@ class ToJpgTest extends TimberIntegrationTestCase
         ]);
 
         $base_url = \str_replace(\basename($sideloaded), '', $sideloaded);
-        $expected = $base_url . \md5($url) . '.jpg';
+        $expected = $base_url . \md5($url) . '-png.jpg';
 
         $this->assertEquals($expected, $sideloaded);
     }

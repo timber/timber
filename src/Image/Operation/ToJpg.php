@@ -22,13 +22,21 @@ class ToJpg extends ImageOperation
 
     /**
      * @param   string    $src_filename     the basename of the file (ex: my-awesome-pic)
-     * @param   string    $src_extension    ignored
-     * @return  string    the final filename to be used (ex: my-awesome-pic.jpg)
+     * @param   string    $src_extension    the source file's extension (ex: png), used to keep
+     *                                      pseudo-duplicate source files (ex: pic.png and
+     *                                      pic.gif) from colliding on the same output name
+     * @return  string    the final filename to be used (ex: my-awesome-pic-png.jpg)
      */
     public function filename($src_filename, $src_extension = 'jpg')
     {
-        $new_name = $src_filename . '.jpg';
-        return $new_name;
+        // A source that's already jpg keeps the bare name: ToJpg is then converting it to
+        // itself, and _operate()'s destination-already-exists check treats that as a no-op,
+        // which is the existing, desired behavior for already-jpg sources.
+        if ($src_extension === 'jpg') {
+            return $src_filename . '.jpg';
+        }
+
+        return $src_filename . '-' . $src_extension . '.jpg';
     }
 
     /**
