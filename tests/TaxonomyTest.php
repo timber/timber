@@ -324,8 +324,8 @@ class TaxonomyTest extends TimberIntegrationTestCase
 
         $result = Timber::compile_string(
             "{% set genre = get_taxonomy('genre') %}"
-              . '{{ genre.title }} ({{ genre.term_count }}): '
-              . "{{ genre.top_level_terms|join(', ') }}"
+                . '{{ genre.title }} ({{ genre.term_count }}): '
+                . "{{ genre.top_level_terms|join(', ') }}"
         );
 
         $this->assertEquals('Genres (3): Ambient, Jazz', $result);
