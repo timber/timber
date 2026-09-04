@@ -203,19 +203,19 @@ class TaxonomyTest extends TimberIntegrationTestCase
 
     public function testTermsAreLazy()
     {
-        $queries = 0;
+        $term_query_count = 0;
 
-        $this->add_filter_temporarily('pre_get_terms', function () use (&$queries) {
-            $queries++;
+        $this->add_filter_temporarily('pre_get_terms', function () use (&$term_query_count) {
+            $term_query_count++;
         });
 
         $taxonomy = Timber::get_taxonomy('genre');
 
-        $this->assertSame(0, $queries, 'Getting a taxonomy should not query any terms');
+        $this->assertSame(0, $term_query_count, 'Getting a taxonomy should not construct a WP_Term_Query');
 
         $taxonomy->terms();
 
-        $this->assertGreaterThan(0, $queries);
+        $this->assertGreaterThan(0, $term_query_count, 'Getting terms should construct a WP_Term_Query');
     }
 
     public function testGetTaxonomies()
