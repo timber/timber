@@ -23,7 +23,7 @@ class PostTypeTest extends TimberIntegrationTestCase
         $this->assertEquals('post', $post->post_type);
     }
 
-    #[Ticket('#2111')]
+    #[Ticket('#2221')]
     public function testNonExistentPostType()
     {
         $post_type = new PostType('foobar');
