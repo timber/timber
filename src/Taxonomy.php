@@ -60,13 +60,6 @@ class Taxonomy extends Core implements CoreInterface, Stringable
     public $cap;
 
     /**
-     * Memoized result of an unfiltered `terms()` call.
-     *
-     * @var iterable|null
-     */
-    private ?iterable $terms_cache = null;
-
-    /**
      * @internal
      */
     protected function __construct()
@@ -232,19 +225,9 @@ class Taxonomy extends Core implements CoreInterface, Stringable
      */
     public function terms(array $query_args = [], array $options = []): iterable
     {
-        if (empty($query_args) && empty($options) && $this->terms_cache !== null) {
-            return $this->terms_cache;
-        }
-
-        $terms = Timber::get_terms(\array_merge($query_args, [
+        return Timber::get_terms(\array_merge($query_args, [
             'taxonomy' => $this->name,
         ]), $options);
-
-        if (empty($query_args) && empty($options)) {
-            $this->terms_cache = $terms;
-        }
-
-        return $terms;
     }
 
     /**

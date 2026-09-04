@@ -191,13 +191,6 @@ class TaxonomyTest extends TimberIntegrationTestCase
         $this->assertEquals(['Blues', 'Ambient'], \array_map(strval(...), $terms));
     }
 
-    public function testTermsIsMemoized()
-    {
-        $taxonomy = Timber::get_taxonomy('genre');
-
-        $this->assertSame($taxonomy->terms(), $taxonomy->terms());
-    }
-
     public function testTermsAreLazy()
     {
         $queries = 0;
@@ -213,18 +206,6 @@ class TaxonomyTest extends TimberIntegrationTestCase
         $taxonomy->terms();
 
         $this->assertGreaterThan(0, $queries);
-        $queried = $queries;
-
-        $taxonomy->terms();
-
-        $this->assertSame($queried, $queries, 'A second unfiltered terms() call should be memoized');
-
-        // Passing arguments bypasses the memoized result.
-        $taxonomy->terms([
-            'hide_empty' => false,
-        ]);
-
-        $this->assertGreaterThan($queried, $queries);
     }
 
     public function testGetTaxonomies()
