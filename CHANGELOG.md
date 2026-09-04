@@ -1,5 +1,36 @@
 # Changelog
 
+## [2.5.2](https://github.com/timber/timber/compare/v2.5.1...v2.5.2) (2026-09-04)
+
+
+### Bug Fixes
+
+* **tests:** update ticket reference in PostTypeTest for testNonExistentPostType ([d59e202](https://github.com/timber/timber/commit/d59e202ab15afd43b7fc349d9b149642de8ada62))
+
+
+### Tests
+
+* **image:** fix flaky testReplacedImage caused by uploads leakage ([615b48e](https://github.com/timber/timber/commit/615b48ee649a9e779adcfb790af0eeb4d6b1164e))
+
+
+### Continuous Integration
+
+* surface public API changes on pull requests ([dfd0f2e](https://github.com/timber/timber/commit/dfd0f2e76fbf3a81bf793f8e9126f2eb04f2c98d))
+
+
+### Miscellaneous Chores
+
+* **deps:** bump actions/checkout from 6.0.2 to 6.0.3 ([#3270](https://github.com/timber/timber/issues/3270)) ([4a691a5](https://github.com/timber/timber/commit/4a691a5a00db2642e7e5bfc1015ddaafa5462e3a))
+* **deps:** bump actions/checkout from 6.0.3 to 7.0.1 ([#3280](https://github.com/timber/timber/issues/3280)) ([67a11cd](https://github.com/timber/timber/commit/67a11cd58be90b6801299d4cf72b75bca3a27c4b))
+* **deps:** bump codecov/codecov-action from 6.0.1 to 7.0.0 ([e5b8048](https://github.com/timber/timber/commit/e5b80489235c472ddef265ae81d3d8c3c792adb4))
+* **deps:** bump coverallsapp/github-action from 2.3.7 to 2.3.8 ([#3281](https://github.com/timber/timber/issues/3281)) ([67fbfa7](https://github.com/timber/timber/commit/67fbfa71ecfb19629a86f65d36eac105e8d8413f))
+* **deps:** bump lycheeverse/lychee-action from 2.8.0 to 2.9.0 ([#3279](https://github.com/timber/timber/issues/3279)) ([8e5fe90](https://github.com/timber/timber/commit/8e5fe902c801db5bbd95b24c529abdb6695b6ff9))
+* **deps:** bump ramsey/composer-install ([#3276](https://github.com/timber/timber/issues/3276)) ([bc1298f](https://github.com/timber/timber/commit/bc1298fdb842903337ca550ce91710b99b9c265f))
+* **deps:** bump shivammathur/setup-php from 2.37.1 to 2.37.2 ([c53725c](https://github.com/timber/timber/commit/c53725c2a0f56f1a87e721e33b5931169e131e50))
+* Fix Rector ruleset to use composer based set ([#3283](https://github.com/timber/timber/issues/3283)) ([099dec4](https://github.com/timber/timber/commit/099dec441370552148acf949010db7ae86ef2037))
+* run phpcs ([282285c](https://github.com/timber/timber/commit/282285c3fb19be10ad8f71090ebd4e43c86f958b))
+* update author email addresses in composer.json ([9a257a3](https://github.com/timber/timber/commit/9a257a3dc5caabba75132af53d41f71d0d75190c))
+
 ## [2.5.1](https://github.com/timber/timber/compare/v2.5.0...v2.5.1) (2026-05-29)
 
 
