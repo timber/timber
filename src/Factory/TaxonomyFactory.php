@@ -36,7 +36,7 @@ class TaxonomyFactory
         }
 
         // A flat list of taxonomy names.
-        if (!empty($params) && $this->is_numeric_array($params) && $this->is_array_of_strings($params)) {
+        if (!empty($params) && \array_is_list($params) && $this->is_array_of_strings($params)) {
             return $this->from_names($params);
         }
 
@@ -181,19 +181,6 @@ class TaxonomyFactory
         $class = $this->get_taxonomy_class($taxonomy);
 
         return $class::build($taxonomy);
-    }
-
-    protected function is_numeric_array($arr)
-    {
-        if (!\is_array($arr)) {
-            return false;
-        }
-        foreach (\array_keys($arr) as $k) {
-            if (!\is_int($k)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     protected function is_array_of_strings($arr)
