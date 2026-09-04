@@ -150,6 +150,16 @@ class TaxonomyTest extends TimberIntegrationTestCase
         $this->assertEquals(['post', 'recipe'], \array_map(strval(...), $post_types));
     }
 
+    public function testPostTypesExcludesUnregisteredPostTypes()
+    {
+        $wp_taxonomy = clone \get_taxonomy('genre');
+        $wp_taxonomy->object_type[] = 'not-a-post-type';
+
+        $post_types = Timber::get_taxonomy($wp_taxonomy)->post_types();
+
+        $this->assertEquals(['post', 'recipe'], \array_map(strval(...), $post_types));
+    }
+
     public function testTerms()
     {
         static::factory()->term->create_many(3, [

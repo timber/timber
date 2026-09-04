@@ -247,7 +247,7 @@ class Taxonomy extends Core implements CoreInterface, Stringable
     {
         return \array_map(
             static fn ($post_type) => new PostType($post_type),
-            $this->wp_object?->object_type ?? []
+            \array_values(\array_filter($this->wp_object?->object_type ?? [], post_type_exists(...)))
         );
     }
 }
