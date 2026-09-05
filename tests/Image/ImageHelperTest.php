@@ -325,11 +325,14 @@ class ImageHelperTest extends TimberAttachmentTestCase
 
     public function testDeleteGeneratedFilesRemovesToWebpDerivative()
     {
-        // ToWebp::filename() now folds the source extension into the generated name
-        // (pic.png -> pic-png.webp) to avoid colliding with a different-format source of
-        // the same basename. delete_generated_files() needs to know that suffixed name to
-        // clean it up when the source attachment is deleted - otherwise it becomes an
-        // orphaned file that nothing ever removes.
+        // With timber/image/collision_safe_filenames enabled, ToWebp::filename() folds the
+        // source extension into the generated name (pic.png -> pic-png.webp) to avoid
+        // colliding with a different-format source of the same basename.
+        // delete_generated_files() needs to know that suffixed name to clean it up when the
+        // source attachment is deleted - otherwise it becomes an orphaned file that nothing
+        // ever removes.
+        $this->add_filter_temporarily('timber/image/collision_safe_filenames', '__return_true');
+
         $pngFile = $this->copyImageToUploads('flag.png');
         Timber::compile_string('{{file|towebp}}', [
             'file' => $pngFile,
