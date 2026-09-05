@@ -323,6 +323,25 @@ class ImageHelperTest extends TimberAttachmentTestCase
         ImageHelper::delete_generated_files('/etc/www/image.jpg');
     }
 
+    public function testDeleteGeneratedFilesRemovesToWebpDerivative()
+    {
+        // ToWebp::filename() now folds the source extension into the generated name
+        // (pic.png -> pic-png.webp) to avoid colliding with a different-format source of
+        // the same basename. delete_generated_files() needs to know that suffixed name to
+        // clean it up when the source attachment is deleted - otherwise it becomes an
+        // orphaned file that nothing ever removes.
+        $pngFile = $this->copyImageToUploads('flag.png');
+        Timber::compile_string('{{file|towebp}}', [
+            'file' => $pngFile,
+        ]);
+        $webpDerivative = \str_replace('.png', '-png.webp', $pngFile);
+        $this->assertFileExists($webpDerivative);
+
+        ImageHelper::delete_generated_files($pngFile);
+
+        $this->assertFileDoesNotExist($webpDerivative);
+    }
+
     public function testLetterbox()
     {
         $file_loc = $this->copyImageToUploads('eastern.jpg');
