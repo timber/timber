@@ -35,7 +35,7 @@ class ToJpgTest extends TimberIntegrationTestCase
         $str = Timber::compile_string('{{file|tojpg}}', [
             'file' => $filename,
         ]);
-        $renamed = \str_replace('.png', '-png.jpg', $filename);
+        $renamed = \str_replace('.png', '.jpg', $filename);
         $this->assertFileExists($renamed);
         $this->assertGreaterThan(1000, \filesize($renamed));
         $this->assertEquals('image/png', \mime_content_type($filename));
@@ -50,7 +50,7 @@ class ToJpgTest extends TimberIntegrationTestCase
         $str = Timber::compile_string('{{file|tojpg}}', [
             'file' => $filename,
         ]);
-        $renamed = \str_replace('.gif', '-gif.jpg', $filename);
+        $renamed = \str_replace('.gif', '.jpg', $filename);
         $this->assertFileExists($renamed);
         $this->assertGreaterThan(1000, \filesize($renamed));
         $this->assertEquals('image/gif', \mime_content_type($filename));
@@ -59,14 +59,45 @@ class ToJpgTest extends TimberIntegrationTestCase
         \unlink($renamed);
     }
 
-    public function testCollidingBasenamesProduceDistinctJpg()
+    public function testCollidingBasenamesStillCollideByDefault()
+    {
+        // Documents the default (filter off) behavior on purpose: this is the bug reported in
+        // https://github.com/timber/timber/issues/2850 (sibling ToWebp operation), left
+        // unchanged for sites that don't opt in via the timber/image/collision_safe_filenames
+        // filter, since fixing it unconditionally would change the generated filename for
+        // every tojpg conversion of a non-jpg source, not just colliding ones - see
+        // testCollidingBasenamesProduceDistinctJpgWhenFilterEnabled below for the opt-in fix.
+        $pngFile = $this->copyImageToUploads('flag.png', 'collision.png');
+        $gifFile = $this->copyImageToUploads('boyer.gif', 'collision.gif');
+
+        Timber::compile_string('{{file|tojpg}}', [
+            'file' => $pngFile,
+        ]);
+        Timber::compile_string('{{file|tojpg}}', [
+            'file' => $gifFile,
+        ]);
+
+        $pngRenamed = \str_replace('.png', '.jpg', $pngFile);
+        $gifRenamed = \str_replace('.gif', '.jpg', $gifFile);
+
+        $this->assertEquals($pngRenamed, $gifRenamed);
+        \unlink($pngFile);
+        \unlink($gifFile);
+        \unlink($pngRenamed);
+    }
+
+    public function testCollidingBasenamesProduceDistinctJpgWhenFilterEnabled()
     {
         // Two different source images that share a basename but differ only in extension
         // used to collide on the exact same destination filename (both became
         // "collision.jpg"): whichever converted first "won", and the second image's
         // tojpg call silently served the first image's cached jpg content instead of
         // converting its own. Same bug class as https://github.com/timber/timber/issues/2850,
-        // in the sibling ToJpg operation.
+        // in the sibling ToJpg operation. Fixed only when a site opts in via the
+        // timber/image/collision_safe_filenames filter - see
+        // testCollidingBasenamesStillCollideByDefault above for the (intentional) default.
+        $this->add_filter_temporarily('timber/image/collision_safe_filenames', '__return_true');
+
         $pngFile = $this->copyImageToUploads('flag.png', 'collision.png');
         $gifFile = $this->copyImageToUploads('boyer.gif', 'collision.gif');
 
@@ -110,7 +141,7 @@ class ToJpgTest extends TimberIntegrationTestCase
         $str = Timber::compile_string('{{file|tojpg}}', [
             'file' => $filename,
         ]);
-        $renamed = \str_replace('.jpeg', '-jpeg.jpg', $filename);
+        $renamed = \str_replace('.jpeg', '.jpg', $filename);
         $this->assertFileExists($renamed);
         $this->assertGreaterThan(1000, \filesize($renamed));
         $this->assertEquals('image/jpeg', \mime_content_type($filename));
@@ -127,7 +158,7 @@ class ToJpgTest extends TimberIntegrationTestCase
         ]);
 
         $base_url = \str_replace(\basename($sideloaded), '', $sideloaded);
-        $expected = $base_url . \md5($url) . '-png.jpg';
+        $expected = $base_url . \md5($url) . '.jpg';
 
         $this->assertEquals($expected, $sideloaded);
     }
