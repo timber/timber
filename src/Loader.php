@@ -355,12 +355,64 @@ class Loader implements LoaderInterface
         }
 
         /**
-         * Filters …
+         * Filters the Twig loader instance used by Timber.
          *
-         * @todo Add summary, description, example, parameter description
+         * Use this filter to customize how templates are resolved after Timber has registered all template
+         * locations. This lets you wrap or replace the default filesystem loader with your own loader behavior,
+         * for example to map non-standard template identifiers (like Drupal SDC-style
+         * `namespace:component`) to Twig namespace paths.
          *
-         * @link https://github.com/timber/timber/pull/1254
+         * @api
          * @since 1.1.11
+         * @link https://timber.github.io/docs/v2/guides/template-locations/
+         * @link https://github.com/timber/timber/pull/1254
+         * @example
+         * ```php
+         * add_filter('timber/loader/loader', function (\Twig\Loader\LoaderInterface $loader): \Twig\Loader\LoaderInterface {
+         *     return new class ($loader) implements \Twig\Loader\LoaderInterface {
+         *         public function __construct(private \Twig\Loader\LoaderInterface $inner)
+         *         {
+         *         }
+         *
+         *         public function getSourceContext(string $name): \Twig\Source
+         *         {
+         *             return $this->inner->getSourceContext($this->map($name));
+         *         }
+         *
+         *         public function getCacheKey(string $name): string
+         *         {
+         *             return $this->inner->getCacheKey($this->map($name));
+         *         }
+         *
+         *         public function exists(string $name): bool
+         *         {
+         *             return $this->inner->exists($this->map($name));
+         *         }
+         *
+         *         public function isFresh(string $name, int $time): bool
+         *         {
+         *             return $this->inner->isFresh($this->map($name), $time);
+         *         }
+         *
+         *         private function map(string $name): string
+         *         {
+         *             if (str_starts_with($name, '@') || !str_contains($name, ':')) {
+         *                 return $name;
+         *             }
+         *
+         *             [$namespace, $component] = explode(':', $name, 2);
+         *
+         *             if (!str_ends_with($component, '.twig')) {
+         *                 $component .= '.twig';
+         *             }
+         *
+         *             return '@' . $namespace . '/' . ltrim($component, '/');
+         *         }
+         *     };
+         * });
+         * ```
+         *
+         * @param FilesystemLoader $fs The default Twig filesystem loader built from Timber template locations.
          */
         $fs = \apply_filters('timber/loader/loader', $fs);
 
