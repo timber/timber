@@ -328,6 +328,16 @@ class ImageHelper
         self::process_delete_generated_files($filename, $ext, $dir, '-lbox-[0-9999999]*', '-lbox-[0-9]*x[0-9]*-[a-zA-Z0-9]*.');
         self::process_delete_generated_files($filename, 'jpg', $dir, '-tojpg.*');
         self::process_delete_generated_files($filename, 'jpg', $dir, '-tojpg-[0-9999999]*');
+        if ('jpg' !== $ext) {
+            // ToJpg::filename() folds the source extension into the generated name to keep
+            // same-basename sources of different formats from colliding on one output file
+            // (ex: pic.png and pic.gif both converting to pic.jpg; now pic-png.jpg /
+            // pic-gif.jpg). $ext here is this specific source's own extension, so the pattern
+            // below matches only the one derivative this source could have produced - no
+            // wildcard is needed, and none is used, since a wildcard could delete an unrelated
+            // real file that happens to share the same basename with a different suffix.
+            self::process_delete_generated_files($filename, 'jpg', $dir, '-' . $ext . '.jpg');
+        }
     }
 
     /**
