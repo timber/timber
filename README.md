@@ -19,10 +19,12 @@ By
 [![Latest Stable Version](https://img.shields.io/packagist/v/timber/timber.svg?style=flat-square)](https://packagist.org/packages/timber/timber)
 [![!Financial Contributors](https://opencollective.com/timber/tiers/badge.svg)](https://opencollective.com/timber/)
 
-### ⚠️ Important information about the Timber plugin ⚠️
-> With the release of Timber 2.0, Composer is the only supported install method. We are unable to continue releasing or supporting Timber as a plugin on WordPress.org. We advise everyone to **[switch to the Composer based install of Timber 1 as a first step](https://timber.github.io/docs/v1/getting-started/switch-to-composer/)** as soon as possible. If you need PHP 8.2 support you will have to switch to Timber 2.0.
-
-For more information and a list of additional resources, please visit this [discussion](https://github.com/timber/timber/discussions/2804).
+> [!NOTE]
+> **Important information about the Timber WordPress plugin**
+>
+> As of Timber version 2.0, Composer is the only supported install method. The Timber plugin on WordPress.org is closed. We advise everyone to **[switch to the Composer based install of Timber 1 as a first step](https://timber.github.io/docs/v1/getting-started/switch-to-composer/)**.
+>
+> For more information and a list of additional resources, please visit this [discussion](https://github.com/timber/timber/discussions/2804).
 
 ## What is Timber?
 
@@ -86,6 +88,9 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 Timber is MIT-licensed, so please use in personal or commercial work. Just don't re-sell it. Timber is used on [tens of thousands of sites](https://www.upstatement.com/timber/#showcase) (and tons more we don't know about)
 
 ## Timber 1
+
+> [!WARNING]
+> Timber 1 has reached its end of life. It no longer receives updates of any kind, including security fixes. Only the 2.x release line is supported. Please follow the [Timber 2.0 Upgrade Guide](https://timber.github.io/docs/v2/upgrade-guides/2.0/) to migrate.
 
 You can find the code for Timber 1 on the [1.x branch](https://github.com/timber/timber/tree/1.x) and read the Timber 1 documentation [over here](https://timber.github.io/docs/v1/).
 

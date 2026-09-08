@@ -1,5 +1,14 @@
 # Security Policy
 
+## Supported Versions
+
+| Version | Supported          |
+| ------- | ------------------ |
+| 2.x     | :white_check_mark: |
+| 1.x     | :x:                |
+
+Only the 2.x release line receives security fixes. Timber 1.x has reached its end of life and will not receive any further security updates. If you are still running Timber 1.x, please [upgrade to Timber 2.x](https://timber.github.io/docs/v2/upgrade-guides/2.0/).
+
 ## Reporting a Vulnerability
 If you discover a security vulnerability within Timber, please submit your report via the link below. Please be mindful of the fact that the maintainers are working on Timber in their free time, so the initial response can take some time.
 
@@ -12,6 +21,6 @@ When you've found a security issue that abides by the rules and scope of this pr
 ### After your submission
 We will make a best effort to meet the following response targets for security reports:
 
-- Time to first response (from report submit) - 5 business days
-- Time to triage (from report submit) - 10 business days
-- Time to fix (from triage) - 15 business days
+- Time to first response (from report submit) - 7 business days
+- Time to triage (from report submit) - 15 business days
+- Time to fix (from triage) - 30 business days
