@@ -156,7 +156,9 @@ class ToJpgTest extends TimberIntegrationTestCase
         // ImageHelper::get_url_components() can hand filename() an empty $src_extension for a
         // source with no extension in its path - not hypothetical, ImageHelper has its own
         // prior fix for exactly this (see #2773 / commit 028f6ac0's
-        // `isset($parts['extension']) ? ... : ''` fallback). Without the empty-string guard,
+        // `isset($parts['extension']) ? ... : ''` fallback), and the sibling
+        // Resize::filename() already treats a falsy $src_extension as nothing to append rather
+        // than a real value. Without the same falsy-check guard here,
         // enabling timber/image/collision_safe_filenames would fold that empty string in
         // literally, producing "name-.jpg" instead of falling back to the bare name the way
         // the already-jpg case does above.
