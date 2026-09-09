@@ -2,6 +2,7 @@
 
 namespace Timber\Tests\Image\Operation;
 
+use Timber\Image\Operation\ToWebp;
 use Timber\Tests\TimberIntegrationTestCase;
 use Timber\Timber;
 
@@ -141,6 +142,27 @@ class ToWebpTest extends TimberIntegrationTestCase
         $new_size = \filesize($filename);
         $this->assertEquals($original_size, $new_size);
         $this->assertEquals('image/webp', \mime_content_type($filename));
+    }
+
+    public function testFilenameFallsBackToBareNameForExtensionlessSourceEvenWithFilterEnabled()
+    {
+        // ImageHelper::get_url_components() can hand filename() an empty $src_extension for a
+        // source with no extension in its path - not hypothetical, ImageHelper has its own
+        // prior fix for exactly this (see #2773 / commit 028f6ac0's
+        // `isset($parts['extension']) ? ... : ''` fallback). Without the empty-string guard,
+        // enabling timber/image/collision_safe_filenames would fold that empty string in
+        // literally, producing "name-.webp" instead of falling back to the bare name the way
+        // the already-webp case does above.
+        //
+        // Direct call rather than through Timber::compile_string() like the rest of this file:
+        // an extensionless source can't be round-tripped through the full towebp filter here,
+        // since ToWebp::run() derives its GD decoder from wp_check_filetype($load_filename),
+        // which needs a real extension to identify the source format - the pipeline would fail
+        // before ever reaching the point this test needs to check.
+        $this->add_filter_temporarily('timber/image/collision_safe_filenames', '__return_true');
+
+        $op = new ToWebp(80);
+        $this->assertEquals('my-pic.webp', $op->filename('my-pic', ''));
     }
 
     public function testSideloadedJPGToWEBP()
