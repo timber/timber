@@ -33,8 +33,12 @@ class ToJpg extends ImageOperation
     {
         // A source that's already jpg keeps the bare name regardless of the filter below:
         // ToJpg is then converting it to itself, and _operate()'s destination-already-exists
-        // check treats that as a no-op, which is the existing, desired behavior.
-        if ($src_extension === 'jpg') {
+        // check treats that as a no-op, which is the existing, desired behavior. Same for a
+        // source with no extension at all: ImageHelper::get_url_components() falls back to ''
+        // when pathinfo() finds none (see #2773 / commit 028f6ac0) - without this second
+        // check, the filter-enabled branch below would fold that empty string in literally,
+        // producing "name-.jpg" instead of falling back to the bare name.
+        if ($src_extension === 'jpg' || $src_extension === '') {
             return $src_filename . '.jpg';
         }
 
