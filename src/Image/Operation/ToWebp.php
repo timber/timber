@@ -23,13 +23,54 @@ class ToWebp extends ImageOperation
 
     /**
      * @param   string    $src_filename     the basename of the file (ex: my-awesome-pic)
-     * @param   string    $src_extension    ignored
-     * @return  string    the final filename to be used (ex: my-awesome-pic.webp)
+     * @param   string    $src_extension    the source file's extension (ex: jpg); folded into
+     *                                      the generated name only when the
+     *                                      `timber/image/collision_safe_filenames` filter is
+     *                                      enabled (see below) - off by default
+     * @return  string    the final filename to be used (ex: my-awesome-pic.webp, or
+     *                     my-awesome-pic-jpg.webp with the filter enabled)
      */
     public function filename($src_filename, $src_extension = 'webp')
     {
-        $new_name = $src_filename . '.webp';
-        return $new_name;
+        // A source that's already webp keeps the bare name regardless of the filter below:
+        // ToWebp is then converting it to itself, and _operate()'s destination-already-exists
+        // check treats that as a no-op, which is the existing, desired behavior. Same for a
+        // source with no extension at all - ImageHelper::get_url_components() falls back to
+        // '' when pathinfo() finds none (see #2773 / commit 028f6ac0), and the sibling
+        // Resize::filename() already treats a falsy $src_extension as "nothing to append"
+        // rather than a real value. Without this check, the filter-enabled branch below would
+        // fold that empty string in literally, producing "name-.webp" instead of falling back
+        // to the bare name.
+        if ($src_extension === 'webp' || !$src_extension) {
+            return $src_filename . '.webp';
+        }
+
+        /**
+         * Filters whether ToWebp (and ToJpg) fold the source extension into the generated
+         * filename, so that two different-format sources sharing a basename (ex: pic.jpg and
+         * pic.png) no longer collide on the same output file and silently serve one source's
+         * content under the other's URL - see #2850.
+         *
+         * Off by default: enabling this changes the generated filename for every non-webp
+         * source going forward (ex: flag.png -> flag-png.webp instead of flag.webp), not just
+         * ones that would actually collide, since there's no way to tell ahead of time which
+         * ones will. Existing sites may not want that regeneration/URL-churn cost sprung on
+         * them unprompted; new projects can enable it from the start with no such cost.
+         *
+         * ```php
+         * add_filter('timber/image/collision_safe_filenames', '__return_true');
+         * ```
+         *
+         * @since x.x.x
+         *
+         * @param bool $collision_safe Whether to use collision-safe (extension-suffixed)
+         *                             filenames. Default `false`.
+         */
+        if (!\apply_filters('timber/image/collision_safe_filenames', false)) {
+            return $src_filename . '.webp';
+        }
+
+        return $src_filename . '-' . $src_extension . '.webp';
     }
 
     /**
