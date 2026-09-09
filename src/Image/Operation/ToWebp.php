@@ -35,11 +35,13 @@ class ToWebp extends ImageOperation
         // A source that's already webp keeps the bare name regardless of the filter below:
         // ToWebp is then converting it to itself, and _operate()'s destination-already-exists
         // check treats that as a no-op, which is the existing, desired behavior. Same for a
-        // source with no extension at all: ImageHelper::get_url_components() falls back to ''
-        // when pathinfo() finds none (see #2773 / commit 028f6ac0) - without this second
-        // check, the filter-enabled branch below would fold that empty string in literally,
-        // producing "name-.webp" instead of falling back to the bare name.
-        if ($src_extension === 'webp' || $src_extension === '') {
+        // source with no extension at all - ImageHelper::get_url_components() falls back to
+        // '' when pathinfo() finds none (see #2773 / commit 028f6ac0), and the sibling
+        // Resize::filename() already treats a falsy $src_extension as "nothing to append"
+        // rather than a real value. Without this check, the filter-enabled branch below would
+        // fold that empty string in literally, producing "name-.webp" instead of falling back
+        // to the bare name.
+        if ($src_extension === 'webp' || !$src_extension) {
             return $src_filename . '.webp';
         }
 
