@@ -22,13 +22,54 @@ class ToJpg extends ImageOperation
 
     /**
      * @param   string    $src_filename     the basename of the file (ex: my-awesome-pic)
-     * @param   string    $src_extension    ignored
-     * @return  string    the final filename to be used (ex: my-awesome-pic.jpg)
+     * @param   string    $src_extension    the source file's extension (ex: png); folded into
+     *                                      the generated name only when the
+     *                                      `timber/image/collision_safe_filenames` filter is
+     *                                      enabled (see below) - off by default
+     * @return  string    the final filename to be used (ex: my-awesome-pic.jpg, or
+     *                     my-awesome-pic-png.jpg with the filter enabled)
      */
     public function filename($src_filename, $src_extension = 'jpg')
     {
-        $new_name = $src_filename . '.jpg';
-        return $new_name;
+        // A source that's already jpg keeps the bare name regardless of the filter below:
+        // ToJpg is then converting it to itself, and _operate()'s destination-already-exists
+        // check treats that as a no-op, which is the existing, desired behavior. Same for a
+        // source with no extension at all - ImageHelper::get_url_components() falls back to
+        // '' when pathinfo() finds none (see #2773 / commit 028f6ac0), and the sibling
+        // Resize::filename() already treats a falsy $src_extension as "nothing to append"
+        // rather than a real value. Without this check, the filter-enabled branch below would
+        // fold that empty string in literally, producing "name-.jpg" instead of falling back
+        // to the bare name.
+        if ($src_extension === 'jpg' || !$src_extension) {
+            return $src_filename . '.jpg';
+        }
+
+        /**
+         * Filters whether ToJpg (and ToWebp) fold the source extension into the generated
+         * filename, so that two different-format sources sharing a basename (ex: pic.png and
+         * pic.gif) no longer collide on the same output file and silently serve one source's
+         * content under the other's URL - see #2850.
+         *
+         * Off by default: enabling this changes the generated filename for every non-jpg
+         * source going forward (ex: flag.png -> flag-png.jpg instead of flag.jpg), not just
+         * ones that would actually collide, since there's no way to tell ahead of time which
+         * ones will. Existing sites may not want that regeneration/URL-churn cost sprung on
+         * them unprompted; new projects can enable it from the start with no such cost.
+         *
+         * ```php
+         * add_filter('timber/image/collision_safe_filenames', '__return_true');
+         * ```
+         *
+         * @since x.x.x
+         *
+         * @param bool $collision_safe Whether to use collision-safe (extension-suffixed)
+         *                             filenames. Default `false`.
+         */
+        if (!\apply_filters('timber/image/collision_safe_filenames', false)) {
+            return $src_filename . '.jpg';
+        }
+
+        return $src_filename . '-' . $src_extension . '.jpg';
     }
 
     /**
