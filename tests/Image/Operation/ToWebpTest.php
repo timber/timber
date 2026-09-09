@@ -144,25 +144,25 @@ class ToWebpTest extends TimberIntegrationTestCase
         $this->assertEquals('image/webp', \mime_content_type($filename));
     }
 
-    public function testFilenameFallsBackToBareNameForExtensionlessSourceEvenWithFilterEnabled()
+    public function testFilenameKeepsBareNameForExtensionlessSource()
     {
         // ImageHelper::get_url_components() can hand filename() an empty $src_extension for a
         // source with no extension in its path - not hypothetical, ImageHelper has its own
         // prior fix for exactly this (see #2773 / commit 028f6ac0's
         // `isset($parts['extension']) ? ... : ''` fallback), and the sibling
         // Resize::filename() already treats a falsy $src_extension as nothing to append rather
-        // than a real value. Without the same falsy-check guard here,
-        // enabling timber/image/collision_safe_filenames would fold that empty string in
-        // literally, producing "name-.webp" instead of falling back to the bare name the way
-        // the already-webp case does above.
+        // than a real value.
+        //
+        // This guard sits before the timber/image/collision_safe_filenames check, so it's
+        // unconditional - there's no "-<ext>" to fold in either way, which is why this test
+        // doesn't toggle the filter (doing so would test nothing: this branch returns before
+        // apply_filters() is ever called).
         //
         // Direct call rather than through Timber::compile_string() like the rest of this file:
         // an extensionless source can't be round-tripped through the full towebp filter here,
         // since ToWebp::run() derives its GD decoder from wp_check_filetype($load_filename),
         // which needs a real extension to identify the source format - the pipeline would fail
         // before ever reaching the point this test needs to check.
-        $this->add_filter_temporarily('timber/image/collision_safe_filenames', '__return_true');
-
         $op = new ToWebp(80);
         $this->assertEquals('my-pic.webp', $op->filename('my-pic', ''));
     }
