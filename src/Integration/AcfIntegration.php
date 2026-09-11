@@ -233,7 +233,48 @@ class AcfIntegration implements IntegrationInterface
     }
 
     /**
-     * Gets meta value through ACF’s API.
+     * Gets a single ACF option field with field transformations applied.
+     *
+     * Retrieves a field stored on an ACF option page and automatically applies Timber's field
+     * transformations, converting raw values into Timber objects (e.g. Image, Post, Term).
+     *
+     * Example usage:
+     *
+     * ```php
+     * $gallery = Timber\Integration\AcfIntegration::get_option('my_gallery_field');
+     * ```
+     * @api
+     * @since 2.4.0
+     * @param string $field_name The name of the option field to retrieve.
+     * @return mixed The transformed field value.
+     */
+    public static function get_option(string $field_name): mixed
+    {
+        return self::with_timber_transforms(static fn () => \get_field($field_name, 'options', true));
+    }
+
+    /**
+     * Gets all ACF option fields with field transformations applied.
+     *
+     * Retrieves all fields stored on ACF option pages and automatically applies Timber's field
+     * transformations, converting raw values into Timber objects (e.g. Image, Post, Term).
+     *
+     * Example usage:
+     *
+     * ```php
+     * $options = Timber\Integration\AcfIntegration::get_options();
+     * ```
+     * @api
+     * @since 2.4.0
+     * @return array An associative array of all transformed option fields.
+     */
+    public static function get_options(): array
+    {
+        return self::with_timber_transforms(static fn () => \get_fields('options') ?: []);
+    }
+
+    /**
+     * Gets meta value through ACF's API.
      *
      * @param string     $value
      * @param int|string $id
@@ -252,13 +293,23 @@ class AcfIntegration implements IntegrationInterface
             return \get_field($field_name, $id, $args['format_value']);
         }
 
-        /**
-         * We use acf()->fields->get_field_type() instead of acf_get_field_type(), because of some function stub issues
-         * in the php-stubs/acf-pro-stubs package. The ACF plugin doesn't use the right parameter and return values for
-         * some functions in the DocBlocks.
-         *
-         * @ticket https://github.com/timber/timber/pull/2630
-         */
+        return self::with_timber_transforms(static fn () => \get_field($field_name, $id, true));
+    }
+
+    /**
+     * Temporarily replaces ACF's format_value filters with Timber's transform filters, executes a
+     * callback, then restores the original ACF filters.
+     *
+     * We use acf_get_field_type() instead of acf()->fields->get_field_type(), because of some
+     * function stub issues in the php-stubs/acf-pro-stubs package.
+     *
+     * @see https://github.com/timber/timber/pull/2630
+     *
+     * @param callable $callback The callback to execute with Timber's transforms active.
+     * @return mixed The result of the callback.
+     */
+    private static function with_timber_transforms(callable $callback): mixed
+    {
         $field_types = \array_filter([
             'file' => \acf_get_field_type('file'),
             'image' => \acf_get_field_type('image'),
@@ -289,14 +340,14 @@ class AcfIntegration implements IntegrationInterface
             \add_filter("acf/format_value/type={$type}", $timber_transforms[$type], 10, 3);
         }
 
-        $value = \get_field($field_name, $id, true);
+        $result = $callback();
 
-        // Restore ACF's format_value filters and remove Timber's transform filters.
+        // Remove Timber's transform filters and restore ACF's format_value filters.
         foreach ($field_types as $type => $field_type) {
             \add_filter("acf/format_value/type={$type}", [$field_type, 'format_value'], 10, 3);
             \remove_filter("acf/format_value/type={$type}", $timber_transforms[$type]);
         }
 
-        return $value;
+        return $result;
     }
 }
