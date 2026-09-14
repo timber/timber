@@ -6,15 +6,15 @@ on:
       - master
       - 2.x
     paths:
-      - '**.php'
-      - '**composer.json'
+      - "**.php"
+      - "**composer.json"
   pull_request:
     branches:
       - master
       - 2.x
     paths:
-      - '**.php'
-      - '**composer.json'
+      - "**.php"
+      - "**composer.json"
     types:
       - opened
       - synchronize
@@ -40,8 +40,6 @@ jobs:
 
       - name: Install dependencies
         uses: ./.github/actions/setup
-        with:
-          PHP_TOOLS: cs2pr
 
       - name: Get changed files
         id: changed-files
@@ -55,4 +53,4 @@ jobs:
         if: steps.changed-files.outputs.all_changed_files != ''
         env:
           CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
-        run: ./vendor/bin/ecs check --output-format=checkstyle $CHANGED_FILES | cs2pr
+        run: ./vendor/bin/ecs check $CHANGED_FILES
