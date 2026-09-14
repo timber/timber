@@ -333,9 +333,7 @@ class Site extends Core implements CoreInterface
     {
         $current_id = \get_current_blog_id();
 
-        if ($blog_identifier === null) {
-            $blog_identifier = $current_id;
-        }
+        $blog_identifier ??= $current_id;
 
         // Always call switch_to_blog to add the blog switch to the stack. WordPress doesn't perform complex logic if the blog ID stays the same.
         \switch_to_blog((int) $blog_identifier);

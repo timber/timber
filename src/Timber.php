@@ -1456,10 +1456,6 @@ class Timber
         $output = false;
 
         if ($file !== false) {
-            if (\is_null($data)) {
-                $data = [];
-            }
-
             if ($via_render) {
                 /**
                  * Filters the data that should be passed for rendering a Twig template.
@@ -1586,16 +1582,11 @@ class Timber
             self::init();
         }
 
-        if ($caller === null) {
-            $caller = LocationManager::get_calling_script_dir(1);
-        }
+        $caller ??= LocationManager::get_calling_script_dir(1);
         $block_loader = new TwigBlockLoader($caller, $block_name);
         $file = $block_loader->choose_template($filenames);
 
         if ($file !== false) {
-            if (\is_null($data)) {
-                $data = [];
-            }
             return $block_loader->render($file, $data, $expires, $cache_mode);
         } else {
             if (\is_array($filenames)) {
