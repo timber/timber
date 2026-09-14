@@ -244,9 +244,7 @@ class Archives extends Core
             'nested' => false,
         ];
 
-        if ($args === null) {
-            $args = $this->args;
-        }
+        $args ??= $this->args;
 
         $args = \wp_parse_args($args, $defaults);
         $post_type = $args['post_type'];

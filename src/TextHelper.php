@@ -47,9 +47,7 @@ class TextHelper
             return '';
         }
 
-        if (null === $more) {
-            $more = \__('&hellip;');
-        }
+        $more ??= \__('&hellip;');
         $original_text = $text;
 
         /**

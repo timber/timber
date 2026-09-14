@@ -32,9 +32,7 @@ class DateTimeHelper
      */
     public static function wp_date($format = null, $date = null, $timezone = null)
     {
-        if (null === $format) {
-            $format = \get_option('date_format');
-        }
+        $format ??= \get_option('date_format');
 
         if (null === $date) {
             $timestamp = \time();
@@ -79,15 +77,9 @@ class DateTimeHelper
      */
     public static function time_ago($from, $to = null, $format_past = null, $format_future = null)
     {
-        if (null === $format_past) {
-            /* translators: %s: Human-readable time difference. */
-            $format_past = \__('%s ago');
-        }
+        $format_past ??= \__('%s ago');
 
-        if (null === $format_future) {
-            /* translators: %s: Human-readable time difference. */
-            $format_future = \__('%s from now');
-        }
+        $format_future ??= \__('%s from now');
 
         $to ??= \time();
         $to = \is_numeric($to)
