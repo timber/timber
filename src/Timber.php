@@ -1377,7 +1377,7 @@ class Timber
      * ```
      * @param array|string    $filenames        Name or full path of the Twig file to compile. If this is an array of file
      *                                          names or paths, Timber will compile the first file that exists.
-     * @param array           $data             Optional. An array of data to use in Twig template.
+     * @param array|null      $data             Optional. An array of data to use in Twig template.
      * @param bool|int|array  $expires          Optional. In seconds. Use false to disable cache altogether. When passed an
      *                                          array, the first value is used for non-logged in visitors, the second for users.
      *                                          Default false.
@@ -1558,7 +1558,7 @@ class Timber
      * @param string         $block_name     The name of the block to render.
      * @param array|string   $filenames      Name or full path of the Twig file to render. If this is an array of file
      *                                       names or paths, Timber will render the first file that exists.
-     * @param array          $data           Optional. An array of data to use in Twig template.
+     * @param array|null     $data           Optional. An array of data to use in Twig template.
      * @param string|array|null $caller      Optional. A value produced by a `LocationManager` method to control
      *                                       template lookup. Pass either `LocationManager::get_calling_script_dir()`
      *                                       (string path) or `LocationManager::get_locations()` (array of search
