@@ -1390,6 +1390,7 @@ class Timber
         if (!\defined('TIMBER_LOADED')) {
             self::init();
         }
+        $data ??= [];
         $caller = LocationManager::get_calling_script_dir(1);
         $loader = new Loader($caller);
         $file = $loader->choose_template($filenames);
@@ -1581,6 +1582,7 @@ class Timber
         if (!\defined('TIMBER_LOADED')) {
             self::init();
         }
+        $data ??= [];
 
         $caller ??= LocationManager::get_calling_script_dir(1);
         $block_loader = new TwigBlockLoader($caller, $block_name);
