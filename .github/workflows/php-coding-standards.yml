@@ -40,7 +40,8 @@ jobs:
 
       - name: Install dependencies
         uses: ./.github/actions/setup
-
+        with:
+          PHP_TOOLS: cs2pr
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96 # v47.0.6
@@ -53,4 +54,4 @@ jobs:
         if: steps.changed-files.outputs.all_changed_files != ''
         env:
           CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
-        run: ./vendor/bin/ecs check $CHANGED_FILES
+        run: ./vendor/bin/ecs check $CHANGED_FILES | cs2pr
