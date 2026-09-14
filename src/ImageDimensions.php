@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use XMLReader;
+
 /**
  * Class ImageDimensions
  *
@@ -186,19 +188,18 @@ class ImageDimensions
      */
     protected function get_dimensions_svg($svg)
     {
-        $svg = \simplexml_load_file($svg);
+        $attributes = $this->get_svg_root_attributes($svg);
         $width = 0;
         $height = 0;
 
-        if (false !== $svg) {
-            $attributes = $svg->attributes();
-            if (isset($attributes->viewBox)) {
-                $viewbox = \explode(' ', $attributes->viewBox);
-                $width = $viewbox[2];
-                $height = $viewbox[3];
-            } elseif ($attributes->width && $attributes->height) {
-                $width = $attributes->width;
-                $height = $attributes->height;
+        if (null !== $attributes) {
+            if (null !== $attributes['viewBox']) {
+                $viewbox = \explode(' ', $attributes['viewBox']);
+                $width = $viewbox[2] ?? 0;
+                $height = $viewbox[3] ?? 0;
+            } elseif ($attributes['width'] && $attributes['height']) {
+                $width = $attributes['width'];
+                $height = $attributes['height'];
             }
         }
 
@@ -206,5 +207,55 @@ class ImageDimensions
             'width' => (float) $width,
             'height' => (float) $height,
         ];
+    }
+
+    /**
+     * Reads `width`, `height` and `viewBox` off the root element of an SVG file.
+     *
+     * Uses a pull parser that stops as soon as the root element is available, so the body of the
+     * document is never parsed. This way, dimensions are cheap to read even
+     * for a multi-megabyte SVG.
+     *
+     * The parse is also hardened against XXE: `LIBXML_NONET` blocks entity fetches over the
+     * network, `LIBXML_NOENT`/`LIBXML_DTDLOAD` are deliberately never passed, so external
+     * entities are neither substituted nor loaded. Without that, an attacker-supplied SVG could
+     * read local files or drive SSRF on a libxml build where entity loading is enabled.
+     *
+     * @internal
+     * @param string $file Path to the SVG file.
+     * @return array{width: string|null, height: string|null, viewBox: string|null}|null
+     *         Null when the file has no root element, or when its root is not an `<svg>`.
+     */
+    private function get_svg_root_attributes(string $file): ?array
+    {
+        $reader = @XMLReader::open($file, null, \LIBXML_NONET | \LIBXML_NOERROR | \LIBXML_NOWARNING);
+
+        if (!$reader instanceof XMLReader) {
+            return null;
+        }
+
+        try {
+            while (@$reader->read()) {
+                if (XMLReader::ELEMENT !== $reader->nodeType) {
+                    continue;
+                }
+
+                // The root element has to be an <svg>. localName ignores any namespace prefix, so
+                // a document rooted in <svg:svg> is still recognised.
+                if ('svg' !== $reader->localName) {
+                    return null;
+                }
+
+                return [
+                    'width' => $reader->getAttribute('width'),
+                    'height' => $reader->getAttribute('height'),
+                    'viewBox' => $reader->getAttribute('viewBox'),
+                ];
+            }
+
+            return null;
+        } finally {
+            $reader->close();
+        }
     }
 }

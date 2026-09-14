@@ -23,6 +23,23 @@ class ImageDimensionsTestable extends ImageDimensions
 #[Group('image')]
 class ImageDimensionsTest extends TimberIntegrationTestCase
 {
+    /**
+     * SVG files written into the uploads directory by these tests.
+     */
+    private array $svg_files = [];
+
+    public function tear_down()
+    {
+        foreach ($this->svg_files as $file) {
+            if (\file_exists($file)) {
+                \unlink($file);
+            }
+        }
+        $this->svg_files = [];
+
+        parent::tear_down();
+    }
+
     public static function ratioProvider()
     {
         return [
@@ -82,6 +99,92 @@ class ImageDimensionsTest extends TimberIntegrationTestCase
         $this->assertIsInt($imageDimensions->height());
         $this->assertGreaterThan(0, $imageDimensions->width());
         $this->assertGreaterThan(0, $imageDimensions->height());
+    }
+
+    public function testSvgDimensionsFromViewBox()
+    {
+        $imageDimensions = new ImageDimensions($this->getFixtureAsset('timber-logo.svg'));
+
+        // viewBox="0 0 530.91 158"
+        $this->assertSame(531, $imageDimensions->width());
+        $this->assertSame(158, $imageDimensions->height());
+    }
+
+    public function testSvgDimensionsFromWidthAndHeightAttributes()
+    {
+        $imageDimensions = new ImageDimensions($this->getFixtureAsset('icon-twitter.svg'));
+
+        $this->assertSame(23, $imageDimensions->width());
+        $this->assertSame(20, $imageDimensions->height());
+    }
+
+    /**
+     * The root element is matched on its local name, so a namespace-prefixed root — as produced
+     * by e.g. Wikimedia — is still read.
+     */
+    public function testSvgDimensionsFromNamespacePrefixedRoot()
+    {
+        $svg = $this->writeSvgToUploads('prefixed-root.svg', <<<SVG
+            <?xml version="1.0" encoding="UTF-8"?>
+            <svg:svg xmlns:svg="http://www.w3.org/2000/svg" width="120" height="60"/>
+            SVG);
+
+        $imageDimensions = new ImageDimensions($svg);
+
+        $this->assertSame(120, $imageDimensions->width());
+        $this->assertSame(60, $imageDimensions->height());
+    }
+
+    /**
+     * An XML document that merely happens to carry width/height on its root is not an SVG, and
+     * must not be sized as one.
+     */
+    public function testNonSvgRootElementYieldsNoDimensions()
+    {
+        $svg = $this->writeSvgToUploads('not-really.svg', <<<SVG
+            <?xml version="1.0" encoding="UTF-8"?>
+            <html width="120" height="60"/>
+            SVG);
+
+        $imageDimensions = new ImageDimensions($svg);
+
+        $this->assertSame(0, $imageDimensions->width());
+        $this->assertSame(0, $imageDimensions->height());
+    }
+
+    /**
+     * Reading the root element does not require the rest of the document to be well-formed, so a
+     * truncated or corrupt SVG still reports its size.
+     */
+    public function testSvgDimensionsAreReadFromRootOfMalformedDocument()
+    {
+        $body = \str_repeat('<path d="M0 0 L1 1"/>', 1000);
+        $svg = $this->writeSvgToUploads(
+            'malformed-body.svg',
+            '<?xml version="1.0" encoding="UTF-8"?>'
+            . '<svg xmlns="http://www.w3.org/2000/svg" width="80" height="40">'
+            . $body . '<unclosed></svg>'
+        );
+
+        $imageDimensions = new ImageDimensions($svg);
+
+        $this->assertSame(80, $imageDimensions->width());
+        $this->assertSame(40, $imageDimensions->height());
+    }
+
+    private function writeSvgToUploads(string $name, string $contents): string
+    {
+        $upload_dir = \wp_get_upload_dir();
+
+        if (!\is_dir($upload_dir['path'])) {
+            \wp_mkdir_p($upload_dir['path']);
+        }
+
+        $path = $upload_dir['path'] . '/' . $name;
+        \file_put_contents($path, $contents);
+        $this->svg_files[] = $path;
+
+        return $path;
     }
 
     public function testDimensionsMetadataTakesPrecedenceOverFile()
