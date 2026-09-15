@@ -55,4 +55,6 @@ We will make a best effort to meet the following response targets for security r
 - Time to triage (from report submit) - 15 business days
 - Time to fix (from triage) - 30 business days
 
-If we close a report as out of scope, we will say which part of the scope section applies and why. You are welcome to push back if you think we got it wrong.
+If we determine that a security report is out of scope, we will clearly identify the applicable part of the scope and explain why the report falls outside it.
+
+If you believe we have incorrectly classified a report as out of scope, we welcome you to provide additional context or challenge our assessment. We will review the information provided and reconsider our decision where appropriate.
