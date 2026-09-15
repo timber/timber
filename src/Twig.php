@@ -664,9 +664,7 @@ class Twig
     {
         // Support for DateInterval.
         if ($date instanceof DateInterval) {
-            if (null === $format) {
-                $format = $env->getExtension(CoreExtension::class)->getDateFormat()[1];
-            }
+            $format ??= $env->getExtension(CoreExtension::class)->getDateFormat()[1];
 
             return $date->format($format);
         }
