@@ -42,6 +42,7 @@ jobs:
         uses: ./.github/actions/setup
         with:
           PHP_TOOLS: cs2pr
+
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96 # v47.0.6
@@ -50,8 +51,13 @@ jobs:
             **/*.php
           safe_output: true
 
+      # ECS 13.3 dropped its checkstyle format (ecsphp/ecs-src#74), so its JSON report is
+      # converted for cs2pr, which annotates the pull request and fails the job on violations.
       - name: Run coding standards
         if: steps.changed-files.outputs.all_changed_files != ''
         env:
           CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
-        run: ./vendor/bin/ecs check $CHANGED_FILES | cs2pr
+        run: |
+          ./vendor/bin/ecs check --output-format=json $CHANGED_FILES \
+            | jq -r --arg ws "$PWD/" -f .github/scripts/ecs-checkstyle.jq \
+            | cs2pr
