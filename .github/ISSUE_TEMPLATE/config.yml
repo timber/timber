@@ -1,4 +1,7 @@
 contact_links:
   - name: Support or usage question for Timber
+    url: https://github.com/timber/timber/discussions
+    about: Is this a support or usage question? Please post to GitHub Discussions.
+  - name: Ask on Stack Overflow
     url: https://stackoverflow.com/questions/tagged/timber
-    about: Is this a support or usage question? Please post to Stack Overflow using the Timber tag.
+    about: You can also ask using the Timber tag, but Discussions is watched more closely.
