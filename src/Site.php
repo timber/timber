@@ -262,11 +262,12 @@ class Site extends Core implements CoreInterface
      * ```php
      * //multisite setup
      * $site = new Timber\Site(1);
-     * $site_two = new Timber\Site("My Cool Site");
+     * // The site slug: the path of a subdirectory site or the subdomain of a subdomain site.
+     * $site_two = new Timber\Site('cool-site');
      * //non-multisite
      * $site = new Timber\Site();
      * ```
-     * @param string|int $site_name_or_id
+     * @param string|int $site_name_or_id The site ID or slug. An unknown slug gives the current site.
      */
     public function __construct($site_name_or_id = null)
     {
@@ -326,7 +327,7 @@ class Site extends Core implements CoreInterface
     /**
      * Switches to the blog requested in the request
      *
-     * @param string|integer|null $blog_identifier The name or ID of the blog to switch to. If `null`, the current blog.
+     * @param string|integer|null $blog_identifier The slug or ID of the blog to switch to. If `null` or an unknown slug, the current blog.
      * @return integer with the ID of the new blog
      */
     protected static function switch_to_blog($blog_identifier = null): int
@@ -335,6 +336,8 @@ class Site extends Core implements CoreInterface
 
         if ($blog_identifier === null) {
             $blog_identifier = $current_id;
+        } elseif (!\is_numeric($blog_identifier)) {
+            $blog_identifier = \get_id_from_blogname($blog_identifier) ?? $current_id;
         }
 
         // Always call switch_to_blog to add the blog switch to the stack. WordPress doesn't perform complex logic if the blog ID stays the same.
