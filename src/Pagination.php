@@ -62,7 +62,12 @@ class Pagination
         // calculate the total number of pages based on found posts and posts per page
         $ppp = $wp_query->query_vars['posts_per_page'] ?? 10;
 
-        $args['total'] = \ceil($wp_query->found_posts / $ppp);
+        // posts_per_page -1 puts all posts on one page
+        if (-1 === (int) $ppp) {
+            $args['total'] = $wp_query->found_posts > 0 ? 1.0 : 0.0;
+        } else {
+            $args['total'] = \ceil($wp_query->found_posts / $ppp);
+        }
         if ($wp_rewrite->using_permalinks()) {
             $url = \explode('?', (string) \get_pagenum_link(0, false));
             if (isset($url[1])) {
