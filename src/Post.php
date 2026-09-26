@@ -1824,8 +1824,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      *     <a href="{{ post.next.link }}">{{ post.next.title }}</a>
      * {% endif %}
      * ```
-     * @param bool|string $in_same_term Whether the post should be in a same taxonomy term. Default
-     *                                  `false`.
+     * @param bool|string $in_same_term Whether the post should be in a same taxonomy term. `true`
+     *                                  uses the `category` taxonomy, a string names the taxonomy.
+     *                                  Default `false`.
      *
      * @return mixed
      */
@@ -1836,11 +1837,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
             $this->_next = [];
             $old_global = $post;
             $post = $this;
-            if (\is_string($in_same_term) && \strlen($in_same_term)) {
-                $adjacent = \get_adjacent_post(true, '', false, $in_same_term);
-            } else {
-                $adjacent = \get_adjacent_post(false, '', false);
-            }
+            $taxonomy = \is_string($in_same_term) && \strlen($in_same_term) ? $in_same_term : 'category';
+            $adjacent = \get_adjacent_post((bool) $in_same_term, '', false, $taxonomy);
 
             if ($adjacent) {
                 $this->_next[$in_same_term] = $this->factory()->from($adjacent);
@@ -1993,8 +1991,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      *     <a href="{{ post.prev.link }}">{{ post.prev.title }}</a>
      * {% endif %}
      * ```
-     * @param bool|string $in_same_term Whether the post should be in a same taxonomy term. Default
-     *                                  `false`.
+     * @param bool|string $in_same_term Whether the post should be in a same taxonomy term. `true`
+     *                                  uses the `category` taxonomy, a string names the taxonomy.
+     *                                  Default `false`.
      * @return mixed
      */
     public function prev($in_same_term = false)
@@ -2005,8 +2004,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
         global $post;
         $old_global = $post;
         $post = $this;
-        $within_taxonomy = $in_same_term ?: 'category';
-        $adjacent = \get_adjacent_post(($in_same_term), '', true, $within_taxonomy);
+        $taxonomy = \is_string($in_same_term) && \strlen($in_same_term) ? $in_same_term : 'category';
+        $adjacent = \get_adjacent_post((bool) $in_same_term, '', true, $taxonomy);
         $prev_in_taxonomy = false;
         if ($adjacent) {
             $prev_in_taxonomy = $this->factory()
