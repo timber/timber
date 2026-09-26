@@ -24,6 +24,27 @@ class PostsIterator extends ArrayIterator
     private bool $in_loop = false;
 
     /**
+     * Starts a new loop, also after a loop that ended early.
+     */
+    public function rewind(): void
+    {
+        $this->in_loop = false;
+        parent::rewind();
+    }
+
+    /**
+     * Seeking to the first post starts a new loop, like rewind().
+     */
+    public function seek(int $offset): void
+    {
+        parent::seek($offset);
+
+        if (0 === $offset) {
+            $this->in_loop = false;
+        }
+    }
+
+    /**
      * Prepares the state before working on a post.
      *
      * Calls the `setup()` function of the current post to setup post data if

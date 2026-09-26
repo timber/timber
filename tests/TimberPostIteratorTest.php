@@ -185,6 +185,35 @@ class TimberPostIteratorTest extends TimberIntegrationTestCase
         $this->assertSame(['start', ...$pids, 'end', 'start', ...$pids, 'end'], $this->collector);
     }
 
+    public function testRestartAfterEarlyBreakStartsANewLoop()
+    {
+        $pids = static::factory()->post->create_many(2);
+        $iterator = (new PostArrayObject($pids))->getIterator();
+        $this->collect_loop_hooks();
+
+        foreach ($iterator as $post) {
+            $this->collector[] = $post->ID;
+            break;
+        }
+        foreach ($iterator as $post) {
+            $this->collector[] = $post->ID;
+        }
+        $iterator->seek(0);
+        $this->collector[] = $iterator->current()->ID;
+        $iterator->seek(0);
+        while ($iterator->valid()) {
+            $this->collector[] = $iterator->current()->ID;
+            $iterator->next();
+        }
+
+        $this->assertSame([
+            'start', $pids[0],
+            'start', ...$pids, 'end',
+            'start', $pids[0],
+            'start', ...$pids, 'end',
+        ], $this->collector);
+    }
+
     public function testCurrentPastTheEndLeavesCollectionUnchanged()
     {
         $pid = static::factory()->post->create();
