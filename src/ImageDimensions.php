@@ -148,9 +148,13 @@ class ImageDimensions
                 $svg_size = $this->get_dimensions_svg($this->file_loc);
                 $this->dimensions = [(int) \round($svg_size->width), (int) \round($svg_size->height)];
             } else {
-                [$width, $height] = \getimagesize($this->file_loc);
+                $size = \getimagesize($this->file_loc);
 
-                $this->dimensions = [(int) $width, (int) $height];
+                if (false === $size) {
+                    return null;
+                }
+
+                $this->dimensions = [$size[0], $size[1]];
             }
 
             return $this->get_dimension_loaded($dimension);

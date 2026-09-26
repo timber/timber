@@ -84,6 +84,22 @@ class ImageDimensionsTest extends TimberIntegrationTestCase
         $this->assertGreaterThan(0, $imageDimensions->height());
     }
 
+    public function testDimensionsAreNullForFileThatIsNotAnImage()
+    {
+        $file_loc = \tempnam(\sys_get_temp_dir(), 'timber');
+        \file_put_contents($file_loc, 'not an image');
+
+        $imageDimensions = new ImageDimensions($file_loc);
+        $width = $imageDimensions->width();
+        $height = $imageDimensions->height();
+        $aspect = $imageDimensions->aspect();
+        \unlink($file_loc);
+
+        $this->assertNull($width);
+        $this->assertNull($height);
+        $this->assertNull($aspect);
+    }
+
     public function testDimensionsMetadataTakesPrecedenceOverFile()
     {
         $attachment_id = $this->createAttachmentWithImage();
