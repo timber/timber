@@ -874,10 +874,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
             '2.0.0'
         );
 
-        if ($field_name === null) {
-            // On the off-chance the field is actually named meta.
-            $field_name = 'meta';
-        }
+        // On the off-chance the field is actually named meta.
+        $field_name ??= 'meta';
 
         return $this->meta($field_name);
     }
