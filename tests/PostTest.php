@@ -249,6 +249,44 @@ class PostTest extends TimberIntegrationTestCase
         $this->assertEquals($lastPost->prev('category')->ID, $prevPost->ID);
     }
 
+    public function testNextWithTrueStaysInSameCategory()
+    {
+        $posts = [];
+        for ($i = 0; $i < 4; $i++) {
+            $j = $i + 1;
+            $posts[] = static::factory()->post->create([
+                'post_date' => '2014-02-0' . $j . ' 12:00:00',
+            ]);
+        }
+        $cat = \wp_insert_term('TestMe', 'category');
+        self::set_object_terms($posts[0], $cat, 'category', false);
+        self::set_object_terms($posts[2], $cat, 'category', false);
+        $firstPost = Timber::get_post($posts[0]);
+
+        $this->assertSame($posts[2], $firstPost->next(true)->ID);
+        $this->assertSame($posts[1], $firstPost->next()->ID);
+        $this->assertFalse(Timber::get_post($posts[2])->next(true));
+    }
+
+    public function testPrevWithTrueStaysInSameCategory()
+    {
+        $posts = [];
+        for ($i = 0; $i < 4; $i++) {
+            $j = $i + 1;
+            $posts[] = static::factory()->post->create([
+                'post_date' => '2014-02-0' . $j . ' 12:00:00',
+            ]);
+        }
+        $cat = \wp_insert_term('TestMe', 'category');
+        self::set_object_terms($posts[1], $cat, 'category', false);
+        self::set_object_terms($posts[3], $cat, 'category', false);
+        $lastPost = Timber::get_post($posts[3]);
+
+        $this->assertSame($posts[1], $lastPost->prev(true)->ID);
+        $this->assertSame($posts[2], $lastPost->prev()->ID);
+        $this->assertFalse(Timber::get_post($posts[1])->prev(true));
+    }
+
     public function testNextWithDraftAndFallover()
     {
         $posts = [];
@@ -1173,9 +1211,7 @@ class PostTest extends TimberIntegrationTestCase
         \update_option('home', 'http://example.org:3000', true);
         $old_port = $_SERVER['SERVER_PORT'];
         $_SERVER['SERVER_PORT'] = 3000;
-        if (!isset($_SERVER['SERVER_NAME'])) {
-            $_SERVER['SERVER_NAME'] = 'example.org';
-        }
+        $_SERVER['SERVER_NAME'] ??= 'example.org';
 
         /* test */
         $pid = static::factory()->post->create([
