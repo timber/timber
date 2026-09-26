@@ -174,7 +174,8 @@ class Loader implements LoaderInterface
             return null;
         }
 
-        return \md5($file . $encoded);
+        // Use the resolved file, because callers with different locations can resolve the same name to different files.
+        return \md5($this->get_loader()->getCacheKey($file) . $encoded);
     }
 
     /**
