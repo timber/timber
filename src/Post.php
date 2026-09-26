@@ -1378,8 +1378,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
          * @see   excerpt_remove_blocks() The WordPress Core function that will handle the block removal from the excerpt.
          */
         $remove_blocks = (bool) \apply_filters('timber/post/content/remove_blocks', $remove_blocks);
+        $cacheable = $len == -1 && $page == 0 && !$remove_blocks;
 
-        if ($len == -1 && $page == 0 && !$remove_blocks && $this->___content) {
+        if ($cacheable && $this->___content) {
             return $this->___content;
         }
 
@@ -1409,10 +1410,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
             }
 
             $pages = \explode('<!--nextpage-->', $content);
-
-            if (\count($pages) >= $page) {
-                $content = $pages[$page - 1];
-            }
+            $content = $pages[$page - 1] ?? $content;
         }
 
         if ($remove_blocks) {
@@ -1422,7 +1420,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
         $content = $this->content_handle_no_teaser_block($content);
         $content = \apply_filters('the_content', ($content));
 
-        if ($len == -1 && $page == 0 && !$remove_blocks) {
+        if ($cacheable) {
             $this->___content = $content;
         }
 
