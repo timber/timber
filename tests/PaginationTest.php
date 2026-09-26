@@ -706,4 +706,36 @@ class PaginationTest extends TimberIntegrationTestCase
         ]);
         $this->assertSame(11, \count($pagination->pages));
     }
+
+    #[PermalinkStructure('/%postname%/')]
+    public function testPaginationNextAndPrevWithMidSizeZero()
+    {
+        static::factory()->post->create_many(7);
+        $this->get(\home_url('/?foo=bar'));
+        $posts = Timber::get_posts([
+            'post_type' => 'post',
+            'paged' => 4,
+            'posts_per_page' => 1,
+        ]);
+        $pagination = $posts->pagination([
+            'mid_size' => 0,
+        ]);
+
+        $this->assertSame('http://example.org/page/5/?foo=bar', $pagination->next['link']);
+        $this->assertSame('http://example.org/page/3/?foo=bar', $pagination->prev['link']);
+    }
+
+    public function testPaginationNextWithSizeTwo()
+    {
+        static::factory()->post->create_many(7);
+        $this->get(\home_url('/'));
+        $posts = Timber::get_posts([
+            'post_type' => 'post',
+            'paged' => 4,
+            'posts_per_page' => 1,
+        ]);
+        $pagination = $posts->pagination(2);
+
+        $this->assertSame('http://example.org/?paged=5', $pagination->next['link']);
+    }
 }
