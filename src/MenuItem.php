@@ -303,9 +303,7 @@ class MenuItem extends CoreEntity implements Stringable
          *
          * @see Menu::init_as_page_menu
          */
-        if (!isset($this->object_id)) {
-            $this->object_id = (int) \get_post_meta($this->ID, '_menu_item_object_id', true);
-        }
+        $this->object_id ??= (int) \get_post_meta($this->ID, '_menu_item_object_id', true);
     }
 
     /**
