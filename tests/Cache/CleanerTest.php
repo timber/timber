@@ -140,10 +140,15 @@ class CleanerTest extends TimberIntegrationTestCase
 
     public function test_delete_transients()
     {
+        \set_transient('expired_transient', 'foo', 600);
+        \update_option('_transient_timeout_expired_transient', \time() - 1);
+        \set_transient('valid_transient', 'bar', 600);
+
         $result = Cleaner::delete_transients();
 
-        // Should return number of deleted records (as string due to concatenation in Cleaner)
-        $this->assertIsString($result);
+        // The expired transient and its timeout row.
+        $this->assertSame(2, $result);
+        $this->assertSame('bar', \get_transient('valid_transient'));
     }
 
     public function test_delete_transients_with_object_cache()
