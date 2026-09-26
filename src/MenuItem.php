@@ -403,7 +403,7 @@ class MenuItem extends CoreEntity implements Stringable
     public function slug()
     {
         $mo = $this->master_object();
-        if ($mo instanceof Post && $mo->post_name) {
+        if (!empty($mo->post_name)) {
             return $mo->post_name;
         }
         return $this->post_name;
