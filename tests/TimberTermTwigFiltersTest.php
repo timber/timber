@@ -2,6 +2,9 @@
 
 namespace Timber\Tests;
 
+use Countable;
+use Generator;
+use IteratorAggregate;
 use Timber\Timber;
 
 class TimberTermTwigFiltersTest extends TimberIntegrationTestCase
@@ -59,5 +62,65 @@ class TimberTermTwigFiltersTest extends TimberIntegrationTestCase
         $data['authors'] = ['Tom', 'Rick', 'Harry', 'Mike'];
         $str = Timber::compile_string("{{authors|list(',', ', and')}}", $data);
         $this->assertEquals('Tom, Rick, Harry, and Mike', $str);
+    }
+
+    public function testTwigFilterListShortLists()
+    {
+        $this->assertEquals('Tom', Timber::compile_string('{{authors|list}}', [
+            'authors' => ['Tom'],
+        ]));
+        $this->assertEquals('Tom and Rick', Timber::compile_string('{{authors|list}}', [
+            'authors' => ['Tom', 'Rick'],
+        ]));
+        $this->assertEquals('Tom, Rick and Harry', Timber::compile_string('{{authors|list}}', [
+            'authors' => ['Tom', 'Rick', 'Harry'],
+        ]));
+    }
+
+    public function testTwigFilterListSparseIntegerKeys()
+    {
+        $data['authors'] = [
+            10 => 'Tom',
+            20 => 'Rick',
+            30 => 'Harry',
+        ];
+        $str = Timber::compile_string('{{authors|list}}', $data);
+        $this->assertEquals('Tom, Rick and Harry', $str);
+    }
+
+    public function testTwigFilterListAssociativeKeys()
+    {
+        $data['authors'] = [
+            'first' => 'Tom',
+            'second' => 'Rick',
+            'third' => 'Harry',
+        ];
+        $str = Timber::compile_string('{{authors|list}}', $data);
+        $this->assertEquals('Tom, Rick and Harry', $str);
+    }
+
+    public function testTwigFilterListCountableTraversableIteratesOnce()
+    {
+        $authors = new class() implements Countable, IteratorAggregate {
+            public int $iterations = 0;
+
+            public function count(): int
+            {
+                return 3;
+            }
+
+            public function getIterator(): Generator
+            {
+                ++$this->iterations;
+                yield 'first' => 'Tom';
+                yield 'second' => 'Rick';
+                yield 'third' => 'Harry';
+            }
+        };
+        $str = Timber::compile_string('{{authors|list}}', [
+            'authors' => $authors,
+        ]);
+        $this->assertEquals('Tom, Rick and Harry', $str);
+        $this->assertSame(1, $authors->iterations);
     }
 }

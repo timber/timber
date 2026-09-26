@@ -804,7 +804,8 @@ class Twig
     {
         $length = \count($arr);
         $list = '';
-        foreach ($arr as $index => $item) {
+        $index = 0;
+        foreach ($arr as $item) {
             if ($index < $length - 2) {
                 $delimiter = $first_delimiter . ' ';
             } elseif ($index == $length - 2) {
@@ -813,6 +814,7 @@ class Twig
                 $delimiter = '';
             }
             $list = $list . $item . $delimiter;
+            ++$index;
         }
         return $list;
     }
