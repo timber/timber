@@ -874,10 +874,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
             '2.0.0'
         );
 
-        if ($field_name === null) {
-            // On the off-chance the field is actually named meta.
-            $field_name = 'meta';
-        }
+        // On the off-chance the field is actually named meta.
+        $field_name ??= 'meta';
 
         return $this->meta($field_name);
     }
@@ -1366,7 +1364,24 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
         if ($form = $this->maybe_show_password_form()) {
             return $form;
         }
-        if ($len == -1 && $page == 0 && $this->___content) {
+
+        /**
+         * Filters whether the content produced by block editor blocks should be removed or not from the content.
+         *
+         * If truthy then block whose content does not belong in the excerpt, will be removed.
+         * This removal is done using WordPress Core `excerpt_remove_blocks` function.
+         *
+         * @since 2.1.1
+         *
+         * @param bool $remove_blocks Whether blocks whose content should not be part of the excerpt should be removed
+         *                            or not from the excerpt.
+         *
+         * @see   excerpt_remove_blocks() The WordPress Core function that will handle the block removal from the excerpt.
+         */
+        $remove_blocks = (bool) \apply_filters('timber/post/content/remove_blocks', $remove_blocks);
+        $cacheable = $len == -1 && $page == 0 && !$remove_blocks;
+
+        if ($cacheable && $this->___content) {
             return $this->___content;
         }
 
@@ -1396,27 +1411,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
             }
 
             $pages = \explode('<!--nextpage-->', $content);
-            $page--;
-
-            if (\count($pages) > $page) {
-                $content = $pages[$page];
-            }
+            $content = $pages[$page - 1] ?? $content;
         }
-
-        /**
-         * Filters whether the content produced by block editor blocks should be removed or not from the content.
-         *
-         * If truthy then block whose content does not belong in the excerpt, will be removed.
-         * This removal is done using WordPress Core `excerpt_remove_blocks` function.
-         *
-         * @since 2.1.1
-         *
-         * @param bool $remove_blocks Whether blocks whose content should not be part of the excerpt should be removed
-         *                            or not from the excerpt.
-         *
-         * @see   excerpt_remove_blocks() The WordPress Core function that will handle the block removal from the excerpt.
-         */
-        $remove_blocks = (bool) \apply_filters('timber/post/content/remove_blocks', $remove_blocks);
 
         if ($remove_blocks) {
             $content = \excerpt_remove_blocks($content);
@@ -1425,7 +1421,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
         $content = $this->content_handle_no_teaser_block($content);
         $content = \apply_filters('the_content', ($content));
 
-        if ($len == -1 && $page == 0 && !$remove_blocks) {
+        if ($cacheable) {
             $this->___content = $content;
         }
 
