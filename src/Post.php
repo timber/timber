@@ -1542,9 +1542,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
          * @param string      $date        The formatted date.
          * @param string      $date_format PHP date format. Defaults to 'date_format' option if not
          *                                 specified.
-         * @param int|WP_Post $id          The post object or ID.
+         * @param WP_Post     $post        The post object.
          */
-        $date = \apply_filters('get_the_date', $date, $date_format, $this->ID);
+        $date = \apply_filters('get_the_date', $date, $date_format, $this->wp_object);
 
         return $date;
     }
@@ -1642,9 +1642,9 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
          * @param string      $time_format Format to use for retrieving the time the post was
          *                                 written. Accepts 'G', 'U', or php date format value
          *                                 specified in `time_format` option. Default empty.
-         * @param int|WP_Post $id          WP_Post object or ID.
+         * @param WP_Post     $post        Post object.
          */
-        $time = \apply_filters('get_the_time', $time, $time_format, $this->ID);
+        $time = \apply_filters('get_the_time', $time, $time_format, $this->wp_object);
 
         return $time;
     }
