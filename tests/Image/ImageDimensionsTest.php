@@ -84,6 +84,15 @@ class ImageDimensionsTest extends TimberIntegrationTestCase
         $this->assertGreaterThan(0, $imageDimensions->height());
     }
 
+    public function testDimensionsAreNullForFileThatIsNotAnImage()
+    {
+        $imageDimensions = new ImageDimensions(__DIR__ . '/../Fixtures/assets/dummy-pdf.pdf');
+
+        $this->assertNull($imageDimensions->width());
+        $this->assertNull($imageDimensions->height());
+        $this->assertNull($imageDimensions->aspect());
+    }
+
     public function testDimensionsMetadataTakesPrecedenceOverFile()
     {
         $attachment_id = $this->createAttachmentWithImage();
