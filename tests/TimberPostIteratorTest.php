@@ -142,39 +142,74 @@ class TimberPostIteratorTest extends TimberIntegrationTestCase
         ]);
         $this->get(\get_permalink($parent_id));
         $children = Timber::get_post($parent_id)->children();
-
-        $events = [];
-        $this->add_action_temporarily('loop_start', function () use (&$events) {
-            $events[] = 'start';
-        });
-        $this->add_action_temporarily('loop_end', function () use (&$events) {
-            $events[] = 'end';
-        });
+        $this->collect_loop_hooks();
 
         foreach ($children as $child) {
-            $events[] = $child->ID;
+            $this->collector[] = $child->ID;
         }
 
         global $post, $wp_query;
-        $this->assertSame(['start', ...\array_keys($children->to_array()), 'end'], $events);
+        $this->assertSame(['start', ...\array_keys($children->to_array()), 'end'], $this->collector);
         $this->assertSame($parent_id, $post->ID);
         $this->assertFalse($wp_query->in_the_loop);
     }
 
     public function testLoopOverEmptyCollectionFiresNoLoopHooks()
     {
-        $events = [];
-        $this->add_action_temporarily('loop_start', function () use (&$events) {
-            $events[] = 'start';
-        });
-        $this->add_action_temporarily('loop_end', function () use (&$events) {
-            $events[] = 'end';
-        });
+        $this->collect_loop_hooks();
 
         foreach (new PostArrayObject([]) as $post) {
-            $events[] = $post;
+            $this->collector[] = $post;
         }
 
-        $this->assertSame([], $events);
+        $this->assertSame([], $this->collector);
+    }
+
+    public function testTraversalWithoutRewindFiresLoopHooksOncePerPass()
+    {
+        $pids = static::factory()->post->create_many(2);
+        $iterator = (new PostArrayObject($pids))->getIterator();
+        $this->collect_loop_hooks();
+
+        while ($iterator->valid()) {
+            $this->collector[] = $iterator->current()->ID;
+            $iterator->next();
+        }
+        $iterator->next();
+        $iterator->seek(0);
+        while ($iterator->valid()) {
+            $this->collector[] = $iterator->current()->ID;
+            $iterator->next();
+        }
+
+        $this->assertSame(['start', ...$pids, 'end', 'start', ...$pids, 'end'], $this->collector);
+    }
+
+    public function testCurrentPastTheEndLeavesCollectionUnchanged()
+    {
+        $pid = static::factory()->post->create();
+        $empty = (new PostArrayObject([]))->getIterator();
+        $exhausted = (new PostArrayObject([$pid]))->getIterator();
+        foreach ($exhausted as $post) {
+            $post->title;
+        }
+        $this->collect_loop_hooks();
+
+        $this->assertNull($empty->current());
+        $this->assertNull($exhausted->current());
+        $this->assertSame([0, false], [\count($empty), $empty->valid()]);
+        $this->assertSame([1, false], [\count($exhausted), $exhausted->valid()]);
+        $this->assertSame([], $this->collector);
+    }
+
+    private function collect_loop_hooks(): void
+    {
+        $this->collector = [];
+        $this->add_action_temporarily('loop_start', function () {
+            $this->collector[] = 'start';
+        });
+        $this->add_action_temporarily('loop_end', function () {
+            $this->collector[] = 'end';
+        });
     }
 }
