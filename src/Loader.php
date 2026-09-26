@@ -585,9 +585,11 @@ class Loader implements LoaderInterface
         //_transient_timberloader
         $cache_mode = $this->_get_cache_mode($cache_mode);
 
-        if (self::CACHE_TRANSIENT === $cache_mode || self::CACHE_SITE_TRANSIENT === $cache_mode) {
-            // $wpdb->query() might return 0 affected rows, but that means it’s still successful.
+        // $wpdb->query() might return 0 affected rows, but that means it’s still successful.
+        if (self::CACHE_TRANSIENT === $cache_mode) {
             return false !== self::clear_cache_timber_database();
+        } elseif (self::CACHE_SITE_TRANSIENT === $cache_mode) {
+            return false !== self::clear_cache_timber_site_transients();
         } elseif (self::CACHE_OBJECT === $cache_mode && $this->is_object_cache()) {
             return false !== self::clear_cache_timber_object();
         }
@@ -607,6 +609,29 @@ class Loader implements LoaderInterface
         return $wpdb->query($wpdb->prepare(
             "DELETE FROM $wpdb->options WHERE option_name LIKE '%s'",
             '_transient%timberloader_%'
+        ));
+    }
+
+    /**
+     * Clears Timber cache in site transients of the current network.
+     *
+     * @return bool|int Number of deleted rows or false on error.
+     */
+    protected static function clear_cache_timber_site_transients()
+    {
+        global $wpdb;
+
+        if (!\is_multisite()) {
+            return $wpdb->query($wpdb->prepare(
+                "DELETE FROM $wpdb->options WHERE option_name LIKE %s",
+                '_site_transient%timberloader_%'
+            ));
+        }
+
+        return $wpdb->query($wpdb->prepare(
+            "DELETE FROM $wpdb->sitemeta WHERE meta_key LIKE %s AND site_id = %d",
+            '_site_transient%timberloader_%',
+            \get_current_network_id()
         ));
     }
 
