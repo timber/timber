@@ -311,6 +311,29 @@ class TimberMultisiteTest extends TimberIntegrationTestCase
         }
     }
 
+    public function testClearCacheTimberSiteTransientsOfCurrentNetworkOnly()
+    {
+        $this->skipWithoutMultisite();
+
+        global $wpdb;
+        $other_network_id = \get_current_network_id() + 1;
+        $wpdb->insert($wpdb->sitemeta, [
+            'site_id' => $other_network_id,
+            'meta_key' => '_site_transient_timberloader_key',
+            'meta_value' => 'other network',
+        ]);
+
+        $loader = new Loader();
+        $loader->set_cache('key', 'current network', Loader::CACHEGROUP, 600, Loader::CACHE_SITE_TRANSIENT);
+
+        $this->assertTrue($loader->clear_cache_timber(Loader::CACHE_SITE_TRANSIENT));
+
+        // Read from the database, as the next request would.
+        \wp_cache_flush();
+        $this->assertFalse($loader->get_cache('key', Loader::CACHEGROUP, Loader::CACHE_SITE_TRANSIENT));
+        $this->assertSame('other network', \get_network_option($other_network_id, '_site_transient_timberloader_key'));
+    }
+
     public static function createSubDomainSite($domain = 'test.example.org', $title = 'Multisite Test')
     {
         $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
