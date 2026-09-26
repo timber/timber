@@ -86,18 +86,11 @@ class ImageDimensionsTest extends TimberIntegrationTestCase
 
     public function testDimensionsAreNullForFileThatIsNotAnImage()
     {
-        $file_loc = \tempnam(\sys_get_temp_dir(), 'timber');
-        \file_put_contents($file_loc, 'not an image');
+        $imageDimensions = new ImageDimensions(__DIR__ . '/../Fixtures/assets/dummy-pdf.pdf');
 
-        $imageDimensions = new ImageDimensions($file_loc);
-        $width = $imageDimensions->width();
-        $height = $imageDimensions->height();
-        $aspect = $imageDimensions->aspect();
-        \unlink($file_loc);
-
-        $this->assertNull($width);
-        $this->assertNull($height);
-        $this->assertNull($aspect);
+        $this->assertNull($imageDimensions->width());
+        $this->assertNull($imageDimensions->height());
+        $this->assertNull($imageDimensions->aspect());
     }
 
     public function testDimensionsMetadataTakesPrecedenceOverFile()
