@@ -2,6 +2,7 @@
 
 namespace Timber\Tests\Image;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Timber\ImageHelper;
 use Timber\Tests\TimberAttachmentTestCase;
@@ -131,6 +132,31 @@ class ExternalImageTest extends TimberAttachmentTestCase
             'http://example.org/wp-content/themes/timber-test-theme/assets/images/cardinals.jpg',
             $image2->src()
         );
+    }
+
+    public static function modernImageFormatProvider()
+    {
+        return [
+            'webp' => ['mountains.webp', 320, 214],
+            'avif' => ['eastern.avif', 250, 133],
+        ];
+    }
+
+    #[DataProvider('modernImageFormatProvider')]
+    public function testExternalImageWithRelativePathToModernFormat($filename, $width, $height)
+    {
+        $dest = self::copy_image_to_stylesheet('assets/images', $filename);
+        $this->addFile($dest);
+
+        $image = Timber::get_external_image('/wp-content/themes/timber-test-theme/assets/images/' . $filename);
+
+        $this->assertSame(
+            'http://example.org/wp-content/themes/timber-test-theme/assets/images/' . $filename,
+            $image->src()
+        );
+        $this->assertSame($dest, $image->file_loc());
+        $this->assertSame($width, $image->width());
+        $this->assertSame($height, $image->height());
     }
 
     public function testExternalImageWithUrl()
