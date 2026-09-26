@@ -11,6 +11,7 @@ use Timber\DateTimeHelper;
 use Timber\Tests\Support\Attributes\WithLocale;
 use Timber\Tests\Support\Attributes\WithOption;
 use Timber\Timber;
+use WP_Post;
 
 /**
  * Class TestTimberDates
@@ -277,6 +278,28 @@ class TimberDatesTest extends TimberIntegrationTestCase
             'post' => $post,
         ]);
         $this->assertEquals('I was modified foobar', $str);
+    }
+
+    public function testDateFilterReceivesWordPressPost()
+    {
+        $pid = static::factory()->post->create([
+            'post_title' => 'Summer Opening',
+            'post_date' => '2016-07-07 02:03:00',
+        ]);
+        \add_filter('get_the_date', fn (string $date, $format, WP_Post $post) => "{$date} ({$post->post_title})", 10, 3);
+
+        $this->assertSame('July 7, 2016 (Summer Opening)', Timber::get_post($pid)->date());
+    }
+
+    public function testTimeFilterReceivesWordPressPost()
+    {
+        $pid = static::factory()->post->create([
+            'post_title' => 'Summer Opening',
+            'post_date' => '2016-07-07 02:03:00',
+        ]);
+        \add_filter('get_the_time', fn (string $time, $format, WP_Post $post) => "{$time} ({$post->post_title})", 10, 3);
+
+        $this->assertSame('2:03 am (Summer Opening)', Timber::get_post($pid)->time());
     }
 
     public function testACFDate()
