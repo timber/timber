@@ -76,8 +76,7 @@ class PostsIterator extends ArrayIterator
             \do_action_ref_array('loop_start', [&$GLOBALS['wp_query']]);
         }
 
-        // Lazily instantiate a Timber\Post instance exactly once, and keep it for later loops and
-        // array access.
+        // Create each Timber\Post once. Reuse it in later loops and array access.
         $post = $factory->from(parent::current());
         $this->offsetSet($this->key(), $post);
 
