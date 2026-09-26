@@ -18,6 +18,11 @@ class CustomMenuItemClass extends MenuItem
 {
 }
 
+class TermWithPostName extends Term
+{
+    public $post_name = 'existing-term-slug';
+}
+
 #[Group('menus-api')]
 class MenuTest extends TimberIntegrationTestCase
 {
@@ -1152,6 +1157,54 @@ class MenuTest extends TimberIntegrationTestCase
         $this->assertInstanceOf(Post::class, $menu->items[0]->master_object());
         $this->assertInstanceOf(Term::class, $menu->items[7]->master_object());
         $this->assertInstanceOf(WP_Post_Type::class, $menu->items[8]->master_object());
+    }
+
+    public function testSlugOfPostTypeArchiveItemIsItsOwnPostNameWithoutWarning()
+    {
+        $archive_item = Timber::get_menu(self::_createTestMenu()['term_id'])->items[8];
+
+        $warnings = [];
+        \set_error_handler(function ($errno, $errstr) use (&$warnings) {
+            $warnings[] = $errstr;
+            return true;
+        });
+        try {
+            $slug = $archive_item->slug();
+        } finally {
+            \restore_error_handler();
+        }
+
+        $this->assertSame(
+            [
+                'slug' => (string) $archive_item->ID,
+                'warnings' => [],
+            ],
+            [
+                'slug' => $slug,
+                'warnings' => $warnings,
+            ]
+        );
+    }
+
+    public function testSlugOfTermItemIsPostNameTermMetaOrItsOwnPostName()
+    {
+        $term_item = Timber::get_menu(self::_createTestMenu()['term_id'])->items[7];
+
+        $this->assertSame((string) $term_item->ID, $term_item->slug());
+
+        \update_term_meta($term_item->object_id, 'post_name', 'from-term-meta');
+
+        $this->assertSame('from-term-meta', $term_item->slug());
+    }
+
+    public function testSlugOfTermItemIsPostNamePropertyOfTermClass()
+    {
+        $this->add_filter_temporarily('timber/term/classmap', fn ($classmap) => \array_merge($classmap, [
+            'category' => TermWithPostName::class,
+        ]));
+        $menu = Timber::get_menu(self::_createTestMenu()['term_id']);
+
+        $this->assertSame('existing-term-slug', $menu->items[7]->slug());
     }
 
     public function testMenuWalker()
