@@ -4,7 +4,9 @@ namespace Timber\Tests;
 
 use PHPUnit\Framework\Attributes\Group;
 use Timber\Comment;
+use Timber\Tests\Support\Attributes\WithOption;
 use Timber\Timber;
+use WP_Comment;
 
 #[Group('comments-api')]
 class CommentTest extends TimberIntegrationTestCase
@@ -103,6 +105,58 @@ class CommentTest extends TimberIntegrationTestCase
         ]);
         $comment = Timber::get_comment($comment_id);
         $this->assertEquals('3:24 am', $comment->time());
+    }
+
+    public function testCommentDateAppliesWordPressFilter()
+    {
+        $post_id = static::factory()->post->create();
+        $comment_id = static::factory()->comment->create([
+            'comment_post_ID' => $post_id,
+            'comment_author' => 'Ada',
+            'comment_date' => '2015-08-21 03:24:07',
+        ]);
+        \add_filter(
+            'get_comment_date',
+            fn (string $date, string $format, WP_Comment $comment) => "{$date} [{$format}] by {$comment->comment_author}",
+            10,
+            3
+        );
+        $comment = Timber::get_comment($comment_id);
+
+        $this->assertSame('August 21, 2015 [] by Ada', $comment->date());
+        $this->assertSame('2015-08-21 [Y-m-d] by Ada', $comment->date('Y-m-d'));
+        $this->assertSame(\get_comment_date('', $comment_id), $comment->date());
+        $this->assertSame(\get_comment_date('Y-m-d', $comment_id), $comment->date('Y-m-d'));
+    }
+
+    #[WithOption('timezone_string', 'Europe/Zurich')]
+    public function testCommentTimeAppliesWordPressFilter()
+    {
+        $post_id = static::factory()->post->create();
+        $comment_id = static::factory()->comment->create([
+            'comment_post_ID' => $post_id,
+            'comment_author' => 'Ada',
+            'comment_date' => '2015-08-21 03:24:07',
+        ]);
+        \add_filter(
+            'get_comment_time',
+            fn (string $time, string $format, bool $gmt, bool $translate, WP_Comment $comment) => \sprintf(
+                '%s [%s] gmt=%s translate=%s by %s',
+                $time,
+                $format,
+                \var_export($gmt, true),
+                \var_export($translate, true),
+                $comment->comment_author
+            ),
+            10,
+            5
+        );
+        $comment = Timber::get_comment($comment_id);
+
+        $this->assertSame('3:24 am [] gmt=false translate=true by Ada', $comment->time());
+        $this->assertSame('03:24 CEST [H:i T] gmt=false translate=true by Ada', $comment->time('H:i T'));
+        $this->assertSame(\get_comment_time('', false, true, $comment_id), $comment->time());
+        $this->assertSame(\get_comment_time('H:i T', false, true, $comment_id), $comment->time('H:i T'));
     }
 
     public function testCommentReplyLink()
