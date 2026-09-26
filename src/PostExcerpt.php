@@ -339,7 +339,7 @@ class PostExcerpt implements Stringable
         $text = \trim($text);
         $last = $text[\strlen($text) - 1];
         $last_p_tag = null;
-        if ($last != '.' && ($this->always_add_end || $args['add_end'])) {
+        if ($this->strip && $last != '.' && ($this->always_add_end || $args['add_end'])) {
             $text .= $this->end;
         }
         if (!$this->strip) {
@@ -426,7 +426,7 @@ class PostExcerpt implements Stringable
             $text .= $link;
         }
 
-        if (!$this->strip && $last_p_tag && (\strpos($text, '<p>') > -1 || \strpos($text, '<p '))) {
+        if (!$this->strip && $last_p_tag && (\str_contains($text, '<p>') || \str_contains($text, '<p '))) {
             $text .= '</p>';
         }
         return \trim($text);
