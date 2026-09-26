@@ -1159,42 +1159,42 @@ class MenuTest extends TimberIntegrationTestCase
         $this->assertInstanceOf(WP_Post_Type::class, $menu->items[8]->master_object());
     }
 
-    public function testSlugOfTermAndPostTypeArchiveItemsIsTheirOwnPostName()
+    public function testSlugOfPostTypeArchiveItemIsItsOwnPostNameWithoutWarning()
     {
-        $menu = Timber::get_menu(self::_createTestMenu()['term_id']);
-        $term_item = $menu->items[7];
-        $archive_item = $menu->items[8];
+        $archive_item = Timber::get_menu(self::_createTestMenu()['term_id'])->items[8];
 
         $warnings = [];
         \set_error_handler(function ($errno, $errstr) use (&$warnings) {
             $warnings[] = $errstr;
             return true;
         });
-        $term_meta_fields = [];
-        $this->add_filter_temporarily('timber/term/pre_meta', function ($meta, $term_id, $field) use (&$term_meta_fields) {
-            $term_meta_fields[] = $field;
-            return $meta;
-        }, 10, 3);
-
         try {
-            $term_slug = $term_item->slug();
-            $archive_slug = $archive_item->slug();
+            $slug = $archive_item->slug();
         } finally {
             \restore_error_handler();
         }
 
-        $this->assertSame((string) $term_item->ID, $term_slug);
-        $this->assertSame((string) $archive_item->ID, $archive_slug);
         $this->assertSame(
             [
+                'slug' => (string) $archive_item->ID,
                 'warnings' => [],
-                'term meta lookups' => [],
             ],
             [
+                'slug' => $slug,
                 'warnings' => $warnings,
-                'term meta lookups' => $term_meta_fields,
             ]
         );
+    }
+
+    public function testSlugOfTermItemIsPostNameTermMetaOrItsOwnPostName()
+    {
+        $term_item = Timber::get_menu(self::_createTestMenu()['term_id'])->items[7];
+
+        $this->assertSame((string) $term_item->ID, $term_item->slug());
+
+        \update_term_meta($term_item->object_id, 'post_name', 'from-term-meta');
+
+        $this->assertSame('from-term-meta', $term_item->slug());
     }
 
     public function testSlugOfTermItemIsPostNamePropertyOfTermClass()
