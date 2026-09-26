@@ -18,6 +18,11 @@ class CustomMenuItemClass extends MenuItem
 {
 }
 
+class TermWithPostName extends Term
+{
+    public $post_name = 'existing-term-slug';
+}
+
 #[Group('menus-api')]
 class MenuTest extends TimberIntegrationTestCase
 {
@@ -1190,6 +1195,16 @@ class MenuTest extends TimberIntegrationTestCase
                 'term meta lookups' => $term_meta_fields,
             ]
         );
+    }
+
+    public function testSlugOfTermItemIsPostNamePropertyOfTermClass()
+    {
+        $this->add_filter_temporarily('timber/term/classmap', fn ($classmap) => \array_merge($classmap, [
+            'category' => TermWithPostName::class,
+        ]));
+        $menu = Timber::get_menu(self::_createTestMenu()['term_id']);
+
+        $this->assertSame('existing-term-slug', $menu->items[7]->slug());
     }
 
     public function testMenuWalker()
