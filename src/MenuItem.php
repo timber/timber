@@ -7,6 +7,7 @@ use Stringable;
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
 use WP_Post;
+use WP_Post_Type;
 
 /**
  * Class MenuItem
@@ -403,10 +404,9 @@ class MenuItem extends CoreEntity implements Stringable
     public function slug()
     {
         $mo = $this->master_object();
-        if (!empty($mo->post_name)) {
-            return $mo->post_name;
-        }
-        return $this->post_name;
+        // A post type object has no magic getter; only a registration argument can give it a post_name.
+        $post_name = $mo instanceof WP_Post_Type ? $mo->post_name ?? null : $mo?->post_name;
+        return $post_name ?: $this->post_name;
     }
 
     /**
