@@ -4,6 +4,7 @@ namespace Timber\Tests;
 
 use PHPUnit\Framework\Attributes\Group;
 use Timber\PostArrayObject;
+use Timber\Timber;
 
 #[Group('posts-api')]
 #[Group('post-collections')]
@@ -98,5 +99,82 @@ class TimberPostIteratorTest extends TimberIntegrationTestCase
         global $wp_query;
 
         $this->assertFalse($wp_query->in_the_loop);
+    }
+
+    public function testLoopsReuseTheRealizedPosts()
+    {
+        $pids = static::factory()->post->create_many(3);
+        $built = 0;
+        $this->add_filter_temporarily('timber/post/class', function ($class) use (&$built) {
+            ++$built;
+            return $class;
+        });
+
+        $posts = Timber::get_posts([
+            'post__in' => $pids,
+            'orderby' => 'post__in',
+        ]);
+
+        $first_loop = [];
+        foreach ($posts as $post) {
+            $post->enriched = 'by controller';
+            $first_loop[] = $post;
+        }
+        $second_loop = [];
+        foreach ($posts as $post) {
+            $second_loop[] = $post;
+        }
+
+        $this->assertSame($first_loop, $second_loop);
+        $this->assertSame($first_loop[0], $posts[0]);
+        $this->assertSame('by controller', $second_loop[2]->enriched);
+        $this->assertSame(3, $built);
+    }
+
+    public function testLoopOverChildrenFiresLoopHooksAndRestoresPost()
+    {
+        $parent_id = static::factory()->post->create([
+            'post_type' => 'page',
+        ]);
+        static::factory()->post->create_many(2, [
+            'post_type' => 'page',
+            'post_parent' => $parent_id,
+        ]);
+        $this->get(\get_permalink($parent_id));
+        $children = Timber::get_post($parent_id)->children();
+
+        $events = [];
+        $this->add_action_temporarily('loop_start', function () use (&$events) {
+            $events[] = 'start';
+        });
+        $this->add_action_temporarily('loop_end', function () use (&$events) {
+            $events[] = 'end';
+        });
+
+        foreach ($children as $child) {
+            $events[] = $child->ID;
+        }
+
+        global $post, $wp_query;
+        $this->assertSame(['start', ...\array_keys($children->to_array()), 'end'], $events);
+        $this->assertSame($parent_id, $post->ID);
+        $this->assertFalse($wp_query->in_the_loop);
+    }
+
+    public function testLoopOverEmptyCollectionFiresNoLoopHooks()
+    {
+        $events = [];
+        $this->add_action_temporarily('loop_start', function () use (&$events) {
+            $events[] = 'start';
+        });
+        $this->add_action_temporarily('loop_end', function () use (&$events) {
+            $events[] = 'end';
+        });
+
+        foreach (new PostArrayObject([]) as $post) {
+            $events[] = $post;
+        }
+
+        $this->assertSame([], $events);
     }
 }

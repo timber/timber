@@ -18,11 +18,31 @@ class PostsIterator extends ArrayIterator
     protected ?Post $last_post = null;
 
     /**
+     * Rewinds to the first post.
+     *
+     * Before a loop over at least one post, it will call the 'loop_start' hook to improve
+     * compatibility with WordPress.
+     */
+    public function rewind(): void
+    {
+        parent::rewind();
+
+        if ($this->valid()) {
+            /**
+             * The `loop_start` action is not the only thing we do to improve compatibility with
+             * WordPress. There’s more going on in the Timber\Post::setup() function. The
+             * compatibility improvements live there, because they also need to work for singular
+             * templates, where there’s no loop.
+             */
+            \do_action_ref_array('loop_start', [&$GLOBALS['wp_query']]);
+        }
+    }
+
+    /**
      * Prepares the state before working on a post.
      *
      * Calls the `setup()` function of the current post to setup post data if
-     * we’re in the frontend. Before starting the loop, it will call the
-     * 'loop_start' hook to improve compatibility with WordPress.
+     * we’re in the frontend.
      *
      * @return mixed
      */
@@ -32,21 +52,10 @@ class PostsIterator extends ArrayIterator
         static $factory;
         $factory ??= new PostFactory();
 
-        // Fire action when the loop has just started.
-        if (0 === $this->key()) {
-            /**
-             * The `loop_start` action is not the only thing we do to improve compatibility with
-             * WordPress. There’s more going on in the Timber\Post::setup() function. The
-             * compatibility improvements live there, because they also need to work for singular
-             * templates, where there’s no loop.
-             */
-            \do_action_ref_array('loop_start', [&$GLOBALS['wp_query']]);
-        }
-
-        $wp_post = parent::current();
-
-        // Lazily instantiate a Timber\Post instance exactly once.
-        $post = $factory->from($wp_post);
+        // Lazily instantiate a Timber\Post instance exactly once, and keep it for later loops and
+        // array access.
+        $post = $factory->from(parent::current());
+        $this->offsetSet($this->key(), $post);
 
         if ($post instanceof Post && !\is_admin()) {
             // The setup() method should only run in the frontend.
@@ -83,8 +92,10 @@ class PostsIterator extends ArrayIterator
             $post->teardown();
         }
 
+        parent::next();
+
         // Fire action when the loop has ended.
-        if ($this->key() === $this->count() - 1) {
+        if (!$this->valid()) {
             /**
              * The `loop_end` action is not the only thing we do to improve compatibility with
              * WordPress. There’s more going on in the Timber\Post::teardown() function. The
@@ -94,7 +105,5 @@ class PostsIterator extends ArrayIterator
             \do_action_ref_array('loop_end', [&$GLOBALS['wp_query']]);
             \wp_reset_postdata();
         }
-
-        parent::next();
     }
 }
