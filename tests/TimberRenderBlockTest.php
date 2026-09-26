@@ -345,6 +345,23 @@ class TimberRenderBlockTest extends TimberIntegrationTestCase
     }
 
     /**
+     * Test rendering blocks from a template whose parent comes from the data
+     */
+    public function testCompileTwigBlockFromTemplateWithDynamicParent()
+    {
+        $data = [
+            'layout' => 'Fixtures/assets/base-layout.twig',
+            'custom_content' => 'Child content',
+        ];
+
+        $content_output = Timber::compile_twig_block('content', 'Fixtures/assets/dynamic-layout-child.twig', $data);
+        $this->assertEquals('<p>Child content</p>', \trim($content_output));
+
+        $header_output = Timber::compile_twig_block('header', 'Fixtures/assets/dynamic-layout-child.twig', $data);
+        $this->assertEquals('<h1>Default Header</h1>', \trim($header_output));
+    }
+
+    /**
      * Test compile_twig_block with explicitly null data parameter
      * This covers the is_null($data) check in Timber.php line 1562
      */
