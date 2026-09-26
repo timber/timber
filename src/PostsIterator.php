@@ -25,8 +25,11 @@ class PostsIterator extends ArrayIterator
 
     /**
      * Starts a new loop, also after a loop that ended early.
+     *
+     * @return void
      */
-    public function rewind(): void
+    #[ReturnTypeWillChange]
+    public function rewind()
     {
         $this->in_loop = false;
         parent::rewind();
@@ -34,8 +37,11 @@ class PostsIterator extends ArrayIterator
 
     /**
      * Seeking to the first post starts a new loop, like rewind().
+     *
+     * @return void
      */
-    public function seek(int $offset): void
+    #[ReturnTypeWillChange]
+    public function seek(int $offset)
     {
         parent::seek($offset);
 
