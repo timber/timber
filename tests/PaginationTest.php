@@ -738,4 +738,29 @@ class PaginationTest extends TimberIntegrationTestCase
 
         $this->assertSame('http://example.org/?paged=5', $pagination->next['link']);
     }
+
+    public function testPaginationTotalWithAllPostsOnOnePage()
+    {
+        static::factory()->post->create_many(5);
+        $posts = Timber::get_posts([
+            'post_type' => 'post',
+            'posts_per_page' => -1,
+        ]);
+        $pagination = $posts->pagination();
+
+        $this->assertSame(1.0, $pagination->total);
+        $this->assertSame([], $pagination->pages);
+    }
+
+    public function testPaginationWithAllPostsOnOnePageAndNoPosts()
+    {
+        $posts = Timber::get_posts([
+            'post_type' => 'post',
+            'posts_per_page' => -1,
+        ]);
+        $pagination = $posts->pagination();
+
+        $this->assertSame(0.0, $pagination->total);
+        $this->assertSame('', $pagination->next);
+    }
 }
