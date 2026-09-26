@@ -339,17 +339,14 @@ class PostExcerpt implements Stringable
         $text = \trim($text);
         $last = $text[\strlen($text) - 1];
         $last_p_tag = null;
-        if ($this->strip && $last != '.' && ($this->always_add_end || $args['add_end'])) {
-            $text .= $this->end;
-        }
         if (!$this->strip) {
             $last_p_tag = \strrpos($text, '</p>');
             if ($last_p_tag !== false) {
                 $text = \substr($text, 0, $last_p_tag);
             }
-            if ($last != '.' && ($this->always_add_end || $args['add_end'])) {
-                $text .= $this->end . ' ';
-            }
+        }
+        if ($last != '.' && ($this->always_add_end || $args['add_end'])) {
+            $text .= $this->strip ? $this->end : $this->end . ' ';
         }
 
         // Maybe add read more link.
