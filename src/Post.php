@@ -1544,7 +1544,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
          *                                 specified.
          * @param WP_Post     $post        The post object.
          */
-        $date = \apply_filters('get_the_date', $date, $date_format, $this->wp_object);
+        $date = \apply_filters('get_the_date', $date, $date_format ?? '', $this->wp_object);
 
         return $date;
     }
@@ -1584,19 +1584,14 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
         /**
          * Filters the date a post was last modified.
          *
-         * This filter expects a `WP_Post` object as the last parameter. We only have a
-         * `Timber\Post` object available, that wouldn’t match the expected argument. That’s why we
-         * need to get the post object with get_post(). This is fairly inexpensive, because the post
-         * will already be in the cache.
-         *
          * @see get_the_modified_date()
          *
-         * @param string|bool  $date        The formatted date or false if no post is found.
-         * @param string       $date_format PHP date format. Defaults to value specified in
-         *                                  'date_format' option.
-         * @param WP_Post|null $post        WP_Post object or null if no post is found.
+         * @param string  $date        The formatted date.
+         * @param string  $date_format PHP date format. Defaults to value specified in
+         *                             'date_format' option.
+         * @param WP_Post $post        The post object.
          */
-        $date = \apply_filters('get_the_modified_date', $date, $date_format, \get_post($this->ID));
+        $date = \apply_filters('get_the_modified_date', $date, $date_format ?? '', $this->wp_object);
 
         return $date;
     }
@@ -1644,7 +1639,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
          *                                 specified in `time_format` option. Default empty.
          * @param WP_Post     $post        Post object.
          */
-        $time = \apply_filters('get_the_time', $time, $time_format, $this->wp_object);
+        $time = \apply_filters('get_the_time', $time, $time_format ?? '', $this->wp_object);
 
         return $time;
     }
@@ -1684,20 +1679,15 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
         /**
          * Filters the localized time a post was last modified.
          *
-         * This filter expects a `WP_Post` object as the last parameter. We only have a
-         * `Timber\Post` object available, that wouldn’t match the expected argument. That’s why we
-         * need to get the post object with get_post(). This is fairly inexpensive, because the post
-         * will already be in the cache.
-         *
          * @see get_the_modified_time()
          *
-         * @param string|bool  $time        The formatted time or false if no post is found.
-         * @param string       $time_format Format to use for retrieving the time the post was
-         *                                  written. Accepts 'G', 'U', or php date format. Defaults
-         *                                  to value specified in 'time_format' option.
-         * @param WP_Post|null $post        WP_Post object or null if no post is found.
+         * @param string  $time        The formatted time.
+         * @param string  $time_format Format to use for retrieving the time the post was
+         *                             written. Accepts 'G', 'U', or php date format. Defaults
+         *                             to value specified in 'time_format' option.
+         * @param WP_Post $post        The post object.
          */
-        $time = \apply_filters('get_the_modified_time', $time, $time_format, \get_post($this->ID));
+        $time = \apply_filters('get_the_modified_time', $time, $time_format ?? '', $this->wp_object);
 
         return $time;
     }
