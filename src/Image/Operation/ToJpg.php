@@ -22,12 +22,12 @@ class ToJpg extends ImageOperation
 
     /**
      * @param string $src_filename          The basename of the file (ex: my-awesome-pic)
-     * @param string $src_extension         The source file’s extension (ex: png); folded into the
-     *                                      generated name only when the
+     * @param string $src_extension         The source file’s extension (ex: png). Only added to
+     *                                      the generated name when the
      *                                      `timber/image/collision_safe_filenames` filter is
-     *                                      enabled (see below) - off by default.
+     *                                      enabled (see below), which is off by default.
      * @return  string                      The final filename to be used (ex: my-awesome-pic.jpg, or
-     *                                      my-awesome-pic-png.jpg with the filter enabled)
+     *                                      my-awesome-pic-png-1a2b3c4d.jpg with the filter enabled)
      */
     public function filename($src_filename, $src_extension = 'jpg')
     {
@@ -42,12 +42,13 @@ class ToJpg extends ImageOperation
         }
 
         /**
-         * Filters whether |tojpg (and |towebp) add the original file extension to the
-         * generated filename.
+         * Filters whether |tojpg (and |towebp) add the original file extension and a short
+         * hash to the generated filename.
          *
          * Without this, images with the same name but a different format (like pic.png and
          * pic.gif) both become pic.jpg, so one would show up in place of the other. With
-         * it enabled, they become pic-png.jpg and pic-gif.jpg instead.
+         * it enabled, each gets its own name, like pic-png-13cdb71f.jpg. The hash makes sure
+         * the generated name can’t accidentally match a real upload.
          *
          * This is off by default, because turning it on renames all converted images, not
          * only the ones with a name clash. On an existing site, this means all images will
@@ -60,14 +61,31 @@ class ToJpg extends ImageOperation
          *
          * @since 2.6.0
          *
-         * @param bool $collision_safe Whether to use collision-safe (extension-suffixed)
-         *                             filenames. Default `false`.
+         * @param bool $collision_safe Whether to use collision-safe filenames. Default
+         *                             `false`.
          */
         if (!\apply_filters('timber/image/collision_safe_filenames', false)) {
             return $src_filename . '.jpg';
         }
 
-        return $src_filename . '-' . $src_extension . '.jpg';
+        return $src_filename . self::collision_safe_suffix($src_filename, $src_extension) . '.jpg';
+    }
+
+    /**
+     * Returns the suffix added to collision-safe filenames (ex: -png-13cdb71f for pic.png).
+     *
+     * Used both to create the file and to delete it again, so both always agree on the name.
+     *
+     * @internal
+     * @param string $src_filename  The basename of the file (ex: pic).
+     * @param string $src_extension The lowercased source file extension (ex: png).
+     * @return string
+     */
+    public static function collision_safe_suffix(string $src_filename, string $src_extension): string
+    {
+        $hash = \substr(\md5($src_filename . '.' . $src_extension), 0, 8);
+
+        return '-' . $src_extension . '-' . $hash;
     }
 
     /**

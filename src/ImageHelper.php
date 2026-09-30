@@ -332,22 +332,25 @@ class ImageHelper
         self::process_delete_generated_files($filename, 'jpg', $dir, '-tojpg-[0-9999999]*');
 
         // Delete the JPG created with collision-safe filenames enabled (pic.png becomes
-        // pic-png.jpg, see ToJpg::filename()).
+        // pic-png-13cdb71f.jpg, see ToJpg::filename()).
         //
         // - This runs whether or not the filter is currently enabled. That way, turning the
         //   filter off later doesn’t leave behind JPGs that were generated while it was on.
-        // - We match this source’s exact extension instead of using a wildcard, so deleting
-        //   pic.png never touches pic-gif.jpg or pic.jpg.
+        // - We delete exactly the name ToJpg generates for this source instead of using a
+        //   wildcard, so deleting pic.png never touches the JPG of pic.gif or pic.jpg.
+        // - The hash makes it practically impossible for a real upload to have that name.
         // - The extension is lowercased, because ToJpg::filename() gets it lowercased too
-        //   (pic.PNG becomes pic-png.jpg).
+        //   (pic.PNG becomes pic-png-13cdb71f.jpg).
         // - JPG sources and sources without an extension are skipped, because ToJpg never
         //   adds a suffix for them.
-        //
-        // Note: a real upload named exactly like a derivative (for example pic-png.jpg next to
-        // pic.png) is deleted as well, because it can’t be told apart from a generated file.
         $ext_lower = \strtolower((string) $ext);
         if ('jpg' !== $ext_lower && '' !== $ext_lower) {
-            self::process_delete_generated_files($filename, 'jpg', $dir, '-' . $ext_lower . '.jpg');
+            self::process_delete_generated_files(
+                $filename,
+                'jpg',
+                $dir,
+                Operation\ToJpg::collision_safe_suffix($filename, $ext_lower) . '.jpg'
+            );
         }
     }
 
