@@ -5,6 +5,7 @@ namespace Timber\Tests;
 use DateInterval;
 use DateTime;
 use DateTimeZone;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Ticket;
 use Timber\DateTimeHelper;
@@ -280,26 +281,35 @@ class TimberDatesTest extends TimberIntegrationTestCase
         $this->assertEquals('I was modified foobar', $str);
     }
 
-    public function testDateFilterReceivesWordPressPost()
+    public static function wordPressDateFilterProvider(): array
     {
-        $pid = static::factory()->post->create([
-            'post_title' => 'Summer Opening',
-            'post_date' => '2016-07-07 02:03:00',
-        ]);
-        \add_filter('get_the_date', fn (string $date, $format, WP_Post $post) => "{$date} ({$post->post_title})", 10, 3);
-
-        $this->assertSame('July 7, 2016 (Summer Opening)', Timber::get_post($pid)->date());
+        return [
+            'date' => ['get_the_date', 'date', 'get_the_date', 'July 7, 2016'],
+            'time' => ['get_the_time', 'time', 'get_the_time', '2:03 am'],
+            'modified date' => ['get_the_modified_date', 'modified_date', 'get_the_modified_date', 'July 7, 2016'],
+            'modified time' => ['get_the_modified_time', 'modified_time', 'get_the_modified_time', '2:03 am'],
+        ];
     }
 
-    public function testTimeFilterReceivesWordPressPost()
+    #[DataProvider('wordPressDateFilterProvider')]
+    public function testDateFilterReceivesWordPressArguments(string $filter, string $method, callable $wp_function, string $expected)
     {
         $pid = static::factory()->post->create([
             'post_title' => 'Summer Opening',
             'post_date' => '2016-07-07 02:03:00',
         ]);
-        \add_filter('get_the_time', fn (string $time, $format, WP_Post $post) => "{$time} ({$post->post_title})", 10, 3);
+        \add_filter(
+            $filter,
+            fn (string $value, string $format, WP_Post $post) => "{$value} [{$format}] ({$post->post_title})",
+            10,
+            3
+        );
+        $post = Timber::get_post($pid);
 
-        $this->assertSame('2:03 am (Summer Opening)', Timber::get_post($pid)->time());
+        $this->assertSame("{$expected} [] (Summer Opening)", $post->{$method}());
+        $this->assertSame('2016 [Y] (Summer Opening)', $post->{$method}('Y'));
+        $this->assertSame($wp_function('', $pid), $post->{$method}());
+        $this->assertSame($wp_function('Y', $pid), $post->{$method}('Y'));
     }
 
     public function testACFDate()
