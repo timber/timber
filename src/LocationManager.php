@@ -93,7 +93,7 @@ class LocationManager
     public static function get_calling_script_file($offset = 0)
     {
         $callers = [];
-        $backtrace = \debug_backtrace();
+        $backtrace = \debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
         foreach ($backtrace as $trace) {
             if (\array_key_exists('file', $trace) && $trace['file'] != __FILE__) {
                 $callers[] = $trace['file'];
@@ -101,7 +101,7 @@ class LocationManager
         }
         $callers = \array_unique($callers);
         $callers = \array_values($callers);
-        return $callers[$offset];
+        return $callers[$offset] ?? null;
     }
 
     /**
