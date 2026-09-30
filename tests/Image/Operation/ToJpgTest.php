@@ -62,12 +62,11 @@ class ToJpgTest extends TimberIntegrationTestCase
 
     public function testCollidingBasenamesStillCollideByDefault()
     {
-        // Documents the default (filter off) behavior on purpose: this is the bug reported in
-        // https://github.com/timber/timber/issues/2850 (sibling ToWebp operation), left
-        // unchanged for sites that don't opt in via the timber/image/collision_safe_filenames
-        // filter, since fixing it unconditionally would change the generated filename for
-        // every tojpg conversion of a non-jpg source, not just colliding ones - see
-        // testCollidingBasenamesProduceDistinctJpgWhenFilterEnabled below for the opt-in fix.
+        // Documents the default behavior on purpose: without the
+        // timber/image/collision_safe_filenames filter, collision.png and collision.gif both
+        // become collision.jpg. This is the ToJpg counterpart of the ToWebp bug reported in
+        // https://github.com/timber/timber/issues/2850. It stays unchanged by default, because
+        // fixing it would rename every converted image, not only the colliding ones.
         $pngFile = $this->copyImageToUploads('flag.png', 'collision.png');
         $gifFile = $this->copyImageToUploads('boyer.gif', 'collision.gif');
 
@@ -89,14 +88,10 @@ class ToJpgTest extends TimberIntegrationTestCase
 
     public function testCollidingBasenamesProduceDistinctJpgWhenFilterEnabled()
     {
-        // Two different source images that share a basename but differ only in extension
-        // used to collide on the exact same destination filename (both became
-        // "collision.jpg"): whichever converted first "won", and the second image's
-        // tojpg call silently served the first image's cached jpg content instead of
-        // converting its own. Same bug class as https://github.com/timber/timber/issues/2850,
-        // in the sibling ToJpg operation. Fixed only when a site opts in via the
-        // timber/image/collision_safe_filenames filter - see
-        // testCollidingBasenamesStillCollideByDefault above for the (intentional) default.
+        // With the timber/image/collision_safe_filenames filter enabled, collision.png and
+        // collision.gif get their own JPGs (collision-png.jpg and collision-gif.jpg), instead
+        // of the second one reusing the first one's collision.jpg. This is the ToJpg
+        // counterpart of the ToWebp bug reported in https://github.com/timber/timber/issues/2850.
         $this->add_filter_temporarily('timber/image/collision_safe_filenames', '__return_true');
 
         $pngFile = $this->copyImageToUploads('flag.png', 'collision.png');
@@ -134,6 +129,41 @@ class ToJpgTest extends TimberIntegrationTestCase
         $this->assertEquals($original_size, $new_size);
         $this->assertEquals('image/jpeg', \mime_content_type($filename));
         \unlink($filename);
+    }
+
+    public function testJPGtoJPGKeepsBareNameWhenFilterEnabled()
+    {
+        // A JPG source is never renamed, even with the filter enabled: it would otherwise be
+        // converted to a needless copy of itself (stl-jpg.jpg).
+        $this->add_filter_temporarily('timber/image/collision_safe_filenames', '__return_true');
+
+        $filename = $this->copyImageToUploads('stl.jpg');
+        $original_size = \filesize($filename);
+        $str = Timber::compile_string('{{file|tojpg}}', [
+            'file' => $filename,
+        ]);
+
+        $this->assertStringEndsWith('/stl.jpg', $str);
+        $this->assertFileDoesNotExist(\str_replace('.jpg', '-jpg.jpg', $filename));
+        $this->assertEquals($original_size, \filesize($filename));
+    }
+
+    public function testUppercaseExtensionIsLowercasedWhenFilterEnabled()
+    {
+        // ImageHelper::get_url_components() lowercases the extension before it reaches
+        // ToJpg::filename(), so flag.PNG becomes flag-png.jpg, not flag-PNG.jpg.
+        $this->add_filter_temporarily('timber/image/collision_safe_filenames', '__return_true');
+
+        $filename = $this->copyImageToUploads('flag.png', 'uppercase.PNG');
+        $str = Timber::compile_string('{{file|tojpg}}', [
+            'file' => $filename,
+        ]);
+
+        $renamed = \str_replace('.PNG', '-png.jpg', $filename);
+        $this->assertStringEndsWith('/uppercase-png.jpg', $str);
+        $this->assertFileExists($renamed);
+        $this->assertEquals('image/jpeg', \mime_content_type($renamed));
+        \unlink($renamed);
     }
 
     public function testJPEGtoJPG()
