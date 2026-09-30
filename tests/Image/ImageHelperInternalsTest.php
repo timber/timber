@@ -23,15 +23,6 @@ class ImageHelperInternalsTest extends TimberAttachmentTestCase
             \exec(\sprintf("rm -rf %s", \escapeshellarg($img_dir)));
         }
 
-        $uploads = \wp_upload_dir();
-        $files = \glob($uploads['basedir'] . \date('/Y/m/') . '*');
-
-        foreach ($files as $file) {
-            if (\is_file($file)) {
-                \unlink($file);
-            }
-        }
-
         \switch_theme('default');
 
         parent::tear_down();

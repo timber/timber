@@ -13,6 +13,36 @@ use Timber\Timber;
  */
 class TimberAttachmentTestCase extends TimberIntegrationTestCase
 {
+    public function set_up()
+    {
+        parent::set_up();
+
+        // Uploaded files outlive the database rollback. Start from an empty folder,
+        // so WordPress does not rename arch.jpg to arch-1.jpg because of an earlier test.
+        $this->deleteCurrentMonthUploads();
+    }
+
+    public function tear_down()
+    {
+        $this->deleteCurrentMonthUploads();
+
+        parent::tear_down();
+    }
+
+    /**
+     * Delete the files in the uploads folder of the current month.
+     */
+    protected function deleteCurrentMonthUploads(): void
+    {
+        $uploads = \wp_upload_dir();
+        $files = \glob($uploads['basedir'] . \date('/Y/m/') . '*');
+        foreach ($files as $file) {
+            if (\is_file($file)) {
+                \unlink($file);
+            }
+        }
+    }
+
     /**
      * Create an attachment with a real image file.
      *
