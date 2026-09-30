@@ -320,23 +320,34 @@ class ImageHelper
         if (URLHelper::is_absolute($local_file)) {
             $local_file = URLHelper::url_to_file_system($local_file);
         }
+
         $info = PathHelper::pathinfo($local_file);
         $dir = $info['dirname'];
         $ext = $info['extension'];
         $filename = $info['filename'];
+
         self::process_delete_generated_files($filename, $ext, $dir, '-[0-9999999]*', '-[0-9]*x[0-9]*-c-[a-z]*.');
         self::process_delete_generated_files($filename, $ext, $dir, '-lbox-[0-9999999]*', '-lbox-[0-9]*x[0-9]*-[a-zA-Z0-9]*.');
         self::process_delete_generated_files($filename, 'jpg', $dir, '-tojpg.*');
         self::process_delete_generated_files($filename, 'jpg', $dir, '-tojpg-[0-9999999]*');
-        if ('jpg' !== $ext) {
-            // ToJpg::filename() folds the source extension into the generated name to keep
-            // same-basename sources of different formats from colliding on one output file
-            // (ex: pic.png and pic.gif both converting to pic.jpg; now pic-png.jpg /
-            // pic-gif.jpg). $ext here is this specific source's own extension, so the pattern
-            // below matches only the one derivative this source could have produced - no
-            // wildcard is needed, and none is used, since a wildcard could delete an unrelated
-            // real file that happens to share the same basename with a different suffix.
-            self::process_delete_generated_files($filename, 'jpg', $dir, '-' . $ext . '.jpg');
+
+        // Delete the JPG created with collision-safe filenames enabled (pic.png becomes
+        // pic-png.jpg, see ToJpg::filename()).
+        //
+        // - This runs whether or not the filter is currently enabled. That way, turning the
+        //   filter off later doesn’t leave behind JPGs that were generated while it was on.
+        // - We match this source’s exact extension instead of using a wildcard, so deleting
+        //   pic.png never touches pic-gif.jpg or pic.jpg.
+        // - The extension is lowercased, because ToJpg::filename() gets it lowercased too
+        //   (pic.PNG becomes pic-png.jpg).
+        // - JPG sources and sources without an extension are skipped, because ToJpg never
+        //   adds a suffix for them.
+        //
+        // Note: a real upload named exactly like a derivative (for example pic-png.jpg next to
+        // pic.png) is deleted as well, because it can’t be told apart from a generated file.
+        $ext_lower = \strtolower((string) $ext);
+        if ('jpg' !== $ext_lower && '' !== $ext_lower) {
+            self::process_delete_generated_files($filename, 'jpg', $dir, '-' . $ext_lower . '.jpg');
         }
     }
 

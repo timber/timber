@@ -345,6 +345,80 @@ class ImageHelperTest extends TimberAttachmentTestCase
         $this->assertFileDoesNotExist($jpgDerivative);
     }
 
+    public function testDeleteGeneratedFilesOnlyRemovesOwnToJpgDerivative()
+    {
+        // Deleting collision.png only removes collision-png.jpg. The JPG of a GIF with the
+        // same name and a real JPG with the same name are left alone.
+        $this->add_filter_temporarily('timber/image/collision_safe_filenames', '__return_true');
+
+        $pngFile = $this->copyImageToUploads('flag.png', 'collision.png');
+        $gifFile = $this->copyImageToUploads('boyer.gif', 'collision.gif');
+        $jpgFile = $this->copyImageToUploads('stl.jpg', 'collision.jpg');
+        Timber::compile_string('{{png|tojpg}} {{gif|tojpg}}', [
+            'png' => $pngFile,
+            'gif' => $gifFile,
+        ]);
+        $pngDerivative = \str_replace('.png', '-png.jpg', $pngFile);
+        $gifDerivative = \str_replace('.gif', '-gif.jpg', $gifFile);
+        $this->assertFileExists($pngDerivative);
+        $this->assertFileExists($gifDerivative);
+
+        ImageHelper::delete_generated_files($pngFile);
+
+        $this->assertFileDoesNotExist($pngDerivative);
+        $this->assertFileExists($gifDerivative);
+        $this->assertFileExists($jpgFile);
+        \unlink($gifDerivative);
+    }
+
+    public function testDeleteGeneratedFilesRemovesToJpgDerivativeOfUppercaseSource()
+    {
+        // ToJpg lowercases the extension (uppercase.PNG becomes uppercase-png.jpg), so the
+        // cleanup has to look for the lowercased name too.
+        $this->add_filter_temporarily('timber/image/collision_safe_filenames', '__return_true');
+
+        $pngFile = $this->copyImageToUploads('flag.png', 'uppercase.PNG');
+        Timber::compile_string('{{file|tojpg}}', [
+            'file' => $pngFile,
+        ]);
+        $jpgDerivative = \str_replace('.PNG', '-png.jpg', $pngFile);
+        $this->assertFileExists($jpgDerivative);
+
+        ImageHelper::delete_generated_files($pngFile);
+
+        $this->assertFileDoesNotExist($jpgDerivative);
+    }
+
+    public function testDeleteGeneratedFilesKeepsSuffixedFileOfJpgSource()
+    {
+        // ToJpg never adds a suffix to a JPG source, so deleting pic.jpg must not remove a
+        // file named pic-jpg.jpg: that can only be an unrelated upload.
+        $jpgFile = $this->copyImageToUploads('stl.jpg', 'suffixed.jpg');
+        $unrelated = $this->copyImageToUploads('stl.jpg', 'suffixed-jpg.jpg');
+
+        ImageHelper::delete_generated_files($jpgFile);
+
+        $this->assertFileExists($unrelated);
+    }
+
+    public function testDeleteGeneratedFilesKeepsDefaultToJpgFileWhenFilterDisabled()
+    {
+        // With the filter disabled (default), flag.png becomes flag.jpg. That name can't be
+        // told apart from a real JPG upload with the same name, so it is not deleted. This
+        // is the same behavior as before collision-safe filenames were introduced.
+        $pngFile = $this->copyImageToUploads('flag.png', 'default.png');
+        Timber::compile_string('{{file|tojpg}}', [
+            'file' => $pngFile,
+        ]);
+        $jpgFile = \str_replace('.png', '.jpg', $pngFile);
+        $this->assertFileExists($jpgFile);
+
+        ImageHelper::delete_generated_files($pngFile);
+
+        $this->assertFileExists($jpgFile);
+        \unlink($jpgFile);
+    }
+
     public function testLetterbox()
     {
         $file_loc = $this->copyImageToUploads('eastern.jpg');
