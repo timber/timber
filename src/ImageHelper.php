@@ -552,9 +552,7 @@ class ImageHelper
          * @param string                    $url  The URL pointing to an image.
          */
         $result = \apply_filters('timber/image_helper/pre_analyze_url', null, $url);
-        if (null === $result) {
-            $result = self::get_url_components($url);
-        }
+        $result ??= self::get_url_components($url);
 
         /**
          * Filters the array of analyzed URL components.
@@ -656,9 +654,7 @@ class ImageHelper
          * @param string      $src  The URL to be converted.
          */
         $path = \apply_filters('timber/image_helper/pre_theme_url_to_dir', null, $src);
-        if (null === $path) {
-            $path = self::get_dir_from_theme_url($src);
-        }
+        $path ??= self::get_dir_from_theme_url($src);
 
         /**
          * Filters the raw file path of a URL located in a theme directory.

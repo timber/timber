@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use XMLReader;
+
 /**
  * Class ImageDimensions
  *
@@ -186,19 +188,19 @@ class ImageDimensions
      */
     protected function get_dimensions_svg($svg)
     {
-        $svg = \simplexml_load_file($svg);
+        $attributes = $this->get_svg_root_attributes($svg);
         $width = 0;
         $height = 0;
 
-        if (false !== $svg) {
-            $attributes = $svg->attributes();
-            if (isset($attributes->viewBox)) {
-                $viewbox = \explode(' ', $attributes->viewBox);
-                $width = $viewbox[2];
-                $height = $viewbox[3];
-            } elseif ($attributes->width && $attributes->height) {
-                $width = $attributes->width;
-                $height = $attributes->height;
+        if (null !== $attributes) {
+            if (null !== $attributes['viewBox']) {
+                // Four numbers separated by whitespace and/or commas.
+                $viewbox = \preg_split('/[\s,]+/', \trim($attributes['viewBox']));
+                $width = $viewbox[2] ?? 0;
+                $height = $viewbox[3] ?? 0;
+            } elseif ($attributes['width'] && $attributes['height']) {
+                $width = $attributes['width'];
+                $height = $attributes['height'];
             }
         }
 
@@ -206,5 +208,72 @@ class ImageDimensions
             'width' => (float) $width,
             'height' => (float) $height,
         ];
+    }
+
+    /**
+     * Reads `width`, `height` and `viewBox` off the root element of an SVG file.
+     *
+     * Uses a pull parser that stops as soon as the root element is available, so the body of the
+     * document is never parsed. This way, dimensions are cheap to read even
+     * for a multi-megabyte SVG.
+     *
+     * The parse is also hardened against XXE. What keeps an external entity or DTD from being
+     * loaded is that `LIBXML_NOENT` and `LIBXML_DTDLOAD` are deliberately never passed: libxml
+     * only fetches what those options ask for. Without that, an attacker-supplied SVG could read
+     * local files or drive SSRF. `LIBXML_NONET` is defence in depth only: it rejects `http://` and
+     * `ftp://` URLs, but not the schemes PHP's stream wrappers add on top (`https://` included).
+     *
+     * @internal
+     * @param string $file Path to the SVG file.
+     * @return array{width: string|null, height: string|null, viewBox: string|null}|null
+     *         Null when the file has no root element, or when its root is not an `<svg>`.
+     */
+    private function get_svg_root_attributes(string $file): ?array
+    {
+        // XMLReader::open() throws on an empty path where simplexml_load_file() answered false.
+        if ('' === $file) {
+            return null;
+        }
+
+        $reader = @XMLReader::open($file, null, \LIBXML_NONET | \LIBXML_NOERROR | \LIBXML_NOWARNING);
+
+        if (!$reader instanceof XMLReader) {
+            return null;
+        }
+
+        try {
+            while (@$reader->read()) {
+                if (XMLReader::ELEMENT !== $reader->nodeType) {
+                    continue;
+                }
+
+                // The root element has to be an <svg>. localName ignores any namespace prefix, so
+                // a document rooted in <svg:svg> is still recognised. The comparison folds case:
+                // XML preserves tag case, so <SVG> is still an SVG.
+                if (0 !== \strcasecmp('svg', $reader->localName)) {
+                    return null;
+                }
+
+                // Attributes are keyed by lower-cased local name, so coarse markup that uppercases
+                // them (WIDTH, VIEWBOX) reads the same as its canonical form.
+                $found = [];
+
+                if ($reader->moveToFirstAttribute()) {
+                    do {
+                        $found[\strtolower($reader->localName)] = $reader->value;
+                    } while ($reader->moveToNextAttribute());
+                }
+
+                return [
+                    'width' => $found['width'] ?? null,
+                    'height' => $found['height'] ?? null,
+                    'viewBox' => $found['viewbox'] ?? null,
+                ];
+            }
+
+            return null;
+        } finally {
+            $reader->close();
+        }
     }
 }
