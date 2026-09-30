@@ -89,7 +89,7 @@ class ToJpgTest extends TimberIntegrationTestCase
     public function testCollidingBasenamesProduceDistinctJpgWhenFilterEnabled()
     {
         // With the timber/image/collision_safe_filenames filter enabled, collision.png and
-        // collision.gif get their own JPGs (collision-png.jpg and collision-gif.jpg), instead
+        // collision.gif get their own JPGs (collision-png-<hash>.jpg and collision-gif-<hash>.jpg), instead
         // of the second one reusing the first one's collision.jpg. This is the ToJpg
         // counterpart of the ToWebp bug reported in https://github.com/timber/timber/issues/2850.
         $this->add_filter_temporarily('timber/image/collision_safe_filenames', '__return_true');
@@ -104,8 +104,8 @@ class ToJpgTest extends TimberIntegrationTestCase
             'file' => $gifFile,
         ]);
 
-        $pngRenamed = \str_replace('.png', '-png.jpg', $pngFile);
-        $gifRenamed = \str_replace('.gif', '-gif.jpg', $gifFile);
+        $pngRenamed = \str_replace('.png', ToJpg::collision_safe_suffix('collision', 'png') . '.jpg', $pngFile);
+        $gifRenamed = \str_replace('.gif', ToJpg::collision_safe_suffix('collision', 'gif') . '.jpg', $gifFile);
 
         $this->assertNotEquals($pngRenamed, $gifRenamed);
         $this->assertFileExists($pngRenamed);
@@ -134,7 +134,7 @@ class ToJpgTest extends TimberIntegrationTestCase
     public function testJPGtoJPGKeepsBareNameWhenFilterEnabled()
     {
         // A JPG source is never renamed, even with the filter enabled: it would otherwise be
-        // converted to a needless copy of itself (stl-jpg.jpg).
+        // converted to a needless copy of itself.
         $this->add_filter_temporarily('timber/image/collision_safe_filenames', '__return_true');
 
         $filename = $this->copyImageToUploads('stl.jpg');
@@ -144,14 +144,15 @@ class ToJpgTest extends TimberIntegrationTestCase
         ]);
 
         $this->assertStringEndsWith('/stl.jpg', $str);
-        $this->assertFileDoesNotExist(\str_replace('.jpg', '-jpg.jpg', $filename));
+        $this->assertFileDoesNotExist(\str_replace('.jpg', ToJpg::collision_safe_suffix('stl', 'jpg') . '.jpg', $filename));
         $this->assertEquals($original_size, \filesize($filename));
     }
 
     public function testUppercaseExtensionIsLowercasedWhenFilterEnabled()
     {
         // ImageHelper::get_url_components() lowercases the extension before it reaches
-        // ToJpg::filename(), so flag.PNG becomes flag-png.jpg, not flag-PNG.jpg.
+        // ToJpg::filename(), so uppercase.PNG becomes uppercase-png-<hash>.jpg, not
+        // uppercase-PNG-<hash>.jpg.
         $this->add_filter_temporarily('timber/image/collision_safe_filenames', '__return_true');
 
         $filename = $this->copyImageToUploads('flag.png', 'uppercase.PNG');
@@ -159,8 +160,9 @@ class ToJpgTest extends TimberIntegrationTestCase
             'file' => $filename,
         ]);
 
-        $renamed = \str_replace('.PNG', '-png.jpg', $filename);
-        $this->assertStringEndsWith('/uppercase-png.jpg', $str);
+        $suffix = ToJpg::collision_safe_suffix('uppercase', 'png');
+        $renamed = \str_replace('.PNG', $suffix . '.jpg', $filename);
+        $this->assertStringEndsWith('/uppercase' . $suffix . '.jpg', $str);
         $this->assertFileExists($renamed);
         $this->assertEquals('image/jpeg', \mime_content_type($renamed));
         \unlink($renamed);
@@ -202,6 +204,16 @@ class ToJpgTest extends TimberIntegrationTestCase
         // before ever reaching the point this test needs to check.
         $op = new ToJpg('#000000');
         $this->assertEquals('my-pic.jpg', $op->filename('my-pic', ''));
+    }
+
+    public function testFilenameAddsExtensionAndHashWhenFilterEnabled()
+    {
+        // Pins the naming format: <name>-<extension>-<first 8 characters of md5("<name>.<extension>")>.jpg.
+        // Changing it renames every converted image on sites that use the filter.
+        $this->add_filter_temporarily('timber/image/collision_safe_filenames', '__return_true');
+
+        $op = new ToJpg('#000000');
+        $this->assertEquals('pic-png-13cdb71f.jpg', $op->filename('pic', 'png'));
     }
 
     public function testSideloadedPNGToJPG()
