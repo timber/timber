@@ -21,46 +21,44 @@ class ToJpg extends ImageOperation
     }
 
     /**
-     * @param   string    $src_filename     the basename of the file (ex: my-awesome-pic)
-     * @param   string    $src_extension    the source file's extension (ex: png); folded into
-     *                                      the generated name only when the
+     * @param string $src_filename          The basename of the file (ex: my-awesome-pic)
+     * @param string $src_extension         The source file’s extension (ex: png); folded into the
+     *                                      generated name only when the
      *                                      `timber/image/collision_safe_filenames` filter is
-     *                                      enabled (see below) - off by default
-     * @return  string    the final filename to be used (ex: my-awesome-pic.jpg, or
-     *                     my-awesome-pic-png.jpg with the filter enabled)
+     *                                      enabled (see below) - off by default.
+     * @return  string                      The final filename to be used (ex: my-awesome-pic.jpg, or
+     *                                      my-awesome-pic-png.jpg with the filter enabled)
      */
     public function filename($src_filename, $src_extension = 'jpg')
     {
-        // A source that's already jpg keeps the bare name regardless of the filter below:
-        // ToJpg is then converting it to itself, and _operate()'s destination-already-exists
-        // check treats that as a no-op, which is the existing, desired behavior. Same for a
-        // source with no extension at all - ImageHelper::get_url_components() falls back to
-        // '' when pathinfo() finds none (see #2773 / commit 028f6ac0), and the sibling
-        // Resize::filename() already treats a falsy $src_extension as "nothing to append"
-        // rather than a real value. Without this check, the filter-enabled branch below would
-        // fold that empty string in literally, producing "name-.jpg" instead of falling back
-        // to the bare name.
+        // Keep the plain filename for JPG sources and sources without an extension, even
+        // when the filter below is enabled.
+        //
+        // - A JPG source is "converted" to itself, so the existing file is simply reused.
+        // - A source without an extension would otherwise end up as "name-.jpg". This
+        //   matches how Resize::filename() handles a missing extension (see #2773).
         if ($src_extension === 'jpg' || !$src_extension) {
             return $src_filename . '.jpg';
         }
 
         /**
-         * Filters whether ToJpg (and ToWebp) fold the source extension into the generated
-         * filename, so that two different-format sources sharing a basename (ex: pic.png and
-         * pic.gif) no longer collide on the same output file and silently serve one source's
-         * content under the other's URL - see #2850.
+         * Filters whether |tojpg (and |towebp) add the original file extension to the
+         * generated filename.
          *
-         * Off by default: enabling this changes the generated filename for every non-jpg
-         * source going forward (ex: flag.png -> flag-png.jpg instead of flag.jpg), not just
-         * ones that would actually collide, since there's no way to tell ahead of time which
-         * ones will. Existing sites may not want that regeneration/URL-churn cost sprung on
-         * them unprompted; new projects can enable it from the start with no such cost.
+         * Without this, images with the same name but a different format (like pic.png and
+         * pic.gif) both become pic.jpg, so one would show up in place of the other. With
+         * it enabled, they become pic-png.jpg and pic-gif.jpg instead.
+         *
+         * This is off by default, because turning it on renames all converted images, not
+         * only the ones with a name clash. On an existing site, this means all images will
+         * be regenerated and get new URLs. For new projects, it’s safe to enable it right
+         * away.
          *
          * ```php
          * add_filter('timber/image/collision_safe_filenames', '__return_true');
          * ```
          *
-         * @since x.x.x
+         * @since 2.6.0
          *
          * @param bool $collision_safe Whether to use collision-safe (extension-suffixed)
          *                             filenames. Default `false`.
