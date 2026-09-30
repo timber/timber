@@ -5,6 +5,7 @@ namespace Timber\Tests\Image;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\Attributes\Group;
+use Timber\Image\Operation\ToJpg;
 use Timber\ImageHelper;
 use Timber\Tests\TimberAttachmentTestCase;
 use Timber\Timber;
@@ -312,6 +313,125 @@ class ImageHelperTest extends TimberAttachmentTestCase
     public function testDeleteFalseFile()
     {
         ImageHelper::delete_generated_files('/etc/www/image.jpg');
+    }
+
+    public function testDeleteGeneratedFilesRemovesToJpgDerivative()
+    {
+        // With timber/image/collision_safe_filenames enabled, flag.png becomes
+        // flag-png-<hash>.jpg. Deleting the source has to remove that file too, otherwise
+        // nothing ever cleans it up.
+        $this->add_filter_temporarily('timber/image/collision_safe_filenames', '__return_true');
+
+        $pngFile = $this->copyImageToUploads('flag.png');
+        Timber::compile_string('{{file|tojpg}}', [
+            'file' => $pngFile,
+        ]);
+        $jpgDerivative = \str_replace('.png', ToJpg::collision_safe_suffix('flag', 'png') . '.jpg', $pngFile);
+        $this->assertFileExists($jpgDerivative);
+
+        ImageHelper::delete_generated_files($pngFile);
+
+        $this->assertFileDoesNotExist($jpgDerivative);
+    }
+
+    public function testDeleteGeneratedFilesOnlyRemovesOwnToJpgDerivative()
+    {
+        // Deleting collision.png only removes its own JPG. The JPG of a GIF with the same
+        // name and a real JPG with the same name are left alone.
+        $this->add_filter_temporarily('timber/image/collision_safe_filenames', '__return_true');
+
+        $pngFile = $this->copyImageToUploads('flag.png', 'collision.png');
+        $gifFile = $this->copyImageToUploads('boyer.gif', 'collision.gif');
+        $jpgFile = $this->copyImageToUploads('stl.jpg', 'collision.jpg');
+        Timber::compile_string('{{png|tojpg}} {{gif|tojpg}}', [
+            'png' => $pngFile,
+            'gif' => $gifFile,
+        ]);
+        $pngDerivative = \str_replace('.png', ToJpg::collision_safe_suffix('collision', 'png') . '.jpg', $pngFile);
+        $gifDerivative = \str_replace('.gif', ToJpg::collision_safe_suffix('collision', 'gif') . '.jpg', $gifFile);
+        $this->assertFileExists($pngDerivative);
+        $this->assertFileExists($gifDerivative);
+
+        ImageHelper::delete_generated_files($pngFile);
+
+        $this->assertFileDoesNotExist($pngDerivative);
+        $this->assertFileExists($gifDerivative);
+        $this->assertFileExists($jpgFile);
+        \unlink($gifDerivative);
+    }
+
+    public function testDeleteGeneratedFilesRemovesToJpgDerivativeOfUppercaseSource()
+    {
+        // ToJpg lowercases the extension (uppercase.PNG becomes uppercase-png-<hash>.jpg), so
+        // the cleanup has to look for the lowercased name too.
+        $this->add_filter_temporarily('timber/image/collision_safe_filenames', '__return_true');
+
+        $pngFile = $this->copyImageToUploads('flag.png', 'uppercase.PNG');
+        Timber::compile_string('{{file|tojpg}}', [
+            'file' => $pngFile,
+        ]);
+        $jpgDerivative = \str_replace('.PNG', ToJpg::collision_safe_suffix('uppercase', 'png') . '.jpg', $pngFile);
+        $this->assertFileExists($jpgDerivative);
+
+        ImageHelper::delete_generated_files($pngFile);
+
+        $this->assertFileDoesNotExist($jpgDerivative);
+    }
+
+    public function testDeleteGeneratedFilesKeepsSuffixedFileOfJpgSource()
+    {
+        // ToJpg never adds a suffix to a JPG source, so deleting pic.jpg must not remove a
+        // file named like a suffixed JPG: that can only be an unrelated upload.
+        $jpgFile = $this->copyImageToUploads('stl.jpg', 'suffixed.jpg');
+        $unrelated = $this->copyImageToUploads(
+            'stl.jpg',
+            'suffixed' . ToJpg::collision_safe_suffix('suffixed', 'jpg') . '.jpg'
+        );
+
+        ImageHelper::delete_generated_files($jpgFile);
+
+        $this->assertFileExists($unrelated);
+    }
+
+    public function testDeleteGeneratedFilesKeepsLookalikeUpload()
+    {
+        // A real upload named lookalike-png.jpg next to lookalike.png is never touched: the
+        // generated JPG gets a different name thanks to the hash, and deleting the source
+        // only removes that generated JPG.
+        $this->add_filter_temporarily('timber/image/collision_safe_filenames', '__return_true');
+
+        $pngFile = $this->copyImageToUploads('flag.png', 'lookalike.png');
+        $lookalike = $this->copyImageToUploads('stl.jpg', 'lookalike-png.jpg');
+        $lookalikeSize = \filesize($lookalike);
+        Timber::compile_string('{{file|tojpg}}', [
+            'file' => $pngFile,
+        ]);
+        $jpgDerivative = \str_replace('.png', ToJpg::collision_safe_suffix('lookalike', 'png') . '.jpg', $pngFile);
+        $this->assertFileExists($jpgDerivative);
+        $this->assertEquals($lookalikeSize, \filesize($lookalike));
+
+        ImageHelper::delete_generated_files($pngFile);
+
+        $this->assertFileDoesNotExist($jpgDerivative);
+        $this->assertFileExists($lookalike);
+    }
+
+    public function testDeleteGeneratedFilesKeepsDefaultToJpgFileWhenFilterDisabled()
+    {
+        // With the filter disabled (default), flag.png becomes flag.jpg. That name can't be
+        // told apart from a real JPG upload with the same name, so it is not deleted. This
+        // is the same behavior as before collision-safe filenames were introduced.
+        $pngFile = $this->copyImageToUploads('flag.png', 'default.png');
+        Timber::compile_string('{{file|tojpg}}', [
+            'file' => $pngFile,
+        ]);
+        $jpgFile = \str_replace('.png', '.jpg', $pngFile);
+        $this->assertFileExists($jpgFile);
+
+        ImageHelper::delete_generated_files($pngFile);
+
+        $this->assertFileExists($jpgFile);
+        \unlink($jpgFile);
     }
 
     public function testLetterbox()

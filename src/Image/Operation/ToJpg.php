@@ -21,14 +21,71 @@ class ToJpg extends ImageOperation
     }
 
     /**
-     * @param   string    $src_filename     the basename of the file (ex: my-awesome-pic)
-     * @param   string    $src_extension    ignored
-     * @return  string    the final filename to be used (ex: my-awesome-pic.jpg)
+     * @param string $src_filename          The basename of the file (ex: my-awesome-pic)
+     * @param string $src_extension         The source file’s extension (ex: png). Only added to
+     *                                      the generated name when the
+     *                                      `timber/image/collision_safe_filenames` filter is
+     *                                      enabled (see below), which is off by default.
+     * @return  string                      The final filename to be used (ex: my-awesome-pic.jpg, or
+     *                                      my-awesome-pic-png-1a2b3c4d.jpg with the filter enabled)
      */
     public function filename($src_filename, $src_extension = 'jpg')
     {
-        $new_name = $src_filename . '.jpg';
-        return $new_name;
+        // Keep the plain filename for JPG sources and sources without an extension, even
+        // when the filter below is enabled.
+        //
+        // - A JPG source is "converted" to itself, so the existing file is simply reused.
+        // - A source without an extension would otherwise end up as "name-.jpg". This
+        //   matches how Resize::filename() handles a missing extension (see #2773).
+        if ($src_extension === 'jpg' || !$src_extension) {
+            return $src_filename . '.jpg';
+        }
+
+        /**
+         * Filters whether |tojpg (and |towebp) add the original file extension and a short
+         * hash to the generated filename.
+         *
+         * Without this, images with the same name but a different format (like pic.png and
+         * pic.gif) both become pic.jpg, so one would show up in place of the other. With
+         * it enabled, each gets its own name, like pic-png-13cdb71f.jpg. The hash makes sure
+         * the generated name can’t accidentally match a real upload.
+         *
+         * This is off by default, because turning it on renames all converted images, not
+         * only the ones with a name clash. On an existing site, this means all images will
+         * be regenerated and get new URLs. For new projects, it’s safe to enable it right
+         * away.
+         *
+         * ```php
+         * add_filter('timber/image/collision_safe_filenames', '__return_true');
+         * ```
+         *
+         * @since 2.6.0
+         *
+         * @param bool $collision_safe Whether to use collision-safe filenames. Default
+         *                             `false`.
+         */
+        if (!\apply_filters('timber/image/collision_safe_filenames', false)) {
+            return $src_filename . '.jpg';
+        }
+
+        return $src_filename . self::collision_safe_suffix($src_filename, $src_extension) . '.jpg';
+    }
+
+    /**
+     * Returns the suffix added to collision-safe filenames (ex: -png-13cdb71f for pic.png).
+     *
+     * Used both to create the file and to delete it again, so both always agree on the name.
+     *
+     * @internal
+     * @param string $src_filename  The basename of the file (ex: pic).
+     * @param string $src_extension The lowercased source file extension (ex: png).
+     * @return string
+     */
+    public static function collision_safe_suffix(string $src_filename, string $src_extension): string
+    {
+        $hash = \substr(\md5($src_filename . '.' . $src_extension), 0, 8);
+
+        return '-' . $src_extension . '-' . $hash;
     }
 
     /**
