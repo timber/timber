@@ -101,7 +101,7 @@ jobs:
           php-version: ${{ matrix.php }}
           coverage: ${{ matrix.coverage && 'pcov' || 'none' }}
           tools: composer:v2
-          extensions: curl, date, dom, iconv, json, libxml, gd, sqlite3
+          extensions: curl, date, dom, iconv, json, libxml, gd, sqlite3, xmlreader
           ini-values: ${{ matrix.coverage && 'pcov.directory=src' || '' }}
 
       - name: Setup problem matchers
