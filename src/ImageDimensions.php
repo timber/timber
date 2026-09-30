@@ -148,6 +148,11 @@ class ImageDimensions
         if (\file_exists($this->file_loc) && \filesize($this->file_loc)) {
             if (ImageHelper::is_svg($this->file_loc)) {
                 $svg_size = $this->get_dimensions_svg($this->file_loc);
+
+                if (null === $svg_size) {
+                    return null;
+                }
+
                 $this->dimensions = [(int) \round($svg_size->width), (int) \round($svg_size->height)];
             } else {
                 $size = \getimagesize($this->file_loc);
@@ -186,32 +191,65 @@ class ImageDimensions
     /**
      * Retrieve dimensions from SVG file.
      *
+     * The viewBox is read first. When it is missing or invalid (not four numbers, or a size that
+     * isn't positive), the `width` and `height` attributes are read instead, but only when both
+     * are absolute lengths: unitless or in `px`.
+     *
      * @internal
      * @param string $svg SVG Path
-     * @return object
+     * @return object{width: float, height: float}|null Null when the size can't be read.
      */
     protected function get_dimensions_svg($svg)
     {
         $attributes = $this->get_svg_root_attributes($svg);
-        $width = 0;
-        $height = 0;
 
-        if (null !== $attributes) {
-            if (null !== $attributes['viewBox']) {
-                // Four numbers separated by whitespace and/or commas.
-                $viewbox = \preg_split('/[\s,]+/', \trim($attributes['viewBox']));
-                $width = $viewbox[2] ?? 0;
-                $height = $viewbox[3] ?? 0;
-            } elseif ($attributes['width'] && $attributes['height']) {
-                $width = $attributes['width'];
-                $height = $attributes['height'];
+        if (null === $attributes) {
+            return null;
+        }
+
+        if (null !== $attributes['viewBox']) {
+            // Four numbers separated by whitespace and/or commas.
+            $viewbox = \preg_split('/[\s,]+/', \trim($attributes['viewBox']));
+
+            if (4 === \count($viewbox) && \is_numeric($viewbox[2]) && \is_numeric($viewbox[3])
+                && $viewbox[2] > 0 && $viewbox[3] > 0) {
+                return (object) [
+                    'width' => (float) $viewbox[2],
+                    'height' => (float) $viewbox[3],
+                ];
             }
         }
 
+        $width = $this->parse_svg_length($attributes['width']);
+        $height = $this->parse_svg_length($attributes['height']);
+
+        if (null === $width || null === $height) {
+            return null;
+        }
+
         return (object) [
-            'width' => (float) $width,
-            'height' => (float) $height,
+            'width' => $width,
+            'height' => $height,
         ];
+    }
+
+    /**
+     * Parses an SVG `width` or `height` attribute into pixels.
+     *
+     * @internal
+     * @param string|null $length The attribute value.
+     * @return float|null The length in pixels. Null when it is missing, not positive, or in a
+     *                    unit that has no absolute size (`%`, `em`, …).
+     */
+    private function parse_svg_length(?string $length): ?float
+    {
+        if (null === $length || !\preg_match('/^\s*(\d*\.?\d+(?:e[+-]?\d+)?)\s*(?:px)?\s*$/i', $length, $matches)) {
+            return null;
+        }
+
+        $value = (float) $matches[1];
+
+        return $value > 0 ? $value : null;
     }
 
     /**

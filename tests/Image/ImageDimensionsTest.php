@@ -19,7 +19,7 @@ class ImageDimensionsTestable extends ImageDimensions
         $this->dimensions = [$width, $height];
     }
 
-    public function read_svg(string $file): object
+    public function read_svg(string $file): ?object
     {
         return $this->get_dimensions_svg($file);
     }
@@ -155,13 +155,28 @@ class ImageDimensionsTest extends TimberIntegrationTestCase
         yield 'width only falls back to viewBox' => ['<svg xmlns="http://www.w3.org/2000/svg" width="200" viewBox="0 0 50 20"/>', 50, 20];
         yield 'percent width and height fall back to viewBox' => ['<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 50 20"/>', 50, 20];
         yield 'fractional viewBox is rounded' => ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100.4 50.3"/>', 100, 50];
-        yield 'no width, height or viewBox' => ['<svg xmlns="http://www.w3.org/2000/svg"><rect width="1" height="1"/></svg>', 0, 0];
+        yield 'no width, height or viewBox' => ['<svg xmlns="http://www.w3.org/2000/svg"><rect width="1" height="1"/></svg>', null, null];
+        yield 'width without height' => ['<svg xmlns="http://www.w3.org/2000/svg" width="200"/>', null, null];
+
+        // Only unitless and px lengths are absolute. A percentage or a relative unit says nothing
+        // about the intrinsic size, and the viewBox is the only other source.
+        yield 'percent width and height without viewBox' => ['<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"/>', null, null];
+        yield 'em width and height' => ['<svg xmlns="http://www.w3.org/2000/svg" width="10em" height="5em"/>', null, null];
+        yield 'zero width and height' => ['<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0"/>', null, null];
+        yield 'fractional px width and height are rounded' => ['<svg xmlns="http://www.w3.org/2000/svg" width="20.6px" height="10.2"/>', 21, 10];
 
         // The viewBox is a list of four numbers separated by whitespace and/or commas.
         yield 'comma-separated viewBox' => ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0,0,40,40"/>', 40, 40];
         yield 'mixed-separator viewBox' => ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0, 0 40,30"/>', 40, 30];
         yield 'viewBox with runs of spaces' => ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0  100 50"/>', 100, 50];
         yield 'whitespace-padded viewBox' => ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="  0 0 40 40  "/>', 40, 40];
+        // A viewBox that isn't four numbers, or has a zero or negative size, is an error the SVG
+        // spec says to ignore. The width and height are then read as if there were none.
+        yield 'viewBox with too few numbers' => ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40"/>', null, null];
+        yield 'non-numeric viewBox' => ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 wide tall"/>', null, null];
+        yield 'zero-size viewBox' => ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 0 0"/>', null, null];
+        yield 'negative-size viewBox' => ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 -40 -40"/>', null, null];
+        yield 'invalid viewBox falls back to width and height' => ['<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100" viewBox="0 0 broken"/>', 200, 100];
 
         // Root element. XML preserves tag case, so an uppercase or mixed-case root is still an
         // <svg>. The name is matched on its local part, so a namespace-prefixed root (as produced by
@@ -170,9 +185,9 @@ class ImageDimensionsTest extends TimberIntegrationTestCase
         yield 'uppercase root with viewBox' => ['<SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"/>', 24, 24];
         yield 'mixed-case root' => ['<Svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 8"/>', 12, 8];
         yield 'namespace-prefixed root' => ['<?xml version="1.0" encoding="UTF-8"?><svg:svg xmlns:svg="http://www.w3.org/2000/svg" width="120" height="60"/>', 120, 60];
-        yield 'non-svg root with width and height' => ['<?xml version="1.0" encoding="UTF-8"?><html width="120" height="60"/>', 0, 0];
-        yield 'root name merely starting with svg' => ['<svgfoo xmlns="http://www.w3.org/2000/svg" width="200" height="100"/>', 0, 0];
-        yield 'svg nested in a non-svg root' => ['<html><svg xmlns="http://www.w3.org/2000/svg" width="200" height="100"/></html>', 0, 0];
+        yield 'non-svg root with width and height' => ['<?xml version="1.0" encoding="UTF-8"?><html width="120" height="60"/>', null, null];
+        yield 'root name merely starting with svg' => ['<svgfoo xmlns="http://www.w3.org/2000/svg" width="200" height="100"/>', null, null];
+        yield 'svg nested in a non-svg root' => ['<html><svg xmlns="http://www.w3.org/2000/svg" width="200" height="100"/></html>', null, null];
 
         // Coarse markup uppercases attribute names too. They are matched by lower-cased local
         // name, so WIDTH/HEIGHT/VIEWBOX read like their canonical forms.
@@ -192,8 +207,8 @@ class ImageDimensionsTest extends TimberIntegrationTestCase
 
         // Unreadable documents. An empty file is caught before parsing (no size, no dimensions).
         yield 'empty file' => ['', null, null];
-        yield 'plain text' => ['not an svg', 0, 0];
-        yield 'malformed root' => ['<svg viewBox="0 0 broken', 0, 0];
+        yield 'plain text' => ['not an svg', null, null];
+        yield 'malformed root' => ['<svg viewBox="0 0 broken', null, null];
 
         // Only the root is read: the (here 5000) children are never parsed.
         yield 'root with thousands of children' => ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">' . \str_repeat('<rect x="1" y="1" width="2" height="2"/>', 5000) . '</svg>', 40, 40];
@@ -259,10 +274,7 @@ class ImageDimensionsTest extends TimberIntegrationTestCase
     {
         $imageDimensions = new ImageDimensionsTestable('');
 
-        $this->assertEquals((object) [
-            'width' => 0.0,
-            'height' => 0.0,
-        ], $imageDimensions->read_svg(''));
+        $this->assertNull($imageDimensions->read_svg(''));
     }
 
     /**
