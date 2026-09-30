@@ -440,15 +440,6 @@ class Comment extends CoreEntity implements Stringable
         $df = $date_format ?: \get_option('date_format');
         $the_date = (string) \mysql2date($df, $this->comment_date);
 
-        /**
-         * Filters the returned comment date.
-         *
-         * @see get_comment_date()
-         *
-         * @param string     $the_date    The formatted date.
-         * @param string     $date_format PHP date format. Empty for the `date_format` option.
-         * @param WP_Comment $comment     The comment object.
-         */
         return \apply_filters('get_comment_date', $the_date, $date_format, $this->wp_object);
     }
 
@@ -483,17 +474,6 @@ class Comment extends CoreEntity implements Stringable
         $tf = $time_format ?: \get_option('time_format');
         $the_time = (string) \mysql2date($tf, $this->comment_date);
 
-        /**
-         * Filters the returned comment time.
-         *
-         * @see get_comment_time()
-         *
-         * @param string     $the_time    The formatted time.
-         * @param string     $time_format PHP time format. Empty for the `time_format` option.
-         * @param bool       $gmt         Whether the GMT time is used. Always false.
-         * @param bool       $translate   Whether the time is translated. Always true.
-         * @param WP_Comment $comment     The comment object.
-         */
         return \apply_filters('get_comment_time', $the_time, $time_format, false, true, $this->wp_object);
     }
 
