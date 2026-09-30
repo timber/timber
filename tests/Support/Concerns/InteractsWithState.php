@@ -187,9 +187,7 @@ trait InteractsWithState
      */
     protected function switchThemeTemporarily(string $theme): void
     {
-        if ($this->originalTheme === null) {
-            $this->originalTheme = \get_stylesheet();
-        }
+        $this->originalTheme ??= \get_stylesheet();
         \switch_theme($theme);
     }
 }

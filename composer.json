@@ -44,6 +44,7 @@
   },
   "require": {
     "php": "^8.2",
+    "ext-xmlreader": "*",
     "twig/twig": "^3.27"
   },
   "require-dev": {
