@@ -4,6 +4,7 @@ namespace Timber\Tests\Cache;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\IgnoreDeprecations;
+use Timber\Cache\Cleaner;
 use Timber\Cache\KeyGenerator;
 use Timber\Cache\TimberKeyGeneratorInterface;
 use Timber\Helper;
@@ -386,6 +387,7 @@ class CacheTest extends TimberIntegrationTestCase
             'rand' => \random_int(0, 99999),
         ], $time);
         $this->assertEquals($str_old, $str_new);
+        Cleaner::delete_transients();
         global $wpdb;
         $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
         $wpdb->get_results($query);
@@ -563,11 +565,27 @@ class CacheTest extends TimberIntegrationTestCase
             'rand' => \random_int(0, 99999),
         ], $time);
         $this->assertEquals($str_old, $str_new);
+        Cleaner::delete_transients();
         global $wpdb;
         $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
         $wpdb->get_results($query);
         $this->assertSame(2, $wpdb->num_rows);
         $this->assertEquals('foo', \get_transient('random_600'));
+    }
+
+    public function testCacheMissKeepsOtherExpiredTransients()
+    {
+        \set_transient('other_plugin_transient', 'foo', 600);
+        $this->expireTransient('other_plugin_transient');
+
+        Timber::compile('assets/single-post.twig', [
+            'post' => Timber::get_post(static::factory()->post->create()),
+        ], 600);
+
+        global $wpdb;
+        $this->assertSame('foo', $wpdb->get_var(
+            "SELECT option_value FROM {$wpdb->options} WHERE option_name = '_transient_other_plugin_transient'"
+        ));
     }
 
     public function testCacheTransientKeyFilter()
