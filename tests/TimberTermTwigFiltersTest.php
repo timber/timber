@@ -5,6 +5,7 @@ namespace Timber\Tests;
 use Countable;
 use Generator;
 use IteratorAggregate;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Timber\Timber;
 
 class TimberTermTwigFiltersTest extends TimberIntegrationTestCase
@@ -50,11 +51,37 @@ class TimberTermTwigFiltersTest extends TimberIntegrationTestCase
         $this->assertSame('1.46 KB', $str2);
     }
 
-    public function testTwigFilterList()
+    /**
+     * Lists and what the `list` filter makes of them. Separators are placed by position, so the
+     * keys don't matter.
+     *
+     * @return iterable<string, array{array, string}>
+     */
+    public static function listFilterProvider(): iterable
     {
-        $data['authors'] = ['Tom', 'Rick', 'Harry', 'Mike'];
-        $str = Timber::compile_string("{{authors|list}}", $data);
-        $this->assertEquals('Tom, Rick, Harry and Mike', $str);
+        yield 'empty' => [[], ''];
+        yield 'one item' => [['Tom'], 'Tom'];
+        yield 'two items' => [['Tom', 'Rick'], 'Tom and Rick'];
+        yield 'three items' => [['Tom', 'Rick', 'Harry'], 'Tom, Rick and Harry'];
+        yield 'four items' => [['Tom', 'Rick', 'Harry', 'Mike'], 'Tom, Rick, Harry and Mike'];
+        yield 'sparse integer keys' => [[
+            10 => 'Tom',
+            20 => 'Rick',
+            30 => 'Harry',
+        ], 'Tom, Rick and Harry'];
+        yield 'string keys' => [[
+            'first' => 'Tom',
+            'second' => 'Rick',
+            'third' => 'Harry',
+        ], 'Tom, Rick and Harry'];
+    }
+
+    #[DataProvider('listFilterProvider')]
+    public function testTwigFilterList(array $authors, string $expected)
+    {
+        $this->assertSame($expected, Timber::compile_string('{{authors|list}}', [
+            'authors' => $authors,
+        ]));
     }
 
     public function testTwigFilterListOxford()
@@ -62,41 +89,6 @@ class TimberTermTwigFiltersTest extends TimberIntegrationTestCase
         $data['authors'] = ['Tom', 'Rick', 'Harry', 'Mike'];
         $str = Timber::compile_string("{{authors|list(',', ', and')}}", $data);
         $this->assertEquals('Tom, Rick, Harry, and Mike', $str);
-    }
-
-    public function testTwigFilterListShortLists()
-    {
-        $this->assertEquals('Tom', Timber::compile_string('{{authors|list}}', [
-            'authors' => ['Tom'],
-        ]));
-        $this->assertEquals('Tom and Rick', Timber::compile_string('{{authors|list}}', [
-            'authors' => ['Tom', 'Rick'],
-        ]));
-        $this->assertEquals('Tom, Rick and Harry', Timber::compile_string('{{authors|list}}', [
-            'authors' => ['Tom', 'Rick', 'Harry'],
-        ]));
-    }
-
-    public function testTwigFilterListSparseIntegerKeys()
-    {
-        $data['authors'] = [
-            10 => 'Tom',
-            20 => 'Rick',
-            30 => 'Harry',
-        ];
-        $str = Timber::compile_string('{{authors|list}}', $data);
-        $this->assertEquals('Tom, Rick and Harry', $str);
-    }
-
-    public function testTwigFilterListAssociativeKeys()
-    {
-        $data['authors'] = [
-            'first' => 'Tom',
-            'second' => 'Rick',
-            'third' => 'Harry',
-        ];
-        $str = Timber::compile_string('{{authors|list}}', $data);
-        $this->assertEquals('Tom, Rick and Harry', $str);
     }
 
     public function testTwigFilterListCountableTraversableIteratesOnce()
