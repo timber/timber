@@ -270,7 +270,7 @@ class Loader implements LoaderInterface
      */
     protected function render_twig_template($template, $data)
     {
-        return $template->render($data);
+        return Helper::ob_function([$template, 'display'], [$data]);
     }
 
     /**

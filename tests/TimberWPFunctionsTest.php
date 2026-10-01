@@ -126,6 +126,76 @@ namespace Timber\Tests {
             //make sure that footer appears after colorpicker
             $this->assertGreaterThan($colorpicker, $footer_tag);
         }
+
+        public function testFunctionEchoIsCapturedInSetBlock()
+        {
+            \ob_start();
+            $str = Timber::compile_string('{% set captured %}[{{ fn("echo_junk") }}]{% endset %}<{{ captured }}>');
+            $leaked = \ob_get_clean();
+
+            $this->assertSame('<[foo]>', $str);
+            $this->assertSame('', $leaked);
+        }
+
+        public function testFunctionEchoIsCapturedInApplyBlock()
+        {
+            \ob_start();
+            $str = Timber::compile_string('{% apply upper %}[{{ function("echo_junk") }}]{% endapply %}');
+            $leaked = \ob_get_clean();
+
+            $this->assertSame('[FOO]', $str);
+            $this->assertSame('', $leaked);
+        }
+
+        public function testFunctionEchoIsAssignable()
+        {
+            $str = Timber::compile_string('{% set junk = fn("echo_junk") %}<{{ junk }}>');
+
+            $this->assertSame('<foo>', $str);
+        }
+
+        public function testActionEchoIsCapturedInSetBlock()
+        {
+            $this->add_action_temporarily('timber_test_echo_action', function ($name) {
+                echo 'hello ' . $name;
+            });
+
+            \ob_start();
+            $str = Timber::compile_string('{% set captured %}[{{ action("timber_test_echo_action", "jared") }}]{% endset %}<{{ captured }}>');
+            $leaked = \ob_get_clean();
+
+            $this->assertSame('<[hello jared]>', $str);
+            $this->assertSame('', $leaked);
+        }
+
+        public function testFunctionEchoIsNotEscapedWithAutoescape()
+        {
+            $this->add_filter_temporarily('timber/twig/environment/options', function ($options) {
+                $options['autoescape'] = 'html';
+                return $options;
+            });
+
+            $str = Timber::compile_string('{{ fn("_e", "<b>bold</b>") }}{{ fn("my_test_return_html") }}');
+
+            $this->assertSame('<b>bold</b>&lt;i&gt;returned&lt;/i&gt;', $str);
+        }
+
+        public function testFunctionEchoIsFollowedByScalarReturnValue()
+        {
+            \ob_start();
+            $str = Timber::compile_string('{% set captured %}[{{ fn("my_test_echo_and_return_true") }}]{% endset %}<{{ captured }}>');
+            $leaked = \ob_get_clean();
+
+            $this->assertSame('<[widgets1]>', $str);
+            $this->assertSame('', $leaked);
+        }
+
+        public function testFunctionReturnValueIsUntouched()
+        {
+            $str = Timber::compile_string('{% set values = fn("my_test_return_array") %}{{ values|join(",") }}');
+
+            $this->assertSame('a,b', $str);
+        }
     } // end class TimberWPFunctionsTest
 } // end namespace Timber\Tests
 
@@ -145,5 +215,21 @@ namespace {
     function my_test_function()
     {
         return 'jared sez hi';
+    }
+
+    function my_test_return_html()
+    {
+        return '<i>returned</i>';
+    }
+
+    function my_test_echo_and_return_true()
+    {
+        echo 'widgets';
+        return true;
+    }
+
+    function my_test_return_array()
+    {
+        return ['a', 'b'];
     }
 }

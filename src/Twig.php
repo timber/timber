@@ -7,6 +7,7 @@ use DateInterval;
 use DateTime;
 use DateTimeInterface;
 use Exception;
+use Throwable;
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
 use Traversable;
@@ -14,6 +15,7 @@ use Twig\DeprecatedCallableInfo;
 use Twig\Environment;
 use Twig\Error\RuntimeError;
 use Twig\Extension\CoreExtension;
+use Twig\Markup;
 use Twig\Runtime\EscaperRuntime;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -51,15 +53,25 @@ class Twig
 
         $functions = [
             'action' => [
-                'callable' => function ($action_name, ...$args) {
-                    \do_action_ref_array($action_name, $args);
-                },
+                'callable' => fn (Environment $env, $action_name, ...$args) => $this->capture_output(
+                    $env,
+                    fn () => \do_action_ref_array($action_name, $args)
+                ),
+                'options' => [
+                    'needs_environment' => true,
+                ],
             ],
             'function' => [
-                'callable' => [$this, 'exec_function'],
+                'callable' => fn (Environment $env, ...$args) => $this->capture_output($env, fn () => $this->exec_function(...$args)),
+                'options' => [
+                    'needs_environment' => true,
+                ],
             ],
             'fn' => [
-                'callable' => [$this, 'exec_function'],
+                'callable' => fn (Environment $env, ...$args) => $this->capture_output($env, fn () => $this->exec_function(...$args)),
+                'options' => [
+                    'needs_environment' => true,
+                ],
             ],
             'get_post' => [
                 'callable' => [Timber::class, 'get_post'],
@@ -396,7 +408,10 @@ class Twig
                 'callable' => [TextHelper::class, 'trim_characters'],
             ],
             'function' => [
-                'callable' => [$this, 'exec_function'],
+                'callable' => fn (Environment $env, ...$args) => $this->capture_output($env, fn () => $this->exec_function(...$args)),
+                'options' => [
+                    'needs_environment' => true,
+                ],
             ],
             'pretags' => [
                 'callable' => [$this, 'twig_pretags'],
@@ -727,6 +742,41 @@ class Twig
             $function_name = \trim($function_name);
         }
         return \call_user_func_array($function_name, ($args));
+    }
+
+    /**
+     * Calls a function and returns what it echoed, so that the output ends up where the function is called in the template.
+     *
+     * Twig 4 (and Twig 3 with the `use_yield` option) doesn’t render templates inside an output buffer anymore, so anything a PHP function echoes would otherwise bypass the template output, and for example end up outside of a `{% set %}` or `{% apply %}` block.
+     *
+     * @param Environment $env      The Twig environment.
+     * @param callable    $callback The function to call.
+     * @return mixed The echoed output marked as safe, or the return value of the function if nothing was echoed.
+     */
+    protected function capture_output(Environment $env, callable $callback): mixed
+    {
+        \ob_start();
+        try {
+            $result = $callback();
+        } catch (Throwable $e) {
+            \ob_end_clean();
+            throw $e;
+        }
+        $output = \ob_get_clean();
+
+        if ('' === $output) {
+            return $result;
+        }
+
+        // A return value without any HTML (like the boolean returned by `dynamic_sidebar()`) is printed right after the echoed output, as Twig would do.
+        if (null === $result || \is_bool($result) || \is_int($result) || \is_float($result)) {
+            return new Markup($output . $result, $env->getCharset());
+        }
+
+        // Merging the echoed output with a string or an object would change how the return value is escaped, so the echoed output is passed through as is.
+        echo $output;
+
+        return $result;
     }
 
     /**

@@ -150,6 +150,19 @@ class TimberRenderBlockTest extends TimberIntegrationTestCase
     }
 
     /**
+     * Test that output echoed by a function called inside a block is captured in place
+     */
+    public function testCompileTwigBlockCapturesEchoedOutput()
+    {
+        \ob_start();
+        $output = Timber::compile_twig_block('echo', 'Fixtures/assets/block-echo.twig');
+        $leaked = \ob_get_clean();
+
+        $this->assertEquals('[echoed]', \trim($output));
+        $this->assertSame('', $leaked);
+    }
+
+    /**
      * Test compile_twig_block with caching
      */
     public function testCompileTwigBlockWithCache()
