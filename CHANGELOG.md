@@ -1,5 +1,71 @@
 # Changelog
 
+## [2.5.2](https://github.com/timber/timber/compare/v2.5.1...v2.5.2) (2026-10-01)
+
+
+### Bug Fixes
+
+* allow null for the array ([7b05cf3](https://github.com/timber/timber/commit/7b05cf36b2678e66748897b5af922bcec6efb7b5))
+* **comment:** apply get_comment_date and get_comment_time like WordPress ([dd9cfec](https://github.com/timber/timber/commit/dd9cfec45e9a91a479a38c3dab55741f49b11145))
+* initialize $data to an empty array in Timber class methods ([7453bc0](https://github.com/timber/timber/commit/7453bc02de22df4bc613862b677af70104d91b04))
+* place list filter separators by position, not key ([c1359ae](https://github.com/timber/timber/commit/c1359ae3f30507b890ef894e360bd87238f2e569))
+* **post:** pass WordPress format arguments to date and time filters ([00da76d](https://github.com/timber/timber/commit/00da76d03c0debcbc76c1f1f5a84f9812db0ada9))
+* **post:** pass WP_Post to get_the_date and get_the_time filters ([c67c41d](https://github.com/timber/timber/commit/c67c41de36a165c31478765873cd33dd008a8943))
+* return null dimensions for a file that is not an image ([844c45b](https://github.com/timber/timber/commit/844c45b705965ccc54efc972f9a6bc4574b8a14e))
+* return null dimensions for an SVG with no readable size ([67a54fc](https://github.com/timber/timber/commit/67a54fcd7d246562cccc515501e15f420ac87663))
+* **tests:** update ticket reference in PostTypeTest for testNonExistentPostType ([d59e202](https://github.com/timber/timber/commit/d59e202ab15afd43b7fc349d9b149642de8ada62))
+* Use `XMLReader` to read SVG dimensions instead of `simplexml_load_file()` ([#3290](https://github.com/timber/timber/issues/3290)) ([9b3de4d](https://github.com/timber/timber/commit/9b3de4dbe73db336f083fcc99c8b9c06def78b2d))
+
+
+### Performance Improvements
+
+* skip args in get_calling_script_file backtrace ([adaab06](https://github.com/timber/timber/commit/adaab061c433808ea806666ce346b6750561504f))
+
+
+### Reverts
+
+* update PHP coding standards workflow to include cs2pr for output formatting ([45b1708](https://github.com/timber/timber/commit/45b17081079e4312e6872dbf305f48c07923ecbf))
+
+
+### Tests
+
+* cover the list filter with a data provider ([6d1ec23](https://github.com/timber/timber/commit/6d1ec2344fbf403698ffe1b5056c66fa078917b5))
+* **image:** fix flaky testReplacedImage caused by uploads leakage ([615b48e](https://github.com/timber/timber/commit/615b48ee649a9e779adcfb790af0eeb4d6b1164e))
+* start attachment tests from an empty uploads month ([#3297](https://github.com/timber/timber/issues/3297)) ([bf529d6](https://github.com/timber/timber/commit/bf529d67df0b87cf415c2a4eec80b756143c3fae))
+* use the committed PDF fixture for the not-an-image case ([e3ff171](https://github.com/timber/timber/commit/e3ff1719b46c1c88c1fce3e49ad60e9d78ef89e1))
+
+
+### Documentation
+
+* **template-locations:** Add example for Drupal-style Single-Directory Component (SDC) path loading or other mapping ([#3278](https://github.com/timber/timber/issues/3278)) ([c653435](https://github.com/timber/timber/commit/c653435f70896a240928faa388ad8f0395fe4c58))
+* Update docs about supported Timber versions and update Security Guidelines ([#3289](https://github.com/timber/timber/issues/3289)) ([9ef87ce](https://github.com/timber/timber/commit/9ef87ce6b87292b216ee658de4ce316bd5dc280e))
+
+
+### Continuous Integration
+
+* add PHP 8.6 as an experimental job ([0281b39](https://github.com/timber/timber/commit/0281b3937be48ed71093a85026190964859fa539))
+* Convert the ECS report to checkstyle for cs2pr ([7937169](https://github.com/timber/timber/commit/79371698044598af3151fe045ee774e8b684a314))
+* fix ECS coding standards workflow (checkstyle format removed) ([e57880a](https://github.com/timber/timber/commit/e57880a3f3ffe53f125d60416bc740a248b1f4f9))
+* Run PHPStan on the whole codebase ([49c078d](https://github.com/timber/timber/commit/49c078d5ed2ee9618f765ff9e0d8b03a9e9843ca))
+* surface public API changes on pull requests ([dfd0f2e](https://github.com/timber/timber/commit/dfd0f2e76fbf3a81bf793f8e9126f2eb04f2c98d))
+
+
+### Miscellaneous Chores
+
+* **cs:** apply codestyle fixes (rector/phpstan cleanup) ([a331080](https://github.com/timber/timber/commit/a3310807cb23f6e94c4a7b11dab4540d450c0a37))
+* **deps:** bump actions/checkout from 6.0.2 to 6.0.3 ([#3270](https://github.com/timber/timber/issues/3270)) ([4a691a5](https://github.com/timber/timber/commit/4a691a5a00db2642e7e5bfc1015ddaafa5462e3a))
+* **deps:** bump actions/checkout from 6.0.3 to 7.0.1 ([#3280](https://github.com/timber/timber/issues/3280)) ([67a11cd](https://github.com/timber/timber/commit/67a11cd58be90b6801299d4cf72b75bca3a27c4b))
+* **deps:** bump codecov/codecov-action from 6.0.1 to 7.0.0 ([e5b8048](https://github.com/timber/timber/commit/e5b80489235c472ddef265ae81d3d8c3c792adb4))
+* **deps:** bump codecov/codecov-action from 7.0.0 to 7.1.1 ([#3291](https://github.com/timber/timber/issues/3291)) ([c9f815a](https://github.com/timber/timber/commit/c9f815a7df03c129c9187b282e6d1ff0170c7dac))
+* **deps:** bump coverallsapp/github-action from 2.3.7 to 2.3.8 ([#3281](https://github.com/timber/timber/issues/3281)) ([67fbfa7](https://github.com/timber/timber/commit/67fbfa71ecfb19629a86f65d36eac105e8d8413f))
+* **deps:** bump lycheeverse/lychee-action from 2.8.0 to 2.9.0 ([#3279](https://github.com/timber/timber/issues/3279)) ([8e5fe90](https://github.com/timber/timber/commit/8e5fe902c801db5bbd95b24c529abdb6695b6ff9))
+* **deps:** bump ramsey/composer-install ([#3276](https://github.com/timber/timber/issues/3276)) ([bc1298f](https://github.com/timber/timber/commit/bc1298fdb842903337ca550ce91710b99b9c265f))
+* **deps:** bump shivammathur/setup-php from 2.37.1 to 2.37.2 ([c53725c](https://github.com/timber/timber/commit/c53725c2a0f56f1a87e721e33b5931169e131e50))
+* Fix Rector ruleset to use composer based set ([#3283](https://github.com/timber/timber/issues/3283)) ([099dec4](https://github.com/timber/timber/commit/099dec441370552148acf949010db7ae86ef2037))
+* Remove docblocks for comment date and time ([ba5bbf7](https://github.com/timber/timber/commit/ba5bbf7c4ccb39111dad08a58b92ed0c4b65c3c9))
+* run phpcs ([282285c](https://github.com/timber/timber/commit/282285c3fb19be10ad8f71090ebd4e43c86f958b))
+* update author email addresses in composer.json ([9a257a3](https://github.com/timber/timber/commit/9a257a3dc5caabba75132af53d41f71d0d75190c))
+
 ## [2.5.1](https://github.com/timber/timber/compare/v2.5.0...v2.5.1) (2026-05-29)
 
 
