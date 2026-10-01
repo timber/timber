@@ -134,6 +134,14 @@ $manager
         // Load Timber
         Timber\Timber::init();
 
+        // Render templates with Twig's yield mode, which is the only mode available in Twig 4
+        if (filter_var(getenv('TIMBER_TWIG_USE_YIELD'), FILTER_VALIDATE_BOOLEAN)) {
+            add_filter('timber/twig/environment/options', function ($options) {
+                $options['use_yield'] = true;
+                return $options;
+            });
+        }
+
         // Load plugins based on TIMBER_TEST_PLUGINS environment variable
         if (timber_test_has_plugin('acf')) {
             $path = timber_get_plugin_path('acf');
