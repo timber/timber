@@ -371,6 +371,15 @@ class CacheTest extends TimberIntegrationTestCase
         $this->assertTrue($works);
     }
 
+    public function testLoaderCachesSameTemplateNameFromDifferentCallersSeparately()
+    {
+        $first = new Loader($this->getFixturesDir() . '/callers/first');
+        $second = new Loader($this->getFixturesDir() . '/callers/second');
+
+        $this->assertSame('First card', \trim($first->render('card.twig', [], 600)));
+        $this->assertSame('Second card', \trim($second->render('card.twig', [], 600)));
+    }
+
     public function testTimberLoaderCacheTransients()
     {
         $time = 1;
