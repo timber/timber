@@ -2,12 +2,14 @@
 
 namespace Timber;
 
+use Countable;
 use DateInterval;
 use DateTime;
 use DateTimeInterface;
 use Exception;
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
+use Traversable;
 use Twig\DeprecatedCallableInfo;
 use Twig\Environment;
 use Twig\Error\RuntimeError;
@@ -795,7 +797,7 @@ class Twig
     }
 
     /**
-     * @param array $arr
+     * @param array|(Countable&Traversable) $arr
      * @param string $first_delimiter
      * @param string $second_delimiter
      * @return string
@@ -808,7 +810,7 @@ class Twig
         foreach ($arr as $item) {
             if ($index < $length - 2) {
                 $delimiter = $first_delimiter . ' ';
-            } elseif ($index == $length - 2) {
+            } elseif ($index === $length - 2) {
                 $delimiter = $second_delimiter . ' ';
             } else {
                 $delimiter = '';
