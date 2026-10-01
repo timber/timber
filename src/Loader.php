@@ -3,7 +3,6 @@
 namespace Timber;
 
 use InvalidArgumentException;
-use Throwable;
 use Timber\Cache\Cleaner;
 use Twig\CacheExtension;
 use Twig\Environment;
@@ -271,14 +270,7 @@ class Loader implements LoaderInterface
      */
     protected function render_twig_template($template, $data)
     {
-        \ob_start();
-        try {
-            $template->display($data);
-        } catch (Throwable $e) {
-            \ob_end_clean();
-            throw $e;
-        }
-        return \ob_get_clean();
+        return Helper::ob_function([$template, 'display'], [$data]);
     }
 
     /**

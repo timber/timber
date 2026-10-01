@@ -57,9 +57,9 @@ class TwigBlockLoader extends Loader
     {
         // Render the specific block if it exists, otherwise render the entire template
         if ($this->block_name && $template->hasBlock($this->block_name)) {
-            return $template->renderBlock($this->block_name, $data);
+            return Helper::ob_function([$template, 'displayBlock'], [$this->block_name, $data]);
         }
 
-        return $template->render($data);
+        return parent::render_twig_template($template, $data);
     }
 }
