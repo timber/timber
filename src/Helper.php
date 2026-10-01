@@ -5,6 +5,7 @@ namespace Timber;
 use Exception;
 use InvalidArgumentException;
 use stdClass;
+use Throwable;
 use Timber\Factory\PostFactory;
 use WP_List_Util;
 use WP_Post;
@@ -274,7 +275,12 @@ class Helper
     public static function ob_function($function, $args = [null])
     {
         \ob_start();
-        \call_user_func_array($function, $args);
+        try {
+            \call_user_func_array($function, $args);
+        } catch (Throwable $e) {
+            \ob_end_clean();
+            throw $e;
+        }
         return \ob_get_clean();
     }
 
