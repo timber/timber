@@ -188,12 +188,12 @@ class Taxonomy extends Core implements CoreInterface, Stringable
      * {% endif %}
      * ```
      *
-     * @return string|null The edit URL or `null` if the current user can’t manage the terms of
-     *                     this taxonomy.
+     * @return string|null The edit URL or `null` if the taxonomy has no admin screen or the current
+     *                     user can’t manage its terms.
      */
     public function edit_link(): ?string
     {
-        if (!$this->can_edit()) {
+        if (!$this->show_ui || !$this->can_edit()) {
             return null;
         }
 

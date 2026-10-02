@@ -151,6 +151,19 @@ class TaxonomyTest extends TimberIntegrationTestCase
         $this->assertNull($taxonomy->edit_link());
     }
 
+    public function testEditLinkIsNullWithoutAdminUi()
+    {
+        \register_taxonomy('hidden_tax', 'post', [
+            'show_ui' => false,
+        ]);
+
+        \wp_set_current_user(static::factory()->user->create([
+            'role' => 'administrator',
+        ]));
+
+        $this->assertNull(Timber::get_taxonomy('hidden_tax')->edit_link());
+    }
+
     public function testObjectTypeHoldsPostTypes()
     {
         $taxonomy = Timber::get_taxonomy('genre');
