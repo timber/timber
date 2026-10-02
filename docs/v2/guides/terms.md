@@ -23,6 +23,8 @@ $term = Timber::get_term(get_queried_object_id());
 
 What you get in return is a [`Timber\Term`](https://timber.github.io/docs/v2/reference/timber-term/) object, which is similar to `WP_Term`.
 
+If you’re looking for the taxonomy itself instead of its terms – for example to get the labels you defined in `register_taxonomy()` – have a look at the [Taxonomies guide](https://timber.github.io/docs/v2/guides/taxonomies/).
+
 ## Get term by field
 
 If you don’t have a term ID, you can also get a term by other fields, like `slug` or `name` through `Timber::get_term_by()`.
