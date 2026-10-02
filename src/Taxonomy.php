@@ -148,7 +148,9 @@ class Taxonomy extends Core implements CoreInterface, Stringable
      */
     public function default_term(): ?Term
     {
-        $term_id = \get_option('default_term_' . $this->name);
+        // WordPress stores the default category in its own option.
+        $option = 'category' === $this->name ? 'default_category' : 'default_term_' . $this->name;
+        $term_id = \get_option($option);
 
         if (!$term_id) {
             return null;

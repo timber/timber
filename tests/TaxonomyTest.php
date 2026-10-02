@@ -109,6 +109,19 @@ class TaxonomyTest extends TimberIntegrationTestCase
         $this->assertEquals('Neutral', $default_term->title());
     }
 
+    public function testDefaultTermForCategory()
+    {
+        $term_id = static::factory()->category->create([
+            'name' => 'Uncategorized Stuff',
+        ]);
+        \update_option('default_category', $term_id);
+
+        $default_term = Timber::get_taxonomy('category')->default_term();
+
+        $this->assertInstanceOf(Term::class, $default_term);
+        $this->assertEquals($term_id, $default_term->ID);
+    }
+
     public function testDefaultTermIsNullWhenNoneIsRegistered()
     {
         $this->assertNull(Timber::get_taxonomy('genre')->default_term());
