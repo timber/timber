@@ -960,7 +960,9 @@ class Timber
      *                                In addition to the arguments supported by that function, a
      *                                `post_type` argument can be used as an alias for
      *                                `object_type`. Default `null`, which will get all public
-     *                                taxonomies.
+     *                                taxonomies. The `public` filter only applies to this
+     *                                default: when you pass arguments, non-public taxonomies are
+     *                                included unless you also pass `'public' => true`.
      *
      * @return Taxonomy[] An array of `Timber\Taxonomy` objects, keyed by taxonomy name. Will be
      *                    empty if no taxonomies were found.
