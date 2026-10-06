@@ -806,7 +806,7 @@ class Timber
         $terms = $factory->from($term);
 
         if (\is_array($terms)) {
-            $terms = $terms[0];
+            $terms = $terms[0] ?? null;
         }
 
         return $terms;

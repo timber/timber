@@ -103,6 +103,35 @@ class TermTest extends TimberIntegrationTestCase
         $this->assertEquals('Zong', $string);
     }
 
+    #[Ticket('#3292')]
+    public function testGetTermsWithStringOnlyQueryArgs()
+    {
+        \register_taxonomy('district', ['post']);
+
+        $first_term_id = static::factory()->term->create([
+            'name' => 'First district',
+            'taxonomy' => 'district',
+        ]);
+        $second_term_id = static::factory()->term->create([
+            'name' => 'Second district',
+            'taxonomy' => 'district',
+        ]);
+        $post_id = static::factory()->post->create();
+        \wp_set_object_terms($post_id, [$first_term_id, $second_term_id], 'district');
+
+        $terms = Timber::get_terms([
+            'taxonomy' => 'district',
+            'slug' => 'second-district',
+        ]);
+
+        $this->assertCount(1, $terms);
+        $this->assertSame('second-district', $terms[0]->slug);
+        $this->assertNull(Timber::get_term([
+            'taxonomy' => 'district',
+            'slug' => 'does-not-exist',
+        ]));
+    }
+
     public function testTerm()
     {
         $term_id = static::factory()->term->create();
