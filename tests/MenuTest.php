@@ -1002,6 +1002,43 @@ class MenuTest extends TimberIntegrationTestCase
         );
     }
 
+    public function testGetCurrentItemWithDepthAfterUnconstrainedCall()
+    {
+        $menu_arr = self::_createTestMenu();
+        $menu = Timber::get_menu($menu_arr['term_id']);
+
+        $parent = $menu->items[0];
+        $parent->current_item_ancestor = true;
+
+        $child = $parent->children[0];
+        $child->current_item_ancestor = true;
+
+        $grandchild = $child->children[1];
+        $grandchild->current = true;
+
+        // The unconstrained result is cached, but must not answer depth-limited calls.
+        $this->assertSame($grandchild->link(), $menu->current_item()->link());
+        $this->assertSame($parent->link(), $menu->current_top_level_item()->link());
+        $this->assertSame($child->link(), $menu->current_item(2)->link());
+        $this->assertSame($grandchild->link(), $menu->current_item(3)->link());
+        $this->assertSame($grandchild->link(), $menu->current_item()->link());
+        $this->assertSame($parent->link(), $menu->current_item(1)->link());
+    }
+
+    public function testGetCurrentItemWithDepthWithoutCurrentItem()
+    {
+        // Set REQUEST_URI to a non-matching URL so WordPress doesn't auto-mark any item as current
+        $_SERVER['REQUEST_URI'] = '/non-existent-test-page';
+
+        $menu_arr = self::_createTestMenu();
+        $menu = Timber::get_menu($menu_arr['term_id']);
+
+        $this->assertFalse($menu->current_item());
+        $this->assertFalse($menu->current_top_level_item());
+        $this->assertFalse($menu->current_item(2));
+        $this->assertFalse($menu->current_item());
+    }
+
     public function testGetCurrentTopLevelItem()
     {
         $menu_arr = self::_createTestMenu();
