@@ -412,6 +412,10 @@ class Comment extends CoreEntity implements Stringable
     /**
      * The date for the comment.
      *
+     * This function will also apply the
+     * [`get_comment_date`](https://developer.wordpress.org/reference/hooks/get_comment_date/)
+     * filter to the output.
+     *
      * @api
      * @example
      * ```twig
@@ -435,11 +439,16 @@ class Comment extends CoreEntity implements Stringable
     {
         $df = $date_format ?: \get_option('date_format');
         $the_date = (string) \mysql2date($df, $this->comment_date);
-        return \apply_filters('get_comment_date ', $the_date, $df);
+
+        return \apply_filters('get_comment_date', $the_date, $date_format, $this->wp_object);
     }
 
     /**
      * What time was the comment posted?
+     *
+     * This function will also apply the
+     * [`get_comment_time`](https://developer.wordpress.org/reference/hooks/get_comment_time/)
+     * filter to the output.
      *
      * @api
      * @example
@@ -464,7 +473,8 @@ class Comment extends CoreEntity implements Stringable
     {
         $tf = $time_format ?: \get_option('time_format');
         $the_time = (string) \mysql2date($tf, $this->comment_date);
-        return \apply_filters('get_comment_time', $the_time, $tf);
+
+        return \apply_filters('get_comment_time', $the_time, $time_format, false, true, $this->wp_object);
     }
 
     /**
