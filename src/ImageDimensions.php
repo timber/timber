@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use XMLReader;
+
 /**
  * Class ImageDimensions
  *
@@ -146,11 +148,20 @@ class ImageDimensions
         if (\file_exists($this->file_loc) && \filesize($this->file_loc)) {
             if (ImageHelper::is_svg($this->file_loc)) {
                 $svg_size = $this->get_dimensions_svg($this->file_loc);
+
+                if (null === $svg_size) {
+                    return null;
+                }
+
                 $this->dimensions = [(int) \round($svg_size->width), (int) \round($svg_size->height)];
             } else {
-                [$width, $height] = \getimagesize($this->file_loc);
+                $size = \getimagesize($this->file_loc);
 
-                $this->dimensions = [(int) $width, (int) $height];
+                if (false === $size) {
+                    return null;
+                }
+
+                $this->dimensions = [$size[0], $size[1]];
             }
 
             return $this->get_dimension_loaded($dimension);
@@ -180,31 +191,131 @@ class ImageDimensions
     /**
      * Retrieve dimensions from SVG file.
      *
+     * The viewBox is read first. When it is missing or invalid (not four numbers, or a size that
+     * isn't positive), the `width` and `height` attributes are read instead, but only when both
+     * are absolute lengths: unitless or in `px`.
+     *
      * @internal
      * @param string $svg SVG Path
-     * @return object
+     * @return object{width: float, height: float}|null Null when the size can't be read.
      */
     protected function get_dimensions_svg($svg)
     {
-        $svg = \simplexml_load_file($svg);
-        $width = 0;
-        $height = 0;
+        $attributes = $this->get_svg_root_attributes($svg);
 
-        if (false !== $svg) {
-            $attributes = $svg->attributes();
-            if (isset($attributes->viewBox)) {
-                $viewbox = \explode(' ', $attributes->viewBox);
-                $width = $viewbox[2];
-                $height = $viewbox[3];
-            } elseif ($attributes->width && $attributes->height) {
-                $width = $attributes->width;
-                $height = $attributes->height;
+        if (null === $attributes) {
+            return null;
+        }
+
+        if (null !== $attributes['viewBox']) {
+            // Four numbers separated by whitespace and/or commas.
+            $viewbox = \preg_split('/[\s,]+/', \trim($attributes['viewBox']));
+
+            if (4 === \count($viewbox) && \is_numeric($viewbox[2]) && \is_numeric($viewbox[3])
+                && $viewbox[2] > 0 && $viewbox[3] > 0) {
+                return (object) [
+                    'width' => (float) $viewbox[2],
+                    'height' => (float) $viewbox[3],
+                ];
             }
         }
 
+        $width = $this->parse_svg_length($attributes['width']);
+        $height = $this->parse_svg_length($attributes['height']);
+
+        if (null === $width || null === $height) {
+            return null;
+        }
+
         return (object) [
-            'width' => (float) $width,
-            'height' => (float) $height,
+            'width' => $width,
+            'height' => $height,
         ];
+    }
+
+    /**
+     * Parses an SVG `width` or `height` attribute into pixels.
+     *
+     * @internal
+     * @param string|null $length The attribute value.
+     * @return float|null The length in pixels. Null when it is missing, not positive, or in a
+     *                    unit that has no absolute size (`%`, `em`, …).
+     */
+    private function parse_svg_length(?string $length): ?float
+    {
+        if (null === $length || !\preg_match('/^\s*(\d*\.?\d+(?:e[+-]?\d+)?)\s*(?:px)?\s*$/i', $length, $matches)) {
+            return null;
+        }
+
+        $value = (float) $matches[1];
+
+        return $value > 0 ? $value : null;
+    }
+
+    /**
+     * Reads `width`, `height` and `viewBox` off the root element of an SVG file.
+     *
+     * Uses a pull parser that stops as soon as the root element is available, so the body of the
+     * document is never parsed. This way, dimensions are cheap to read even
+     * for a multi-megabyte SVG.
+     *
+     * The parse is also hardened against XXE. What keeps an external entity or DTD from being
+     * loaded is that `LIBXML_NOENT` and `LIBXML_DTDLOAD` are deliberately never passed: libxml
+     * only fetches what those options ask for. Without that, an attacker-supplied SVG could read
+     * local files or drive SSRF. `LIBXML_NONET` is defence in depth only: it rejects `http://` and
+     * `ftp://` URLs, but not the schemes PHP's stream wrappers add on top (`https://` included).
+     *
+     * @internal
+     * @param string $file Path to the SVG file.
+     * @return array{width: string|null, height: string|null, viewBox: string|null}|null
+     *         Null when the file has no root element, or when its root is not an `<svg>`.
+     */
+    private function get_svg_root_attributes(string $file): ?array
+    {
+        // XMLReader::open() throws on an empty path where simplexml_load_file() answered false.
+        if ('' === $file) {
+            return null;
+        }
+
+        $reader = @XMLReader::open($file, null, \LIBXML_NONET | \LIBXML_NOERROR | \LIBXML_NOWARNING);
+
+        if (!$reader instanceof XMLReader) {
+            return null;
+        }
+
+        try {
+            while (@$reader->read()) {
+                if (XMLReader::ELEMENT !== $reader->nodeType) {
+                    continue;
+                }
+
+                // The root element has to be an <svg>. localName ignores any namespace prefix, so
+                // a document rooted in <svg:svg> is still recognised. The comparison folds case:
+                // XML preserves tag case, so <SVG> is still an SVG.
+                if (0 !== \strcasecmp('svg', $reader->localName)) {
+                    return null;
+                }
+
+                // Attributes are keyed by lower-cased local name, so coarse markup that uppercases
+                // them (WIDTH, VIEWBOX) reads the same as its canonical form.
+                $found = [];
+
+                if ($reader->moveToFirstAttribute()) {
+                    do {
+                        $found[\strtolower($reader->localName)] = $reader->value;
+                    } while ($reader->moveToNextAttribute());
+                }
+
+                return [
+                    'width' => $found['width'] ?? null,
+                    'height' => $found['height'] ?? null,
+                    'viewBox' => $found['viewbox'] ?? null,
+                ];
+            }
+
+            return null;
+        } finally {
+            $reader->close();
+        }
     }
 }
