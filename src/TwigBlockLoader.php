@@ -41,7 +41,7 @@ class TwigBlockLoader extends Loader
         }
 
         // Include block name in cache key to differentiate from full template renders
-        return \md5($file . $encoded . $this->block_name);
+        return \md5($this->get_loader()->getCacheKey($file) . $encoded . $this->block_name);
     }
 
     /**
