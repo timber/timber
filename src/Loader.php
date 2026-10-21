@@ -120,7 +120,6 @@ class Loader implements LoaderInterface
         }
 
         if (!$cache_hit && false !== $output && false !== $expires && null !== $key) {
-            $this->delete_cache();
             $this->set_cache($key, $output, self::CACHEGROUP, $expires, $cache_mode);
         }
 
