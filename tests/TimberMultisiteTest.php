@@ -3,6 +3,7 @@
 namespace Timber\Tests;
 
 use PHPUnit\Framework\Attributes\Ticket;
+use Timber\Cache\Cleaner;
 use Timber\Site;
 use Timber\Timber;
 
@@ -271,6 +272,23 @@ class TimberMultisiteTest extends TimberIntegrationTestCase
 
         $ts = new Site();
         $this->assertInstanceOf('\WP_Site', $ts->wp_object());
+    }
+
+    public function test_delete_transients_counts_expired_site_transients()
+    {
+        $this->skipWithoutMultisite();
+
+        \set_transient('expired_transient', 'foo', 600);
+        \update_option('_transient_timeout_expired_transient', \time() - 1);
+        \set_site_transient('expired_site_transient', 'foo', 600);
+        \update_site_option('_site_transient_timeout_expired_site_transient', \time() - 1);
+        \set_site_transient('valid_site_transient', 'bar', 600);
+
+        $result = Cleaner::delete_transients();
+
+        // Each expired transient and its timeout row, in the options and the sitemeta table.
+        $this->assertSame(4, $result);
+        $this->assertSame('bar', \get_site_transient('valid_site_transient'));
     }
 
     public static function createSubDomainSite($domain = 'test.example.org', $title = 'Multisite Test')
