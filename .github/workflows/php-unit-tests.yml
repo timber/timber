@@ -87,6 +87,12 @@ jobs:
             dependency-version: 'highest'
             experimental: true
             coverage: false
+          # Next PHP release (experimental)
+          - php: '8.6'
+            wp: 'latest'
+            dependency-version: 'highest'
+            experimental: true
+            coverage: false
 
     name: PHP ${{ matrix.php }} | WP ${{ matrix.wp }} | ${{ matrix.dependency-version }}${{ matrix.coverage && ' | coverage' || '' }}
 
@@ -115,9 +121,12 @@ jobs:
       - uses: ramsey/composer-install@26d8a556604053a9612623447203a691f406fbe6 # v4
         with:
           dependency-versions: ${{ matrix.dependency-version }}
+          # Some dev dependencies cap PHP at the latest release, so ignore upper bounds when
+          # running on an unreleased PHP.
+          composer-options: ${{ matrix.experimental && '--ignore-platform-req=php+' || '' }}
 
-      # PHP 8.5: Collision and curl have deprecations we can't fix
-      - name: Disable failOnDeprecation for PHP 8.5
+      # Experimental jobs: dependencies have deprecations on new PHP versions we can't fix
+      - name: Disable failOnDeprecation for experimental jobs
         if: matrix.experimental
         run: sed -i 's/failOnDeprecation="true"/failOnDeprecation="false"/' phpunit.xml
 
