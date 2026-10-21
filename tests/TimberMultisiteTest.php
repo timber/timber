@@ -265,6 +265,30 @@ class TimberMultisiteTest extends TimberIntegrationTestCase
         $this->assertSame($ids, $mapped_ids);
     }
 
+    public function testSiteFromSlug()
+    {
+        $this->skipWithoutMultisite();
+
+        $main_id = \get_current_blog_id();
+        $blog_id = self::createSubDirectorySite('/cool-site/', 'My Cool Site');
+        \restore_current_blog();
+
+        $site = new Site('cool-site');
+
+        $this->assertSame($blog_id, (int) $site->ID);
+        $this->assertSame('My Cool Site', $site->name);
+        $this->assertSame($main_id, \get_current_blog_id());
+    }
+
+    public function testSiteFromUnknownSlugIsCurrentSite()
+    {
+        $this->skipWithoutMultisite();
+
+        $site = new Site('no-such-site');
+
+        $this->assertSame(\get_current_blog_id(), (int) $site->ID);
+    }
+
     public function testTimberSiteWPObject()
     {
         $this->skipWithoutMultisite();
