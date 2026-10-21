@@ -1377,7 +1377,7 @@ class Timber
      * ```
      * @param array|string    $filenames        Name or full path of the Twig file to compile. If this is an array of file
      *                                          names or paths, Timber will compile the first file that exists.
-     * @param array           $data             Optional. An array of data to use in Twig template.
+     * @param array|null      $data             Optional. An array of data to use in Twig template.
      * @param bool|int|array  $expires          Optional. In seconds. Use false to disable cache altogether. When passed an
      *                                          array, the first value is used for non-logged in visitors, the second for users.
      *                                          Default false.
@@ -1390,6 +1390,7 @@ class Timber
         if (!\defined('TIMBER_LOADED')) {
             self::init();
         }
+        $data ??= [];
         $caller = LocationManager::get_calling_script_dir(1);
         $loader = new Loader($caller);
         $file = $loader->choose_template($filenames);
@@ -1456,10 +1457,6 @@ class Timber
         $output = false;
 
         if ($file !== false) {
-            if (\is_null($data)) {
-                $data = [];
-            }
-
             if ($via_render) {
                 /**
                  * Filters the data that should be passed for rendering a Twig template.
@@ -1561,7 +1558,7 @@ class Timber
      * @param string         $block_name     The name of the block to render.
      * @param array|string   $filenames      Name or full path of the Twig file to render. If this is an array of file
      *                                       names or paths, Timber will render the first file that exists.
-     * @param array          $data           Optional. An array of data to use in Twig template.
+     * @param array|null     $data           Optional. An array of data to use in Twig template.
      * @param string|array|null $caller      Optional. A value produced by a `LocationManager` method to control
      *                                       template lookup. Pass either `LocationManager::get_calling_script_dir()`
      *                                       (string path) or `LocationManager::get_locations()` (array of search
@@ -1585,17 +1582,13 @@ class Timber
         if (!\defined('TIMBER_LOADED')) {
             self::init();
         }
+        $data ??= [];
 
-        if ($caller === null) {
-            $caller = LocationManager::get_calling_script_dir(1);
-        }
+        $caller ??= LocationManager::get_calling_script_dir(1);
         $block_loader = new TwigBlockLoader($caller, $block_name);
         $file = $block_loader->choose_template($filenames);
 
         if ($file !== false) {
-            if (\is_null($data)) {
-                $data = [];
-            }
             return $block_loader->render($file, $data, $expires, $cache_mode);
         } else {
             if (\is_array($filenames)) {
