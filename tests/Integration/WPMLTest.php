@@ -4,8 +4,10 @@ namespace Timber\Tests\Integration;
 
 use Mantle\Testing\Attributes\PermalinkStructure;
 use Mantle\Testing\Concerns\Refresh_Database;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Timber\ImageHelper;
+use Timber\Integration\WpmlIntegration;
 use Timber\Tests\Image\ImageTest;
 use Timber\Tests\MenuTest;
 use Timber\Tests\TimberIntegrationTestCase;
@@ -45,6 +47,32 @@ class WPMLTest extends TimberIntegrationTestCase
         $image = $this->copyImageToUploads();
         $url = URLHelper::file_system_to_url($image);
         $this->assertEquals('http://example.org/wp-content/uploads/' . \date('Y/m') . '/arch.jpg', $url);
+    }
+
+    #[DataProvider('languageSegmentData')]
+    public function testLanguageCodeIsOnlyRemovedAsWholePathSegment($input, $expected)
+    {
+        $this->assertSame($expected, (new WpmlIntegration())->file_system_to_url($input));
+    }
+
+    public static function languageSegmentData()
+    {
+        return [
+            'home URL ending in the language' => ['http://example.org/en', 'http://example.org'],
+            'language directory' => ['http://example.org/en/wp-content/uploads/arch.jpg', 'http://example.org/wp-content/uploads/arch.jpg'],
+            'path starting with the language' => ['/en/wp-content/uploads/arch.jpg', '/wp-content/uploads/arch.jpg'],
+            'directory starting with the language' => ['/wp-content/themes/entries/arch.jpg', '/wp-content/themes/entries/arch.jpg'],
+            'file name starting with the language' => ['/wp-content/uploads/entry.jpg', '/wp-content/uploads/entry.jpg'],
+            'file system path' => ['/srv/www/enterprise/wp-content/uploads/arch.jpg', '/srv/www/enterprise/wp-content/uploads/arch.jpg'],
+            'subdomain named like the language' => ['http://en.example.org/wp-content/uploads/arch.jpg', 'http://en.example.org/wp-content/uploads/arch.jpg'],
+            'host named like the language' => ['http://en/wp-content/uploads/arch.jpg', 'http://en/wp-content/uploads/arch.jpg'],
+        ];
+    }
+
+    public function testURLToFileSystemKeepsPathSegmentsStartingWithLanguage()
+    {
+        $path = URLHelper::url_to_file_system('http://example.org/en/wp-content/uploads/entries/arch.jpg');
+        $this->assertSame(ABSPATH . 'wp-content/uploads/entries/arch.jpg', $path);
     }
 
     public function testWPMLurlRemote()
