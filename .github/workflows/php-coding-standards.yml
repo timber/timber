@@ -6,15 +6,15 @@ on:
       - master
       - 2.x
     paths:
-      - '**.php'
-      - '**composer.json'
+      - "**.php"
+      - "**composer.json"
   pull_request:
     branches:
       - master
       - 2.x
     paths:
-      - '**.php'
-      - '**composer.json'
+      - "**.php"
+      - "**composer.json"
     types:
       - opened
       - synchronize
@@ -51,8 +51,13 @@ jobs:
             **/*.php
           safe_output: true
 
+      # ECS 13.3 dropped its checkstyle format (ecsphp/ecs-src#74), so its JSON report is
+      # converted for cs2pr, which annotates the pull request and fails the job on violations.
       - name: Run coding standards
         if: steps.changed-files.outputs.all_changed_files != ''
         env:
           CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
-        run: ./vendor/bin/ecs check --output-format=checkstyle $CHANGED_FILES | cs2pr
+        run: |
+          ./vendor/bin/ecs check --output-format=json $CHANGED_FILES \
+            | jq -r --arg ws "$PWD/" -f .github/scripts/ecs-checkstyle.jq \
+            | cs2pr

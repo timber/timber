@@ -52,9 +52,7 @@ class CoAuthorsTest extends TimberIntegrationTestCase
     public static function copyTestImage($img = 'avt-1.jpg', $dest_name = null)
     {
         $upload_dir = \wp_upload_dir();
-        if (\is_null($dest_name)) {
-            $dest_name = $img;
-        }
+        $dest_name ??= $img;
         $destination = $upload_dir['path'] . '/' . $dest_name;
         \copy(__DIR__ . '/../Fixtures/assets/' . $img, $destination);
         return $destination;

@@ -87,6 +87,12 @@ jobs:
             dependency-version: 'highest'
             experimental: true
             coverage: false
+          # Next PHP release (experimental)
+          - php: '8.6'
+            wp: 'latest'
+            dependency-version: 'highest'
+            experimental: true
+            coverage: false
 
     name: PHP ${{ matrix.php }} | WP ${{ matrix.wp }} | ${{ matrix.dependency-version }}${{ matrix.coverage && ' | coverage' || '' }}
 
@@ -101,7 +107,7 @@ jobs:
           php-version: ${{ matrix.php }}
           coverage: ${{ matrix.coverage && 'pcov' || 'none' }}
           tools: composer:v2
-          extensions: curl, date, dom, iconv, json, libxml, gd, sqlite3
+          extensions: curl, date, dom, iconv, json, libxml, gd, sqlite3, xmlreader
           ini-values: ${{ matrix.coverage && 'pcov.directory=src' || '' }}
 
       - name: Setup problem matchers
@@ -115,9 +121,12 @@ jobs:
       - uses: ramsey/composer-install@26d8a556604053a9612623447203a691f406fbe6 # v4
         with:
           dependency-versions: ${{ matrix.dependency-version }}
+          # Some dev dependencies cap PHP at the latest release, so ignore upper bounds when
+          # running on an unreleased PHP.
+          composer-options: ${{ matrix.experimental && '--ignore-platform-req=php+' || '' }}
 
-      # PHP 8.5: Collision and curl have deprecations we can't fix
-      - name: Disable failOnDeprecation for PHP 8.5
+      # Experimental jobs: dependencies have deprecations on new PHP versions we can't fix
+      - name: Disable failOnDeprecation for experimental jobs
         if: matrix.experimental
         run: sed -i 's/failOnDeprecation="true"/failOnDeprecation="false"/' phpunit.xml
 
@@ -160,7 +169,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         if: matrix.coverage
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           files: build/logs/clover.xml
           token: ${{ secrets.CODECOV_TOKEN }}
