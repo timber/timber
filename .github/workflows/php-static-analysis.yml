@@ -8,6 +8,7 @@ on:
     paths:
       - '**.php'
       - '**composer.json'
+      - 'phpstan.neon.dist'
   pull_request:
     branches:
       - master
@@ -15,6 +16,7 @@ on:
     paths:
       - '**.php'
       - '**composer.json'
+      - 'phpstan.neon.dist'
     types:
       - opened
       - synchronize
@@ -40,20 +42,8 @@ jobs:
 
       - name: Install dependencies
         uses: ./.github/actions/setup
-        with:
-          PHP_TOOLS: cs2pr
 
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96 # v47.0.6
-        with:
-          files: |
-            src/**/*.php
-            phpstan/**/*.php
-          safe_output: true
-
+      # The whole codebase, not just the changed files: a change to one file can break
+      # its callers elsewhere, and PHPStan only sees that when it analyses them too.
       - name: Run static analysis
-        if: steps.changed-files.outputs.all_changed_files != ''
-        env:
-          CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
-        run: ./vendor/bin/phpstan analyse --memory-limit=-1 --error-format=checkstyle $CHANGED_FILES | cs2pr
+        run: ./vendor/bin/phpstan analyse --memory-limit=-1 --error-format=github
