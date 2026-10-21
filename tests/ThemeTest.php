@@ -53,9 +53,7 @@ class ThemeTest extends TimberIntegrationTestCase
         \update_option('home', 'http://example.org:3000', true);
         $old_port = $_SERVER['SERVER_PORT'];
         $_SERVER['SERVER_PORT'] = 3000;
-        if (!isset($_SERVER['SERVER_NAME'])) {
-            $_SERVER['SERVER_NAME'] = 'example.org';
-        }
+        $_SERVER['SERVER_NAME'] ??= 'example.org';
 
         /* test */
         $theme = new Theme();

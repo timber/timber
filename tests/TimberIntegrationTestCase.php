@@ -16,10 +16,10 @@ abstract class TimberIntegrationTestCase extends Integration_Test_Case
     private $temporary_hook_removals = [];
 
     /**
-     * Files copied into the uploads directory by copyImageToUploads(). These have no
-     * attachment, so Mantle never deletes them; without explicit cleanup they leak into
-     * later tests, where wp_upload_bits() then uniquifies colliding filenames (arch.jpg
-     * becomes arch-1.jpg) and breaks tests that assert on exact upload paths.
+     * Files put into the uploads directory by copyImageToUploads() and writeFileToUploads().
+     * These have no attachment, so Mantle never deletes them; without explicit cleanup they
+     * leak into later tests, where wp_upload_bits() then uniquifies colliding filenames
+     * (arch.jpg becomes arch-1.jpg) and breaks tests that assert on exact upload paths.
      */
     private array $copied_upload_files = [];
 
@@ -254,20 +254,52 @@ abstract class TimberIntegrationTestCase extends Integration_Test_Case
      */
     protected function copyImageToUploads(string $file = 'arch.jpg', ?string $destName = null): string
     {
-        $upload_dir = \wp_get_upload_dir();
-        $destName ??= $file;
-        $destination = $upload_dir['path'] . '/' . $destName;
-
-        // Ensure the upload directory exists
-        if (!\is_dir($upload_dir['path'])) {
-            \wp_mkdir_p($upload_dir['path']);
-        }
+        $destination = $this->getUploadsPath($destName ?? $file);
 
         \copy($this->getFixtureAsset($file), $destination);
 
         $this->copied_upload_files[] = $destination;
 
         return $destination;
+    }
+
+    /**
+     * Write a file with the given contents into the uploads directory without creating an
+     * attachment.
+     *
+     * Use this for tests that need a file with specific contents (not a fixture).
+     *
+     * @param string $name Destination filename
+     * @param string $contents File contents
+     * @return string Full path to written file
+     */
+    protected function writeFileToUploads(string $name, string $contents): string
+    {
+        $destination = $this->getUploadsPath($name);
+
+        \file_put_contents($destination, $contents);
+
+        $this->copied_upload_files[] = $destination;
+
+        return $destination;
+    }
+
+    /**
+     * Get the full path for a file in the current uploads directory, creating the directory
+     * if it doesn't exist yet.
+     *
+     * @param string $name Filename
+     * @return string Full path
+     */
+    private function getUploadsPath(string $name): string
+    {
+        $upload_dir = \wp_get_upload_dir();
+
+        if (!\is_dir($upload_dir['path'])) {
+            \wp_mkdir_p($upload_dir['path']);
+        }
+
+        return $upload_dir['path'] . '/' . $name;
     }
 
     /**

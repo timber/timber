@@ -334,9 +334,9 @@ class Site extends Core implements CoreInterface
     {
         $current_id = \get_current_blog_id();
 
-        if ($blog_identifier === null) {
-            $blog_identifier = $current_id;
-        } elseif (!\is_numeric($blog_identifier)) {
+        $blog_identifier ??= $current_id;
+
+        if (!\is_numeric($blog_identifier)) {
             $blog_identifier = \get_id_from_blogname($blog_identifier) ?? $current_id;
         }
 
