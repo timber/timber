@@ -181,6 +181,33 @@ add_filter('timber/taxonomy/classmap', function ($classmap) {
 });
 ```
 
+## The Post Type Class Map
+
+When you extend `Timber\PostType`, you can use the `timber/post_type/classmap` filter to tell Timber which class it should use for a certain post type.
+
+The Post Type Class Map is used:
+
+- When you get a post type through `Timber::get_post_type()`.
+- When you get a collection of post types through `Timber::get_post_types()`.
+
+**functions.php**
+
+```php
+use RecipePostType;
+
+add_filter('timber/post_type/classmap', function ($classmap) {
+    $custom_classmap = [
+        'recipe' => RecipePostType::class,
+    ];
+
+    return array_merge($classmap, $custom_classmap);
+});
+```
+
+Post types that you don’t list in the Post Type Class Map will take the default `Timber\PostType` class.
+
+As with the other class maps, you can use a callback function that receives a `WP_Post_Type` object and returns the name of the class to use.
+
 ## The Comment Class Map
 
 When you extend `Timber\Comment`, the logic you add is usually for comments related to a certain post type. With the `timber/comment/classmap` filter, you can tell Timber which class it should use for comments that belong to a certain post type.
