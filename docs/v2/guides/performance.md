@@ -118,6 +118,32 @@ $loader = new Timber\Loader();
 $loader->clear_cache_twig();
 ```
 
+## Reuse the Twig Environment
+
+By default, Timber creates a new `Twig\Environment` for every `Timber::compile()`, `Timber::render()` and `Timber::compile_string()` call: it registers Timber's Twig functions and filters and the cache extension, and runs every `timber/twig` hook, each time. Twig then initializes its extensions again on the first render of each new instance. Templates themselves are not recompiled, but the setup costs time on every call: on a development machine, `Timber::compile()` went from about 0.23 ms to about 0.07 ms per call once the environment was shared. A page that compiles a handful of templates will not notice. A page that compiles dozens, for example one `Timber::compile()` per block render callback, pays the setup each time.
+
+You can tell Timber to build the environment once and reuse it for all renders in the request (or in the whole process, for WP-CLI commands and queue workers):
+
+**functions.php**
+
+```php
+add_filter('timber/twig/environment/shared', '__return_true');
+```
+
+The template you pass to `Timber::compile()` and `Timber::render()` is still looked up in the template locations of its own calling file. What changes is that the environment is configured once and keeps the templates it has loaded. Keep this in mind when you enable it:
+
+- Hooks that configure the environment run once, when it is built: `timber/twig`, `timber/loader/twig`, `timber/twig/environment/options`, `timber/twig/functions`, `timber/twig/filters`, `timber/twig/escapers`, `timber/cache/enable_extension` and `timber/cache/extension/lifetime`, as well as the deprecated `Timber::$autoescape`, `Timber::$twig_cache` and `Timber::$cache` properties. Register them before the first compile, for example on `after_setup_theme` or `init`. The `{% cache %}` tag keeps the `timber/cache/mode` result of the `Timber\Loader` instance that built the environment.
+
+- Adding and removing one of those hooks around a single call has no effect once the environment exists. Security-relevant settings, like `autoescape` or removing the `function` and `fn` Twig functions through `timber/twig/functions` before compiling an untrusted string, must be registered before the first compile.
+- Twig globals added in `timber/twig` are evaluated once per environment build. If a value changes during the request, call `addGlobal()` again with the same name. Twig allows updating an existing global after initialization, but not adding a new one.
+- Date format, timezone and number format are read once per environment build, so `switch_to_locale()` has no effect on an existing environment.
+- Loader changes made in `timber/twig` or `timber/loader/twig`, with `$twig->getLoader()->addPath()` or `$twig->setLoader()`, do not apply to templates rendered through `Timber::compile()` or `Timber::render()`. They still apply to `Timber::compile_string()` and to direct `Timber\Loader::get_twig()` callers. Use the `timber/locations` filter (it supports namespaces) or the `timber/loader/loader` filter instead.
+- `{% use %}` traits are loaded the first time a template is instantiated in the shared environment and kept for later renders of that template, even from another calling file. `{% extends %}` and `{% include %}` are resolved on every full render through `Timber::compile()` or `Timber::render()`. Block renders through `Timber::compile_twig_block()` do not re-resolve the parent: they use the one left by the last full render of that template, or resolve it once and keep it.
+- Code that calls `Timber\Loader::get_twig()` directly receives the shared instance. Twig throws a `LogicException` if filters, functions, extensions or new globals are added to an environment that has already loaded a template. Between renders, the environment keeps the loader it was built with, so `Timber::compile_string()` and direct callers resolve `{% include %}` against that loader. Direct callers can call `setLoader()` before loading files that need specific paths, and should restore the previous loader afterwards.
+- On multisite, the environment belongs to the current blog. Each `switch_to_blog()` and `restore_current_blog()` rebuilds it on the next render.
+
+`Timber\Loader::clear_cache_twig()` (or `Timber\Cache\Cleaner::clear_cache_twig()`) discards the shared environment; the next render builds a new one. With Twig's `cache` option enabled, it also deletes the compiled templates.
+
 ## Cache _Parts_ of the Twig File and Data
 
 If you want to use [`cache` tag](https://twig.symfony.com/doc/3.x/tags/cache.html) in Twig, you’ll have to install the `twig/cache-extra` package:
