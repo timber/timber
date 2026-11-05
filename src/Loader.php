@@ -42,6 +42,17 @@ class Loader implements LoaderInterface
     protected $locations;
 
     /**
+     * The Twig environment reused across renders when the `timber/twig/environment/shared`
+     * filter is enabled. One environment at a time, for one blog.
+     */
+    private static ?Environment $shared_twig = null;
+
+    /**
+     * ID of the blog `self::$shared_twig` was built for.
+     */
+    private static ?int $shared_blog_id = null;
+
+    /**
      * @param bool|string   $caller the calling directory or false
      */
     public function __construct($caller = false)
@@ -187,6 +198,7 @@ class Loader implements LoaderInterface
     protected function render_template($file, $data)
     {
         $twig = $this->get_twig();
+        $loader = null;
 
         if (\strlen($file)) {
             $loader = $this->get_loader();
@@ -244,19 +256,36 @@ class Loader implements LoaderInterface
             'timber/loader/render_data'
         );
 
-        $template = $twig->load($file);
-        $output = $this->render_twig_template($template, $data);
+        $previous_loader = null;
 
-        /**
-         * Filters $output before it is cached.
-         *
-         * @since 2.1.0
-         *
-         * @param string $output
-         * @param array  $data
-         * @param string $file
-         */
-        return \apply_filters('timber/output/pre-cache', $output, $data, $file);
+        if (null !== self::$shared_twig && $twig === self::$shared_twig) {
+            // The shared environment carries the loader it was built with. Resolve this render
+            // with this Loader's locations, and restore afterwards so a nested compile does not
+            // leak its paths into the outer render.
+            $loader ??= $this->get_loader();
+            $previous_loader = $twig->getLoader();
+            $twig->setLoader($loader);
+        }
+
+        try {
+            $template = $twig->load($file);
+            $output = $this->render_twig_template($template, $data);
+
+            /**
+             * Filters $output before it is cached.
+             *
+             * @since 2.1.0
+             *
+             * @param string $output
+             * @param array  $data
+             * @param string $file
+             */
+            return \apply_filters('timber/output/pre-cache', $output, $data, $file);
+        } finally {
+            if (null !== $previous_loader) {
+                $twig->setLoader($previous_loader);
+            }
+        }
     }
 
     /**
@@ -424,6 +453,81 @@ class Loader implements LoaderInterface
      */
     public function get_twig()
     {
+        /**
+         * Filters whether Timber reuses one Twig environment for all renders.
+         *
+         * By default, Timber builds a new `Twig\Environment` for every `Timber::compile()`,
+         * `Timber::render()` and `Timber::compile_string()` call. When this filter returns
+         * `true`, Timber builds the environment once per request (once per process in WP-CLI
+         * and other long-running contexts) and reuses it, which saves the construction and
+         * initialization cost on every call. Projects that compile many templates per
+         * request, like block render callbacks, benefit the most.
+         *
+         * The template passed to `Timber::compile()` and `Timber::render()` is still looked up
+         * in the template locations of its own calling file.
+         * `Timber\Loader::clear_cache_twig()` discards the shared environment. With Twig's
+         * `cache` option enabled, it also deletes the compiled templates.
+         *
+         * When enabled, keep the following in mind:
+         *
+         * - Hooks that configure the environment run once, when it is built: `timber/twig`,
+         *   `timber/loader/twig`, `timber/twig/environment/options`,
+         *   `timber/twig/functions`, `timber/twig/filters`, `timber/twig/escapers`,
+         *   `timber/cache/enable_extension` and `timber/cache/extension/lifetime`, as well
+         *   as the deprecated `Timber::$autoescape`, `Timber::$twig_cache` and
+         *   `Timber::$cache` properties. Register them before the first compile, for
+         *   example on `after_setup_theme` or `init`. The `{% cache %}` tag keeps the
+         *   `timber/cache/mode` result of the `Timber\Loader` instance that built the
+         *   environment.
+         * - Adding and removing one of those hooks around a single call has no effect once
+         *   the environment exists. Security-relevant settings, like `autoescape` or
+         *   removing the `function` and `fn` Twig functions through `timber/twig/functions`
+         *   before compiling an untrusted string, must be registered before the first
+         *   compile.
+         * - Twig globals added in `timber/twig` are evaluated once per environment build.
+         *   To update a value later, call `addGlobal()` again with the same name, which
+         *   Twig allows after initialization.
+         * - Date format, timezone and number format are read once per environment build, so
+         *   `switch_to_locale()` has no effect on an existing environment.
+         * - Loader changes made in `timber/twig` or `timber/loader/twig`, with
+         *   `$twig->getLoader()->addPath()` or `$twig->setLoader()`, do not apply to
+         *   templates rendered through `Timber::compile()` or `Timber::render()`. Use the
+         *   `timber/locations` or `timber/loader/loader` filters instead.
+         * - `{% use %}` traits are loaded the first time a template is instantiated in the
+         *   shared environment and kept for later renders of that template, even from
+         *   another calling file. `{% extends %}` and `{% include %}` are resolved on every
+         *   full render through `Timber::compile()` or `Timber::render()`. Block renders
+         *   through `Timber::compile_twig_block()` do not re-resolve the parent: they use
+         *   the one left by the last full render of that template, or resolve it once and
+         *   keep it.
+         * - Code that calls `Timber\Loader::get_twig()` directly receives the shared
+         *   instance. Twig does not allow adding filters, functions, extensions or new
+         *   globals to an environment that has already loaded a template. Between
+         *   renders, the environment keeps the loader it was built with, so
+         *   `Timber::compile_string()` and direct callers resolve `{% include %}` against
+         *   that loader. Call `setLoader()` before loading files that need specific paths,
+         *   and restore the previous loader afterwards.
+         * - On multisite, the environment belongs to the current blog. Each
+         *   `switch_to_blog()` and `restore_current_blog()` rebuilds it on the next render.
+         *
+         * @api
+         * @since 2.6.0
+         * @link https://timber.github.io/docs/v2/guides/performance/#reuse-the-twig-environment
+         * @example
+         * ```php
+         * add_filter('timber/twig/environment/shared', '__return_true');
+         * ```
+         *
+         * @param bool $shared Whether to reuse one Twig environment across renders.
+         *                     Default `false`.
+         */
+        $shared = \apply_filters('timber/twig/environment/shared', false);
+        $blog_id = $shared ? \get_current_blog_id() : null;
+
+        if ($shared && null !== self::$shared_twig && self::$shared_blog_id === $blog_id) {
+            return self::$shared_twig;
+        }
+
         // Default options.
         $environment_options = [
             'debug' => WP_DEBUG,
@@ -623,6 +727,11 @@ class Loader implements LoaderInterface
          */
         $twig = \apply_filters_deprecated('get_twig', [$twig], '2.0.0', 'timber/twig');
 
+        if ($shared) {
+            self::$shared_twig = $twig;
+            self::$shared_blog_id = $blog_id;
+        }
+
         return $twig;
     }
 
@@ -696,6 +805,10 @@ class Loader implements LoaderInterface
     public function clear_cache_twig()
     {
         $twig = $this->get_twig();
+
+        // Discard the shared environment, if any, so the next render builds a fresh one.
+        self::$shared_twig = null;
+        self::$shared_blog_id = null;
 
         // Get the configured cache location.
         $cache_location = $twig->getCache(true);

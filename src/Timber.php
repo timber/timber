@@ -1605,6 +1605,7 @@ class Timber
      * This function compiles a string with Twig variables and returns the output.
      * Please be aware that this function might cause a security risk if you pass untrusted data into this function.
      * If you want to minimize the risk, you could remove fn from the Timber function array. See https://timber.github.io/docs/v2/hooks/filters/#timber/twig/functions
+     * When the `timber/twig/environment/shared` filter is enabled, do that before the first compile: adding and removing the hook around a single call has no effect on the shared environment.
      *
      * @api
      * @example
