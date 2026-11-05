@@ -25,3 +25,23 @@ function timber_test_shared_env_compile_outer()
 {
     return Timber::compile('outer.twig');
 }
+
+/**
+ * Compiles a shared template whose `{% extends 'base.twig' %}` resolves to caller-a/base.twig.
+ *
+ * @return string|false
+ */
+function timber_test_shared_env_compile_child_a()
+{
+    return Timber::compile('shared-environment/child.twig');
+}
+
+/**
+ * Compiles a shared template whose `{% use 'traits.twig' %}` resolves to caller-a/traits.twig.
+ *
+ * @return string|false
+ */
+function timber_test_shared_env_compile_uses_a()
+{
+    return Timber::compile('shared-environment/uses.twig');
+}
