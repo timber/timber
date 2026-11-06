@@ -3,6 +3,7 @@
 namespace Timber\Tests;
 
 use PHPUnit\Framework\Attributes\Group;
+use Timber\Post;
 use Timber\PostArrayObject;
 use Timber\Timber;
 
@@ -129,6 +130,53 @@ class TimberPostIteratorTest extends TimberIntegrationTestCase
         $this->assertSame($first_loop[0], $posts[0]);
         $this->assertSame('by controller', $second_loop[2]->enriched);
         $this->assertSame(3, $built);
+    }
+
+    public function testToArrayAfterEarlyBreakReusesTheRealizedPost()
+    {
+        $pids = static::factory()->post->create_many(2);
+        $posts = Timber::get_posts([
+            'post__in' => $pids,
+            'orderby' => 'post__in',
+        ]);
+
+        foreach ($posts as $post) {
+            break;
+        }
+        $array = $posts->to_array();
+
+        $this->assertSame($post, $array[0]);
+        $this->assertContainsOnlyInstancesOf(Post::class, $array);
+    }
+
+    public function testLoopOverIdsLeavesTheIdsInTheCollection()
+    {
+        $pids = static::factory()->post->create_many(2);
+        $posts = new PostArrayObject($pids);
+
+        foreach ($posts as $post) {
+            $this->assertSame($pids[0], $post->ID);
+            break;
+        }
+
+        $this->assertSame($pids[0], $posts[0]);
+        $this->assertSame($pids, $posts->to_array());
+    }
+
+    public function testLoopOverMissingIdKeepsTheId()
+    {
+        $pid = static::factory()->post->create();
+        $missing = $pid + 1000;
+        $posts = new PostArrayObject([$pid, $missing]);
+
+        $loop = [];
+        foreach ($posts as $post) {
+            $loop[] = $post;
+        }
+
+        $this->assertSame($pid, $loop[0]->ID);
+        $this->assertNull($loop[1]);
+        $this->assertSame([$pid, $missing], $posts->to_array());
     }
 
     public function testLoopOverChildrenFiresLoopHooksAndRestoresPost()
