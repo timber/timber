@@ -404,8 +404,10 @@ class MenuItem extends CoreEntity implements Stringable
     public function slug()
     {
         $mo = $this->master_object();
-        // A post type object has no magic getter; only a registration argument can give it a post_name.
-        $post_name = $mo instanceof WP_Post_Type ? $mo->post_name ?? null : $mo?->post_name;
+        // Timber posts and terms resolve post_name through __get() (meta, class properties). `??` would go
+        // through __isset() instead, which ignores meta, so a term's post_name meta would be lost.
+        // A post type object only has a post_name when one was passed to register_post_type().
+        $post_name = $mo instanceof WP_Post_Type ? ($mo->post_name ?? null) : $mo?->post_name;
         return $post_name ?: $this->post_name;
     }
 
