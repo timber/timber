@@ -637,7 +637,7 @@ class Loader implements LoaderInterface
         //_transient_timberloader
         $cache_mode = $this->_get_cache_mode($cache_mode);
 
-        // $wpdb->query() might return 0 affected rows, but that means it’s still successful.
+        // Only false means an error: the database clears might delete 0 rows and still be successful.
         if (self::CACHE_TRANSIENT === $cache_mode) {
             return false !== self::clear_cache_timber_database();
         } elseif (self::CACHE_SITE_TRANSIENT === $cache_mode) {
