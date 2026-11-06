@@ -1357,6 +1357,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      */
     public function content($page = 0, $len = -1, $remove_blocks = false)
     {
+        $page = (int) $page;
+
         if ($rd = $this->get_revised_data_from_method('content', [$page, $len])) {
             return $rd;
         }
