@@ -148,6 +148,14 @@ class Loader implements LoaderInterface
         return $output;
     }
 
+    /**
+     * Deletes expired transients from the database.
+     *
+     * Not called during render anymore: expired transients are left to WordPress’ daily
+     * `delete_expired_transients` cron event, or to `Timber\Cache\Cleaner::delete_transients()`.
+     *
+     * @return void
+     */
     public function delete_cache()
     {
         Cleaner::delete_transients();

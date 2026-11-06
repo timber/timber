@@ -136,6 +136,11 @@ class Cleaner
         return $clean;
     }
 
+    /**
+     * Deletes expired transients from the database.
+     *
+     * @return int The number of deleted rows, timeout rows included. 0 when an external object cache is in use.
+     */
     public static function delete_transients()
     {
         global $_wp_using_ext_object_cache;
