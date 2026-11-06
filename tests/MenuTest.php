@@ -1025,6 +1025,26 @@ class MenuTest extends TimberIntegrationTestCase
         $this->assertSame($parent->link(), $menu->current_item(1)->link());
     }
 
+    public function testGetCurrentItemWithDepthBeforeUnconstrainedCall()
+    {
+        $menu_arr = self::_createTestMenu();
+        $menu = Timber::get_menu($menu_arr['term_id']);
+
+        $parent = $menu->items[0];
+        $parent->current_item_ancestor = true;
+
+        $child = $parent->children[0];
+        $child->current_item_ancestor = true;
+
+        $grandchild = $child->children[1];
+        $grandchild->current = true;
+
+        // A depth-limited call must not fill the cache used by unconstrained calls.
+        $this->assertSame($child->link(), $menu->current_item(2)->link());
+        $this->assertSame($grandchild->link(), $menu->current_item()->link());
+        $this->assertSame($child->link(), $menu->current_item(2)->link());
+    }
+
     public function testGetCurrentItemWithDepthWithoutCurrentItem()
     {
         // Set REQUEST_URI to a non-matching URL so WordPress doesn't auto-mark any item as current
