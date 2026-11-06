@@ -157,7 +157,7 @@ class Loader implements LoaderInterface
     /**
      * Generate a cache key for the template.
      *
-     * @param string $file The template file.
+     * @param string $file The template name.
      * @param array  $data The data to pass to the template.
      * @return string|null The cache key or null if encoding failed.
      */
@@ -174,7 +174,7 @@ class Loader implements LoaderInterface
             return null;
         }
 
-        // Use the resolved file, because callers with different locations can resolve the same name to different files.
+        // Use the Twig loader's cache key, so the same name resolved from different locations gets its own entry.
         return \md5($this->get_loader()->getCacheKey($file) . $encoded);
     }
 
