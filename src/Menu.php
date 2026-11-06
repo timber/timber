@@ -532,17 +532,12 @@ class Menu extends CoreEntity implements Stringable
             return $this->_current_item;
         }
 
-        if (!isset($this->_current_item) || null !== $depth) {
-            $current = $this->traverse_items_for_current(
-                $this->items,
-                $depth
-            );
+        if (null !== $depth) {
+            return $this->traverse_items_for_current($this->items, $depth);
+        }
 
-            if (\is_null($depth)) {
-                $this->_current_item = $current;
-            } else {
-                return $current;
-            }
+        if (!isset($this->_current_item)) {
+            $this->_current_item = $this->traverse_items_for_current($this->items, null);
         }
 
         return $this->_current_item;
