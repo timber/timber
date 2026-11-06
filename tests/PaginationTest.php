@@ -752,6 +752,19 @@ class PaginationTest extends TimberIntegrationTestCase
         $this->assertSame([], $pagination->pages);
     }
 
+    public function testPaginationTotalWithNoPaging()
+    {
+        static::factory()->post->create_many(15);
+        $posts = Timber::get_posts([
+            'post_type' => 'post',
+            'nopaging' => true,
+        ]);
+        $pagination = $posts->pagination();
+
+        $this->assertSame(1.0, $pagination->total);
+        $this->assertSame([], $pagination->pages);
+    }
+
     public function testPaginationWithAllPostsOnOnePageAndNoPosts()
     {
         $posts = Timber::get_posts([
