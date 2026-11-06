@@ -4,6 +4,7 @@ namespace Timber\Tests;
 
 use Mantle\Testing\Attributes\PermalinkStructure;
 use Mantle\Testing\Concerns\Refresh_Database;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\Attributes\Ticket;
@@ -725,7 +726,7 @@ class PaginationTest extends TimberIntegrationTestCase
         $this->assertSame('http://example.org/page/3/?foo=bar', $pagination->prev['link']);
     }
 
-    public function testPaginationNextWithSizeTwo()
+    public function testPaginationNextAndPrevWithSizeTwo()
     {
         static::factory()->post->create_many(7);
         $this->get(\home_url('/'));
@@ -737,6 +738,82 @@ class PaginationTest extends TimberIntegrationTestCase
         $pagination = $posts->pagination(2);
 
         $this->assertSame('http://example.org/?paged=5', $pagination->next['link']);
+        $this->assertSame('http://example.org/?paged=3', $pagination->prev['link']);
+    }
+
+    /**
+     * First and last page with mid_size 0: the side with no page keeps its usual empty value.
+     *
+     * @return iterable<string, array{int, mixed, mixed}>
+     */
+    public static function midSizeZeroBoundsProvider(): iterable
+    {
+        yield 'first page' => [
+            1,
+            [
+                'link' => 'http://example.org/?paged=2',
+                'class' => 'page-numbers next',
+            ],
+            '',
+        ];
+        yield 'last page' => [
+            7,
+            null,
+            [
+                'link' => 'http://example.org/?paged=6',
+                'class' => 'page-numbers prev',
+            ],
+        ];
+    }
+
+    #[DataProvider('midSizeZeroBoundsProvider')]
+    public function testPaginationNextAndPrevWithMidSizeZeroOnFirstAndLastPage(int $paged, $expected_next, $expected_prev)
+    {
+        static::factory()->post->create_many(7);
+        $this->get(\home_url('/'));
+        $posts = Timber::get_posts([
+            'post_type' => 'post',
+            'paged' => $paged,
+            'posts_per_page' => 1,
+        ]);
+        $pagination = $posts->pagination([
+            'mid_size' => 0,
+        ]);
+
+        $this->assertSame($expected_next, $pagination->next);
+        $this->assertSame($expected_prev, $pagination->prev);
+    }
+
+    /**
+     * A current page right after the last one, with every page listed.
+     *
+     * @return iterable<string, array{int, array}>
+     */
+    public static function pageAfterLastProvider(): iterable
+    {
+        yield 'three pages, default settings' => [3, []];
+        yield 'five pages, show_all' => [5, [
+            'show_all' => true,
+        ]];
+    }
+
+    #[DataProvider('pageAfterLastProvider')]
+    public function testPaginationHasNoNextOrPrevAfterTheLastPage(int $total, array $prefs)
+    {
+        static::factory()->post->create_many($total);
+        $this->get(\home_url('/'));
+        $posts = Timber::get_posts([
+            'post_type' => 'post',
+            'posts_per_page' => 1,
+        ]);
+        $pagination = $posts->pagination(\array_merge($prefs, [
+            'current' => $total + 1,
+        ]));
+
+        $this->assertSame((float) $total, $pagination->total);
+        $this->assertSame($total, \count($pagination->pages));
+        $this->assertNull($pagination->next);
+        $this->assertNull($pagination->prev);
     }
 
     public function testPaginationTotalWithAllPostsOnOnePage()
@@ -750,6 +827,8 @@ class PaginationTest extends TimberIntegrationTestCase
 
         $this->assertSame(1.0, $pagination->total);
         $this->assertSame([], $pagination->pages);
+        $this->assertNull($pagination->next);
+        $this->assertSame('', $pagination->prev);
     }
 
     public function testPaginationTotalWithNoPaging()
