@@ -387,9 +387,12 @@ class CacheTest extends TimberIntegrationTestCase
             'rand' => \random_int(0, 99999),
         ], $time);
         $this->assertEquals($str_old, $str_new);
-        Cleaner::delete_transients();
         global $wpdb;
         $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
+        // A cache miss no longer purges expired transients.
+        $wpdb->get_results($query);
+        $this->assertSame(2, $wpdb->num_rows);
+        Cleaner::delete_transients();
         $wpdb->get_results($query);
         $this->assertSame(1, $wpdb->num_rows);
     }
@@ -565,9 +568,12 @@ class CacheTest extends TimberIntegrationTestCase
             'rand' => \random_int(0, 99999),
         ], $time);
         $this->assertEquals($str_old, $str_new);
-        Cleaner::delete_transients();
         global $wpdb;
         $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
+        // A cache miss no longer purges expired transients.
+        $wpdb->get_results($query);
+        $this->assertSame(3, $wpdb->num_rows);
+        Cleaner::delete_transients();
         $wpdb->get_results($query);
         $this->assertSame(2, $wpdb->num_rows);
         $this->assertEquals('foo', \get_transient('random_600'));
