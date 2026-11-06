@@ -24,7 +24,7 @@ class WpmlIntegration implements IntegrationInterface
 
     public function file_system_to_url($url)
     {
-        if (\defined('ICL_LANGUAGE_CODE')) {
+        if (\defined('ICL_LANGUAGE_CODE') && ICL_LANGUAGE_CODE !== '') {
             $url = \preg_replace('/(?<!:\/)\/' . \preg_quote(ICL_LANGUAGE_CODE, '/') . '(?=[\/?#]|$)/', '', (string) $url);
         }
         return $url;
