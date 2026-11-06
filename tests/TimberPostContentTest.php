@@ -280,6 +280,7 @@ class TimberPostContentTest extends TimberIntegrationTestCase
         $first_page = $post->content(1);
         $full_content = $post->content();
 
+        $this->assertStringContainsString('Alpha', $first_page);
         $this->assertStringNotContainsString('Omega', $first_page);
         $this->assertStringContainsString('Alpha', $full_content);
         $this->assertStringContainsString('Omega', $full_content);
