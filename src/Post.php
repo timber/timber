@@ -1350,7 +1350,8 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      * ```
      *
      * @param int $page Optional. The page to show if the content of the post is split into multiple
-     *                  pages. Read more about this in the [Pagination Guide](https://timber.github.io/docs/v2/guides/pagination/#paged-content-within-a-post). Default `0`.
+     *                  pages. Read more about this in the [Pagination Guide](https://timber.github.io/docs/v2/guides/pagination/#paged-content-within-a-post).
+     *                  A page that doesn’t exist (negative or after the last page) returns the full content. Default `0`.
      * @param int $len Optional. The number of words to show. Default `-1` (show all).
      * @param bool $remove_blocks Optional. Whether to remove blocks. Defaults to false. True when called from the $post->excerpt() method.
      * @return string The content of the post.

@@ -285,6 +285,21 @@ class TimberPostContentTest extends TimberIntegrationTestCase
         $this->assertStringContainsString('Omega', $full_content);
     }
 
+    public function testPageOutOfRangeReturnsFullContent()
+    {
+        $post_id = static::factory()->post->create([
+            'post_content' => 'Alpha<!--nextpage-->Omega',
+        ]);
+        $post = Timber::get_post($post_id);
+
+        foreach ([-1, 3] as $page) {
+            $content = $post->content($page);
+
+            $this->assertStringContainsString('Alpha', $content);
+            $this->assertStringContainsString('Omega', $content);
+        }
+    }
+
     public function testNonNumericPageReturnsFullContent()
     {
         $post_id = static::factory()->post->create([
