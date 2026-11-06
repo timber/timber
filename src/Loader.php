@@ -659,7 +659,7 @@ class Loader implements LoaderInterface
         global $wpdb;
 
         return $wpdb->query($wpdb->prepare(
-            "DELETE FROM $wpdb->options WHERE option_name LIKE '%s'",
+            "DELETE FROM $wpdb->options WHERE option_name LIKE %s",
             '_transient%timberloader_%'
         ));
     }
@@ -673,16 +673,19 @@ class Loader implements LoaderInterface
     {
         global $wpdb;
 
+        // Matches both the value and the timeout rows: _site_transient_[timeout_]timberloader_*.
+        $pattern = $wpdb->esc_like('_site_transient_') . '%' . $wpdb->esc_like('timberloader_') . '%';
+
         if (!\is_multisite()) {
             return $wpdb->query($wpdb->prepare(
                 "DELETE FROM $wpdb->options WHERE option_name LIKE %s",
-                '_site_transient%timberloader_%'
+                $pattern
             ));
         }
 
         return $wpdb->query($wpdb->prepare(
             "DELETE FROM $wpdb->sitemeta WHERE meta_key LIKE %s AND site_id = %d",
-            '_site_transient%timberloader_%',
+            $pattern,
             \get_current_network_id()
         ));
     }
