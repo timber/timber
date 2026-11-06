@@ -398,10 +398,24 @@ class TimberRenderBlockTest extends TimberIntegrationTestCase
 
     public function testCompileTwigBlockCachesSameTemplateNameFromDifferentCallersSeparately()
     {
+        $renders = 0;
+        $count_renders = function ($output) use (&$renders) {
+            $renders++;
+            return $output;
+        };
+        \add_filter('timber/output/pre-cache', $count_renders);
+
         $first = Timber::compile_twig_block('content', 'card.twig', [], $this->getFixturesDir() . '/callers/first', 600);
+        $first_again = Timber::compile_twig_block('content', 'card.twig', [], $this->getFixturesDir() . '/callers/first', 600);
         $second = Timber::compile_twig_block('content', 'card.twig', [], $this->getFixturesDir() . '/callers/second', 600);
 
+        \remove_filter('timber/output/pre-cache', $count_renders);
+
         $this->assertSame('First card', \trim($first));
+        $this->assertSame('First card', \trim($first_again));
         $this->assertSame('Second card', \trim($second));
+
+        // The second render of the same caller is a cache hit.
+        $this->assertSame(2, $renders);
     }
 }
