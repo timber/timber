@@ -5,6 +5,7 @@ namespace Timber;
 use ArrayIterator;
 use ReturnTypeWillChange;
 use Timber\Factory\PostFactory;
+use WP_Post;
 
 /**
  * Class PostsIterator
@@ -82,9 +83,14 @@ class PostsIterator extends ArrayIterator
             \do_action_ref_array('loop_start', [&$GLOBALS['wp_query']]);
         }
 
-        // Create each Timber\Post once. Reuse it in later loops and array access.
-        $post = $factory->from(parent::current());
-        $this->offsetSet($this->key(), $post);
+        $raw = parent::current();
+        $post = $factory->from($raw);
+
+        // Create each Timber\Post once. Reuse it in later loops and array access. Like offsetGet(),
+        // only replace WP_Post objects, so post IDs stay IDs and a missing post is not stored.
+        if ($raw instanceof WP_Post) {
+            $this->offsetSet($this->key(), $post);
+        }
 
         if ($post instanceof Post && !\is_admin()) {
             // The setup() method should only run in the frontend.
