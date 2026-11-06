@@ -135,6 +135,52 @@ add_filter('timber/term/classmap', function ($classmap) {
 
 The callback function receives a `WP_Term` object and should return the name of the class to use.
 
+## The Taxonomy Class Map
+
+When you extend `Timber\Taxonomy`, you can use the `timber/taxonomy/classmap` filter to tell Timber which class it should use for a certain taxonomy.
+
+The Taxonomy Class Map is used:
+
+- When you get a taxonomy through `Timber::get_taxonomy()`.
+- When you get a collection of taxonomies through `Timber::get_taxonomies()`.
+
+**functions.php**
+
+```php
+use GenreTaxonomy;
+
+add_filter('timber/taxonomy/classmap', function ($classmap) {
+    $custom_classmap = [
+        'genre' => GenreTaxonomy::class,
+    ];
+
+    return array_merge($classmap, $custom_classmap);
+});
+```
+
+Taxonomies that you don’t list in the Taxonomy Class Map will take the default `Timber\Taxonomy` class.
+
+As with the other class maps, you can use a callback function that receives a `WP_Taxonomy` object and returns the name of the class to use:
+
+```php
+use HierarchicalTaxonomy;
+use GenreTaxonomy;
+
+add_filter('timber/taxonomy/classmap', function ($classmap) {
+    $custom_classmap = [
+        'genre' => function (\WP_Taxonomy $taxonomy) {
+            if ($taxonomy->hierarchical) {
+                return HierarchicalTaxonomy::class;
+            }
+
+            return GenreTaxonomy::class;
+        },
+    ];
+
+    return array_merge($classmap, $custom_classmap);
+});
+```
+
 ## The Comment Class Map
 
 When you extend `Timber\Comment`, the logic you add is usually for comments related to a certain post type. With the `timber/comment/classmap` filter, you can tell Timber which class it should use for comments that belong to a certain post type.
