@@ -408,6 +408,8 @@ function ajax_render_component() {
 add_action('wp_ajax_render_component', 'ajax_render_component');
 ```
 
+**Warning:** the example above passes the decoded request as-is for brevity. In real code, never pass untrusted request data straight as `$data`: template data can decide which templates get loaded, for example through `{% extends layout %}` or `{% include %}`. Only pass the values the component needs, validated or sanitized.
+
 ### Modular Layout Building
 
 Build complex layouts from smaller block components:
