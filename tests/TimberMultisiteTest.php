@@ -278,17 +278,28 @@ class TimberMultisiteTest extends TimberIntegrationTestCase
     {
         $this->skipWithoutMultisite();
 
-        \set_transient('expired_transient', 'foo', 600);
-        \update_option('_transient_timeout_expired_transient', \time() - 1);
-        \set_site_transient('expired_site_transient', 'foo', 600);
-        \update_site_option('_site_transient_timeout_expired_site_transient', \time() - 1);
-        \set_site_transient('valid_site_transient', 'bar', 600);
+        // Start from a clean table so the exact count only covers the transients below.
+        Cleaner::delete_transients();
 
-        $result = Cleaner::delete_transients();
+        // wpmu_create_blog() leaves wp_installing() on, which keeps transient values out of the database.
+        $installing = \wp_installing(false);
+
+        try {
+            \set_transient('expired_transient', 'foo', 600);
+            \update_option('_transient_timeout_expired_transient', \time() - 60);
+            \set_site_transient('expired_site_transient', 'foo', 600);
+            \update_site_option('_site_transient_timeout_expired_site_transient', \time() - 60);
+            \set_site_transient('valid_site_transient', 'bar', 600);
+
+            $result = Cleaner::delete_transients();
+            $valid = \get_site_transient('valid_site_transient');
+        } finally {
+            \wp_installing($installing);
+        }
 
         // Each expired transient and its timeout row, in the options and the sitemeta table.
         $this->assertSame(4, $result);
-        $this->assertSame('bar', \get_site_transient('valid_site_transient'));
+        $this->assertSame('bar', $valid);
     }
 
     public static function createSubDomainSite($domain = 'test.example.org', $title = 'Multisite Test')
