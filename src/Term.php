@@ -615,7 +615,11 @@ class Term extends CoreEntity implements Stringable
         // Merge a clause for this Term into any user-specified tax_query clauses.
         $query['tax_query'] = \array_merge($query['tax_query'] ?? [], $tax_query);
 
-        return Timber::get_posts($query);
+        return $this->memoize(
+            'posts:' . \md5(\serialize($query)),
+            fn () => Timber::get_posts($query),
+            ['posts', 'terms']
+        );
     }
 
     /**
