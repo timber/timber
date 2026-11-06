@@ -140,8 +140,11 @@ class CleanerTest extends TimberIntegrationTestCase
 
     public function test_delete_transients()
     {
+        // Start from a clean table so the exact count only covers the transients below.
+        Cleaner::delete_transients();
+
         \set_transient('expired_transient', 'foo', 600);
-        \update_option('_transient_timeout_expired_transient', \time() - 1);
+        \update_option('_transient_timeout_expired_transient', \time() - 60);
         \set_transient('valid_transient', 'bar', 600);
 
         $result = Cleaner::delete_transients();
