@@ -337,7 +337,6 @@ class PostExcerpt implements Stringable
     protected function assemble($text, $args = [])
     {
         $text = \trim($text);
-        $last = $text[\strlen($text) - 1];
         $last_p_tag = null;
         if (!$this->strip) {
             $last_p_tag = \strrpos($text, '</p>');
@@ -345,6 +344,7 @@ class PostExcerpt implements Stringable
                 $text = \substr($text, 0, $last_p_tag);
             }
         }
+        $last = \substr(\rtrim($text), -1);
         if ($last != '.' && ($this->always_add_end || $args['add_end'])) {
             $text .= $this->strip ? $this->end : $this->end . ' ';
         }
