@@ -140,7 +140,11 @@ class PostsIterator extends ArrayIterator
              * templates, where there’s no loop.
              */
             \do_action_ref_array('loop_end', [&$GLOBALS['wp_query']]);
-            \wp_reset_postdata();
+
+            // Posts are not set up in the admin, so there is nothing to reset.
+            if (!\is_admin()) {
+                \wp_reset_postdata();
+            }
         }
     }
 }

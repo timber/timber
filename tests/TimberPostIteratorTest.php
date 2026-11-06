@@ -179,6 +179,37 @@ class TimberPostIteratorTest extends TimberIntegrationTestCase
         $this->assertSame([$pid, $missing], $posts->to_array());
     }
 
+    public function testLoopOverChildrenInAdminKeepsTheGlobalPost()
+    {
+        $parent_id = static::factory()->post->create([
+            'post_type' => 'page',
+        ]);
+        static::factory()->post->create_many(2, [
+            'post_type' => 'page',
+            'post_parent' => $parent_id,
+        ]);
+        static::factory()->post->create();
+        $this->get(\home_url('/'));
+
+        global $post, $wp_query;
+        // Like a column in the list table, where WordPress sets the global post for each row.
+        $post = \get_post($parent_id);
+        $this->assertNotSame($parent_id, $wp_query->post->ID);
+        require_once ABSPATH . 'wp-admin/includes/class-wp-screen.php';
+        require_once ABSPATH . 'wp-admin/includes/screen.php';
+        \set_current_screen('edit-page');
+
+        try {
+            foreach (Timber::get_post($parent_id)->children() as $child) {
+                $child->title;
+            }
+        } finally {
+            \set_current_screen('front');
+        }
+
+        $this->assertSame($parent_id, $post->ID);
+    }
+
     public function testLoopOverChildrenFiresLoopHooksAndRestoresPost()
     {
         $parent_id = static::factory()->post->create([
