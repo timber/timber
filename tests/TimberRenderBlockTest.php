@@ -362,6 +362,34 @@ class TimberRenderBlockTest extends TimberIntegrationTestCase
     }
 
     /**
+     * Test rendering a block that only exists in the parent selected by the data
+     */
+    public function testCompileTwigBlockFromTemplateWithConditionalParent()
+    {
+        $output = Timber::compile_twig_block('sidebar', 'Fixtures/assets/conditional-layout-child.twig', [
+            'use_alt' => true,
+            'custom_content' => 'Child content',
+        ]);
+
+        $this->assertEquals('<aside>Alt sidebar</aside>', \trim($output));
+    }
+
+    /**
+     * Test the full template fallback for an unknown block when the parent comes from the data
+     */
+    public function testCompileTwigBlockFromTemplateWithDynamicParentInvalidBlock()
+    {
+        $output = Timber::compile_twig_block('nonexistent_block', 'Fixtures/assets/dynamic-layout-child.twig', [
+            'layout' => 'Fixtures/assets/base-layout.twig',
+            'custom_content' => 'Child content',
+        ]);
+
+        $this->assertStringContainsString('<!DOCTYPE html>', $output);
+        $this->assertStringContainsString('<h1>Default Header</h1>', $output);
+        $this->assertStringContainsString('<p>Child content</p>', $output);
+    }
+
+    /**
      * Test compile_twig_block with explicitly null data parameter
      * This covers the is_null($data) check in Timber.php line 1562
      */
