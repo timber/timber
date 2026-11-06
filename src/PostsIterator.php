@@ -125,6 +125,7 @@ class PostsIterator extends ArrayIterator
 
         if ($post instanceof Post) {
             $post->teardown();
+            $this->last_post = null;
         }
 
         parent::next();
