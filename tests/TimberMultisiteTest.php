@@ -266,18 +266,26 @@ class TimberMultisiteTest extends TimberIntegrationTestCase
         $this->assertSame($ids, $mapped_ids);
     }
 
+    #[Ticket('https://github.com/timber/timber/pull/3310')]
     public function testSiteFromSlug()
     {
         $this->skipWithoutMultisite();
 
         $main_id = \get_current_blog_id();
-        $blog_id = self::createSubDirectorySite('/cool-site/', 'My Cool Site');
+        $blog_id = \is_subdomain_install()
+            ? self::createSubDomainSite('cool-site.example.org', 'My Cool Site')
+            : self::createSubDirectorySite('/cool-site/', 'My Cool Site');
         \restore_current_blog();
 
         $site = new Site('cool-site');
 
         $this->assertSame($blog_id, (int) $site->ID);
         $this->assertSame('My Cool Site', $site->name);
+        $this->assertSame($main_id, \get_current_blog_id());
+
+        $site = new Site('/cool-site/');
+
+        $this->assertSame($blog_id, (int) $site->ID);
         $this->assertSame($main_id, \get_current_blog_id());
     }
 
