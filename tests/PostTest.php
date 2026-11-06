@@ -287,6 +287,24 @@ class PostTest extends TimberIntegrationTestCase
         $this->assertFalse(Timber::get_post($posts[1])->prev(true));
     }
 
+    public function testNextAndPrevWithTrueOnPostTypeWithoutCategory()
+    {
+        $pages = [];
+        for ($i = 0; $i < 3; $i++) {
+            $j = $i + 1;
+            $pages[] = static::factory()->post->create([
+                'post_type' => 'page',
+                'post_date' => '2014-02-0' . $j . ' 12:00:00',
+            ]);
+        }
+        $page = Timber::get_post($pages[1]);
+
+        $this->assertSame($pages[2], $page->next()->ID);
+        $this->assertSame($pages[0], $page->prev()->ID);
+        $this->assertFalse($page->next(true));
+        $this->assertFalse($page->prev(true));
+    }
+
     public function testNextKeepsEachVariantCached()
     {
         $posts = [];
