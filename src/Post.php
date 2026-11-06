@@ -1824,7 +1824,6 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
     {
         if (!isset($this->_next) || !isset($this->_next[$in_same_term])) {
             global $post;
-            $this->_next = [];
             $old_global = $post;
             $post = $this;
             $taxonomy = \is_string($in_same_term) && \strlen($in_same_term) ? $in_same_term : 'category';
