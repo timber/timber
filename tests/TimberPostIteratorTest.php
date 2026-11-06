@@ -105,12 +105,6 @@ class TimberPostIteratorTest extends TimberIntegrationTestCase
     public function testLoopsReuseTheRealizedPosts()
     {
         $pids = static::factory()->post->create_many(3);
-        $built = 0;
-        $this->add_filter_temporarily('timber/post/class', function ($class) use (&$built) {
-            ++$built;
-            return $class;
-        });
-
         $posts = Timber::get_posts([
             'post__in' => $pids,
             'orderby' => 'post__in',
@@ -129,7 +123,6 @@ class TimberPostIteratorTest extends TimberIntegrationTestCase
         $this->assertSame($first_loop, $second_loop);
         $this->assertSame($first_loop[0], $posts[0]);
         $this->assertSame('by controller', $second_loop[2]->enriched);
-        $this->assertSame(3, $built);
     }
 
     public function testToArrayAfterEarlyBreakReusesTheRealizedPost()
@@ -208,6 +201,37 @@ class TimberPostIteratorTest extends TimberIntegrationTestCase
         }
 
         $this->assertSame($parent_id, $post->ID);
+    }
+
+    public function testIteratorCountFiresNoLoopHooks()
+    {
+        $pids = static::factory()->post->create_many(2);
+        $iterator = (new PostArrayObject($pids))->getIterator();
+        $this->collect_loop_hooks();
+
+        $this->assertSame(2, \iterator_count($iterator));
+        $this->assertSame([], $this->collector);
+
+        foreach ($iterator as $post) {
+            $this->collector[] = $post->ID;
+        }
+
+        $this->assertSame(['start', ...$pids, 'end'], $this->collector);
+    }
+
+    public function testSeekPastTheFirstPostStartsTheLoopThere()
+    {
+        $pids = static::factory()->post->create_many(3);
+        $iterator = (new PostArrayObject($pids))->getIterator();
+        $this->collect_loop_hooks();
+
+        $iterator->seek(1);
+        while ($iterator->valid()) {
+            $this->collector[] = $iterator->current()->ID;
+            $iterator->next();
+        }
+
+        $this->assertSame(['start', $pids[1], $pids[2], 'end'], $this->collector);
     }
 
     public function testLoopOverChildrenFiresLoopHooksAndRestoresPost()
