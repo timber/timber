@@ -63,6 +63,8 @@ class WPMLTest extends TimberIntegrationTestCase
             'path starting with the language' => ['/en/wp-content/uploads/arch.jpg', '/wp-content/uploads/arch.jpg'],
             'directory starting with the language' => ['/wp-content/themes/entries/arch.jpg', '/wp-content/themes/entries/arch.jpg'],
             'file name starting with the language' => ['/wp-content/uploads/entry.jpg', '/wp-content/uploads/entry.jpg'],
+            'language followed by a query string' => ['http://example.org/en?foo=bar', 'http://example.org?foo=bar'],
+            'language followed by a fragment' => ['http://example.org/en#top', 'http://example.org#top'],
             'file system path' => ['/srv/www/enterprise/wp-content/uploads/arch.jpg', '/srv/www/enterprise/wp-content/uploads/arch.jpg'],
             'subdomain named like the language' => ['http://en.example.org/wp-content/uploads/arch.jpg', 'http://en.example.org/wp-content/uploads/arch.jpg'],
             'host named like the language' => ['http://en/wp-content/uploads/arch.jpg', 'http://en/wp-content/uploads/arch.jpg'],
