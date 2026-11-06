@@ -1216,31 +1216,22 @@ class MenuTest extends TimberIntegrationTestCase
         $this->assertInstanceOf(WP_Post_Type::class, $menu->items[8]->master_object());
     }
 
-    public function testSlugOfPostTypeArchiveItemIsItsOwnPostNameWithoutWarning()
+    public function testSlugOfPostTypeArchiveItemIsItsOwnPostName()
     {
         $archive_item = Timber::get_menu(self::_createTestMenu()['term_id'])->items[8];
 
-        $warnings = [];
-        \set_error_handler(function ($errno, $errstr) use (&$warnings) {
-            $warnings[] = $errstr;
-            return true;
-        });
-        try {
-            $slug = $archive_item->slug();
-        } finally {
-            \restore_error_handler();
-        }
+        $this->assertSame((string) $archive_item->ID, $archive_item->slug());
+    }
 
-        $this->assertSame(
-            [
-                'slug' => (string) $archive_item->ID,
-                'warnings' => [],
-            ],
-            [
-                'slug' => $slug,
-                'warnings' => $warnings,
-            ]
-        );
+    public function testSlugOfPostTypeArchiveItemIsPostNameOfPostType()
+    {
+        $menu_id = self::_createTestMenu()['term_id'];
+        \register_post_type('dummy-post-type', [
+            'has_archive' => true,
+            'post_name' => 'dummy-archive',
+        ]);
+
+        $this->assertSame('dummy-archive', Timber::get_menu($menu_id)->items[8]->slug());
     }
 
     public function testSlugOfTermItemIsPostNameTermMetaOrItsOwnPostName()
