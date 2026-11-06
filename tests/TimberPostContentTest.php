@@ -269,4 +269,73 @@ class TimberPostContentTest extends TimberIntegrationTestCase
         $this->assertStringContainsString('This is the introduction', $full_content);
         $this->assertStringContainsString('And this is the conclusion', $full_content);
     }
+
+    public function testPagedContentDoesNotPoisonContentCache()
+    {
+        $post_id = static::factory()->post->create([
+            'post_content' => 'Alpha<!--nextpage-->Omega',
+        ]);
+        $post = Timber::get_post($post_id);
+
+        $first_page = $post->content(1);
+        $full_content = $post->content();
+
+        $this->assertStringContainsString('Alpha', $first_page);
+        $this->assertStringNotContainsString('Omega', $first_page);
+        $this->assertStringContainsString('Alpha', $full_content);
+        $this->assertStringContainsString('Omega', $full_content);
+    }
+
+    public function testPageOutOfRangeReturnsFullContent()
+    {
+        $post_id = static::factory()->post->create([
+            'post_content' => 'Alpha<!--nextpage-->Omega',
+        ]);
+        $post = Timber::get_post($post_id);
+
+        foreach ([-1, 3] as $page) {
+            $content = $post->content($page);
+
+            $this->assertStringContainsString('Alpha', $content);
+            $this->assertStringContainsString('Omega', $content);
+        }
+    }
+
+    public function testNonNumericPageReturnsFullContent()
+    {
+        $post_id = static::factory()->post->create([
+            'post_content' => 'Alpha<!--nextpage-->Omega',
+        ]);
+        $post = Timber::get_post($post_id);
+
+        $content = $post->content('abc');
+
+        $this->assertStringContainsString('Alpha', $content);
+        $this->assertStringContainsString('Omega', $content);
+    }
+
+    public function testCachedContentStillRemovesBlocks()
+    {
+        $post_id = static::factory()->post->create([
+            'post_content' => '<!-- wp:paragraph --><p>Intro</p><!-- /wp:paragraph --><!-- wp:latest-posts {"postsToShow":3} /-->',
+        ]);
+        $post = Timber::get_post($post_id);
+
+        $this->assertStringContainsString('wp-block-latest-posts', $post->content());
+        $this->assertStringNotContainsString('wp-block-latest-posts', $post->content(0, -1, true));
+    }
+
+    public function testCachedContentHonorsRemoveBlocksFilter()
+    {
+        $post_id = static::factory()->post->create([
+            'post_content' => '<!-- wp:paragraph --><p>Intro</p><!-- /wp:paragraph --><!-- wp:latest-posts {"postsToShow":3} /-->',
+        ]);
+        $post = Timber::get_post($post_id);
+
+        $this->assertStringContainsString('wp-block-latest-posts', $post->content());
+
+        $this->add_filter_temporarily('timber/post/content/remove_blocks', '__return_true');
+
+        $this->assertStringNotContainsString('wp-block-latest-posts', $post->content());
+    }
 }
