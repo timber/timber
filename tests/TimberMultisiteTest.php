@@ -3,8 +3,10 @@
 namespace Timber\Tests;
 
 use PHPUnit\Framework\Attributes\Ticket;
+use Timber\Loader;
 use Timber\Site;
 use Timber\Timber;
+use Twig\Environment;
 
 class TimberMultisiteTest extends TimberIntegrationTestCase
 {
@@ -271,6 +273,42 @@ class TimberMultisiteTest extends TimberIntegrationTestCase
 
         $ts = new Site();
         $this->assertInstanceOf('\WP_Site', $ts->wp_object());
+    }
+
+    public function testSharedTwigEnvironmentIsRebuiltPerBlog()
+    {
+        $this->skipWithoutMultisite();
+
+        $builds = 0;
+        $count = function (Environment $twig) use (&$builds): Environment {
+            $builds++;
+
+            return $twig;
+        };
+        \add_filter('timber/twig', $count);
+        \add_filter('timber/twig/environment/shared', '__return_true');
+
+        try {
+            Timber::compile('shared-environment/plain.twig');
+            Timber::compile('shared-environment/plain.twig');
+            $this->assertSame(1, $builds);
+
+            // createSubDirectorySite() switches to the new blog.
+            self::createSubDirectorySite('/shared-twig/', 'Shared Twig');
+            Timber::compile('shared-environment/plain.twig');
+            $this->assertSame(2, $builds);
+
+            \restore_current_blog();
+            Timber::compile('shared-environment/plain.twig');
+            $this->assertSame(3, $builds);
+        } finally {
+            if (\ms_is_switched()) {
+                \restore_current_blog();
+            }
+            \remove_filter('timber/twig/environment/shared', '__return_true');
+            \remove_filter('timber/twig', $count);
+            (new Loader())->clear_cache_twig();
+        }
     }
 
     public static function createSubDomainSite($domain = 'test.example.org', $title = 'Multisite Test')
