@@ -42,11 +42,11 @@ Returns the rendered block as a string.
 /**
  * @param string              $block_name  The name of the block to render
  * @param array|string        $filenames   Template file(s) to load
+ * @param array               $data        Data to pass to the template
  * @param string|array|null   $caller      Optional. Value from a `LocationManager` method to control lookup.
  *                                         Use `LocationManager::get_calling_script_dir()` (string) or
  *                                         `LocationManager::get_locations()` (array). When `null`, Timber uses
  *                                         `LocationManager::get_calling_script_dir(1)`.
- * @param array               $data        Data to pass to the template
  * @param bool|int|array      $expires     Cache expiration (optional)
  * @param string              $cache_mode  Cache mode (optional)
  * @return string|false                     The rendered block content
@@ -54,8 +54,8 @@ Returns the rendered block as a string.
 Timber::compile_twig_block(
     $block_name,
     $filenames,
-    $caller = null,
     $data = [],
+    $caller = null,
     $expires = false,
     $cache_mode = Loader::CACHE_USE_DEFAULT
 )
@@ -69,19 +69,19 @@ Directly echoes the rendered block content.
 /**
  * @param string              $block_name  The name of the block to render
  * @param array|string        $filenames   Template file(s) to load
+ * @param array               $data        Data to pass to the template
  * @param string|array|null   $caller      Optional. Value from a `LocationManager` method to control lookup.
  *                                         Use `LocationManager::get_calling_script_dir()` (string) or
  *                                         `LocationManager::get_locations()` (array). When `null`, Timber uses
  *                                         `LocationManager::get_calling_script_dir(1)`.
- * @param array               $data        Data to pass to the template
  * @param bool|int|array      $expires     Cache expiration (optional)
  * @param string              $cache_mode  Cache mode (optional)
  */
 Timber::render_twig_block(
     $block_name,
     $filenames,
-    $caller = null,
     $data = [],
+    $caller = null,
     $expires = false,
     $cache_mode = Loader::CACHE_USE_DEFAULT
 )
@@ -407,6 +407,8 @@ function ajax_render_component() {
 }
 add_action('wp_ajax_render_component', 'ajax_render_component');
 ```
+
+**Warning:** the example above passes the decoded request as-is for brevity. In real code, never pass untrusted request data straight as `$data`: template data can decide which templates get loaded, for example through `{% extends layout %}` or `{% include %}`. Only pass the values the component needs, validated or sanitized.
 
 ### Modular Layout Building
 
