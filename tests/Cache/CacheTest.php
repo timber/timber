@@ -570,6 +570,28 @@ class CacheTest extends TimberIntegrationTestCase
         $this->assertEquals('foo', \get_transient('random_600'));
     }
 
+    public function testClearCacheTimberSiteTransients()
+    {
+        $loader = new Loader();
+        $loader->set_cache('key', 'site', Loader::CACHEGROUP, 600, Loader::CACHE_SITE_TRANSIENT);
+        $loader->set_cache('key', 'blog', Loader::CACHEGROUP, 600, Loader::CACHE_TRANSIENT);
+
+        global $wpdb;
+        $count_timeout_rows = fn () => (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $wpdb->options WHERE option_name = %s",
+            '_site_transient_timeout_timberloader_key'
+        ));
+        $this->assertSame(1, $count_timeout_rows());
+
+        $this->assertTrue($loader->clear_cache_timber(Loader::CACHE_SITE_TRANSIENT));
+
+        // Read from the database, as the next request would.
+        \wp_cache_flush();
+        $this->assertFalse($loader->get_cache('key', Loader::CACHEGROUP, Loader::CACHE_SITE_TRANSIENT));
+        $this->assertSame(0, $count_timeout_rows());
+        $this->assertSame('blog', $loader->get_cache('key', Loader::CACHEGROUP, Loader::CACHE_TRANSIENT));
+    }
+
     public function testCacheTransientKeyFilter()
     {
         $this->add_filter_temporarily('timber/cache/transient_key', fn ($key) => 'my_custom_key');

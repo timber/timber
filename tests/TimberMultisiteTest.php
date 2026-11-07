@@ -3,6 +3,7 @@
 namespace Timber\Tests;
 
 use PHPUnit\Framework\Attributes\Ticket;
+use Timber\Loader;
 use Timber\Site;
 use Timber\Timber;
 
@@ -271,6 +272,42 @@ class TimberMultisiteTest extends TimberIntegrationTestCase
 
         $ts = new Site();
         $this->assertInstanceOf('\WP_Site', $ts->wp_object());
+    }
+
+    public function testClearCacheTimberSiteTransientsOfCurrentNetworkOnly()
+    {
+        $this->skipWithoutMultisite();
+
+        // wpmu_create_blog() in other tests leaves wp_installing() on, and set_site_transient() then skips the database.
+        $was_installing = \wp_installing(false);
+
+        global $wpdb;
+        $other_network_id = \get_current_network_id() + 1;
+        $wpdb->insert($wpdb->sitemeta, [
+            'site_id' => $other_network_id,
+            'meta_key' => '_site_transient_timberloader_key',
+            'meta_value' => 'other network',
+        ]);
+
+        $loader = new Loader();
+        $loader->set_cache('key', 'current network', Loader::CACHEGROUP, 600, Loader::CACHE_SITE_TRANSIENT);
+
+        $count_timeout_rows = fn () => (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $wpdb->sitemeta WHERE meta_key = %s AND site_id = %d",
+            '_site_transient_timeout_timberloader_key',
+            \get_current_network_id()
+        ));
+        $this->assertSame(1, $count_timeout_rows());
+
+        $this->assertTrue($loader->clear_cache_timber(Loader::CACHE_SITE_TRANSIENT));
+
+        // Read from the database, as the next request would.
+        \wp_cache_flush();
+        $this->assertFalse($loader->get_cache('key', Loader::CACHEGROUP, Loader::CACHE_SITE_TRANSIENT));
+        $this->assertSame(0, $count_timeout_rows());
+        $this->assertSame('other network', \get_network_option($other_network_id, '_site_transient_timberloader_key'));
+
+        \wp_installing($was_installing);
     }
 
     public static function createSubDomainSite($domain = 'test.example.org', $title = 'Multisite Test')

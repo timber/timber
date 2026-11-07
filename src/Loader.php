@@ -637,9 +637,11 @@ class Loader implements LoaderInterface
         //_transient_timberloader
         $cache_mode = $this->_get_cache_mode($cache_mode);
 
-        if (self::CACHE_TRANSIENT === $cache_mode || self::CACHE_SITE_TRANSIENT === $cache_mode) {
-            // $wpdb->query() might return 0 affected rows, but that means it’s still successful.
+        // Only false means an error: the database clears might delete 0 rows and still be successful.
+        if (self::CACHE_TRANSIENT === $cache_mode) {
             return false !== self::clear_cache_timber_database();
+        } elseif (self::CACHE_SITE_TRANSIENT === $cache_mode) {
+            return false !== self::clear_cache_timber_site_transients();
         } elseif (self::CACHE_OBJECT === $cache_mode && $this->is_object_cache()) {
             return false !== self::clear_cache_timber_object();
         }
@@ -657,8 +659,34 @@ class Loader implements LoaderInterface
         global $wpdb;
 
         return $wpdb->query($wpdb->prepare(
-            "DELETE FROM $wpdb->options WHERE option_name LIKE '%s'",
+            "DELETE FROM $wpdb->options WHERE option_name LIKE %s",
             '_transient%timberloader_%'
+        ));
+    }
+
+    /**
+     * Clears Timber cache in site transients of the current network.
+     *
+     * @return bool|int Number of deleted rows or false on error.
+     */
+    protected static function clear_cache_timber_site_transients()
+    {
+        global $wpdb;
+
+        // Matches both the value and the timeout rows: _site_transient_[timeout_]timberloader_*.
+        $pattern = $wpdb->esc_like('_site_transient_') . '%' . $wpdb->esc_like('timberloader_') . '%';
+
+        if (!\is_multisite()) {
+            return $wpdb->query($wpdb->prepare(
+                "DELETE FROM $wpdb->options WHERE option_name LIKE %s",
+                $pattern
+            ));
+        }
+
+        return $wpdb->query($wpdb->prepare(
+            "DELETE FROM $wpdb->sitemeta WHERE meta_key LIKE %s AND site_id = %d",
+            $pattern,
+            \get_current_network_id()
         ));
     }
 
