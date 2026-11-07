@@ -27,21 +27,16 @@ class TwigBlockLoader extends Loader
     /**
      * Generate a cache key for the template that includes the block name.
      *
-     * @param string $file The template file.
+     * @param string $file The template name.
      * @param array  $data The data to pass to the template.
      * @return string|null The cache key or null if encoding failed.
      */
     protected function get_cache_key($file, $data)
     {
-        \ksort($data);
-        $encoded = \json_encode($data);
-
-        if (false === $encoded) {
-            return null;
-        }
+        $key = parent::get_cache_key($file, $data);
 
         // Include block name in cache key to differentiate from full template renders
-        return \md5($file . $encoded . $this->block_name);
+        return null === $key ? null : \md5($key . $this->block_name);
     }
 
     /**
