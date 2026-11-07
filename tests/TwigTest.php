@@ -204,7 +204,7 @@ class TwigTest extends TimberIntegrationTestCase
         $str = Timber::compile_string("{{ evil_script | e('wp_kses_post') }}", [
             'evil_script' => $evil_script,
         ]);
-        $this->assertEquals('<div>Foo</div>DoEvilThing();', $str);
+        $this->assertEquals(\wp_kses_post($evil_script), $str);
     }
 
     public function testEscHtml()
