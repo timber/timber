@@ -767,7 +767,11 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
             'taxonomy' => $taxonomies,
         ]);
 
-        return Timber::get_terms($query, $options);
+        return $this->memoize(
+            'terms:' . \md5(\serialize([$query, $options])),
+            fn () => Timber::get_terms($query, $options),
+            ['terms']
+        );
     }
 
     /**
@@ -1176,8 +1180,11 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
          */
         $args = \apply_filters('timber/post/children_args', $args, $this);
 
-        return $this->factory()
-            ->from(\get_children($args));
+        return $this->memoize(
+            'children:' . \md5(\serialize($args)),
+            fn () => $this->factory()->from(\get_children($args)),
+            ['posts']
+        );
     }
 
     /**
@@ -2046,8 +2053,11 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
         $tid = $this->thumbnail_id();
 
         if ($tid) {
-            return $this->factory()
-                ->from($tid);
+            return $this->memoize(
+                'thumbnail:' . $tid,
+                fn () => $this->factory()->from($tid),
+                ['posts']
+            );
         }
 
         return null;
@@ -2084,7 +2094,11 @@ class Post extends CoreEntity implements DatedInterface, Setupable, Stringable
      */
     public function gallery($html = true)
     {
-        $galleries = \get_post_galleries($this->ID, $html);
+        $galleries = $this->memoize(
+            'gallery:' . (int) (bool) $html,
+            fn () => \get_post_galleries($this->ID, $html),
+            ['posts']
+        );
         $gallery = \reset($galleries);
 
         return \apply_filters('get_post_gallery', $gallery, $this->ID, $galleries);
