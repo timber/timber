@@ -68,6 +68,7 @@ jobs:
         dependency-version: ['highest', 'lowest']
         experimental: [false]
         coverage: [false]
+        twig-yield: [false]
         include:
           # Oldest supported WP with lowest deps
           - php: '8.2'
@@ -81,6 +82,13 @@ jobs:
             dependency-version: 'highest'
             experimental: false
             coverage: true
+          # Twig's yield mode, the only rendering mode in Twig 4
+          - php: '8.2'
+            wp: 'latest'
+            dependency-version: 'highest'
+            experimental: false
+            coverage: false
+            twig-yield: true
           # Trunk (experimental)
           - php: '8.5'
             wp: 'trunk'
@@ -94,7 +102,10 @@ jobs:
             experimental: true
             coverage: false
 
-    name: PHP ${{ matrix.php }} | WP ${{ matrix.wp }} | ${{ matrix.dependency-version }}${{ matrix.coverage && ' | coverage' || '' }}
+    name: PHP ${{ matrix.php }} | WP ${{ matrix.wp }} | ${{ matrix.dependency-version }}${{ matrix.coverage && ' | coverage' || '' }}${{ matrix.twig-yield && ' | Twig use_yield' || '' }}
+
+    env:
+      TIMBER_TWIG_USE_YIELD: ${{ matrix.twig-yield && '1' || '0' }}
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
