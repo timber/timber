@@ -387,6 +387,58 @@ class PostExcerptObjectTest extends TimberIntegrationTestCase
         $this->assertEquals('<p>Lauren is a duck, but a great duck let me tell you why&hellip;  <a href="http://example.org/?p=' . $pid . '" class="read-more">Read More</a></p>', $str);
     }
 
+    public function testExcerptWithStripKeepsClosingTagOfParagraphWithAttributes()
+    {
+        $pid = static::factory()->post->create([
+            'post_excerpt' => '<p class="lead">Lauren is a duck, but a great duck let me tell you why</p>',
+        ]);
+        $post = Timber::get_post($pid);
+        $template = '{{post.excerpt.strip(false)}}';
+        $str = Timber::compile_string($template, [
+            'post' => $post,
+        ]);
+        $this->assertEquals('<p class="lead">Lauren is a duck, but a great duck let me tell you why <a href="http://example.org/?p=' . $pid . '" class="read-more">Read More</a></p>', $str);
+    }
+
+    public function testExcerptWithStripAndNoParagraphAddsEndOnce()
+    {
+        $pid = static::factory()->post->create([
+            'post_excerpt' => 'Lauren is a duck but a great duck let me tell you why',
+        ]);
+        $post = Timber::get_post($pid);
+        $template = '{{post.excerpt.length(4).force.read_more(false).strip(false)}}';
+        $str = Timber::compile_string($template, [
+            'post' => $post,
+        ]);
+        $this->assertEquals('Lauren is a duck&hellip;', $str);
+    }
+
+    public function testExcerptWithStripAndForcedLengthKeepsClosingTagOfParagraphWithAttributes()
+    {
+        $pid = static::factory()->post->create([
+            'post_excerpt' => '<p class="lead">Lauren is a duck, but a great duck let me tell you why</p>',
+        ]);
+        $post = Timber::get_post($pid);
+        $template = '{{post.excerpt.length(4).force.strip(false)}}';
+        $str = Timber::compile_string($template, [
+            'post' => $post,
+        ]);
+        $this->assertEquals('<p class="lead">Lauren is a&hellip;  <a href="http://example.org/?p=' . $pid . '" class="read-more">Read More</a></p>', $str);
+    }
+
+    public function testExcerptWithStripAndForceDoesNotAddEndAfterPeriod()
+    {
+        $pid = static::factory()->post->create([
+            'post_excerpt' => '<p>Lauren is a duck.</p>',
+        ]);
+        $post = Timber::get_post($pid);
+        $template = '{{post.excerpt.force.read_more(false).strip(false)}}';
+        $str = Timber::compile_string($template, [
+            'post' => $post,
+        ]);
+        $this->assertEquals('<p>Lauren is a duck.</p>', $str);
+    }
+
     public function testEmptyExcerpt()
     {
         $pid = static::factory()->post->create([
