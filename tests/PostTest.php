@@ -249,6 +249,85 @@ class PostTest extends TimberIntegrationTestCase
         $this->assertEquals($lastPost->prev('category')->ID, $prevPost->ID);
     }
 
+    public function testNextWithTrueStaysInSameCategory()
+    {
+        $posts = [];
+        for ($i = 0; $i < 4; $i++) {
+            $j = $i + 1;
+            $posts[] = static::factory()->post->create([
+                'post_date' => '2014-02-0' . $j . ' 12:00:00',
+            ]);
+        }
+        $cat = \wp_insert_term('TestMe', 'category');
+        self::set_object_terms($posts[0], $cat, 'category', false);
+        self::set_object_terms($posts[2], $cat, 'category', false);
+        $firstPost = Timber::get_post($posts[0]);
+
+        $this->assertSame($posts[2], $firstPost->next(true)->ID);
+        $this->assertSame($posts[1], $firstPost->next()->ID);
+        $this->assertFalse(Timber::get_post($posts[2])->next(true));
+    }
+
+    public function testPrevWithTrueStaysInSameCategory()
+    {
+        $posts = [];
+        for ($i = 0; $i < 4; $i++) {
+            $j = $i + 1;
+            $posts[] = static::factory()->post->create([
+                'post_date' => '2014-02-0' . $j . ' 12:00:00',
+            ]);
+        }
+        $cat = \wp_insert_term('TestMe', 'category');
+        self::set_object_terms($posts[1], $cat, 'category', false);
+        self::set_object_terms($posts[3], $cat, 'category', false);
+        $lastPost = Timber::get_post($posts[3]);
+
+        $this->assertSame($posts[1], $lastPost->prev(true)->ID);
+        $this->assertSame($posts[2], $lastPost->prev()->ID);
+        $this->assertFalse(Timber::get_post($posts[1])->prev(true));
+    }
+
+    public function testNextAndPrevWithTrueOnPostTypeWithoutCategory()
+    {
+        $pages = [];
+        for ($i = 0; $i < 3; $i++) {
+            $j = $i + 1;
+            $pages[] = static::factory()->post->create([
+                'post_type' => 'page',
+                'post_date' => '2014-02-0' . $j . ' 12:00:00',
+            ]);
+        }
+        $page = Timber::get_post($pages[1]);
+
+        $this->assertSame($pages[2], $page->next()->ID);
+        $this->assertSame($pages[0], $page->prev()->ID);
+        $this->assertFalse($page->next(true));
+        $this->assertFalse($page->prev(true));
+    }
+
+    public function testNextKeepsEachVariantCached()
+    {
+        $posts = [];
+        for ($i = 0; $i < 3; $i++) {
+            $j = $i + 1;
+            $posts[] = static::factory()->post->create([
+                'post_date' => '2014-02-0' . $j . ' 12:00:00',
+            ]);
+        }
+        $cat = \wp_insert_term('TestMe', 'category');
+        self::set_object_terms($posts[0], $cat, 'category', false);
+        self::set_object_terms($posts[2], $cat, 'category', false);
+        $firstPost = Timber::get_post($posts[0]);
+
+        $nextInCategory = $firstPost->next(true);
+        $next = $firstPost->next();
+
+        $this->assertSame($posts[2], $nextInCategory->ID);
+        $this->assertSame($posts[1], $next->ID);
+        $this->assertSame($nextInCategory, $firstPost->next(true));
+        $this->assertSame($next, $firstPost->next());
+    }
+
     public function testNextWithDraftAndFallover()
     {
         $posts = [];
