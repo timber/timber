@@ -8,6 +8,8 @@ on:
     paths:
       - "**.php"
       - "**composer.json"
+      - ".github/workflows/php-coding-standards.yml"
+      - ".github/scripts/ecs-checkstyle.jq"
   pull_request:
     branches:
       - master
@@ -15,6 +17,8 @@ on:
     paths:
       - "**.php"
       - "**composer.json"
+      - ".github/workflows/php-coding-standards.yml"
+      - ".github/scripts/ecs-checkstyle.jq"
     types:
       - opened
       - synchronize
