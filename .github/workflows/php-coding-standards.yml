@@ -8,6 +8,8 @@ on:
     paths:
       - "**.php"
       - "**composer.json"
+      - ".github/workflows/php-coding-standards.yml"
+      - ".github/scripts/ecs-checkstyle.jq"
   pull_request:
     branches:
       - master
@@ -15,6 +17,8 @@ on:
     paths:
       - "**.php"
       - "**composer.json"
+      - ".github/workflows/php-coding-standards.yml"
+      - ".github/scripts/ecs-checkstyle.jq"
     types:
       - opened
       - synchronize
@@ -53,10 +57,14 @@ jobs:
 
       # ECS 13.3 dropped its checkstyle format (ecsphp/ecs-src#74), so its JSON report is
       # converted for cs2pr, which annotates the pull request and fails the job on violations.
+      # Since 13.3.16 (ecsphp/ecs-src#330), ECS hands the run to its Go engine when that engine
+      # covers every configured rule, and the Go engine ignores --output-format. Pointing
+      # ECS_BLINK_BIN at a binary that fails `list-checkers` keeps ECS on the PHP engine.
       - name: Run coding standards
         if: steps.changed-files.outputs.all_changed_files != ''
         env:
           CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+          ECS_BLINK_BIN: /usr/bin/false
         run: |
           ./vendor/bin/ecs check --output-format=json $CHANGED_FILES \
             | jq -r --arg ws "$PWD/" -f .github/scripts/ecs-checkstyle.jq \
