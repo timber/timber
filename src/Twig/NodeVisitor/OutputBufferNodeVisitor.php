@@ -28,29 +28,32 @@ final class OutputBufferNodeVisitor implements NodeVisitorInterface
 
     public function leaveNode(Node $node, Environment $env): ?Node
     {
-        if ($node instanceof PrintNode) {
-            $expr = $node->getNode('expr');
+        // A subclass can compile to anything, so only Twig’s own nodes are wrapped.
+        switch ($node::class) {
+            case PrintNode::class:
+                $expr = $node->getNode('expr');
 
-            if ($expr instanceof ConstantExpression) {
-                return $node;
-            }
+                if ($expr instanceof ConstantExpression) {
+                    return $node;
+                }
 
-            // A generator is yielded from, so there is no value to keep. This is the case for
-            // `{{ parent() }}` and `{{ block('name') }}`, where the block has its own nodes.
-            if ($expr instanceof AbstractExpression && $expr->isGenerator()) {
-                return $node;
-            }
+                // A generator is yielded from, so there is no value to keep.
+                if ($expr instanceof AbstractExpression && $expr->isGenerator()) {
+                    return $node;
+                }
 
-            return new OutputBufferNode($node);
-        }
+                return new OutputBufferNode($node);
 
-        if ($node instanceof DoNode) {
-            return new OutputBufferNode($node);
-        }
+            case DoNode::class:
+                return new OutputBufferNode($node);
 
-        // With `{% set name %}…{% endset %}`, the body has its own nodes.
-        if ($node instanceof SetNode && !$node->getAttribute('capture') && !$node->getNode('values') instanceof ConstantExpression) {
-            return new OutputBufferNode($node);
+            case SetNode::class:
+                // With `{% set name %}…{% endset %}`, the body has its own nodes.
+                if ($node->getAttribute('capture') || $node->getNode('values') instanceof ConstantExpression) {
+                    return $node;
+                }
+
+                return new OutputBufferNode($node);
         }
 
         return $node;
