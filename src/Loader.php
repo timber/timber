@@ -4,6 +4,7 @@ namespace Timber;
 
 use InvalidArgumentException;
 use Timber\Cache\Cleaner;
+use Timber\Twig\Extension\OutputBufferExtension;
 use Twig\CacheExtension;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
@@ -552,8 +553,12 @@ class Loader implements LoaderInterface
          * - `'autoescape' => false`
          * - `'cache' => false`
          *
+         * With Twig’s `use_yield` option, Timber keeps the output of echoing functions where they
+         * are called in a template. The Functions guide lists what is not covered.
+         *
          * @api
          * @since 1.9.5
+         * @link https://timber.github.io/docs/v2/guides/functions/#handling-functions-that-echo-output
          * @link https://twig.symfony.com/doc/2.x/api.html#environment-options
          * @example
          * ```php
@@ -657,6 +662,12 @@ class Loader implements LoaderInterface
             $environment_options['cache'] = $twig_cache_loc;
         }
         $twig = new Environment($this->get_loader(), $environment_options);
+
+        // With `use_yield` (the only mode in Twig 4), Twig doesn’t render inside an output buffer
+        // anymore, so the output of echoing functions has to be put back in place.
+        if (Environment::MAJOR_VERSION >= 4 || !empty($environment_options['use_yield'])) {
+            $twig->addExtension(new OutputBufferExtension());
+        }
 
         if (WP_DEBUG) {
             $twig->addExtension(new DebugExtension());

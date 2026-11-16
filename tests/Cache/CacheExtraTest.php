@@ -2,6 +2,7 @@
 
 namespace Timber\Tests\Cache;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Adapter\TagAwareAdapter;
 use Timber\Cache\KeyGenerator;
@@ -47,6 +48,31 @@ class CacheExtraTest extends TimberIntegrationTestCase
         ]);
 
         $this->assertEquals('My Test Post', $twig);
+    }
+
+    #[DataProvider('use_yield_provider')]
+    public function test_cache_tag_with_echoed_output(bool $use_yield)
+    {
+        $this->add_filter_temporarily('timber/twig/environment/options', function ($options) use ($use_yield) {
+            $options['use_yield'] = $use_yield;
+
+            return $options;
+        }, 20);
+
+        $template = "{% cache key %}[{{ fn('_e', 'echoed') }}]{% endcache %}";
+        $data = [
+            'key' => \uniqid('echoed-output-'),
+        ];
+
+        $this->assertSame('[echoed]', Timber::compile_string($template, $data));
+        // Read from the cache.
+        $this->assertSame('[echoed]', Timber::compile_string($template, $data));
+    }
+
+    public static function use_yield_provider(): iterable
+    {
+        yield 'without use_yield' => [false];
+        yield 'with use_yield' => [true];
     }
 
     public function test_cache_tags()
