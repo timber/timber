@@ -158,7 +158,7 @@ There are a few things that Timber can’t do for you with `use_yield`:
     {% endset %}
     ```
 
-- **Output buffers that stay open between two tags.** Each `{{ }}`, `{% do %}` and `{% set name = … %}` runs in its own output buffer. A function that calls `ob_start()` in one tag and reads the buffer with `ob_get_clean()` in another one, for example a plugin that starts a buffer on `wp_head` and filters the page on `wp_footer`, gets an empty string. The page is still complete, but it is not filtered.
+- **Output buffers that stay open between two tags.** Each `{{ }}`, `{% do %}` and `{% set name = … %}` runs in its own output buffer. A function that calls `ob_start()` in one tag and reads the buffer with `ob_get_clean()` in another one, for example a plugin that starts a buffer on `wp_head` and filters the page on `wp_footer`, gets an empty string. The page is still complete, but it is not filtered. For the same reason, `ob_get_contents()` and `ob_clean()` only see what the current tag has echoed, not the template so far.
 - **Rendering with Twig directly.** If you render a template through the Twig environment yourself, for example with `$twig->render()`, only `{{ }}`, `{% do %}` and `{% set name = … %}` are covered. Use Timber’s functions, or call `display()` inside of an output buffer.
 
     ```php

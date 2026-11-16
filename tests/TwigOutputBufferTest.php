@@ -116,6 +116,10 @@ class TwigOutputBufferTest extends TimberIntegrationTestCase
                 '[{% set value = echo_and_return("echoed", "returned") %}]<{{ value }}>',
                 '[echoed]<returned>',
             ],
+            'set with several names' => [
+                '[{% set first, second = echo_and_return("one", 1), echo_and_return("two", 2) %}]<{{ first }}{{ second }}>',
+                '[onetwo]<12>',
+            ],
             'if' => [
                 '[{% if echo_and_return("echoed", true) %}yes{% endif %}]',
                 '[echoedyes]',

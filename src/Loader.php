@@ -12,6 +12,7 @@ use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
 use Twig\TemplateWrapper;
 use Twig\TwigFunction;
+use WeakMap;
 
 class Loader implements LoaderInterface
 {
@@ -55,11 +56,11 @@ class Loader implements LoaderInterface
     private static ?int $shared_blog_id = null;
 
     /**
-     * The Twig environment of the template that is being rendered.
+     * The Twig environment of the templates that are being rendered.
      *
-     * @internal
+     * @var WeakMap<TemplateWrapper, Environment>|null
      */
-    protected ?Environment $twig = null;
+    private static ?WeakMap $environments = null;
 
     /**
      * @param bool|string   $caller the calling directory or false
@@ -286,7 +287,8 @@ class Loader implements LoaderInterface
 
         try {
             $template = $twig->load($file);
-            $this->twig = $twig;
+            self::$environments ??= new WeakMap();
+            self::$environments[$template] = $twig;
             $output = $this->render_twig_template($template, $data);
 
             /**
@@ -309,7 +311,9 @@ class Loader implements LoaderInterface
     /**
      * Render a Twig template.
      *
-     * This method can be overridden in subclasses to customize rendering behavior.
+     * This method can be overridden in subclasses to customize rendering behavior. An override
+     * should call the parent method for the rendering itself: with Twig’s `use_yield` option,
+     * `$template->render()` doesn’t collect what PHP functions echo.
      *
      * @param TemplateWrapper $template The Twig template.
      * @param array                  $data     The data to pass to the template.
@@ -317,7 +321,7 @@ class Loader implements LoaderInterface
      */
     protected function render_twig_template($template, $data)
     {
-        return self::render_twig($this->twig, $template, $data);
+        return self::render_twig($template, $data);
     }
 
     /**
@@ -329,14 +333,17 @@ class Loader implements LoaderInterface
      *
      * @internal
      *
-     * @param Environment|null $twig       The Twig environment of the template.
      * @param TemplateWrapper  $template   The Twig template.
      * @param array            $data       The data to pass to the template.
      * @param string|null      $block_name Optional. The name of the block to render.
+     * @param Environment|null $twig       Optional. The Twig environment of the template, when it
+     *                                     was not loaded by a `Loader`.
      * @return string The rendered output.
      */
-    public static function render_twig(?Environment $twig, TemplateWrapper $template, array $data, ?string $block_name = null): string
+    public static function render_twig(TemplateWrapper $template, array $data, ?string $block_name = null, ?Environment $twig = null): string
     {
+        $twig ??= self::$environments[$template] ?? null;
+
         if (!$twig?->hasExtension(OutputBufferExtension::class)) {
             return null === $block_name
                 ? $template->render($data)
