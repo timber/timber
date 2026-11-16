@@ -136,6 +136,11 @@ class Cleaner
         return $clean;
     }
 
+    /**
+     * Deletes expired transients from the database.
+     *
+     * @return int The number of deleted rows, timeout rows included. 0 when an external object cache is in use.
+     */
     public static function delete_transients()
     {
         global $_wp_using_ext_object_cache;
@@ -148,12 +153,12 @@ class Cleaner
         $records = 0;
 
         // Delete transients from options table
-        $records .= self::delete_transients_single_site();
+        $records += self::delete_transients_single_site();
 
         // Delete transients from multisite, if configured as such
 
         if (\is_multisite() && \is_main_network()) {
-            $records .= self::delete_transients_multisite();
+            $records += self::delete_transients_multisite();
         }
         return $records;
     }

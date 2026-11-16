@@ -32,6 +32,8 @@ You can change the cache mode for Timber globally or on a per method basis. See 
 
 This caching method is very effective, but crude - the whole template is cached. So if you have any context dependent sub-views (eg. current user), this mode won’t do.
 
+Expired Timber transients are cleaned up by WordPress’ daily `delete_expired_transients` cron event. On sites without WP-Cron, run `Timber\Cache\Cleaner::delete_transients()` or `wp transient delete --expired` regularly.
+
 ### Timber cache modes
 
 Timber has 5 cache modes that it can use for the Timber `Timber::render()` and `Timber::compile()` methods. The following cache modes are available:
