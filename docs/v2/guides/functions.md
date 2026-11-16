@@ -135,11 +135,11 @@ Without output buffering, Twig doesn’t collect what a function echoes anymore,
 - In `{{ }}`, `{% do %}` and `{% set name = … %}`. This applies to everything you can call there: `fn()`, `function()` and `action()`, echoing Timber functions like `_e()` and `bloginfo()`, your own Twig functions and filters, and methods of the objects in your context. It also works when the call is inside of `{% set %}…{% endset %}`, `{% apply %}`, `{% cache %}`, a macro or an included template.
 - In the templates you render with `Timber::compile()`, `Timber::compile_string()`, `Timber::compile_twig_block()` and the matching `Timber::render*()` functions. Echoed output is a part of the string they return, and of what Timber caches.
 
-Nothing changes when you don’t use the option.
+Templates are rendered the way they always were when you don’t use the option.
 
 There are a few things that Timber can’t do for you with `use_yield`:
 
-- **Echoing functions in other tags.** A function that echoes in the condition of an `{% if %}`, in the sequence of a `{% for %}` or in the arguments of an `{% include %}` works as long as the tag is not inside of `{% set %}…{% endset %}`, `{% apply %}`, `{% cache %}`, a macro or a template loaded with the `include()` function. Inside of these, the output is printed in front of the captured content instead of being a part of it. Call the function with `{% set %}` first to keep its output in place.
+- **Echoing functions in other tags.** A function that echoes in the condition of an `{% if %}`, in the sequence of a `{% for %}` or in the arguments of an `{% include %}` works as long as the tag is not inside of something that Twig captures: `{% set %}…{% endset %}`, `{% apply %}`, `{% cache %}`, a macro, a template loaded with the `include()` function, or a block that you use in an expression, like `{{ block('sidebar')|trim }}` or `{% if block('sidebar') is not empty %}`. Inside of these, the output is not a part of the captured content. It is printed in front of it, and it is missing when `{% cache %}` reads the content from its cache. Call the function with `{% set %}` first to keep its output in place.
 
     ```twig
     {% set footer %}
@@ -158,11 +158,12 @@ There are a few things that Timber can’t do for you with `use_yield`:
     {% endset %}
     ```
 
+- **Output buffers that stay open between two tags.** Each `{{ }}`, `{% do %}` and `{% set name = … %}` runs in its own output buffer. A function that calls `ob_start()` in one tag and reads the buffer with `ob_get_clean()` in another one, for example a plugin that starts a buffer on `wp_head` and filters the page on `wp_footer`, gets an empty string. The page is still complete, but it is not filtered.
 - **Rendering with Twig directly.** If you render a template through the Twig environment yourself, for example with `$twig->render()`, only `{{ }}`, `{% do %}` and `{% set name = … %}` are covered. Use Timber’s functions, or call `display()` inside of an output buffer.
 
     ```php
     $output = Timber\Helper::ob_function([$twig->load('footer.twig'), 'display'], [$context]);
     ```
 
-- **Custom Twig tags.** A node class has to `yield` its output instead of echoing it, and to be marked with the `#[YieldReady]` attribute. Twig throws a `LogicException` when it compiles a template that uses a tag whose node class is not. Check the extensions you add through the `timber/twig` filter. The abandoned `twig/cache-extension` package, which Timber registers when it is installed, is not compatible. Use [`twig/cache-extra`](https://timber.github.io/docs/v2/guides/performance/#cache-parts-of-the-twig-file-and-data) instead.
-- **Speed.** Each `{{ }}`, `{% do %}` and `{% set name = … %}` runs in its own output buffer. This costs around 0.1 microseconds per tag, which is more than what Twig gains from using generators. Don’t enable `use_yield` to make your site faster, enable it to prepare your theme for Twig 4.
+- **Custom Twig tags.** A node class has to `yield` its output instead of echoing it, and to be marked with the `#[YieldReady]` attribute. Twig throws an error when it compiles a template that uses a tag whose node class is not ready. Check the extensions you add through the `timber/twig` filter. The abandoned `twig/cache-extension` package, which Timber registers when it is installed, is not compatible. Use [`twig/cache-extra`](https://timber.github.io/docs/v2/guides/performance/#cache-parts-of-the-twig-file-and-data) instead.
+- **Speed.** One output buffer per tag costs around 0.1 microseconds, which is more than what Twig gains from using generators. Don’t enable `use_yield` to make your site faster, enable it to prepare your theme for Twig 4.
