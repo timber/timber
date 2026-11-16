@@ -602,6 +602,7 @@ class CacheTest extends TimberIntegrationTestCase
             "SELECT option_value FROM {$wpdb->options} WHERE option_name = '_transient_other_plugin_transient'"
         ));
     }
+
     public function testClearCacheTimberSiteTransients()
     {
         $loader = new Loader();

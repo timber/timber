@@ -350,6 +350,8 @@ class TimberMultisiteTest extends TimberIntegrationTestCase
         // Each expired transient and its timeout row, in the options and the sitemeta table.
         $this->assertSame(4, $result);
         $this->assertSame('bar', $valid);
+    }
+
     public function testSharedTwigEnvironmentIsRebuiltPerBlog()
     {
         $this->skipWithoutMultisite();
