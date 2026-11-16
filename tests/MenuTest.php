@@ -18,6 +18,11 @@ class CustomMenuItemClass extends MenuItem
 {
 }
 
+class TermWithPostName extends Term
+{
+    public $post_name = 'existing-term-slug';
+}
+
 #[Group('menus-api')]
 class MenuTest extends TimberIntegrationTestCase
 {
@@ -1209,6 +1214,45 @@ class MenuTest extends TimberIntegrationTestCase
         $this->assertInstanceOf(Post::class, $menu->items[0]->master_object());
         $this->assertInstanceOf(Term::class, $menu->items[7]->master_object());
         $this->assertInstanceOf(WP_Post_Type::class, $menu->items[8]->master_object());
+    }
+
+    public function testSlugOfPostTypeArchiveItemIsItsOwnPostName()
+    {
+        $archive_item = Timber::get_menu(self::_createTestMenu()['term_id'])->items[8];
+
+        $this->assertSame((string) $archive_item->ID, $archive_item->slug());
+    }
+
+    public function testSlugOfPostTypeArchiveItemIsPostNameOfPostType()
+    {
+        $menu_id = self::_createTestMenu()['term_id'];
+        \register_post_type('dummy-post-type', [
+            'has_archive' => true,
+            'post_name' => 'dummy-archive',
+        ]);
+
+        $this->assertSame('dummy-archive', Timber::get_menu($menu_id)->items[8]->slug());
+    }
+
+    public function testSlugOfTermItemIsPostNameTermMetaOrItsOwnPostName()
+    {
+        $term_item = Timber::get_menu(self::_createTestMenu()['term_id'])->items[7];
+
+        $this->assertSame((string) $term_item->ID, $term_item->slug());
+
+        \update_term_meta($term_item->object_id, 'post_name', 'from-term-meta');
+
+        $this->assertSame('from-term-meta', $term_item->slug());
+    }
+
+    public function testSlugOfTermItemIsPostNamePropertyOfTermClass()
+    {
+        $this->add_filter_temporarily('timber/term/classmap', fn ($classmap) => \array_merge($classmap, [
+            'category' => TermWithPostName::class,
+        ]));
+        $menu = Timber::get_menu(self::_createTestMenu()['term_id']);
+
+        $this->assertSame('existing-term-slug', $menu->items[7]->slug());
     }
 
     public function testMenuWalker()

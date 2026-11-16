@@ -102,37 +102,11 @@ You can find the code for Timber 1 on the [1.x branch](https://github.com/timber
 * [**Timber Starter Theme**](https://github.com/timber/starter-theme) The "_s" of Timber to give you an easy start to the most basic theme you can build upon and customize.
 * [**wp-i18n-twig**](https://github.com/timber/wp-i18n-twig) WP CLI Command to grab translatable strings from Twig files.
 * [**Timber Debug Bar**](https://github.com/timber/debug-bar-timber) Adds a debug bar panel that will show you which template is in-use and the data sent to your twig file.
+* [**Timber Rings**](https://github.com/timber/rings) A [Query Monitor](https://wordpress.org/plugins/query-monitor/) panel that profiles your Twig templates and shows which template line rendered any element of the page.
 
 ### Related Timber Projects
 
-* [**Editor for Timber**](https://wordpress.org/plugins/editor-for-timber/) Edit your Twig files from the WordPress admin
-* [**Pine**](https://github.com/azeemhassni/pine) A CLI _installer_ for Timber
-* [**Query Monitor Twig Profile**](https://github.com/NielsdeBlaauw/query-monitor-twig-profile) An add-on for [Query Monitor](https://wordpress.org/plugins/query-monitor/) to see what's going on inside your Twig files (automatically works with Timber!)
-* [**Timber ACF WP Blocks**](https://github.com/palmiak/timber-acf-wp-blocks) Easy ACF Gutenberg blocks creation
-* [**Timber CLI**](https://github.com/nclud/wp-timber-cli) A CLI for Timber
-* [**Timber Commented Include**](https://github.com/djboris88/timber-commented-include) Debug output via HTML comments before and after each include statement in Twig
-* [**Timber Debugger**](https://github.com/djboris88/timber-debugger) Package that provides extra debugging options for Timber
-* [**Timber Dump Extension**](https://github.com/nlemoine/timber-dump-extension) Debug output with nice formatting
-* [**Timber Photon**](https://github.com/slimndap/TimberPhoton) Plug-in to use JetPack's free Photon image manipulation and CDN with Timber
-* [**Timber VS Code Extension**](https://github.com/JDevx97/Timber-Snippets) Snippets for Timber in Visual Studio Code
-* [**Timber Sugar**](https://github.com/timber/sugar) A catch-all for goodies to use w Timber
-* [**Timber WebLink Extension**](https://github.com/nlemoine/timber-weblink-extension) Provides Twig functions to manage the Link HTTP header needed for Web Linking when using HTTP/2 Server Push as well as Resource Hints
-* [**Timmy**](https://github.com/MINDKomm/Timmy) Advanced image manipulation for Timber
-
-### Projects that use Timber
-* [**Branch**](https://github.com/JeyKeu/branch/) Bootstrap 3 + Timber = Branch starter theme!
-* [**Flynt**](https://flyntwp.com/) a component based WordPress starter theme built on Timber and ACF Pro
-* [**Gantry5**](https://wordpress.org/plugins/gantry5/) a framework for theme development
-* [**Hozokit**](https://github.com/csalmeida/hozokit) a component based starter theme
-* [**Juniper**](https://www.osomstudio.com/blog/meet-the-juniper-starter-pack-your-wordpress-development-new-best-friend/) Starter pack that incorporates Timber and Bedrock
-* [**Seedling**](https://github.com/maxdmyers/seedling) a starter theme using Bootstrap 4
-
-### Helpful Links
-
-* [**CSS Tricks**](https://css-tricks.com/timber-and-twig-reignited-my-love-for-wordpress/) introduction to Timber by [@tjFogarty](https://github.com/tjFogarty)
-* [**Twig for Timber Cheatsheet**](https://notlaura.com/the-twig-for-timber-cheatsheet/) by [@laras126](https://github.com/laras126)
-* [**Timber Cheatsheet**](https://gist.github.com/taotiwordpress/266fd95513f97f3c17748288579c56b9) by [@taotiwordpress](https://github.com/taotiwordpress)
-* [**TutsPlus**](https://code.tutsplus.com/articles/kick-start-wordpress-development-with-twig-introduction--cms-24781) A guide to getting started by [@ahmadawais](https://github.com/ahmadawais)
+See [**Awesome Timber**](https://github.com/timber/awesome-timber) for a curated list of starter themes, frameworks, extensions and tools built on Timber.
 
 ## Reporting Security Issues
 To disclose a security issue to our team, please submit a report via [GitHub](https://github.com/timber/timber/security).

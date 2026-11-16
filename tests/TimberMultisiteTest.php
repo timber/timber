@@ -2,10 +2,13 @@
 
 namespace Timber\Tests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Ticket;
 use Timber\Cache\Cleaner;
+use Timber\Loader;
 use Timber\Site;
 use Timber\Timber;
+use Twig\Environment;
 
 class TimberMultisiteTest extends TimberIntegrationTestCase
 {
@@ -266,6 +269,53 @@ class TimberMultisiteTest extends TimberIntegrationTestCase
         $this->assertSame($ids, $mapped_ids);
     }
 
+    #[Ticket('https://github.com/timber/timber/pull/3310')]
+    public function testSiteFromSlug()
+    {
+        $this->skipWithoutMultisite();
+
+        $main_id = \get_current_blog_id();
+        $blog_id = \is_subdomain_install()
+            ? self::createSubDomainSite('cool-site.example.org', 'My Cool Site')
+            : self::createSubDirectorySite('/cool-site/', 'My Cool Site');
+        \restore_current_blog();
+
+        $site = new Site('cool-site');
+
+        $this->assertSame($blog_id, (int) $site->ID);
+        $this->assertSame('My Cool Site', $site->name);
+        $this->assertSame($main_id, \get_current_blog_id());
+
+        $site = new Site('/cool-site/');
+
+        $this->assertSame($blog_id, (int) $site->ID);
+        $this->assertSame($main_id, \get_current_blog_id());
+    }
+
+    #[Ticket('https://github.com/timber/timber/pull/3310')]
+    #[DataProvider('unknownSiteProvider')]
+    public function testSiteFromUnknownIdentifierIsCurrentSite($identifier)
+    {
+        $this->skipWithoutMultisite();
+
+        $main_id = \get_current_blog_id();
+
+        $site = new Site($identifier);
+
+        $this->assertSame($main_id, (int) $site->ID);
+        $this->assertSame($main_id, \get_current_blog_id());
+    }
+
+    public static function unknownSiteProvider(): array
+    {
+        return [
+            'unknown slug' => ['no-such-site'],
+            'unknown slug with slashes' => ['/no-such-site/'],
+            'unknown ID' => [9999],
+            'unknown numeric string' => ['2024'],
+        ];
+    }
+
     public function testTimberSiteWPObject()
     {
         $this->skipWithoutMultisite();
@@ -300,6 +350,76 @@ class TimberMultisiteTest extends TimberIntegrationTestCase
         // Each expired transient and its timeout row, in the options and the sitemeta table.
         $this->assertSame(4, $result);
         $this->assertSame('bar', $valid);
+    public function testSharedTwigEnvironmentIsRebuiltPerBlog()
+    {
+        $this->skipWithoutMultisite();
+
+        $builds = 0;
+        $count = function (Environment $twig) use (&$builds): Environment {
+            $builds++;
+
+            return $twig;
+        };
+        \add_filter('timber/twig', $count);
+        \add_filter('timber/twig/environment/shared', '__return_true');
+
+        try {
+            Timber::compile('shared-environment/plain.twig');
+            Timber::compile('shared-environment/plain.twig');
+            $this->assertSame(1, $builds);
+
+            // createSubDirectorySite() switches to the new blog.
+            self::createSubDirectorySite('/shared-twig/', 'Shared Twig');
+            Timber::compile('shared-environment/plain.twig');
+            $this->assertSame(2, $builds);
+
+            \restore_current_blog();
+            Timber::compile('shared-environment/plain.twig');
+            $this->assertSame(3, $builds);
+        } finally {
+            if (\ms_is_switched()) {
+                \restore_current_blog();
+            }
+            \remove_filter('timber/twig/environment/shared', '__return_true');
+            \remove_filter('timber/twig', $count);
+            (new Loader())->clear_cache_twig();
+        }
+    }
+
+    public function testClearCacheTimberSiteTransientsOfCurrentNetworkOnly()
+    {
+        $this->skipWithoutMultisite();
+
+        // wpmu_create_blog() in other tests leaves wp_installing() on, and set_site_transient() then skips the database.
+        $was_installing = \wp_installing(false);
+
+        global $wpdb;
+        $other_network_id = \get_current_network_id() + 1;
+        $wpdb->insert($wpdb->sitemeta, [
+            'site_id' => $other_network_id,
+            'meta_key' => '_site_transient_timberloader_key',
+            'meta_value' => 'other network',
+        ]);
+
+        $loader = new Loader();
+        $loader->set_cache('key', 'current network', Loader::CACHEGROUP, 600, Loader::CACHE_SITE_TRANSIENT);
+
+        $count_timeout_rows = fn () => (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $wpdb->sitemeta WHERE meta_key = %s AND site_id = %d",
+            '_site_transient_timeout_timberloader_key',
+            \get_current_network_id()
+        ));
+        $this->assertSame(1, $count_timeout_rows());
+
+        $this->assertTrue($loader->clear_cache_timber(Loader::CACHE_SITE_TRANSIENT));
+
+        // Read from the database, as the next request would.
+        \wp_cache_flush();
+        $this->assertFalse($loader->get_cache('key', Loader::CACHEGROUP, Loader::CACHE_SITE_TRANSIENT));
+        $this->assertSame(0, $count_timeout_rows());
+        $this->assertSame('other network', \get_network_option($other_network_id, '_site_transient_timberloader_key'));
+
+        \wp_installing($was_installing);
     }
 
     public static function createSubDomainSite($domain = 'test.example.org', $title = 'Multisite Test')

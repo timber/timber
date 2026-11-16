@@ -372,6 +372,15 @@ class CacheTest extends TimberIntegrationTestCase
         $this->assertTrue($works);
     }
 
+    public function testLoaderCachesSameTemplateNameFromDifferentCallersSeparately()
+    {
+        $first = new Loader($this->getFixturesDir() . '/callers/first');
+        $second = new Loader($this->getFixturesDir() . '/callers/second');
+
+        $this->assertSame('First card', \trim($first->render('card.twig', [], 600)));
+        $this->assertSame('Second card', \trim($second->render('card.twig', [], 600)));
+    }
+
     public function testTimberLoaderCacheTransients()
     {
         $time = 1;
@@ -592,6 +601,27 @@ class CacheTest extends TimberIntegrationTestCase
         $this->assertSame('foo', $wpdb->get_var(
             "SELECT option_value FROM {$wpdb->options} WHERE option_name = '_transient_other_plugin_transient'"
         ));
+    }
+    public function testClearCacheTimberSiteTransients()
+    {
+        $loader = new Loader();
+        $loader->set_cache('key', 'site', Loader::CACHEGROUP, 600, Loader::CACHE_SITE_TRANSIENT);
+        $loader->set_cache('key', 'blog', Loader::CACHEGROUP, 600, Loader::CACHE_TRANSIENT);
+
+        global $wpdb;
+        $count_timeout_rows = fn () => (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $wpdb->options WHERE option_name = %s",
+            '_site_transient_timeout_timberloader_key'
+        ));
+        $this->assertSame(1, $count_timeout_rows());
+
+        $this->assertTrue($loader->clear_cache_timber(Loader::CACHE_SITE_TRANSIENT));
+
+        // Read from the database, as the next request would.
+        \wp_cache_flush();
+        $this->assertFalse($loader->get_cache('key', Loader::CACHEGROUP, Loader::CACHE_SITE_TRANSIENT));
+        $this->assertSame(0, $count_timeout_rows());
+        $this->assertSame('blog', $loader->get_cache('key', Loader::CACHEGROUP, Loader::CACHE_TRANSIENT));
     }
 
     public function testCacheTransientKeyFilter()

@@ -345,6 +345,51 @@ class TimberRenderBlockTest extends TimberIntegrationTestCase
     }
 
     /**
+     * Test rendering blocks from a template whose parent comes from the data
+     */
+    public function testCompileTwigBlockFromTemplateWithDynamicParent()
+    {
+        $data = [
+            'layout' => 'Fixtures/assets/base-layout.twig',
+            'custom_content' => 'Child content',
+        ];
+
+        $content_output = Timber::compile_twig_block('content', 'Fixtures/assets/dynamic-layout-child.twig', $data);
+        $this->assertEquals('<p>Child content</p>', \trim($content_output));
+
+        $header_output = Timber::compile_twig_block('header', 'Fixtures/assets/dynamic-layout-child.twig', $data);
+        $this->assertEquals('<h1>Default Header</h1>', \trim($header_output));
+    }
+
+    /**
+     * Test rendering a block that only exists in the parent selected by the data
+     */
+    public function testCompileTwigBlockFromTemplateWithConditionalParent()
+    {
+        $output = Timber::compile_twig_block('sidebar', 'Fixtures/assets/conditional-layout-child.twig', [
+            'use_alt' => true,
+            'custom_content' => 'Child content',
+        ]);
+
+        $this->assertEquals('<aside>Alt sidebar</aside>', \trim($output));
+    }
+
+    /**
+     * Test the full template fallback for an unknown block when the parent comes from the data
+     */
+    public function testCompileTwigBlockFromTemplateWithDynamicParentInvalidBlock()
+    {
+        $output = Timber::compile_twig_block('nonexistent_block', 'Fixtures/assets/dynamic-layout-child.twig', [
+            'layout' => 'Fixtures/assets/base-layout.twig',
+            'custom_content' => 'Child content',
+        ]);
+
+        $this->assertStringContainsString('<!DOCTYPE html>', $output);
+        $this->assertStringContainsString('<h1>Default Header</h1>', $output);
+        $this->assertStringContainsString('<p>Child content</p>', $output);
+    }
+
+    /**
      * Test compile_twig_block with explicitly null data parameter
      * This covers the is_null($data) check in Timber.php line 1562
      */
@@ -394,5 +439,28 @@ class TimberRenderBlockTest extends TimberIntegrationTestCase
         // Should still render despite caching issue
         $expected = '<div class="top-0 left-0 w-full p-4 font-bold bg-red-500 text-red-50" role="alert">Test message</div>';
         $this->assertEquals($expected, \trim($output));
+    }
+
+    public function testCompileTwigBlockCachesSameTemplateNameFromDifferentCallersSeparately()
+    {
+        $renders = 0;
+        $count_renders = function ($output) use (&$renders) {
+            $renders++;
+            return $output;
+        };
+        \add_filter('timber/output/pre-cache', $count_renders);
+
+        $first = Timber::compile_twig_block('content', 'card.twig', [], $this->getFixturesDir() . '/callers/first', 600);
+        $first_again = Timber::compile_twig_block('content', 'card.twig', [], $this->getFixturesDir() . '/callers/first', 600);
+        $second = Timber::compile_twig_block('content', 'card.twig', [], $this->getFixturesDir() . '/callers/second', 600);
+
+        \remove_filter('timber/output/pre-cache', $count_renders);
+
+        $this->assertSame('First card', \trim($first));
+        $this->assertSame('First card', \trim($first_again));
+        $this->assertSame('Second card', \trim($second));
+
+        // The second render of the same caller is a cache hit.
+        $this->assertSame(2, $renders);
     }
 }
