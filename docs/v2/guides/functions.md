@@ -117,3 +117,52 @@ There are two ways to work around this:
 ```php
 $context['my_custom_function'] = new FunctionWrapper('my_custom_function', $array_of_arguments);
 ```
+
+### Echoing functions and the `use_yield` option
+
+Twig can render templates with PHP generators instead of output buffering. You turn this on with the `use_yield` option of the Twig environment, and it will be the only rendering mode in Twig 4.
+
+```php
+add_filter('timber/twig/environment/options', function ($options) {
+    $options['use_yield'] = true;
+
+    return $options;
+});
+```
+
+Without output buffering, Twig doesn’t collect what a function echoes anymore, so the output of a function like `wp_head()` would be sent to the browser before the template is. Timber takes care of this for you. With `use_yield`, the output of an echoing function still ends up where you call the function, like it does without the option:
+
+- In `{{ }}`, `{% do %}` and `{% set name = … %}`. This applies to everything you can call there: `fn()`, `function()` and `action()`, echoing Timber functions like `_e()` and `bloginfo()`, your own Twig functions and filters, and methods of the objects in your context. It also works when the call is inside of `{% set %}…{% endset %}`, `{% apply %}`, `{% cache %}`, a macro or an included template.
+- In the templates you render with `Timber::compile()`, `Timber::compile_string()`, `Timber::compile_twig_block()` and the matching `Timber::render*()` functions. Echoed output is a part of the string they return, and of what Timber caches.
+
+Nothing changes when you don’t use the option.
+
+There are a few things that Timber can’t do for you with `use_yield`:
+
+- **Echoing functions in other tags.** A function that echoes in the condition of an `{% if %}`, in the sequence of a `{% for %}` or in the arguments of an `{% include %}` works as long as the tag is not inside of `{% set %}…{% endset %}`, `{% apply %}`, `{% cache %}`, a macro or a template loaded with the `include()` function. Inside of these, the output is printed in front of the captured content instead of being a part of it. Call the function with `{% set %}` first to keep its output in place.
+
+    ```twig
+    {% set footer %}
+        <aside>
+            {# Don’t: the widgets are printed before the <aside> element. #}
+            {% if not fn('dynamic_sidebar', 'footer') %}
+                <p>No widgets yet.</p>
+            {% endif %}
+
+            {# Do: the widgets are printed here. #}
+            {% set has_widgets = fn('dynamic_sidebar', 'footer') %}
+            {% if not has_widgets %}
+                <p>No widgets yet.</p>
+            {% endif %}
+        </aside>
+    {% endset %}
+    ```
+
+- **Rendering with Twig directly.** If you render a template through the Twig environment yourself, for example with `$twig->render()`, only `{{ }}`, `{% do %}` and `{% set name = … %}` are covered. Use Timber’s functions, or call `display()` inside of an output buffer.
+
+    ```php
+    $output = Timber\Helper::ob_function([$twig->load('footer.twig'), 'display'], [$context]);
+    ```
+
+- **Custom Twig tags.** A node class has to `yield` its output instead of echoing it, and to be marked with the `#[YieldReady]` attribute. Twig throws a `LogicException` when it compiles a template that uses a tag whose node class is not. Check the extensions you add through the `timber/twig` filter. The abandoned `twig/cache-extension` package, which Timber registers when it is installed, is not compatible. Use [`twig/cache-extra`](https://timber.github.io/docs/v2/guides/performance/#cache-parts-of-the-twig-file-and-data) instead.
+- **Speed.** Each `{{ }}`, `{% do %}` and `{% set name = … %}` runs in its own output buffer. This costs around 0.1 microseconds per tag, which is more than what Twig gains from using generators. Don’t enable `use_yield` to make your site faster, enable it to prepare your theme for Twig 4.
