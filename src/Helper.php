@@ -279,9 +279,8 @@ class Helper
         try {
             \call_user_func_array($function, $args);
         } catch (Throwable $e) {
-            // Also discards the buffers the function left open.
-            while (\ob_get_level() > $level) {
-                \ob_end_clean();
+            while (\ob_get_level() > $level && \ob_end_clean()) {
+                // Also discards the buffers the function left open.
             }
             throw $e;
         }
