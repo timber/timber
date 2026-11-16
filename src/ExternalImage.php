@@ -108,6 +108,8 @@ class ExternalImage implements ImageInterface
         'jpg',
         'jpeg',
         'png',
+        'webp',
+        'avif',
         'svg',
         'bmp',
         'ico',
