@@ -59,14 +59,17 @@ class CacheExtraTest extends TimberIntegrationTestCase
             return $options;
         }, 20);
 
-        $template = "{% cache key %}[{{ fn('_e', 'echoed') }}]{% endcache %}";
-        $data = [
-            'key' => \uniqid('echoed-output-'),
-        ];
+        $template = "{% cache key %}[{{ fn('_e', text) }}]{% endcache %}";
+        $key = \uniqid('echoed-output-');
 
-        $this->assertSame('[echoed]', Timber::compile_string($template, $data));
-        // Read from the cache.
-        $this->assertSame('[echoed]', Timber::compile_string($template, $data));
+        $this->assertSame('[stored]', Timber::compile_string($template, [
+            'key' => $key,
+            'text' => 'stored',
+        ]));
+        $this->assertSame('[stored]', Timber::compile_string($template, [
+            'key' => $key,
+            'text' => 'ignored',
+        ]));
     }
 
     public static function use_yield_provider(): iterable
