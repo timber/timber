@@ -3,6 +3,7 @@
 namespace Timber;
 
 use InvalidArgumentException;
+use Throwable;
 use Timber\Cache\Cleaner;
 use Timber\Twig\Extension\OutputBufferExtension;
 use Twig\CacheExtension;
@@ -52,6 +53,13 @@ class Loader implements LoaderInterface
      * ID of the blog `self::$shared_twig` was built for.
      */
     private static ?int $shared_blog_id = null;
+
+    /**
+     * The Twig environment of the template that is being rendered.
+     *
+     * @internal
+     */
+    protected ?Environment $twig = null;
 
     /**
      * @param bool|string   $caller the calling directory or false
@@ -278,6 +286,7 @@ class Loader implements LoaderInterface
 
         try {
             $template = $twig->load($file);
+            $this->twig = $twig;
             $output = $this->render_twig_template($template, $data);
 
             /**
@@ -308,7 +317,56 @@ class Loader implements LoaderInterface
      */
     protected function render_twig_template($template, $data)
     {
-        return Helper::ob_function([$template, 'display'], [$data]);
+        return self::render_twig($this->twig, $template, $data);
+    }
+
+    /**
+     * Renders a Twig template, or one of its blocks.
+     *
+     * Twig renders inside an output buffer, so what a PHP function echoes ends up in the output.
+     * It doesn’t with its `use_yield` option, the only mode in Twig 4. Timber then opens the same
+     * buffer as Twig does without the option.
+     *
+     * @internal
+     *
+     * @param Environment|null $twig       The Twig environment of the template.
+     * @param TemplateWrapper  $template   The Twig template.
+     * @param array            $data       The data to pass to the template.
+     * @param string|null      $block_name Optional. The name of the block to render.
+     * @return string The rendered output.
+     */
+    public static function render_twig(?Environment $twig, TemplateWrapper $template, array $data, ?string $block_name = null): string
+    {
+        if (!$twig?->hasExtension(OutputBufferExtension::class)) {
+            return null === $block_name
+                ? $template->render($data)
+                : $template->renderBlock($block_name, $data);
+        }
+
+        $level = \ob_get_level();
+
+        if ($twig->isDebug()) {
+            \ob_start();
+        } else {
+            // Discards what gets flushed, for example when a function exits.
+            \ob_start(static fn (): string => '');
+        }
+
+        try {
+            if (null === $block_name) {
+                $template->display($data);
+            } else {
+                $template->displayBlock($block_name, $data);
+            }
+        } catch (Throwable $e) {
+            while (\ob_get_level() > $level && \ob_end_clean()) {
+                // Also discards the buffers a function left open.
+            }
+
+            throw $e;
+        }
+
+        return \ob_get_clean();
     }
 
     /**

@@ -16,6 +16,11 @@ use Twig\Error\RuntimeError;
  */
 class TwigOutputBufferTest extends TimberIntegrationTestCase
 {
+    /**
+     * The output buffer level around the template that flushes its buffers.
+     */
+    private int $level = 0;
+
     public function set_up()
     {
         parent::set_up();
@@ -34,6 +39,23 @@ class TwigOutputBufferTest extends TimberIntegrationTestCase
             ];
             $functions['render_string'] = [
                 'callable' => [Timber::class, 'render_string'],
+            ];
+            $functions['flush_buffers'] = [
+                'callable' => function () {
+                    // Flushes the buffer that the template is rendered in, which is below the one
+                    // of the tag with `use_yield`.
+                    $nested = \ob_get_level() - $this->level - 1;
+
+                    for ($i = 0; $i < $nested; $i++) {
+                        \ob_end_flush();
+                    }
+
+                    \ob_flush();
+
+                    for ($i = 0; $i < $nested; $i++) {
+                        \ob_start();
+                    }
+                },
             ];
             $functions['throw_after_echo'] = [
                 'callable' => function ($text): never {
@@ -163,6 +185,67 @@ class TwigOutputBufferTest extends TimberIntegrationTestCase
 
         $this->assertSame($expected, $output);
         $this->assertSame('', $leaked);
+    }
+
+    /**
+     * Only `{{ }}`, `{% do %}` and `{% set %}` have their own output buffer, so an echo in another
+     * tag relies on the buffer that the template is rendered in.
+     */
+    #[DataProvider('useYieldProvider')]
+    public function testCompileKeepsEchoedOutputInPlace(bool $use_yield)
+    {
+        $this->use_yield($use_yield);
+
+        \ob_start();
+        $output = Timber::compile('assets/block-echo-condition.twig');
+        $leaked = \ob_get_clean();
+
+        $this->assertSame('[echoedyes]', \trim($output));
+        $this->assertSame('', $leaked);
+    }
+
+    #[DataProvider('useYieldProvider')]
+    public function testCompileTwigBlockKeepsEchoedOutputInPlace(bool $use_yield)
+    {
+        $this->use_yield($use_yield);
+
+        \ob_start();
+        $output = Timber::compile_twig_block('echo', 'assets/block-echo-condition.twig');
+        $leaked = \ob_get_clean();
+
+        $this->assertSame('[echoedyes]', \trim($output));
+        $this->assertSame('', $leaked);
+    }
+
+    /**
+     * Without debug, Twig discards what is flushed out of the buffer of a template, for example
+     * when a function exits.
+     */
+    #[DataProvider('flushProvider')]
+    public function testFlushedOutputIsDiscardedWithoutDebug(bool $use_yield, bool $debug, string $expected)
+    {
+        $this->use_yield($use_yield);
+        $this->add_filter_temporarily('timber/twig/environment/options', function ($options) use ($debug) {
+            $options['debug'] = $debug;
+
+            return $options;
+        });
+
+        \ob_start();
+        $this->level = \ob_get_level();
+        $output = Timber::compile_string('flushed{% do flush_buffers() %}kept');
+        $leaked = \ob_get_clean();
+
+        $this->assertSame('kept', $output);
+        $this->assertSame($expected, $leaked);
+    }
+
+    public static function flushProvider(): iterable
+    {
+        yield 'without use_yield' => [false, false, ''];
+        yield 'with use_yield' => [true, false, ''];
+        yield 'without use_yield, with debug' => [false, true, 'flushed'];
+        yield 'with use_yield, with debug' => [true, true, 'flushed'];
     }
 
     #[DataProvider('useYieldProvider')]
