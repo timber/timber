@@ -92,6 +92,31 @@ class TermFactoryTest extends TimberIntegrationTestCase
         }
     }
 
+    public function testGetTermsFromTaxonomyNames()
+    {
+        $tag_id = static::factory()->term->create([
+            'taxonomy' => 'post_tag',
+        ]);
+        $make_id = static::factory()->term->create([
+            'taxonomy' => 'make',
+        ]);
+        static::factory()->term->create([
+            'taxonomy' => 'whackness',
+        ]);
+
+        $post_id = static::factory()->post->create();
+        \wp_set_object_terms($post_id, [$tag_id], 'post_tag');
+        \wp_set_object_terms($post_id, [$make_id], 'make');
+
+        $termFactory = new TermFactory();
+        $terms = $termFactory->from(['post_tag', 'make']);
+
+        $this->assertEqualsCanonicalizing(
+            [$tag_id, $make_id],
+            \array_map(fn (Term $term) => $term->id, $terms)
+        );
+    }
+
     public function testGetTermWithClassmapFilter()
     {
         $my_class_map = (fn () => [
