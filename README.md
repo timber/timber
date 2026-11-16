@@ -108,13 +108,6 @@ You can find the code for Timber 1 on the [1.x branch](https://github.com/timber
 
 See [**Awesome Timber**](https://github.com/timber/awesome-timber) for a curated list of starter themes, frameworks, extensions and tools built on Timber.
 
-### Helpful Links
-
-* [**CSS Tricks**](https://css-tricks.com/timber-and-twig-reignited-my-love-for-wordpress/) introduction to Timber by [@tjFogarty](https://github.com/tjFogarty)
-* [**Twig for Timber Cheatsheet**](https://notlaura.com/the-twig-for-timber-cheatsheet/) by [@laras126](https://github.com/laras126)
-* [**Timber Cheatsheet**](https://gist.github.com/taotiwordpress/266fd95513f97f3c17748288579c56b9) by [@taotiwordpress](https://github.com/taotiwordpress)
-* [**TutsPlus**](https://code.tutsplus.com/articles/kick-start-wordpress-development-with-twig-introduction--cms-24781) A guide to getting started by [@ahmadawais](https://github.com/ahmadawais)
-
 ## Reporting Security Issues
 To disclose a security issue to our team, please submit a report via [GitHub](https://github.com/timber/timber/security).
 
