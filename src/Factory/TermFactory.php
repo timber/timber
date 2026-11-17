@@ -64,7 +64,7 @@ class TermFactory
         }
 
         // Numeric array of taxonomy name strings, e.g. ['category', 'post_tag'].
-        if (\array_is_list($params) && $this->is_array_of_strings($params)) {
+        if ($this->is_numeric_array($params) && $this->is_array_of_strings($params)) {
             return [
                 $this->from_taxonomy_names($params),
                 [
