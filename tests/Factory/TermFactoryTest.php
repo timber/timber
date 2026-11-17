@@ -117,6 +117,36 @@ class TermFactoryTest extends TimberIntegrationTestCase
         );
     }
 
+    public function testGetTermsFromTaxonomyNamesWithNonSequentialKeys()
+    {
+        $tag_id = static::factory()->term->create([
+            'taxonomy' => 'post_tag',
+        ]);
+        $make_id = static::factory()->term->create([
+            'taxonomy' => 'make',
+        ]);
+        $whackness_id = static::factory()->term->create([
+            'taxonomy' => 'whackness',
+        ]);
+
+        $post_id = static::factory()->post->create();
+        \wp_set_object_terms($post_id, [$tag_id], 'post_tag');
+        \wp_set_object_terms($post_id, [$make_id], 'make');
+        // Assign a term in another taxonomy, so it isn't hidden by hide_empty.
+        \wp_set_object_terms($post_id, [$whackness_id], 'whackness');
+
+        // array_unique() keeps the original keys: [0 => 'post_tag', 2 => 'make'].
+        $taxonomies = \array_unique(['post_tag', 'post_tag', 'make']);
+
+        $termFactory = new TermFactory();
+        $terms = $termFactory->from($taxonomies);
+
+        $this->assertEqualsCanonicalizing(
+            [$tag_id, $make_id],
+            \array_map(fn (Term $term) => $term->id, $terms)
+        );
+    }
+
     public function testGetTermWithClassmapFilter()
     {
         $my_class_map = (fn () => [
