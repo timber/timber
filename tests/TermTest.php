@@ -132,6 +132,39 @@ class TermTest extends TimberIntegrationTestCase
         ]));
     }
 
+    #[Ticket('#3292')]
+    public function testGetTermsIsAListWhenEmptyHierarchicalTermsAreHidden()
+    {
+        // WP_Term_Query unsets empty terms of hierarchical taxonomies after the SQL query, leaving gaps in the keys.
+        static::factory()->term->create([
+            'name' => 'Aaa empty',
+            'taxonomy' => 'category',
+        ]);
+        $full_term_id = static::factory()->term->create([
+            'name' => 'Zzz full',
+            'taxonomy' => 'category',
+        ]);
+        $post_id = static::factory()->post->create();
+        \wp_set_object_terms($post_id, [$full_term_id], 'category');
+
+        $args = [
+            'taxonomy' => 'category',
+            'slug' => ['aaa-empty', 'zzz-full'],
+            'orderby' => 'name',
+        ];
+
+        $terms = Timber::get_terms($args);
+
+        $this->assertTrue(\array_is_list($terms));
+        $this->assertSame([$full_term_id], \array_map(fn (Term $term) => $term->id, $terms));
+
+        \wp_cache_flush();
+        $term = Timber::get_term($args);
+
+        $this->assertInstanceOf(Term::class, $term);
+        $this->assertSame($full_term_id, $term->id);
+    }
+
     public function testTerm()
     {
         $term_id = static::factory()->term->create();

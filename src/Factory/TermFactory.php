@@ -95,7 +95,8 @@ class TermFactory
 
         $fields = $query->query_vars['fields'];
         if ('all' === $fields || 'all_with_object_id' === $fields) {
-            return \array_map([$this, 'build'], $terms);
+            // WP_Term_Query can unset hidden empty terms without reindexing, so make sure we return a list.
+            return \array_values(\array_map([$this, 'build'], $terms));
         }
 
         return $terms;
