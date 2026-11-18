@@ -38,12 +38,46 @@ class TimberRevisionsTest extends TimberIntegrationTestCase
 
         $_GET['preview'] = true;
         $_GET['preview_id'] = $post_id;
+        $_GET['preview_nonce'] = \wp_create_nonce('post_preview_' . $post_id);
 
         $post = Timber::get_post($post_id);
 
         $this->assertEquals('Revised Title', $post->post_title);
         $this->assertEquals('New Stuff Goes here', $post->post_content);
         $this->assertEquals('New and improved!', $post->post_excerpt);
+
+        unset($_GET['preview']);
+        unset($_GET['preview_id']);
+        unset($_GET['preview_nonce']);
+    }
+
+    public function testPreviewIgnoredForAnonymousUser()
+    {
+        $editor_user_id = static::factory()->user->create([
+            'role' => 'editor',
+        ]);
+        \wp_set_current_user($editor_user_id);
+
+        $post_id = static::factory()->post->create([
+            'post_author' => $editor_user_id,
+            'post_title' => 'Published Title',
+            'post_content' => 'Published content',
+        ]);
+        \_wp_put_post_revision([
+            'ID' => $post_id,
+            'post_title' => 'Unpublished Title',
+            'post_content' => 'Unpublished content',
+        ], true);
+
+        \wp_set_current_user(0);
+
+        $_GET['preview'] = true;
+        $_GET['preview_id'] = $post_id;
+
+        $post = Timber::get_post($post_id);
+
+        $this->assertEquals('Published Title', $post->post_title);
+        $this->assertEquals('Published content', $post->post_content);
 
         unset($_GET['preview']);
         unset($_GET['preview_id']);
@@ -122,6 +156,10 @@ class TimberRevisionsTest extends TimberIntegrationTestCase
     {
         global $current_user;
         global $wp_query;
+
+        \wp_set_current_user(static::factory()->user->create([
+            'role' => 'editor',
+        ]));
 
         $quote = 'The way to do well is to do well.';
         $post_id = static::factory()->post->create([
@@ -368,6 +406,10 @@ class TimberRevisionsTest extends TimberIntegrationTestCase
     public function testPreviewPostWithImage()
     {
         global $wp_query;
+
+        \wp_set_current_user(static::factory()->user->create([
+            'role' => 'editor',
+        ]));
 
         $quote = 'The way to do well is to do well.';
 

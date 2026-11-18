@@ -203,6 +203,18 @@ class Timber
             return $data;
         }
 
+        if (
+            !isset($_GET['preview_nonce'])
+            || !\is_string($_GET['preview_nonce'])
+            || !\wp_verify_nonce($_GET['preview_nonce'], 'post_preview_' . $preview_post_id)
+        ) {
+            return $data;
+        }
+
+        if (!\current_user_can('edit_post', $preview_post_id)) {
+            return $data;
+        }
+
         $preview = \wp_get_post_autosave($preview_post_id);
 
         if (\is_object($preview)) {
