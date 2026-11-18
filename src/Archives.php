@@ -69,8 +69,6 @@ class Archives extends Core
      * @param array  $args {
      *      Optional. Array of arguments.
      *
-     *      @type bool   $show_year => false
-     *      @type string
      *      @type string $type => 'monthly-nested'
      *      @type int    $limit => -1
      *      @type bool   $show_post_count => false
