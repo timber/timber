@@ -751,9 +751,11 @@ class Timber
      * @param string|array $args    A string or array identifying the taxonomy or
      *                              `WP_Term_Query` args. Numeric strings are treated as term IDs;
      *                              non-numeric strings are treated as taxonomy names. Numeric
-     *                              arrays are treated as a list a of term identifiers; associative
-     *                              arrays are treated as args for `WP_Term_Query::__construct()`
-     *                              and accept any valid parameters to that constructor.
+     *                              arrays containing only strings are treated as a list of taxonomy
+     *                              names; other numeric arrays are treated as a list of term
+     *                              identifiers (IDs or term objects); associative arrays are treated
+     *                              as args for `WP_Term_Query::__construct()` and accept any valid
+     *                              parameters to that constructor.
      *                              Default `null`, which will get terms from all queryable
      *                              taxonomies.
      * @param array        $options {
@@ -781,12 +783,22 @@ class Timber
      * Gets a term.
      *
      * @api
-     * @param int|WP_Term $term A WP_Term or term_id
-     * @return Term|null
+     * @param int|string|array|WP_Term|null $term A term ID, a WP_Term, or `WP_Term_Query` args
+     *                                           (any input accepted by `Timber::get_terms()`).
+     *                                           When several terms match, the first one is
+     *                                           returned. Default `null`, which uses the
+     *                                           currently queried term.
+     * @return Term|null The term, or `null` if no term matches.
      * @example
      * ```php
      * // Get a Term.
      * $tag = Timber::get_term( 123 );
+     *
+     * // Get a Term by slug.
+     * $district = Timber::get_term( [
+     *   'taxonomy' => 'district',
+     *   'slug'     => 'second-district',
+     * ] );
      * ```
      */
     public static function get_term($term = null)
