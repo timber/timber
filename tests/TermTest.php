@@ -103,6 +103,68 @@ class TermTest extends TimberIntegrationTestCase
         $this->assertEquals('Zong', $string);
     }
 
+    #[Ticket('#3292')]
+    public function testGetTermsWithStringOnlyQueryArgs()
+    {
+        \register_taxonomy('district', ['post']);
+
+        $first_term_id = static::factory()->term->create([
+            'name' => 'First district',
+            'taxonomy' => 'district',
+        ]);
+        $second_term_id = static::factory()->term->create([
+            'name' => 'Second district',
+            'taxonomy' => 'district',
+        ]);
+        $post_id = static::factory()->post->create();
+        \wp_set_object_terms($post_id, [$first_term_id, $second_term_id], 'district');
+
+        $terms = Timber::get_terms([
+            'taxonomy' => 'district',
+            'slug' => 'second-district',
+        ]);
+
+        $this->assertCount(1, $terms);
+        $this->assertSame('second-district', $terms[0]->slug);
+        $this->assertNull(Timber::get_term([
+            'taxonomy' => 'district',
+            'slug' => 'does-not-exist',
+        ]));
+    }
+
+    #[Ticket('#3292')]
+    public function testGetTermsIsAListWhenEmptyHierarchicalTermsAreHidden()
+    {
+        // WP_Term_Query unsets empty terms of hierarchical taxonomies after the SQL query, leaving gaps in the keys.
+        static::factory()->term->create([
+            'name' => 'Aaa empty',
+            'taxonomy' => 'category',
+        ]);
+        $full_term_id = static::factory()->term->create([
+            'name' => 'Zzz full',
+            'taxonomy' => 'category',
+        ]);
+        $post_id = static::factory()->post->create();
+        \wp_set_object_terms($post_id, [$full_term_id], 'category');
+
+        $args = [
+            'taxonomy' => 'category',
+            'slug' => ['aaa-empty', 'zzz-full'],
+            'orderby' => 'name',
+        ];
+
+        $terms = Timber::get_terms($args);
+
+        $this->assertTrue(\array_is_list($terms));
+        $this->assertSame([$full_term_id], \array_map(fn (Term $term) => $term->id, $terms));
+
+        \wp_cache_flush();
+        $term = Timber::get_term($args);
+
+        $this->assertInstanceOf(Term::class, $term);
+        $this->assertSame($full_term_id, $term->id);
+    }
+
     public function testTerm()
     {
         $term_id = static::factory()->term->create();

@@ -64,7 +64,7 @@ class TermFactory
         }
 
         // Numeric array of taxonomy name strings, e.g. ['category', 'post_tag'].
-        if ($this->is_array_of_strings($params)) {
+        if ($this->is_numeric_array($params) && $this->is_array_of_strings($params)) {
             return [
                 $this->from_taxonomy_names($params),
                 [
@@ -95,7 +95,8 @@ class TermFactory
 
         $fields = $query->query_vars['fields'];
         if ('all' === $fields || 'all_with_object_id' === $fields) {
-            return \array_map([$this, 'build'], $terms);
+            // WP_Term_Query can unset hidden empty terms without reindexing, so make sure we return a list.
+            return \array_values(\array_map([$this, 'build'], $terms));
         }
 
         return $terms;
@@ -255,7 +256,7 @@ class TermFactory
         return true;
     }
 
-    protected function is_array_of_strings($arr)
+    protected function is_array_of_strings($arr): bool
     {
         if (!\is_array($arr)) {
             return false;
