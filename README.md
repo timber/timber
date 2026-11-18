@@ -7,7 +7,7 @@
 Originally created by
 [Jared Novack](https://github.com/jarednova), now maintained by
 [Lukas Gächter](https://github.com/gchtr),
-[Erik van der Bas](https://github.com/Levdbas) ([website](https://basedonline.nl/)) and
+[Erik van der Bas](https://github.com/Levdbas) ([website](https://studiolemon.nl/)) and
 [Nicolas Lemoine](https://github.com/nlemoine) ([website](https://n5s.dev/)), with the help of
 [Upstatement](https://upstatement.com/) and [hundreds of other GitHub contributors](https://github.com/timber/timber/graphs/contributors):
 
