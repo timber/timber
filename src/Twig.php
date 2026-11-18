@@ -91,6 +91,12 @@ class Twig
             'get_taxonomies' => [
                 'callable' => [Timber::class, 'get_taxonomies'],
             ],
+            'get_post_type' => [
+                'callable' => [Timber::class, 'get_post_type'],
+            ],
+            'get_post_types' => [
+                'callable' => [Timber::class, 'get_post_types'],
+            ],
             'get_user' => [
                 'callable' => [Timber::class, 'get_user'],
             ],

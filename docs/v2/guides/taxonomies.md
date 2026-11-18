@@ -127,7 +127,7 @@ The result is an array of `Timber\Taxonomy` objects, keyed by taxonomy name. Thi
 {% endfor %}
 ```
 
-You get an array of `Timber\PostType` objects – the same objects you get through `{{ post.type }}`.
+You get an array of `Timber\PostType` objects – the same objects you get through `{{ post.type }}`. Have a look at the [Post Types guide](https://timber.github.io/docs/v2/guides/post-types/) for the other way around.
 
 ## Twig
 

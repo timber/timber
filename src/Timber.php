@@ -6,6 +6,7 @@ use Timber\Factory\CommentFactory;
 use Timber\Factory\MenuFactory;
 use Timber\Factory\PagesMenuFactory;
 use Timber\Factory\PostFactory;
+use Timber\Factory\PostTypeFactory;
 use Timber\Factory\TaxonomyFactory;
 use Timber\Factory\TermFactory;
 use Timber\Factory\UserFactory;
@@ -13,6 +14,7 @@ use Timber\Integration\IntegrationInterface;
 use WP_Comment;
 use WP_Comment_Query;
 use WP_Post;
+use WP_Post_Type;
 use WP_Query;
 use WP_Taxonomy;
 use WP_Term;
@@ -972,6 +974,105 @@ class Timber
         ];
 
         $factory = new TaxonomyFactory();
+
+        if (\is_string($args)) {
+            $args = [$args];
+        }
+
+        return $factory->from($args);
+    }
+
+    /* Post Type Retrieval
+    ================================ */
+
+    /**
+     * Gets a post type.
+     *
+     * Unlike WordPress’ `get_post_type()`, which returns the name of the post type of a post, this
+     * returns the post type itself, which gives you access to everything that was passed to
+     * `register_post_type()` – most notably the `labels`.
+     *
+     * @api
+     * @since 2.6.0
+     * @see https://developer.wordpress.org/reference/functions/get_post_type_object/
+     * @example
+     * ```php
+     * // Get a post type by name.
+     * $post_type = Timber::get_post_type( 'recipe' );
+     *
+     * // Use the post type of the currently queried post or post type archive.
+     * $post_type = Timber::get_post_type();
+     * ```
+     * ```twig
+     * <h1>{{ post_type.labels.all_items }}</h1>
+     * ```
+     *
+     * @param string|WP_Post_Type|null $post_type Optional. A post type name or a `WP_Post_Type`
+     *                                            object. Default `null`, which will use the post
+     *                                            type of the currently queried object.
+     *
+     * @return PostType|null A `Timber\PostType` object or `null` if the post type isn’t registered.
+     */
+    public static function get_post_type($post_type = null): ?PostType
+    {
+        if (null === $post_type) {
+            $queried_object = \get_queried_object();
+            $post_type = $queried_object instanceof WP_Post_Type
+                ? $queried_object
+                : ($queried_object->post_type ?? null);
+        }
+
+        if (null === $post_type) {
+            return null;
+        }
+
+        $factory = new PostTypeFactory();
+
+        return $factory->from($post_type);
+    }
+
+    /**
+     * Gets post types.
+     *
+     * @api
+     * @since 2.6.0
+     * @see https://developer.wordpress.org/reference/functions/get_post_types/
+     * @example
+     * ```php
+     * // Get all public post types.
+     * $post_types = Timber::get_post_types();
+     *
+     * // Get a list of post types by name.
+     * $post_types = Timber::get_post_types( [ 'post', 'recipe' ] );
+     *
+     * // Use any argument that get_post_types() supports.
+     * $post_types = Timber::get_post_types( [
+     *     'hierarchical' => true,
+     *     'show_in_rest' => true,
+     *     '_builtin'     => false,
+     * ] );
+     * ```
+     * ```twig
+     * {% for post_type in post_types %}
+     *     <h2>{{ post_type.labels.name }}</h2>
+     * {% endfor %}
+     * ```
+     *
+     * @param string|array|null $args Optional. A post type name, an array of post type names or an
+     *                                array of arguments for
+     *                                [`get_post_types()`](https://developer.wordpress.org/reference/functions/get_post_types/).
+     *                                Default `null`, which will get all public post types.
+     *
+     * @return PostType[] An array of `Timber\PostType` objects, keyed by post type name. Will be
+     *                    empty if no post types were found.
+     */
+    public static function get_post_types($args = null): array
+    {
+        $args ??= [
+            'public' => true,
+        ];
+
+        $factory = new PostTypeFactory();
 
         if (\is_string($args)) {
             $args = [$args];
