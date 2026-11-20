@@ -4,6 +4,8 @@ namespace Timber;
 
 abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInterface, MetaInterface
 {
+    use Memoizes;
+
     /**
      * Gets an object meta value.
      *
