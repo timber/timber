@@ -1,5 +1,117 @@
 # Changelog
 
+## [2.6.0](https://github.com/timber/timber/compare/v2.5.1...v2.6.0) (2026-11-20)
+
+
+### Features
+
+* Reuse one Twig environment across renders behind an opt-in filter ([#3320](https://github.com/timber/timber/issues/3320)) ([b616982](https://github.com/timber/timber/commit/b61698262f538302a4670c37069145dbe96afb8c))
+
+
+### Bug Fixes
+
+* accept relative WebP and AVIF paths in external images ([#3308](https://github.com/timber/timber/issues/3308)) ([30b573f](https://github.com/timber/timber/commit/30b573fb5f4266179264f3c50465791ae268d8ce))
+* allow null for the array ([7b05cf3](https://github.com/timber/timber/commit/7b05cf36b2678e66748897b5af922bcec6efb7b5))
+* **archives:** Remove incorrect parameters from constructor documentation ([fa9f54e](https://github.com/timber/timber/commit/fa9f54e1d9fa0ce2549c2f4146382a985b43430c))
+* **cache:** Fix bug when site transients in site-transient cache mode were not cleared ([#3306](https://github.com/timber/timber/issues/3306)) ([585fbd1](https://github.com/timber/timber/commit/585fbd18664efad5a4c5fe9dbb113fb62bc0784b))
+* **cache:** Fix cache keys to use the resolved template file ([#3305](https://github.com/timber/timber/issues/3305)) ([5bb8f28](https://github.com/timber/timber/commit/5bb8f28ff2461ff1144a61f670267b88e70483a1))
+* **comment:** apply get_comment_date and get_comment_time like WordPress ([dd9cfec](https://github.com/timber/timber/commit/dd9cfec45e9a91a479a38c3dab55741f49b11145))
+* Fix bug when template data wasn’t passed to block lookup in `compile_twig_block()` ([#3299](https://github.com/timber/timber/issues/3299)) ([d1e197a](https://github.com/timber/timber/commit/d1e197ae9b1bd84776f2ed2c26dfc5fe4ca8a3c1))
+* give a page count for posts_per_page -1 ([d712db9](https://github.com/timber/timber/commit/d712db9fd3b670fad8582d685130ef2bebddebda))
+* initialize $data to an empty array in Timber class methods ([7453bc0](https://github.com/timber/timber/commit/7453bc02de22df4bc613862b677af70104d91b04))
+* Keep cached post content correct for pages and excerpts ([#3295](https://github.com/timber/timber/issues/3295)) ([398883f](https://github.com/timber/timber/commit/398883f55264d47927c866b61a1d5ff6a339e068))
+* keep next and prev links when mid_size is 0 ([134e6e7](https://github.com/timber/timber/commit/134e6e7bd4e1b0b8a6ae1b4121564a8b743d0987))
+* Keep post changes between loops and fix loop events ([#3296](https://github.com/timber/timber/issues/3296)) ([8ab496d](https://github.com/timber/timber/commit/8ab496d5d83d0fc87876b2c34196514a1377b067))
+* **menu:** keep post_name property of custom term classes as slug ([4ac326b](https://github.com/timber/timber/commit/4ac326ba59394b1f3aa73f17c00fc4fe710008e7))
+* **menu:** let current_item($depth) ignore the cached unconstrained result ([01379c7](https://github.com/timber/timber/commit/01379c7d5ce039111f6f4fb6fddae3aa2adff990))
+* **menu:** only skip the undefined post_name read on post type objects ([b526d88](https://github.com/timber/timber/commit/b526d882668c86f89025318786e1ad7d5f8d2694))
+* **menu:** read MenuItem slug from post objects only ([009981a](https://github.com/timber/timber/commit/009981a185c4faa43d8c032d68f83b9227259806))
+* **pagination:** give a page count for nopaging queries ([6d3b25a](https://github.com/timber/timber/commit/6d3b25a3c1e326679ad3786e14ec559ae0f65bba))
+* place list filter separators by position, not key ([c1359ae](https://github.com/timber/timber/commit/c1359ae3f30507b890ef894e360bd87238f2e569))
+* **post:** Fix missing paragraph closing tag in excerpts and add excerpt end once when `strip` is `false` ([#3301](https://github.com/timber/timber/issues/3301)) ([3a4e003](https://github.com/timber/timber/commit/3a4e0034ad064c05fe1b9500285fd92ab6e63554))
+* **post:** Keep `next(true)` and `prev(true)` in the same category ([#3300](https://github.com/timber/timber/issues/3300)) ([6b03b27](https://github.com/timber/timber/commit/6b03b270983fe3d924030ccbc1097c80b5e7d6bf))
+* **post:** pass WordPress format arguments to date and time filters ([00da76d](https://github.com/timber/timber/commit/00da76d03c0debcbc76c1f1f5a84f9812db0ada9))
+* **post:** pass WP_Post to get_the_date and get_the_time filters ([c67c41d](https://github.com/timber/timber/commit/c67c41de36a165c31478765873cd33dd008a8943))
+* Resolve a site slug in Timber\Site on multisite ([6adcfd9](https://github.com/timber/timber/commit/6adcfd90edb93ba333365b3e6e923dcb4424bb08))
+* return null dimensions for a file that is not an image ([844c45b](https://github.com/timber/timber/commit/844c45b705965ccc54efc972f9a6bc4574b8a14e))
+* return null dimensions for an SVG with no readable size ([67a54fc](https://github.com/timber/timber/commit/67a54fcd7d246562cccc515501e15f420ac87663))
+* **site:** fall back to the current site for an unknown site ID ([ee68f37](https://github.com/timber/timber/commit/ee68f37f80df04d09849a31f74a2bb56ee21f1a1))
+* **terms:** Fix string-only term query arguments ([#3293](https://github.com/timber/timber/issues/3293)) ([2d0c96c](https://github.com/timber/timber/commit/2d0c96c387ce83875791311015e825d4c59293f4))
+* **tests:** update ticket reference in PostTypeTest for testNonExistentPostType ([d59e202](https://github.com/timber/timber/commit/d59e202ab15afd43b7fc349d9b149642de8ada62))
+* Use `XMLReader` to read SVG dimensions instead of `simplexml_load_file()` ([#3290](https://github.com/timber/timber/issues/3290)) ([9b3de4d](https://github.com/timber/timber/commit/9b3de4dbe73db336f083fcc99c8b9c06def78b2d))
+* **wpml:** leave the URL untouched when the language code is empty ([5ec24b9](https://github.com/timber/timber/commit/5ec24b95e42edb0547d2dc9743d834c914fbd19a))
+* **wpml:** still strip the language code before a query string or fragment ([fc60135](https://github.com/timber/timber/commit/fc6013522351de0578db17253d5dd7bba2ea0ff2))
+* **wpml:** strip the language code only as a whole path segment ([fe949aa](https://github.com/timber/timber/commit/fe949aa057a1e9d5ed0c19b4c7692b21cd0d7926))
+
+
+### Performance Improvements
+
+* **cache:** Stop sweeping expired transients on every cache miss ([#3298](https://github.com/timber/timber/issues/3298)) ([18b2f7d](https://github.com/timber/timber/commit/18b2f7d3d15a1a98338dfd17596ee16c2d9504f6))
+* skip args in get_calling_script_file backtrace ([adaab06](https://github.com/timber/timber/commit/adaab061c433808ea806666ce346b6750561504f))
+
+
+### Reverts
+
+* update PHP coding standards workflow to include cs2pr for output formatting ([45b1708](https://github.com/timber/timber/commit/45b17081079e4312e6872dbf305f48c07923ecbf))
+
+
+### Code Refactoring
+
+* **menu:** explain why slug() only uses ?? on post type objects ([cf46038](https://github.com/timber/timber/commit/cf460388a5f71ba41e67f405845718b4771079a5))
+* **menu:** return early from current_item() for depth-limited calls ([3b68699](https://github.com/timber/timber/commit/3b6869904d952d33226fafbea29a95fa10d69fe2))
+
+
+### Tests
+
+* cover the list filter with a data provider ([6d1ec23](https://github.com/timber/timber/commit/6d1ec2344fbf403698ffe1b5056c66fa078917b5))
+* **image:** fix flaky testReplacedImage caused by uploads leakage ([615b48e](https://github.com/timber/timber/commit/615b48ee649a9e779adcfb790af0eeb4d6b1164e))
+* match wp_kses_post behavior across WordPress versions ([#3321](https://github.com/timber/timber/issues/3321)) ([42c665d](https://github.com/timber/timber/commit/42c665dda081a705fb60b7b4be3c8980358328e5))
+* **menu:** assert the archive item slug without a custom error handler ([c8e2105](https://github.com/timber/timber/commit/c8e2105c5f4c1e5de8fc6a4b42b402c4c12a400d))
+* **menu:** cover a depth-limited current_item() call made before the unconstrained one ([ab62b03](https://github.com/timber/timber/commit/ab62b03684ee3732ba77db2c4e8d54b8d025242b))
+* **pagination:** pin next and prev at the edges ([9bbd474](https://github.com/timber/timber/commit/9bbd4744bb9188d51ef0b0cb12b4cc0c1cf42082))
+* **site:** make the site slug test independent of the install mode ([bee5cde](https://github.com/timber/timber/commit/bee5cde1b3730cffb824f4110a70f36f70d15062))
+* start attachment tests from an empty uploads month ([#3297](https://github.com/timber/timber/issues/3297)) ([bf529d6](https://github.com/timber/timber/commit/bf529d67df0b87cf415c2a4eec80b756143c3fae))
+* use the committed PDF fixture for the not-an-image case ([e3ff171](https://github.com/timber/timber/commit/e3ff1719b46c1c88c1fce3e49ad60e9d78ef89e1))
+* **wpml:** state the language code the segment cases rely on ([dfc38cf](https://github.com/timber/timber/commit/dfc38cfcf8f6a2fe93f9ee673c70fb7f2e013252))
+
+
+### Documentation
+
+* add Timber Rings to the related and official projects ([#3324](https://github.com/timber/timber/issues/3324)) ([4e161ab](https://github.com/timber/timber/commit/4e161ab4d64f2943239b9b8bbccaea0216917824))
+* point to Awesome Timber for related projects ([7881f14](https://github.com/timber/timber/commit/7881f14016acf18a25f8e5c163779a0aad82de14))
+* remove the helpful links written for Timber 1 ([fda6676](https://github.com/timber/timber/commit/fda667689175f68fa1857911526aca6a7ec7ace6))
+* **template-locations:** Add example for Drupal-style Single-Directory Component (SDC) path loading or other mapping ([#3278](https://github.com/timber/timber/issues/3278)) ([c653435](https://github.com/timber/timber/commit/c653435f70896a240928faa388ad8f0395fe4c58))
+* Update docs about supported Timber versions and update Security Guidelines ([#3289](https://github.com/timber/timber/issues/3289)) ([9ef87ce](https://github.com/timber/timber/commit/9ef87ce6b87292b216ee658de4ce316bd5dc280e))
+
+
+### Continuous Integration
+
+* add PHP 8.6 as an experimental job ([0281b39](https://github.com/timber/timber/commit/0281b3937be48ed71093a85026190964859fa539))
+* Convert the ECS report to checkstyle for cs2pr ([7937169](https://github.com/timber/timber/commit/79371698044598af3151fe045ee774e8b684a314))
+* fix ECS coding standards workflow (checkstyle format removed) ([e57880a](https://github.com/timber/timber/commit/e57880a3f3ffe53f125d60416bc740a248b1f4f9))
+* Keep ECS on its PHP engine so the JSON report stays parseable ([#3323](https://github.com/timber/timber/issues/3323)) ([fd8481c](https://github.com/timber/timber/commit/fd8481c35c9f529ccb7922d2c94cf75171f89e61))
+* Run PHPStan on the whole codebase ([49c078d](https://github.com/timber/timber/commit/49c078d5ed2ee9618f765ff9e0d8b03a9e9843ca))
+* surface public API changes on pull requests ([dfd0f2e](https://github.com/timber/timber/commit/dfd0f2e76fbf3a81bf793f8e9126f2eb04f2c98d))
+
+
+### Miscellaneous Chores
+
+* **cs:** apply codestyle fixes (rector/phpstan cleanup) ([a331080](https://github.com/timber/timber/commit/a3310807cb23f6e94c4a7b11dab4540d450c0a37))
+* **deps:** bump actions/checkout from 6.0.2 to 6.0.3 ([#3270](https://github.com/timber/timber/issues/3270)) ([4a691a5](https://github.com/timber/timber/commit/4a691a5a00db2642e7e5bfc1015ddaafa5462e3a))
+* **deps:** bump actions/checkout from 6.0.3 to 7.0.1 ([#3280](https://github.com/timber/timber/issues/3280)) ([67a11cd](https://github.com/timber/timber/commit/67a11cd58be90b6801299d4cf72b75bca3a27c4b))
+* **deps:** bump codecov/codecov-action from 6.0.1 to 7.0.0 ([e5b8048](https://github.com/timber/timber/commit/e5b80489235c472ddef265ae81d3d8c3c792adb4))
+* **deps:** bump codecov/codecov-action from 7.0.0 to 7.1.1 ([#3291](https://github.com/timber/timber/issues/3291)) ([c9f815a](https://github.com/timber/timber/commit/c9f815a7df03c129c9187b282e6d1ff0170c7dac))
+* **deps:** bump coverallsapp/github-action from 2.3.7 to 2.3.8 ([#3281](https://github.com/timber/timber/issues/3281)) ([67fbfa7](https://github.com/timber/timber/commit/67fbfa71ecfb19629a86f65d36eac105e8d8413f))
+* **deps:** bump lycheeverse/lychee-action from 2.8.0 to 2.9.0 ([#3279](https://github.com/timber/timber/issues/3279)) ([8e5fe90](https://github.com/timber/timber/commit/8e5fe902c801db5bbd95b24c529abdb6695b6ff9))
+* **deps:** bump ramsey/composer-install ([#3276](https://github.com/timber/timber/issues/3276)) ([bc1298f](https://github.com/timber/timber/commit/bc1298fdb842903337ca550ce91710b99b9c265f))
+* **deps:** bump shivammathur/setup-php from 2.37.1 to 2.37.2 ([c53725c](https://github.com/timber/timber/commit/c53725c2a0f56f1a87e721e33b5931169e131e50))
+* **deps:** bump shivammathur/setup-php from 2.37.2 to 2.40.0 ([#3316](https://github.com/timber/timber/issues/3316)) ([3ef44e1](https://github.com/timber/timber/commit/3ef44e1980fd9d1047195a204c53fb51a75297de))
+* Fix Rector ruleset to use composer based set ([#3283](https://github.com/timber/timber/issues/3283)) ([099dec4](https://github.com/timber/timber/commit/099dec441370552148acf949010db7ae86ef2037))
+* Remove docblocks for comment date and time ([ba5bbf7](https://github.com/timber/timber/commit/ba5bbf7c4ccb39111dad08a58b92ed0c4b65c3c9))
+* run phpcs ([282285c](https://github.com/timber/timber/commit/282285c3fb19be10ad8f71090ebd4e43c86f958b))
+* update author email addresses in composer.json ([9a257a3](https://github.com/timber/timber/commit/9a257a3dc5caabba75132af53d41f71d0d75190c))
+* Update maintainer info ([#3327](https://github.com/timber/timber/issues/3327)) ([2a5edaa](https://github.com/timber/timber/commit/2a5edaaecbf624d753ecdea5b39b5a8d96b756b9))
+
 ## [2.5.1](https://github.com/timber/timber/compare/v2.5.0...v2.5.1) (2026-05-29)
 
 
