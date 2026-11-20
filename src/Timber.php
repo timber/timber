@@ -1637,7 +1637,7 @@ class Timber
         $dummy_loader = new Loader();
         $twig = $dummy_loader->get_twig();
         $template = $twig->createTemplate($string);
-        return $template->render($data);
+        return Loader::render_twig($template, $data, null, $twig);
     }
 
     /**
