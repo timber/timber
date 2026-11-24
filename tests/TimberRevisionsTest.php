@@ -144,6 +144,7 @@ class TimberRevisionsTest extends TimberIntegrationTestCase
         $titles = \array_map(fn ($p) => $p->post_title, Timber::get_posts([
             'posts_per_page' => -1,
         ])->to_array());
+        $this->assertContains('Published Title', $titles);
         $this->assertNotContains('Secret Title', $titles);
     }
 
