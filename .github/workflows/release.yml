@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 2.x
+      - 2.5.x
 
 permissions: {}
 

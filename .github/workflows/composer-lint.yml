@@ -5,12 +5,14 @@ on:
     branches:
       - master
       - 2.x
+      - 2.5.x
     paths:
       - '**composer.json'
   pull_request:
     branches:
       - master
       - 2.x
+      - 2.5.x
     paths:
       - '**composer.json'
     types:
