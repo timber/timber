@@ -45,6 +45,8 @@ In Twig, we can then use it like this:
 <a href="{{ wp_get_shortlink(post.id) }}">Short URL</a>
 ```
 
+A function should return its result. If it echoes it instead, read about [functions that echo output](https://timber.github.io/docs/v2/guides/functions/#handling-functions-that-echo-output).
+
 ### Functions that Timber provides
 
 Timber already comes with a list of functions it adds by default. You can read more about these functions in the [Functions Guide](https://timber.github.io/docs/v2/guides/functions/).

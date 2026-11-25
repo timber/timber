@@ -3,13 +3,16 @@
 namespace Timber;
 
 use InvalidArgumentException;
+use Throwable;
 use Timber\Cache\Cleaner;
+use Timber\Twig\Extension\OutputBufferExtension;
 use Twig\CacheExtension;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
 use Twig\TemplateWrapper;
 use Twig\TwigFunction;
+use WeakMap;
 
 class Loader implements LoaderInterface
 {
@@ -51,6 +54,13 @@ class Loader implements LoaderInterface
      * ID of the blog `self::$shared_twig` was built for.
      */
     private static ?int $shared_blog_id = null;
+
+    /**
+     * The Twig environment of the templates that are being rendered.
+     *
+     * @var WeakMap<TemplateWrapper, Environment>|null
+     */
+    private static ?WeakMap $environments = null;
 
     /**
      * @param bool|string   $caller the calling directory or false
@@ -277,6 +287,8 @@ class Loader implements LoaderInterface
 
         try {
             $template = $twig->load($file);
+            self::$environments ??= new WeakMap();
+            self::$environments[$template] = $twig;
             $output = $this->render_twig_template($template, $data);
 
             /**
@@ -299,7 +311,9 @@ class Loader implements LoaderInterface
     /**
      * Render a Twig template.
      *
-     * This method can be overridden in subclasses to customize rendering behavior.
+     * This method can be overridden in subclasses to customize rendering behavior. An override
+     * should call the parent method for the rendering itself: with Twig’s `use_yield` option,
+     * `$template->render()` doesn’t collect what PHP functions echo.
      *
      * @param TemplateWrapper $template The Twig template.
      * @param array                  $data     The data to pass to the template.
@@ -307,7 +321,59 @@ class Loader implements LoaderInterface
      */
     protected function render_twig_template($template, $data)
     {
-        return $template->render($data);
+        return self::render_twig($template, $data);
+    }
+
+    /**
+     * Renders a Twig template, or one of its blocks.
+     *
+     * Twig renders inside an output buffer, so what a PHP function echoes ends up in the output.
+     * It doesn’t with its `use_yield` option, the only mode in Twig 4. Timber then opens the same
+     * buffer as Twig does without the option.
+     *
+     * @internal
+     *
+     * @param TemplateWrapper  $template   The Twig template.
+     * @param array            $data       The data to pass to the template.
+     * @param string|null      $block_name Optional. The name of the block to render.
+     * @param Environment|null $twig       Optional. The Twig environment of the template, when it
+     *                                     was not loaded by a `Loader`.
+     * @return string The rendered output.
+     */
+    public static function render_twig(TemplateWrapper $template, array $data, ?string $block_name = null, ?Environment $twig = null): string
+    {
+        $twig ??= self::$environments[$template] ?? null;
+
+        if (!$twig?->hasExtension(OutputBufferExtension::class)) {
+            return null === $block_name
+                ? $template->render($data)
+                : $template->renderBlock($block_name, $data);
+        }
+
+        $level = \ob_get_level();
+
+        if ($twig->isDebug()) {
+            \ob_start();
+        } else {
+            // Discards what gets flushed, for example when a function exits.
+            \ob_start(static fn (): string => '');
+        }
+
+        try {
+            if (null === $block_name) {
+                $template->display($data);
+            } else {
+                $template->displayBlock($block_name, $data);
+            }
+        } catch (Throwable $e) {
+            while (\ob_get_level() > $level && \ob_end_clean()) {
+                // Also discards the buffers a function left open.
+            }
+
+            throw $e;
+        }
+
+        return \ob_get_clean();
     }
 
     /**
@@ -552,8 +618,12 @@ class Loader implements LoaderInterface
          * - `'autoescape' => false`
          * - `'cache' => false`
          *
+         * With Twig’s `use_yield` option, Timber keeps the output of echoing functions where they
+         * are called in a template. The Functions guide lists what is not covered.
+         *
          * @api
          * @since 1.9.5
+         * @link https://timber.github.io/docs/v2/guides/functions/#handling-functions-that-echo-output
          * @link https://twig.symfony.com/doc/2.x/api.html#environment-options
          * @example
          * ```php
@@ -657,6 +727,12 @@ class Loader implements LoaderInterface
             $environment_options['cache'] = $twig_cache_loc;
         }
         $twig = new Environment($this->get_loader(), $environment_options);
+
+        // With `use_yield` (the only mode in Twig 4), Twig doesn’t render inside an output buffer
+        // anymore, so the output of echoing functions has to be put back in place.
+        if (Environment::MAJOR_VERSION >= 4 || !empty($environment_options['use_yield'])) {
+            $twig->addExtension(new OutputBufferExtension());
+        }
 
         if (WP_DEBUG) {
             $twig->addExtension(new DebugExtension());

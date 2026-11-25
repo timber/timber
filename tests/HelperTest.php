@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Ticket;
+use RuntimeException;
 use Sport;
 use stdClass;
 use Timber\Helper;
@@ -114,6 +115,28 @@ class HelperTest extends TimberIntegrationTestCase
         $form = Helper::ob_function('comment_form', [[], $post_id]);
         $form = \trim($form);
         $this->assertStringStartsWith('<div id="respond"', $form);
+    }
+
+    public function testObFunctionDiscardsOutputOnException()
+    {
+        $level = \ob_get_level();
+        $this->expectOutputString('');
+
+        try {
+            Helper::ob_function(function () {
+                echo 'echoed';
+                // A buffer that the function leaves open.
+                \ob_start();
+                echo 'nested';
+
+                throw new RuntimeException('thrown');
+            });
+            $this->fail('The exception was not thrown.');
+        } catch (RuntimeException $e) {
+            $this->assertSame('thrown', $e->getMessage());
+        }
+
+        $this->assertSame($level, \ob_get_level());
     }
 
     public function testWPTitle()
