@@ -21,6 +21,7 @@ $meta = $post->meta('my_acf_field');
 ```
 
 ### Transform values to Timber/PHP objects
+
 Timber by default returns all field values as is based on the return type set in your ACF field setting.
 
 But sometimes you might want to transform values directly into Timber/PHP objects. For example, if you have a relationship field, you might want to transform the values directly into `Timber\Post` objects.
@@ -28,6 +29,7 @@ But sometimes you might want to transform values directly into Timber/PHP object
 You can do so using the `timber/meta/transform_value` filter:
 
 **functions.php**
+
 ```php
 add_filter('timber/meta/transform_value', '__return_true');
 ```
@@ -50,20 +52,17 @@ You can also use both the filter and parameter options at the same time to globa
 
 The values of the following field types will be transformed into Timber/PHP objects when using transforms:
 
-| Field type | Returns  |
-|---------|---------|
-| File    | `Timber\Attachment`         |
-| Image    | `Timber\Image`         |
-| Gallery    | array of `Timber\Post` objects         |
-| Date picker     |  `DateTimeImmutable`       |
-| Date time picker     |  `DateTimeImmutable`       |
-| Post object     | array of `Timber\Post` objects         |
-| Relationship     | array of `Timber\Post` objects         |
-| Taxonomy     | array of `Timber\Term` objects         |
-| User     | array of `Timber\User` objects         |
-
-
-
+| Field type       | Returns                        |
+| ---------------- | ------------------------------ |
+| File             | `Timber\Attachment`            |
+| Image            | `Timber\Image`                 |
+| Gallery          | array of `Timber\Post` objects |
+| Date picker      | `DateTimeImmutable`            |
+| Date time picker | `DateTimeImmutable`            |
+| Post object      | array of `Timber\Post` objects |
+| Relationship     | array of `Timber\Post` objects |
+| Taxonomy         | array of `Timber\Term` objects |
+| User             | array of `Timber\User` objects |
 
 ### Unformatted values
 
@@ -356,6 +355,73 @@ Now, you can use any of the option fields across the site instead of per templat
 
 ```twig
 <footer>{{ options.copyright_info }}</footer>
+```
+
+### Using Timber's ACF options methods with automatic transformations
+
+Timber provides dedicated methods for retrieving ACF option fields that automatically transform values into Timber objects. This is particularly useful when you have complex field types like images, galleries, post objects, or users stored on your options pages.
+
+#### Get a single option field
+
+Use `AcfIntegration::get_option()` to retrieve a single option field with automatic transformations applied:
+
+**functions.php**
+
+```php
+use Timber\Integration\AcfIntegration;
+
+add_filter('timber/context', 'global_timber_context');
+
+function global_timber_context($context)
+{
+    // Get a single option field with transformations
+    $context['site_logo'] = AcfIntegration::get_option('site_logo');
+    $context['featured_posts'] = AcfIntegration::get_option('featured_posts');
+
+    return $context;
+}
+```
+
+With this approach, field values are automatically transformed into the appropriate Timber objects:
+
+- **Image fields** → `Timber\Image` objects
+- **Gallery fields** → Array of `Timber\Image` objects
+- **Post Object/Relationship fields** → `Timber\Post` objects or arrays
+- **User fields** → `Timber\User` objects or arrays
+- **Taxonomy fields** → `Timber\Term` objects or arrays
+- **Date picker fields** → `DateTimeImmutable` objects
+
+**Twig**
+
+```twig
+{# Site logo is automatically a Timber\Image object #}
+<img src="{{ site_logo.src }}" alt="{{ site_logo.alt }}">
+
+{# Featured posts are automatically Timber\Post objects #}
+{% for post in featured_posts %}
+    <h3>{{ post.title }}</h3>
+    <p>{{ post.excerpt }}</p>
+{% endfor %}
+```
+
+#### Get all option fields at once
+
+Use `AcfIntegration::get_options()` to retrieve all option fields with automatic transformations:
+
+**functions.php**
+
+```php
+use Timber\Integration\AcfIntegration;
+
+add_filter('timber/context', 'global_timber_context');
+
+function global_timber_context($context)
+{
+    // Get all option fields with transformations
+    $context['options'] = AcfIntegration::get_options();
+
+    return $context;
+}
 ```
 
 ## Getting ACF info

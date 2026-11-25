@@ -7,6 +7,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\Attributes\Ticket;
 use Timber\Image;
+use Timber\Integration\AcfIntegration;
 use Timber\Post;
 use Timber\PostArrayObject;
 use Timber\Term;
@@ -381,7 +382,7 @@ class ACFTest extends TimberIntegrationTestCase
 
     public function testACFTransformUserMultiple()
     {
-        $this->add_filter_temporarily('timber/user/class', fn ($class, WP_User $user) => User::class, 100, 2);
+        $this->add_filter_temporarily('timber/user/class', fn($class, WP_User $user) => User::class, 100, 2);
 
         $field_name = 'my_user_multiple_meta';
         $this->register_field($field_name, 'user', [
@@ -491,7 +492,6 @@ class ACFTest extends TimberIntegrationTestCase
         ]);
 
         \add_term_meta($tid, 'bar', 'qux');
-        ;
         $wp_native_value = \get_term_meta($tid, 'foo', true);
         $acf_native_value = \get_field('foo', 'category_' . $tid);
 
@@ -511,6 +511,70 @@ class ACFTest extends TimberIntegrationTestCase
         $this->assertNull($acf_native_value);
         $this->assertNotTrue($term->meta('foo'));
     }
+
+    #[Ticket('#3204')]
+    public function testACFGetOptionsRelationshipField()
+    {
+        $field_name = 'options_post_relationship_field';
+        $this->register_options_field($field_name, 'relationship');
+
+        $related_post_id = static::factory()->post->create();
+
+        // Store value and key reference directly in wp_options (ACF options storage).
+        \update_field($field_name, [$related_post_id], 'options');
+
+        $post_object = AcfIntegration::get_option($field_name);
+
+        $this->assertInstanceOf(PostArrayObject::class, $post_object);
+        $this->assertInstanceOf(Post::class, $post_object[0]);
+        $this->assertEquals($related_post_id, $post_object[0]->ID);
+    }
+
+    // #[Ticket('#3204')]
+    // public function testACFGetOptionsMultipleFields()
+    // {
+    //     // Register multiple option fields of different types
+    //     $post_object_field = 'post_object_field';
+    //     $textarea_field = 'textarea_field';
+    //     $user_field = 'user_field';
+
+    //     $this->register_options_field($post_object_field, 'post_object');
+    //     $this->register_options_field($textarea_field, 'textarea');
+    //     $this->register_options_field($user_field, 'user');
+
+    //     // Create test data
+    //     $post_id = static::factory()->post->create([
+    //         'post_title' => 'Related Post',
+    //     ]);
+    //     $user_id = static::factory()->user->create([
+    //         'user_login' => 'testuser',
+    //     ]);
+    //     $textarea_value = 'This is a test textarea content.';
+
+    //     // Store values in wp_options (ACF options storage)
+    //     \update_field($post_object_field, $post_id, 'options');
+    //     \update_field($textarea_field, $textarea_value, 'options');
+    //     \update_field($user_field, $user_id, 'options');
+
+    //     // Get all options with transformations
+    //     $options = AcfIntegration::get_options();
+
+    //     // Assert post object field is transformed to Post instance
+    //     $this->assertArrayHasKey($post_object_field, $options);
+    //     $this->assertInstanceOf(Post::class, $options[$post_object_field]);
+    //     $this->assertEquals($post_id, $options[$post_object_field]->ID);
+    //     $this->assertEquals('Related Post', $options[$post_object_field]->title());
+
+    //     // Assert textarea field is retrieved as string
+    //     $this->assertArrayHasKey($textarea_field, $options);
+    //     $this->assertEquals($textarea_value, $options[$textarea_field]);
+
+    //     // Assert user field is transformed to User instance
+    //     $this->assertArrayHasKey($user_field, $options);
+    //     $this->assertInstanceOf(User::class, $options[$user_field]);
+    //     $this->assertEquals($user_id, $options[$user_field]->ID);
+    //     $this->assertEquals('testuser', $options[$user_field]->user_login);
+    // }
 
     private function register_field($field_name, $field_type, $field_args = [])
     {
@@ -540,5 +604,34 @@ class ACFTest extends TimberIntegrationTestCase
                 ],
             ],
         ]);
+    }
+
+    /**
+     * Registers an ACF field for use with options and returns the generated field key.
+     * Unlike register_field(), this returns the field key so callers can manually store
+     * the ACF key reference in wp_options (required for get_field to recognize the field type).
+     */
+    private function register_options_field(string $field_name, string $field_type, array $field_args = []): string
+    {
+        $group_key = \sprintf('group_%s', \uniqid());
+        $field_key = \sprintf('field_%s', \uniqid());
+
+        $field = \array_merge([
+            'key' => $field_key,
+            'label' => 'Field',
+            'name' => $field_name,
+            'type' => $field_type,
+        ], $field_args);
+
+        \acf_add_local_field_group([
+            'key' => $group_key,
+            'title' => 'Group',
+            'fields' => [
+                $field,
+            ],
+            'location' => [],
+        ]);
+
+        return $field_key;
     }
 }
