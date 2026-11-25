@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.5.2](https://github.com/timber/timber/compare/v2.5.1...v2.5.2) (2026-11-25)
+
+
+### Bug Fixes
+
+* **security:** Require nonce and capability check for autosave previews in `Timber::handle_preview()` (GHSA-53wf-g7j4-hwhh) ([b4c91db](https://github.com/timber/timber/commit/b4c91dbe7faaaf1eb4471d0642ac04a6715bd54f))
+
+
+### Tests
+
+* Assert the published post stays in the preview listing test ([734fe09](https://github.com/timber/timber/commit/734fe095eb1e6266298a6c559db1c06f29d5f4e5))
+* Move preview security tests into `TimberRevisionsTest` ([6c5c53b](https://github.com/timber/timber/commit/6c5c53b59801f51466fa9e272d365d469d1fd431))
+
+
+### Continuous Integration
+
+* run workflows on the 2.5.x branch ([378a6ef](https://github.com/timber/timber/commit/378a6effde5fd2d2bec24847405dc5ef86d53539))
+
 ## [2.5.1](https://github.com/timber/timber/compare/v2.5.0...v2.5.1) (2026-05-29)
 
 
