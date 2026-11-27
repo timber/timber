@@ -321,7 +321,7 @@ class ImageHelper
             $local_file = URLHelper::url_to_file_system($local_file);
         }
         $info = PathHelper::pathinfo($local_file);
-        $dir = $info['dirname'];
+        $dir = \apply_filters('timber/image/new_path', $info['dirname']);
         $ext = $info['extension'];
         $filename = $info['filename'];
         self::process_delete_generated_files($filename, $ext, $dir, '-[0-9999999]*', '-[0-9]*x[0-9]*-c-[a-z]*.');
